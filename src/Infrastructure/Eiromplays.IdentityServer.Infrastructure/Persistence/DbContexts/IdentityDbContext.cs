@@ -19,7 +19,7 @@ using Microsoft.Extensions.Configuration;
 namespace Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts
 {
     public class IdentityDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, ApplicationUserClaim,
-        ApplicationUserRole ,ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>, IIdentityDbContext
+        ApplicationUserRole ,ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>, IIdentityDbContext<ApplicationUser>
     {
         private readonly ICurrentUserService _currentUserService;
         private readonly IDateTime _dateTime;
@@ -70,6 +70,8 @@ namespace Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             base.OnModelCreating(builder);
+
+            ConfigureIdentityDbContext(builder);
         }
 
         private async Task DispatchEvents()
@@ -81,6 +83,7 @@ namespace Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts
                     .Select(x => x.Entity.DomainEvents)
                     .SelectMany(x => x)
                     .FirstOrDefault(domainEvent => !domainEvent.IsPublished);
+
                 if (domainEventEntity == null) break;
 
                 domainEventEntity.IsPublished = true;

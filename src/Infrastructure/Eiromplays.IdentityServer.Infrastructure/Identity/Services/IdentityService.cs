@@ -8,6 +8,7 @@ using Eiromplays.IdentityServer.Application.Common.Interface;
 using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Infrastructure.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
+using Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
