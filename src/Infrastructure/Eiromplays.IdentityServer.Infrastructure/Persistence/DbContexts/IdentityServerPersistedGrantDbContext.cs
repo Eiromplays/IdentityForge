@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts
 {
-    public class IdentityServerPersistedGrantDbContext : PersistedGrantDbContext<IdentityServerPersistedGrantDbContext>, IIdentityServerPersistedGrantDbContext
+    public class IdentityServerPersistedGrantDbContext : PersistedGrantDbContext<IdentityServerPersistedGrantDbContext>
     {
         private readonly ICurrentUserService _currentUserService;
         private readonly IDateTime _dateTime;

@@ -9,8 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts
 {
-    public class IdentityServerConfigurationDbContext : ConfigurationDbContext<IdentityServerConfigurationDbContext>,
-        IIdentityServerConfigurationDbContext<ApiResourceSecret>
+    public class IdentityServerConfigurationDbContext : ConfigurationDbContext<IdentityServerConfigurationDbContext>
     {
         private readonly ICurrentUserService _currentUserService;
         private readonly IDateTime _dateTime;

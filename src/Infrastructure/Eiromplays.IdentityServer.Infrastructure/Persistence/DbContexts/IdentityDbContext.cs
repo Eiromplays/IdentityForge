@@ -19,7 +19,7 @@ using Microsoft.Extensions.Configuration;
 namespace Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts
 {
     public class IdentityDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, ApplicationUserClaim,
-        ApplicationUserRole ,ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>, IIdentityDbContext<ApplicationUser>
+        ApplicationUserRole ,ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>
     {
         private readonly ICurrentUserService _currentUserService;
         private readonly IDateTime _dateTime;
