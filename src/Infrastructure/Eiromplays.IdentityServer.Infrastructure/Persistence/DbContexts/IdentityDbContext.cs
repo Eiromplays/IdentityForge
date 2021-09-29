@@ -6,7 +6,7 @@ using Eiromplays.IdentityServer.Application.Common.Interface;
 using Eiromplays.IdentityServer.Domain.Common;
 using Eiromplays.IdentityServer.Domain.Constants;
 using Eiromplays.IdentityServer.Infrastructure.Identity;
-using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
+using Eiromplays.IdentityServer.Infrastructure.Identity.Models;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Configurations;
 using EntityFrameworkCore.EncryptColumn;
 using EntityFrameworkCore.EncryptColumn.Extension;

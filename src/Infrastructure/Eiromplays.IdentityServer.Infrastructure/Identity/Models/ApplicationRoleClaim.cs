@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Eiromplays.IdentityServer.Infrastructure.Identity.Entities
+namespace Eiromplays.IdentityServer.Infrastructure.Identity.Models
 {
     public class ApplicationRoleClaim : IdentityRoleClaim<string>
     {
