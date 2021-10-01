@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Eiromplays.IdentityServer.Application.Common.Interface;
@@ -88,35 +89,47 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services
             return await _userManager.Users.ToListAsync();
         }
 
-        public async Task<PaginatedList<ApplicationUser>> GetUsersAsync(string? search, int pageIndex = 1, int pageSize = 10)
+        public Task<PaginatedList<ApplicationUser>> GetUsersAsync(string? search, int pageIndex = 1, int pageSize = 10, CancellationToken cancellationToken = default)
         {
-            Expression<Func<ApplicationUser, bool>> searchExpression = x => !string.IsNullOrWhiteSpace(x.Email) && !string.IsNullOrWhiteSpace(search) &&
-                                                                            (x.UserName.Contains(search,
-                                                                                 StringComparison.OrdinalIgnoreCase)
-                                                                             || x.Email.Contains(search,
-                                                                                 StringComparison.OrdinalIgnoreCase));
+            return Task.Run(async () =>
+            {
+                Expression<Func<ApplicationUser, bool>> searchExpression = x => !string.IsNullOrWhiteSpace(x.Email) &&
+                    !string.IsNullOrWhiteSpace(search) &&
+                    (x.UserName.Contains(search,
+                         StringComparison.OrdinalIgnoreCase)
+                     || x.Email.Contains(search,
+                         StringComparison.OrdinalIgnoreCase));
 
-            var users = await _userManager.Users.Where(searchExpression).PaginatedListAsync(pageIndex, pageSize);
+                var users = await _userManager.Users.Where(searchExpression).PaginatedListAsync(pageIndex, pageSize);
 
-            return users;
+                return users;
+            }, cancellationToken);
         }
 
-        public async Task<PaginatedList<ApplicationUser>> GetRoleUsersAsync(string? roleName, string? search,
-            int pageIndex = 1, int pageSize = 10)
+        public Task<PaginatedList<ApplicationUser>> GetRoleUsersAsync(string? roleName, string? search,
+            int pageIndex = 1, int pageSize = 10, CancellationToken cancellationToken = default)
         {
-            var users = await (await _userManager.GetUsersInRoleAsync(roleName)).Where(x =>
-                !string.IsNullOrWhiteSpace(x.Email) && !string.IsNullOrWhiteSpace(search) &&
-                (x.UserName.Contains(search, StringComparison.OrdinalIgnoreCase) ||
-                 x.Email.Contains(search, StringComparison.OrdinalIgnoreCase))).AsQueryable().PaginatedListAsync(pageIndex, pageSize);
+            return Task.Run(async () =>
+            {
+                bool SearchExpression(ApplicationUser x) => !string.IsNullOrWhiteSpace(x.Email) &&
+                                                            !string.IsNullOrWhiteSpace(search) &&
+                                                            (x.UserName.Contains(search,
+                                                                 StringComparison.OrdinalIgnoreCase) ||
+                                                             x.Email.Contains(search, StringComparison.OrdinalIgnoreCase));
 
-            return users;
+                var users = await (await _userManager.GetUsersInRoleAsync(roleName))
+                    .Where(SearchExpression).AsQueryable()
+                    .PaginatedListAsync(pageIndex, pageSize);
+
+                return users;
+            }, cancellationToken);
         }
 
         public async Task<PaginatedList<ApplicationUser>> GetClaimUsersAsync(string? claimType, string? claimValue,
-            int pageIndex = 1, int pageSize = 10)
+            int pageIndex = 1, int pageSize = 10, CancellationToken cancellationToken = default)
         {
             var users = await _identityDbContext.Users
-                .Join(_identityDbContext.UserClaims, u => u.Id, 
+                .Join(_identityDbContext.UserClaims, u => u.Id,
                     uc => uc.UserId, (u, uc) => new {u, uc}).Where(x =>
                     x.uc.ClaimType.Equals(claimType) && x.uc.ClaimValue.Equals(claimValue))
                 .Select(x => x.u).Distinct().PaginatedListAsync(pageIndex, pageSize);
@@ -281,9 +294,9 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services
         public async Task<PaginatedList<ApplicationRole>> GetUserRolesAsync(string? userId, int pageIndex = 1,
             int pageSize = 10)
         {
-            var roles = await _identityDbContext.Roles.Join(_identityDbContext.UserRoles, 
+            var roles = await _identityDbContext.Roles.Join(_identityDbContext.UserRoles,
                 r => r.Id, ur => ur.UserId,
-                (r, ur) => new {r, ur}).Where(x => 
+                (r, ur) => new {r, ur}).Where(x =>
                             x.ur.UserId.Equals(userId)).Select(x => x.r).PaginatedListAsync(pageIndex, pageSize);
 
             return roles;
