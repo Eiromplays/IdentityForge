@@ -1,12 +1,10 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Eiromplays.IdentityServer.Application.Common.Behaviours
 {
     public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+        where TRequest : class
     {
         private readonly ILogger<TRequest> _logger;
 

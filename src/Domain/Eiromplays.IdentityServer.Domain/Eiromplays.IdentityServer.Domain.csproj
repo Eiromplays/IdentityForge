@@ -10,12 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Enums\**" />
-    <Compile Remove="Events\**" />
-    <EmbeddedResource Remove="Enums\**" />
-    <EmbeddedResource Remove="Events\**" />
-    <None Remove="Enums\**" />
-    <None Remove="Events\**" />
+    <Folder Include="Enums\" />
   </ItemGroup>
 
 </Project>

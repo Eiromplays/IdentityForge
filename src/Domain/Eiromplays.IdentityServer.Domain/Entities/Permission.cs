@@ -1,35 +1,46 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Eiromplays.IdentityServer.Domain.Common;
+using Eiromplays.IdentityServer.Domain.Events.Permission;
 
 namespace Eiromplays.IdentityServer.Domain.Entities
 {
-    public sealed class Permission : Permission<string>
+    public class Permission : AuditableEntity, IHasDomainEvent
     {
         public Permission()
         {
-            Id = Guid.NewGuid().ToString();
         }
 
-        public Permission(string name)
-        {
-            Name = name;
-        }
-    }
-
-    public class Permission<TKey> where TKey : IEquatable<TKey>
-    {
-        public Permission() { }
-
-        public Permission(string name) : this()
+        public Permission(string? name) : this()
         {
             Name = name;
         }
 
-        public virtual TKey? Id { get; set; }
-
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }
 
         public string? Name { get; set; }
 
         public override string? ToString()
             => Name;
+
+        private bool _done;
+        public bool Done
+        {
+            get => _done;
+            set
+            {
+                if (value && !_done)
+                {
+                    DomainEvents.Add(new PermissionCompletedEvent(this));
+                }
+
+                _done = value;
+            }
+        }
+
+        public List<DomainEvent> DomainEvents { get; set; } = new();
     }
 }

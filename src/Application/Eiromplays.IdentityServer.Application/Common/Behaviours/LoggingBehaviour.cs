@@ -25,7 +25,7 @@ namespace Eiromplays.IdentityServer.Application.Common.Behaviours
         {
             var requestName = typeof(TRequest).Name;
             var userId = _currentUserService.UserId;
-            string userName = string.Empty;
+            var userName = "";
 
             if (!string.IsNullOrEmpty(userId))
             {

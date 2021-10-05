@@ -32,14 +32,7 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity.Permissions
 
             if (identityService == null) return await FallbackPolicyProvider.GetPolicyAsync(policyName);
 
-            var permission = await identityService.GetPermissionAsync(policyName);
-
-            if (permission.Name == null)
-                return await FallbackPolicyProvider.GetPolicyAsync(policyName);
-
             var policy = new AuthorizationPolicyBuilder();
-
-            policy.AddRequirements(new PermissionRequirement(permission.Name));
 
             return await Task.FromResult(policy.Build());
         }

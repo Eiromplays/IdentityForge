@@ -1,12 +1,12 @@
-﻿using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using Eiromplays.IdentityServer.Application.Common.Interface;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace Eiromplays.IdentityServer.Application.Common.Behaviours
 {
     public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+        where TRequest : class
     {
         private readonly Stopwatch _timer;
         private readonly ILogger<TRequest> _logger;
@@ -38,7 +38,9 @@ namespace Eiromplays.IdentityServer.Application.Common.Behaviours
             if (elapsedMilliseconds <= 500) return response;
 
             var requestName = typeof(TRequest).Name;
-            var userId = _currentUserService.UserId ?? string.Empty;
+
+            var userId = _currentUserService.UserId;
+
             var userName = string.Empty;
 
             if (!string.IsNullOrEmpty(userId))

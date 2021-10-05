@@ -1,9 +1,8 @@
 ﻿using Eiromplays.IdentityServer.Application.Common.Interface;
-using Eiromplays.IdentityServer.Infrastructure.Identity;
+using Eiromplays.IdentityServer.Infrastructure.Identity.Models;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts;
 using Eiromplays.IdentityServer.Infrastructure.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,9 +26,13 @@ namespace Eiromplays.IdentityServer.Infrastructure
                         b => b.MigrationsAssembly(typeof(IdentityDbContext).Assembly.FullName)));
             }
 
-            services.AddScoped<IIdentityDbContext>(provider => provider.GetService<IdentityDbContext>()!);
-
             services.AddScoped<IDomainEventService, DomainEventService>();
+
+            services.AddDefaultIdentity<ApplicationUser>()
+                .AddRoles<ApplicationRole>()
+                .AddEntityFrameworkStores<IdentityDbContext>();
+
+            services.AddIdentityServer();
 
             services.AddTransient<IDateTime, DateTimeService>();
             services.AddTransient<IIdentityService, IdentityService>();
