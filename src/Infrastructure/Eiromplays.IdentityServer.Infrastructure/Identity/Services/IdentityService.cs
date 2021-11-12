@@ -100,6 +100,9 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services
                      || x.Email.Contains(search,
                          StringComparison.OrdinalIgnoreCase));
 
+                await _userManager.Users.Where(x => x.Email != null && x.Email.Contains("test", StringComparison.OrdinalIgnoreCase))
+                    .ToListAsync(cancellationToken: cancellationToken);
+
                 var users = await _userManager.Users.Where(searchExpression).PaginatedListAsync(pageIndex, pageSize);
 
                 return users;

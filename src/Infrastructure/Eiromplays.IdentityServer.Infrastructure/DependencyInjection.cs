@@ -29,7 +29,7 @@ namespace Eiromplays.IdentityServer.Infrastructure
             services.AddScoped<IDomainEventService, DomainEventService>();
 
             services.AddDefaultIdentity<ApplicationUser>()
-                .AddRoles<ApplicationRole>()
+                .AddRoles<ApplicationRole>() 
                 .AddEntityFrameworkStores<IdentityDbContext>();
 
             services.AddIdentityServer();
