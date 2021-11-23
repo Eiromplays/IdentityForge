@@ -1,7 +1,7 @@
 ﻿using EntityFrameworkCore.EncryptColumn.Attribute;
 using Microsoft.AspNetCore.Identity;
 
-namespace Eiromplays.IdentityServer.Infrastructure.Identity.Models
+namespace Eiromplays.IdentityServer.Identity.Entities
 {
     public class ApplicationUser : IdentityUser
     {

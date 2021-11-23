@@ -1,7 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using AutoMapper;
 using System.Reflection;
-using AutoMapper;
 
 namespace Eiromplays.IdentityServer.Application.Common.Mappings
 {

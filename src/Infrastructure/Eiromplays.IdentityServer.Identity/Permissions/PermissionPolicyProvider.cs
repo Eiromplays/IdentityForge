@@ -1,11 +1,9 @@
-using System;
-using System.Threading.Tasks;
 using Eiromplays.IdentityServer.Application.Common.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Eiromplays.IdentityServer.Infrastructure.Identity.Permissions
+namespace Eiromplays.IdentityServer.Identity.Permissions
 {
     internal class PermissionPolicyProvider : IAuthorizationPolicyProvider
     {

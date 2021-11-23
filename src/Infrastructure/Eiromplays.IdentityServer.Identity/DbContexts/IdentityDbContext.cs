@@ -1,7 +1,9 @@
-﻿using Eiromplays.IdentityServer.Application.Common.Interface;
+﻿using System.Reflection;
+using Eiromplays.IdentityServer.Application.Common.Interface;
 using Eiromplays.IdentityServer.Domain.Common;
 using Eiromplays.IdentityServer.Domain.Constants;
-using Eiromplays.IdentityServer.Infrastructure.Identity.Models;
+using Eiromplays.IdentityServer.Identity.DTOs;
+using Eiromplays.IdentityServer.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Configurations;
 using EntityFrameworkCore.EncryptColumn;
 using EntityFrameworkCore.EncryptColumn.Interfaces;
@@ -9,12 +11,11 @@ using EntityFrameworkCore.EncryptColumn.Util;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System.Reflection;
 
-namespace Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts
+namespace Eiromplays.IdentityServer.Identity.DbContexts
 {
     public class IdentityDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, ApplicationUserClaim,
-        ApplicationUserRole, ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>
+        ApplicationUserRole, ApplicationUserLogin, ApplicationRoleClaim, UserTokenDto>
     {
         private readonly ICurrentUserService _currentUserService;
         private readonly IDateTime _dateTime;
@@ -89,13 +90,13 @@ namespace Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts
         private static void ConfigureIdentityDbContext(ModelBuilder builder)
         {
             builder.Entity<ApplicationRole>().ToTable(TableConsts.IdentityRoles);
-            builder.Entity<ApplicationRoleClaim>().ToTable(TableConsts.IdentityRoleClaims);
-            builder.Entity<ApplicationUserRole>().ToTable(TableConsts.IdentityUserRoles);
+            builder.Entity<RoleClaimDto>().ToTable(TableConsts.IdentityRoleClaims);
+            builder.Entity<UserRoleDto>().ToTable(TableConsts.IdentityUserRoles);
 
             builder.Entity<ApplicationUser>().ToTable(TableConsts.IdentityUsers);
-            builder.Entity<ApplicationUserLogin>().ToTable(TableConsts.IdentityUserLogins);
-            builder.Entity<ApplicationUserClaim>().ToTable(TableConsts.IdentityUserClaims);
-            builder.Entity<ApplicationUserToken>().ToTable(TableConsts.IdentityUserTokens);
+            builder.Entity<UserLoginDto>().ToTable(TableConsts.IdentityUserLogins);
+            builder.Entity<UserClaimDto>().ToTable(TableConsts.IdentityUserClaims);
+            builder.Entity<UserTokenDto>().ToTable(TableConsts.IdentityUserTokens);
         }
     }
 }
