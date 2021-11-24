@@ -3,9 +3,9 @@ using Eiromplays.IdentityServer.Identity.DTOs;
 
 namespace Eiromplays.IdentityServer.Identity.Events.User
 {
-    public class UserCreatedEvent : DomainEvent
+    public class UserCompletedEvent : DomainEvent
     {
-        public UserCreatedEvent(UserDto userDto)
+        public UserCompletedEvent(UserDto userDto)
         {
             UserDto = userDto;
         }

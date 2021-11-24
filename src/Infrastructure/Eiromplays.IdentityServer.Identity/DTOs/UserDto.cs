@@ -1,9 +1,11 @@
 ﻿using Eiromplays.IdentityServer.Application.Common.Mappings;
+using Eiromplays.IdentityServer.Domain.Common;
 using Eiromplays.IdentityServer.Identity.Entities;
+using Eiromplays.IdentityServer.Identity.Events.User;
 
 namespace Eiromplays.IdentityServer.Identity.DTOs
 {
-    public class UserDto : IMapFrom<ApplicationUser>
+    public class UserDto : AuditableEntity, IHasDomainEvent, IMapFrom<ApplicationUser>
     {
         public string? UserName { get; set; }
 
@@ -32,5 +34,21 @@ namespace Eiromplays.IdentityServer.Identity.DTOs
         public decimal Credits { get; set; }
 
         public string? DiscordId { get; set; }
+
+        private bool _done;
+
+        public bool Done
+        {
+            get => _done;
+            set
+            {
+                if (value && !_done)
+                {
+                    DomainEvents.Add(new UserCompletedEvent(this));
+                }
+
+                _done = value;
+            }
+        }
     }
 }
