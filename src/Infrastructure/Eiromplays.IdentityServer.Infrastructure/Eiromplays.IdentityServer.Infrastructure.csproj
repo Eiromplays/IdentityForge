@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Audit.NET" Version="19.0.1" />
     <PackageReference Include="Duende.IdentityServer" Version="6.0.0-preview.3" />
     <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.0.0-preview.3" />
     <PackageReference Include="EntityFrameworkCore.EncryptColumn" Version="5.0.6" />

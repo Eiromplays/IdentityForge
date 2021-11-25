@@ -5,7 +5,6 @@ using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Identity.DbContexts;
 using Eiromplays.IdentityServer.Identity.DTOs;
 using Eiromplays.IdentityServer.Identity.Entities;
-using Eiromplays.IdentityServer.Identity.Events.User;
 using Eiromplays.IdentityServer.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -48,10 +47,6 @@ namespace Eiromplays.IdentityServer.Identity.Services
         public async Task<(Result Result, string UserId)> CreateUserAsync(ApplicationUser user)
         {
             var result = await _userManager.CreateAsync(user);
-
-            var userDto = _mapper.Map<UserDto>(user);
-
-            userDto.DomainEvents.Add(new UserCreatedEvent(userDto));
 
             return (result.ToApplicationResult(), user.Id);
         }
