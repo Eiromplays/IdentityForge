@@ -1,12 +1,10 @@
-﻿using Eiromplays.IdentityServer.Application.Common.Mappings;
+﻿namespace Eiromplays.IdentityServer.Application.Identity.DTOs.Role;
 
-namespace Eiromplays.IdentityServer.Application.Identity.DTOs.Role;
-
-public class RoleClaimDto
+public class RoleClaimDto<TKey>
 {
-    public int Id { get; set; }
+    public int ClaimId { get; set; }
 
-    public string? RoleId { get; set; }
+    public TKey? RoleId { get; set; }
 
     public string? ClaimType { get; set; }
 

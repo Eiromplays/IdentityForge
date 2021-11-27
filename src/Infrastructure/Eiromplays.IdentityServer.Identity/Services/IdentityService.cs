@@ -100,9 +100,6 @@ public class IdentityService<TUserDto, TRoleDto, TUser, TRole, TKey> : IIdentity
                                                                                    || user.Email.Contains(search,
                                                                                        StringComparison.OrdinalIgnoreCase));
 
-            await _userManager.Users.Where(searchExpression)
-                .ToListAsync(cancellationToken);
-
             var users = await _userManager.Users.Where(searchExpression).PaginatedListAsync(pageIndex, pageSize);
 
             var usersDto = _mapper.Map<PaginatedList<TUserDto>>(users);

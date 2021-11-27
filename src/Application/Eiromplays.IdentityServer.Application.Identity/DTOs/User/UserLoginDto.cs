@@ -1,9 +1,9 @@
-﻿using Eiromplays.IdentityServer.Application.Common.Mappings;
+﻿namespace Eiromplays.IdentityServer.Application.Identity.DTOs.User;
 
-namespace Eiromplays.IdentityServer.Application.Identity.DTOs.User;
-
-public class UserLoginDto
+public class UserLoginDto<TKey>
 {
+    public TKey? UserId { get; set; }
+
     public string? UserName { get; set; }
 
     public string? ProviderKey { get; set; }
