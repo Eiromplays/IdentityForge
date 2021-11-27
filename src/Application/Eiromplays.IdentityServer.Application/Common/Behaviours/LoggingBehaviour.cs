@@ -1,20 +1,20 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Eiromplays.IdentityServer.Application.Common.Interface;
+﻿using Eiromplays.IdentityServer.Application.Common.Interface;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
 
 namespace Eiromplays.IdentityServer.Application.Common.Behaviours
 {
-    public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest>
+    public class LoggingBehaviour<TRequest, TUserDto, TRoleDto> : IRequestPreProcessor<TRequest>
         where TRequest : class
+        where TUserDto : class
+        where TRoleDto : class
     {
         private readonly ILogger _logger;
         private readonly ICurrentUserService _currentUserService;
-        private readonly IIdentityService _identityService;
+        private readonly IIdentityService<TUserDto, TRoleDto> _identityService;
 
         public LoggingBehaviour(ILogger<TRequest> logger, ICurrentUserService currentUserService,
-            IIdentityService identityService)
+            IIdentityService<TUserDto, TRoleDto> identityService)
         {
             _logger = logger;
             _currentUserService = currentUserService;

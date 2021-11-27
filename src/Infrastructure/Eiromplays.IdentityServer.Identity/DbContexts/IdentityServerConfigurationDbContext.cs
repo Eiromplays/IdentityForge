@@ -4,7 +4,7 @@ using Eiromplays.IdentityServer.Application.Common.Interface;
 using Eiromplays.IdentityServer.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 
-namespace Eiromplays.IdentityServer.Identity.DbContexts
+namespace Eiromplays.IdentityServer.Infrastructure.Identity.DbContexts
 {
     public class IdentityServerConfigurationDbContext : ConfigurationDbContext<IdentityServerConfigurationDbContext>
     {

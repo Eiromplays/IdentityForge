@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Application\Eiromplays.IdentityServer.Application\Eiromplays.IdentityServer.Application.csproj" />
+    <ProjectReference Include="..\..\Application\Eiromplays.IdentityServer.Application.Identity\Eiromplays.IdentityServer.Application.Identity.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 
-namespace Eiromplays.IdentityServer.Identity.Permissions
+namespace Eiromplays.IdentityServer.Infrastructure.Identity.Permissions
 {
     internal class PermissionRequirement : IAuthorizationRequirement
     {

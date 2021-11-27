@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{B4B5C3
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{C1CAD481-CF2F-4BEC-B8F8-B453B9A7CFFB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eiromplays.IdentityServer.Identity", "src\Infrastructure\Eiromplays.IdentityServer.Identity\Eiromplays.IdentityServer.Identity.csproj", "{289CCF0C-BCA2-40A5-A94A-ECAD96A60E92}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eiromplays.IdentityServer.Infrastructure.Identity", "src\Infrastructure\Eiromplays.IdentityServer.Identity\Eiromplays.IdentityServer.Infrastructure.Identity.csproj", "{289CCF0C-BCA2-40A5-A94A-ECAD96A60E92}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eiromplays.IdentityServer.Domain", "src\Domain\Eiromplays.IdentityServer.Domain\Eiromplays.IdentityServer.Domain.csproj", "{C54D0345-8347-4C0F-868E-3F1B7D89B8FA}"
 EndProject
@@ -19,7 +19,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eiromplays.IdentityServer.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eiromplays.IdentityServer.Infrastructure", "src\Infrastructure\Eiromplays.IdentityServer.Infrastructure\Eiromplays.IdentityServer.Infrastructure.csproj", "{32CF0F31-5475-4B00-BAFA-12C3E3174FD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eiromplays.IdentityServer.Infrastructure.PostgreSQL", "src\Infrastructure\Eiromplays.IdentityServer.Infrastructure.PostgreSQL\Eiromplays.IdentityServer.Infrastructure.PostgreSQL.csproj", "{BF09C204-F97F-477C-ABEA-C8991C062C6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eiromplays.IdentityServer.Infrastructure.PostgreSQL", "src\Infrastructure\Eiromplays.IdentityServer.Infrastructure.PostgreSQL\Eiromplays.IdentityServer.Infrastructure.PostgreSQL.csproj", "{BF09C204-F97F-477C-ABEA-C8991C062C6B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eiromplays.IdentityServer.Application.Identity", "src\Application\Eiromplays.IdentityServer.Application.Identity\Eiromplays.IdentityServer.Application.Identity.csproj", "{D9F96E17-CE49-479E-A979-4C556CE4C7E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eiromplays.IdentityServer.Admin.WebUI", "src\Presentation\Eiromplays.IdentityServer.Admin.WebUI\Eiromplays.IdentityServer.Admin.WebUI.csproj", "{BE9B23C4-42A1-492C-AD9C-ADBAE820825B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +51,14 @@ Global
 		{BF09C204-F97F-477C-ABEA-C8991C062C6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF09C204-F97F-477C-ABEA-C8991C062C6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF09C204-F97F-477C-ABEA-C8991C062C6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9F96E17-CE49-479E-A979-4C556CE4C7E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9F96E17-CE49-479E-A979-4C556CE4C7E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9F96E17-CE49-479E-A979-4C556CE4C7E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9F96E17-CE49-479E-A979-4C556CE4C7E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE9B23C4-42A1-492C-AD9C-ADBAE820825B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE9B23C4-42A1-492C-AD9C-ADBAE820825B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE9B23C4-42A1-492C-AD9C-ADBAE820825B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE9B23C4-42A1-492C-AD9C-ADBAE820825B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,6 +69,8 @@ Global
 		{C3A6E0A2-2D5E-4204-BF02-1FBD5D6658CB} = {DE9F4ECE-5977-4682-88C6-1FEF28EC6EF8}
 		{32CF0F31-5475-4B00-BAFA-12C3E3174FD0} = {C1CAD481-CF2F-4BEC-B8F8-B453B9A7CFFB}
 		{BF09C204-F97F-477C-ABEA-C8991C062C6B} = {C1CAD481-CF2F-4BEC-B8F8-B453B9A7CFFB}
+		{D9F96E17-CE49-479E-A979-4C556CE4C7E1} = {DE9F4ECE-5977-4682-88C6-1FEF28EC6EF8}
+		{BE9B23C4-42A1-492C-AD9C-ADBAE820825B} = {45FB9259-0362-49CB-BC16-8D9A8562AE4B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E8BF1AF7-AD5B-4C7F-A1F6-8C6FA17ADCC6}

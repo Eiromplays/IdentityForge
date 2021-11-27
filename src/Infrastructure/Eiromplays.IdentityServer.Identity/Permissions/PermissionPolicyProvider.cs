@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Eiromplays.IdentityServer.Identity.Permissions
+namespace Eiromplays.IdentityServer.Infrastructure.Identity.Permissions
 {
-    internal class PermissionPolicyProvider : IAuthorizationPolicyProvider
+    internal class PermissionPolicyProvider<TUserDto, TRoleDto> : IAuthorizationPolicyProvider
+        where TUserDto : class
+        where TRoleDto : class
     {
         public DefaultAuthorizationPolicyProvider FallbackPolicyProvider { get; }
 
@@ -26,7 +28,7 @@ namespace Eiromplays.IdentityServer.Identity.Permissions
         {
             using var scope = _serviceScopeFactory.CreateScope();
 
-            var identityService = scope.ServiceProvider.GetService<IIdentityService>();
+            var identityService = scope.ServiceProvider.GetService<IIdentityService<TUserDto, TRoleDto>>();
 
             if (identityService == null) return await FallbackPolicyProvider.GetPolicyAsync(policyName);
 

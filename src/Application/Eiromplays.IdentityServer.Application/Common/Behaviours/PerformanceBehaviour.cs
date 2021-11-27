@@ -5,18 +5,20 @@ using System.Diagnostics;
 
 namespace Eiromplays.IdentityServer.Application.Common.Behaviours
 {
-    public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    public class PerformanceBehaviour<TRequest, TResponse, TUserDto, TRoleDto> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : class
+        where TUserDto : class
+        where TRoleDto : class
     {
         private readonly Stopwatch _timer;
         private readonly ILogger<TRequest> _logger;
         private readonly ICurrentUserService _currentUserService;
-        private readonly IIdentityService _identityService;
+        private readonly IIdentityService<TUserDto, TRoleDto> _identityService;
 
         public PerformanceBehaviour(
-            ILogger<TRequest> logger, 
+            ILogger<TRequest> logger,
             ICurrentUserService currentUserService,
-            IIdentityService identityService)
+            IIdentityService<TUserDto, TRoleDto> identityService)
         {
             _timer = new Stopwatch();
 

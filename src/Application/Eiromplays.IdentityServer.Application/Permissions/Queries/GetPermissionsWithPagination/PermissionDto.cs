@@ -3,7 +3,7 @@ using Eiromplays.IdentityServer.Domain.Entities;
 
 namespace Eiromplays.IdentityServer.Application.Permissions.Queries.GetPermissionsWithPagination
 {
-    public class PermissionDto : IMapFrom<Permission>
+    public class PermissionDto : IMap<Permission>
     {
         public string? Id { get; set; }
 

@@ -4,7 +4,7 @@ using Eiromplays.IdentityServer.Domain.Common;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Eiromplays.IdentityServer.Identity.DbContexts
+namespace Eiromplays.IdentityServer.Infrastructure.Identity.DbContexts
 {
     public class IdentityServerDataProtectionDbContext : DbContext, IDataProtectionKeyContext
     {

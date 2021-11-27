@@ -14,7 +14,7 @@ namespace Eiromplays.IdentityServer.Application.Common.Mappings
         {
             var types = assembly.GetExportedTypes()
                 .Where(t => t.GetInterfaces().Any(i => 
-                    i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IMapFrom<>)))
+                    i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IMap<>)))
                 .ToList();
 
             foreach (var type in types)
@@ -22,7 +22,7 @@ namespace Eiromplays.IdentityServer.Application.Common.Mappings
                 var instance = Activator.CreateInstance(type);
 
                 var methodInfo = type.GetMethod("Mapping") 
-                    ?? type.GetInterface("IMapFrom`1")?.GetMethod("Mapping");
+                    ?? type.GetInterface("IMap`1")?.GetMethod("Mapping");
                 
                 methodInfo?.Invoke(instance, new object[] { this });
 
