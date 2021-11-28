@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Eiromplays.IdentityServer.Application.Common.Models;
+﻿using Eiromplays.IdentityServer.Application.Common.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Extensions

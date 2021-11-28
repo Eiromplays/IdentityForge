@@ -1,7 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using AutoMapper;
 using System.Reflection;
-using AutoMapper;
 
 namespace Eiromplays.IdentityServer.Application.Common.Mappings
 {
@@ -15,17 +13,17 @@ namespace Eiromplays.IdentityServer.Application.Common.Mappings
         private void ApplyMappingsFromAssembly(Assembly assembly)
         {
             var types = assembly.GetExportedTypes()
-                .Where(t => t.GetInterfaces().Any(i => 
-                    i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IMapFrom<>)))
+                .Where(t => t.GetInterfaces().Any(i =>
+                    i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IMapValues<>)))
                 .ToList();
 
             foreach (var type in types)
             {
                 var instance = Activator.CreateInstance(type);
 
-                var methodInfo = type.GetMethod("Mapping") 
-                    ?? type.GetInterface("IMapFrom`1")?.GetMethod("Mapping");
-                
+                var methodInfo = type.GetMethod("Mapping")
+                    ?? type.GetInterface("IMapValues`1")?.GetMethod("Mapping");
+
                 methodInfo?.Invoke(instance, new object[] { this });
 
             }

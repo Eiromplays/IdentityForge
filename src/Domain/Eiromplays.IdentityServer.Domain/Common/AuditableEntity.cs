@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Eiromplays.IdentityServer.Domain.Common
+﻿namespace Eiromplays.IdentityServer.Domain.Common
 {
     public abstract class AuditableEntity
     {
@@ -11,5 +9,7 @@ namespace Eiromplays.IdentityServer.Domain.Common
         public DateTime? LastModified { get; set; }
 
         public string? LastModifiedBy { get; set; }
+
+        public List<DomainEvent> DomainEvents { get; set; } = new();
     }
 }

@@ -1,43 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Eiromplays.IdentityServer.Application.Common.Interface;
+﻿using Eiromplays.IdentityServer.Application.Common.Interface;
 using Eiromplays.IdentityServer.Domain.Entities;
 using Eiromplays.IdentityServer.Domain.Events.Permission;
 using MediatR;
 
-namespace Eiromplays.IdentityServer.Application.Permissions.Commands.CreatePermission
+namespace Eiromplays.IdentityServer.Application.Permissions.Commands.CreatePermission;
+
+public class CreatePermissionCommand : IRequest<string>
 {
-    public class CreatePermissionCommand : IRequest<string>
+    public string? Name { get; set; }
+}
+
+public class CreatePermissionCommandHandler : IRequestHandler<CreatePermissionCommand, string>
+{
+    private readonly IPermissionDbContext _context;
+
+    public CreatePermissionCommandHandler(IPermissionDbContext context)
     {
-        public string? Name { get; set; }
+        _context = context;
     }
 
-    public class CreatePermissionCommandHandler : IRequestHandler<CreatePermissionCommand, string>
+    public async Task<string> Handle(CreatePermissionCommand request, CancellationToken cancellationToken)
     {
-        private readonly IPermissionDbContext _context;
+        var entity = new Permission(request.Name){ Done = false };
 
-        public CreatePermissionCommandHandler(IPermissionDbContext context)
+        entity.DomainEvents.Add(new PermissionCreatedEvent(entity));
+
+        if (_context.Permissions != null)
         {
-            _context = context;
+            await _context.Permissions.AddAsync(entity, cancellationToken);
         }
 
-        public async Task<string> Handle(CreatePermissionCommand request, CancellationToken cancellationToken)
-        {
-            var entity = new Permission(request.Name){ Done = false };
+        await _context.SaveChangesAsync(cancellationToken);
 
-            entity.DomainEvents.Add(new PermissionCreatedEvent(entity));
-
-            if (_context.Permissions != null)
-            {
-                await _context.Permissions.AddAsync(entity, cancellationToken);
-            }
-
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return entity.Id.ToString();
-        }
+        return entity.Id.ToString();
     }
 }

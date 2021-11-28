@@ -1,15 +1,14 @@
 ﻿using FluentValidation;
 
-namespace Eiromplays.IdentityServer.Application.Permissions.Commands.CreatePermission
+namespace Eiromplays.IdentityServer.Application.Permissions.Commands.CreatePermission;
+
+public class CreatePermissionCommandValidator : AbstractValidator<CreatePermissionCommand>
 {
-    public class CreatePermissionCommandValidator : AbstractValidator<CreatePermissionCommand>
+    public CreatePermissionCommandValidator()
     {
-        public CreatePermissionCommandValidator()
-        {
-            RuleFor(x => x.Name)
-                .MaximumLength(200)
-                .NotEmpty()
-                .NotNull();
-        }
+        RuleFor(x => x.Name)
+            .MaximumLength(200)
+            .NotEmpty()
+            .NotNull();
     }
 }

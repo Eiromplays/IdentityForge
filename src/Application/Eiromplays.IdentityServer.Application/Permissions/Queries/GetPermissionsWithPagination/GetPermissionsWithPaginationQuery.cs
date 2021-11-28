@@ -7,7 +7,8 @@ using MediatR;
 
 namespace Eiromplays.IdentityServer.Application.Permissions.Queries.GetPermissionsWithPagination
 {
-    public class GetPermissionsWithPaginationQuery : IRequest<PaginatedList<PermissionDto>>
+    public class GetPermissionsWithPaginationQuery<TPermissionDto, TKey> : IRequest<PaginatedList<TPermissionDto>>
+        where TPermissionDto : PermissionDto<TKey>
     {
         public string Name { get; set; } = "";
 
@@ -16,8 +17,9 @@ namespace Eiromplays.IdentityServer.Application.Permissions.Queries.GetPermissio
         public int PageSize { get; set; } = 10;
     }
 
-    public class GetPermissionsWithPaginationQueryHandler : IRequestHandler<GetPermissionsWithPaginationQuery,
-            PaginatedList<PermissionDto>>
+    public class GetPermissionsWithPaginationQueryHandler<TPermissionDto, TKey> : IRequestHandler<GetPermissionsWithPaginationQuery<TPermissionDto, TKey>,
+            PaginatedList<TPermissionDto>>
+        where TPermissionDto : PermissionDto<TKey>
     {
         private readonly IPermissionDbContext _context;
         private readonly IMapper _mapper;
@@ -28,12 +30,12 @@ namespace Eiromplays.IdentityServer.Application.Permissions.Queries.GetPermissio
             _mapper = mapper;
         }
 
-        public async Task<PaginatedList<PermissionDto>> Handle(GetPermissionsWithPaginationQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<TPermissionDto>> Handle(GetPermissionsWithPaginationQuery<TPermissionDto, TKey> request, CancellationToken cancellationToken)
         {
             return await _context.Permissions!
                 .Where(x => !string.IsNullOrWhiteSpace(x.Name) &&
                             x.Name.Contains(request.Name, StringComparison.OrdinalIgnoreCase))
-                .ProjectTo<PermissionDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<TPermissionDto>(_mapper.ConfigurationProvider)
                 .PaginatedListAsync(request.PageNumber, request.PageSize);
         }
     }

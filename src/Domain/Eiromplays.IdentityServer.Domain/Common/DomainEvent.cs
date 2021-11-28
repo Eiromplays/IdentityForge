@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Eiromplays.IdentityServer.Domain.Common
+﻿namespace Eiromplays.IdentityServer.Domain.Common
 {
     public interface IHasDomainEvent
     {
