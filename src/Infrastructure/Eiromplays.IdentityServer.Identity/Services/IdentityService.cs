@@ -11,15 +11,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Security.Claims;
+using AutoMapper.QueryableExtensions;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
-public class IdentityService<TUserDto, TRoleDto, TUser, TRole, TKey> : IIdentityService<TUserDto, TRoleDto>
+public class IdentityService<TKey, TUserDto, TRoleDto, TUserClaimDto, TRoleClaimDto, TUserLoginDto, TUser, TRole> : IIdentityService<TUserDto, TRoleDto>
+    where TKey : IEquatable<TKey>
     where TUserDto : UserDto<TKey>
     where TRoleDto : RoleDto<TKey>
+    where TUserClaimDto : UserClaimDto<TKey>
+    where TRoleClaimDto : RoleClaimDto<TKey>
+    where TUserLoginDto : UserLoginDto<TKey>
     where TUser : IdentityUser<TKey>
     where TRole : IdentityRole<TKey>
-    where TKey : IEquatable<TKey>
 {
     private readonly IdentityDbContext _identityDbContext;
 
@@ -100,11 +104,10 @@ public class IdentityService<TUserDto, TRoleDto, TUser, TRole, TKey> : IIdentity
                                                                                    || user.Email.Contains(search,
                                                                                        StringComparison.OrdinalIgnoreCase));
 
-            var users = await _userManager.Users.Where(searchExpression).PaginatedListAsync(pageIndex, pageSize);
+            var users = await _userManager.Users.Where(searchExpression)
+                .ProjectTo<TUserDto>(_mapper.ConfigurationProvider).PaginatedListAsync(pageIndex, pageSize);
 
-            var usersDto = _mapper.Map<PaginatedList<TUserDto>>(users);
-
-            return usersDto;
+            return users;
         }, cancellationToken);
     }
 
@@ -121,11 +124,10 @@ public class IdentityService<TUserDto, TRoleDto, TUser, TRole, TKey> : IIdentity
                                                                       x.Email.Contains(search,
                                                                           StringComparison.OrdinalIgnoreCase));
 
-            var usersInRole = await _userManager.GetUsersInRoleAsync(roleName);
+            var usersInRole = (await _userManager.GetUsersInRoleAsync(roleName)).AsQueryable()
+                .ProjectTo<TUserDto>(_mapper.ConfigurationProvider);
 
-            var usersInRoleDto = _mapper.Map<IQueryable<TUserDto>>(usersInRole);
-
-            var users = await usersInRoleDto
+            var users = await usersInRole
                 .Where(searchExpression)
                 .PaginatedListAsync(pageIndex, pageSize);
 
@@ -147,18 +149,17 @@ public class IdentityService<TUserDto, TRoleDto, TUser, TRole, TKey> : IIdentity
         return usersDto;
     }
 
-    public async Task<PaginatedList<UserClaimDto>> GetUserClaimsAsync(string? userId, int pageIndex = 1,
+    public async Task<PaginatedList<TUserClaimDto>> GetUserClaimsAsync(string? userId, int pageIndex = 1,
         int pageSize = 10)
     {
         var userClaims = await _identityDbContext.UserClaims.Where(x => x.UserId.Equals(userId))
+            .ProjectTo<TUserClaimDto>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(pageIndex, pageSize);
 
-        var userClaimsDto = _mapper.Map<PaginatedList<UserClaimDto>>(userClaims);
-
-        return userClaimsDto;
+        return userClaims;
     }
 
-    public async Task<PaginatedList<RoleClaimDto>> GetUserRoleClaimsAsync(string? userId,
+    public async Task<PaginatedList<TRoleClaimDto>> GetUserRoleClaimsAsync(string? userId,
         string? claimSearchText, int pageIndex = 1, int pageSize = 10)
     {
         Expression<Func<ApplicationRoleClaim, bool>> searchExpression = roleClaim =>
@@ -167,58 +168,55 @@ public class IdentityService<TUserDto, TRoleDto, TUser, TRole, TKey> : IIdentity
 
         var roleClaims = await _identityDbContext.UserRoles.Where(x => x.UserId.Equals(userId)).Join(
             _identityDbContext.RoleClaims.Where(searchExpression), ur => ur.RoleId, rc => rc.RoleId,
-            (ur, rc) => rc).PaginatedListAsync(pageIndex, pageSize);
+            (ur, rc) => rc).ProjectTo<TRoleClaimDto>(_mapper.ConfigurationProvider).PaginatedListAsync(pageIndex, pageSize);
 
-        var roleClaimsDto = _mapper.Map<PaginatedList<RoleClaimDto>>(roleClaims);
-
-        return roleClaimsDto;
+        return roleClaims;
     }
 
-    public Task<UserClaimDto?> GetUserClaimAsync(string? userId, int claimId)
+    public async Task<TUserClaimDto?> GetUserClaimAsync(string? userId, int claimId)
     {
-        var userClaim =
-            _identityDbContext.UserClaims.FirstOrDefaultAsync(x => x.UserId.Equals(userId) && x.Id == claimId);
+        var userClaim = await _identityDbContext.UserClaims.FirstOrDefaultAsync(x => x.UserId.Equals(userId) && x.Id == claimId);
 
-        var userClaimDto = _mapper.Map<Task<UserClaimDto?>>(userClaim);
+        var userClaimDto = _mapper.Map<TUserClaimDto?>(userClaim);
 
         return userClaimDto;
     }
 
-    public Task<UserClaimDto?> GetUserClaimAsync(string? userId, string? claimType, string? claimValue)
+    public async Task<TUserClaimDto?> GetUserClaimAsync(string? userId, string? claimType, string? claimValue)
     {
-        var userClaim = _identityDbContext.UserClaims.FirstOrDefaultAsync(x =>
+        var userClaim = await _identityDbContext.UserClaims.FirstOrDefaultAsync(x =>
             x.UserId.Equals(userId) && x.ClaimType.Equals(claimType, StringComparison.OrdinalIgnoreCase) &&
             x.ClaimValue.Equals(claimValue, StringComparison.OrdinalIgnoreCase));
 
-        var userClaimDto = _mapper.Map<Task<UserClaimDto?>>(userClaim);
+        var userClaimDto = _mapper.Map<TUserClaimDto?>(userClaim);
 
         return userClaimDto;
     }
 
-    public async Task<Result?> CreateUserClaimAsync(UserClaimDto userClaim)
+    public async Task<Result?> CreateUserClaimAsync(TUserClaimDto userClaimDto)
     {
-        var userDto = await FindUserByIdAsync(userClaim.UserId);
+        var userDto = await FindUserByIdAsync(userClaimDto.UserId?.ToString());
 
         var user = _mapper.Map<TUser>(userDto);
 
-        return (await _userManager.AddClaimAsync(user!, new Claim(userClaim.ClaimType!, userClaim.ClaimValue!)))
+        return (await _userManager.AddClaimAsync(user!, new Claim(userClaimDto.ClaimType!, userClaimDto.ClaimValue!)))
             .ToApplicationResult();
     }
 
-    public async Task<Result> UpdateUserClaimAsync(UserClaimDto newUserClaim)
+    public async Task<Result> UpdateUserClaimAsync(TUserClaimDto newUserClaimDto)
     {
-        var userDto  = await FindUserByIdAsync(newUserClaim.UserId);
+        var userDto  = await FindUserByIdAsync(newUserClaimDto.UserId?.ToString());
 
         var user = _mapper.Map<TUser>(userDto);
 
-        var userClaim = await GetUserClaimAsync(newUserClaim.Id);
+        var userClaimDto = await GetUserClaimAsync(newUserClaimDto.ClaimId);
 
-        if (!string.IsNullOrWhiteSpace(userClaim?.ClaimType) && !string.IsNullOrWhiteSpace(userClaim.ClaimValue) && user is not null)
+        if (!string.IsNullOrWhiteSpace(userClaimDto?.ClaimType) && !string.IsNullOrWhiteSpace(userClaimDto?.ClaimValue) && user is not null)
         {
-            await _userManager.RemoveClaimAsync(user, new Claim(userClaim.ClaimType, userClaim.ClaimValue));
+            await _userManager.RemoveClaimAsync(user, new Claim(userClaimDto?.ClaimType!, userClaimDto?.ClaimValue!));
         }
 
-        return (await _userManager.AddClaimAsync(user!, new Claim(newUserClaim.ClaimType!, newUserClaim.ClaimValue!)))
+        return (await _userManager.AddClaimAsync(user!, new Claim(newUserClaimDto.ClaimType!, newUserClaimDto.ClaimValue!)))
             .ToApplicationResult();
     }
 
@@ -228,21 +226,21 @@ public class IdentityService<TUserDto, TRoleDto, TUser, TRole, TKey> : IIdentity
 
         var user = _mapper.Map<TUser>(userDto);
 
-        var userClaim = await GetUserClaimAsync(claimId);
+        var userClaimDto = await GetUserClaimAsync(claimId);
 
-        if (userClaim is not null)
+        if (userClaimDto is not null)
             return (await _userManager.RemoveClaimAsync(user!,
-                    new Claim(userClaim.ClaimType!, userClaim.ClaimValue!)))
+                    new Claim(userClaimDto?.ClaimType!, userClaimDto?.ClaimValue!)))
                 .ToApplicationResult();
 
         return Result.Failure(new List<string>{ "User Claim not found." });
     }
 
-    public Task<UserClaimDto?> GetUserClaimAsync(int claimId)
+    public async Task<TUserClaimDto?> GetUserClaimAsync(int claimId)
     {
-        var userClaim = _identityDbContext.UserClaims.FirstOrDefaultAsync(x => x.Id == claimId);
+        var userClaim = await _identityDbContext.UserClaims.FirstOrDefaultAsync(x => x.Id == claimId);
 
-        var userClaimDto = _mapper.Map<Task<UserClaimDto?>>(userClaim);
+        var userClaimDto = _mapper.Map<TUserClaimDto?>(userClaim);
 
         return userClaimDto;
     }
@@ -258,23 +256,23 @@ public class IdentityService<TUserDto, TRoleDto, TUser, TRole, TKey> : IIdentity
         return userLoginInfos.ToList();
     }
 
-    public async Task<UserLoginDto?> GetUserProviderAsync(string? userId, string? providerKey)
+    public async Task<TUserLoginDto?> GetUserProviderAsync(string? userId, string? providerKey)
     {
         var userLogin = await _identityDbContext.UserLogins.FirstOrDefaultAsync(x =>
             x.UserId.Equals(userId) && x.ProviderKey.Equals(providerKey));
 
-        var userLoginDto = _mapper.Map<UserLoginDto?>(userLogin);
+        var userLoginDto = _mapper.Map<TUserLoginDto?>(userLogin);
 
         return userLoginDto;
     }
 
-    public Task<UserLoginDto?> GetUserProviderAsync(string? userId, string? providerKey, string? loginProvider)
+    public async Task<TUserLoginDto?> GetUserProviderAsync(string? userId, string? providerKey, string? loginProvider)
     {
-        var userLogin = _identityDbContext.UserLogins.FirstOrDefaultAsync(x => x.UserId.Equals(userId)
+        var userLogin = await _identityDbContext.UserLogins.FirstOrDefaultAsync(x => x.UserId.Equals(userId)
                                                                                && x.ProviderKey.Equals(providerKey)
                                                                                && x.LoginProvider.Equals(loginProvider));
 
-        var userLoginDto = _mapper.Map<Task<UserLoginDto?>>(userLogin);
+        var userLoginDto = _mapper.Map<TUserLoginDto?>(userLogin);
 
         return userLoginDto;
     }
@@ -393,30 +391,28 @@ public class IdentityService<TUserDto, TRoleDto, TUser, TRole, TKey> : IIdentity
         return (identityResult.ToApplicationResult(), role.Id.ToString());
     }
 
-    public async Task<PaginatedList<RoleClaimDto>> GetRoleClaimsAsync(string? roleId, int pageIndex = 1,
+    public async Task<PaginatedList<TRoleClaimDto>> GetRoleClaimsAsync(string? roleId, int pageIndex = 1,
         int pageSize = 10)
     {
-        var roleClaims = await _identityDbContext.RoleClaims.Where(x => x.RoleId.Equals(roleId))
+        var roleClaims = await _identityDbContext.RoleClaims.Where(x => x.RoleId.Equals(roleId)).ProjectTo<TRoleClaimDto>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(pageIndex, pageSize);
 
-        var roleClaimsDto = _mapper.Map<PaginatedList<RoleClaimDto>>(roleClaims);
-
-        return roleClaimsDto;
+        return roleClaims;
     }
 
-    public Task<RoleClaimDto?> GetRoleClaimAsync(string? roleId, int claimId)
+    public async Task<TRoleClaimDto?> GetRoleClaimAsync(string? roleId, int claimId)
     {
-        var roleClaim =
+        var roleClaim = await
             _identityDbContext.RoleClaims.FirstOrDefaultAsync(x => x.RoleId.Equals(roleId) && x.Id == claimId);
 
-        var roleClaimDto = _mapper.Map<Task<RoleClaimDto?>>(roleClaim);
+        var roleClaimDto = _mapper.Map<TRoleClaimDto?>(roleClaim);
 
         return roleClaimDto;
     }
 
-    public async Task<Result> CreateRoleClaimAsync(RoleClaimDto roleClaim)
+    public async Task<Result> CreateRoleClaimAsync(TRoleClaimDto roleClaim)
     {
-        var roleDto = await FindRoleByIdAsync(roleClaim.RoleId);
+        var roleDto = await FindRoleByIdAsync(roleClaim.RoleId?.ToString());
 
         var role = _mapper.Map<TRole>(roleDto);
 
@@ -424,17 +420,17 @@ public class IdentityService<TUserDto, TRoleDto, TUser, TRole, TKey> : IIdentity
             .ToApplicationResult();
     }
 
-    public async Task<Result> UpdateRoleClaimAsync(RoleClaimDto newRoleClaim)
+    public async Task<Result> UpdateRoleClaimAsync(TRoleClaimDto newRoleClaim)
     {
-        var roleDto = await FindRoleByIdAsync(newRoleClaim.RoleId);
+        var roleDto = await FindRoleByIdAsync(newRoleClaim.RoleId?.ToString());
 
         var role = _mapper.Map<TRole>(roleDto);
 
-        var roleClaim = await _identityDbContext.RoleClaims.FirstOrDefaultAsync(x => x.Id == newRoleClaim.Id);
+        var roleClaimDto = await GetRoleClaimAsync(role.Id.ToString(), newRoleClaim.ClaimId);
 
-        if (!string.IsNullOrWhiteSpace(roleClaim?.ClaimType) && !string.IsNullOrWhiteSpace(roleClaim.ClaimValue))
+        if (!string.IsNullOrWhiteSpace(roleClaimDto?.ClaimType) && !string.IsNullOrWhiteSpace(roleClaimDto.ClaimValue))
         {
-            await _roleManager.RemoveClaimAsync(role!, new Claim(roleClaim.ClaimType, roleClaim.ClaimValue));
+            await _roleManager.RemoveClaimAsync(role!, new Claim(roleClaimDto.ClaimType, roleClaimDto.ClaimValue));
         }
 
         return (await _roleManager.AddClaimAsync(role!, new Claim(newRoleClaim.ClaimType!, newRoleClaim.ClaimValue!)))

@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Eiromplays.IdentityServer.Application.Identity.User.Commands.CreateUser;
 
-public class CreateUserCommandValidator<TUserDto, TKey> : AbstractValidator<CreateUserCommand<TUserDto>>
+public class CreateUserCommandValidator<TUserDto, TKey> : AbstractValidator<CreateUserCommand<TUserDto, TKey>>
     where TUserDto : UserDto<TKey>
     where TKey : IEquatable<TKey>
 {

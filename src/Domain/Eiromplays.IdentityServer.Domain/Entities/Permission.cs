@@ -1,7 +1,7 @@
 ﻿using Eiromplays.IdentityServer.Domain.Common;
-using Eiromplays.IdentityServer.Domain.Events.Permission;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Eiromplays.IdentityServer.Domain.Events.Permission;
 
 namespace Eiromplays.IdentityServer.Domain.Entities
 {

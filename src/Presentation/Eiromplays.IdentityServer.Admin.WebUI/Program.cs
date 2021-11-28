@@ -11,7 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplication();
 
-builder.Services.AddInfrastructure<UserDto<string>, RoleDto<string>, ApplicationUser, ApplicationRole, string, IdentityDbContext>(builder.Configuration);
+builder.Services
+    .AddInfrastructure<string, UserDto<string>, RoleDto<string>, UserClaimDto<string>, RoleClaimDto<string>,
+        UserLoginDto<string>, ApplicationUser, ApplicationRole, IdentityDbContext>(builder.Configuration);
 
 builder.Services.AddControllersWithViews();
 

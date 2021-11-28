@@ -1,5 +1,4 @@
 ﻿using Eiromplays.IdentityServer.Application.Common.Interface;
-using Eiromplays.IdentityServer.Application.Identity.DTOs;
 using Eiromplays.IdentityServer.Domain.Common;
 using Eiromplays.IdentityServer.Domain.Constants;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
@@ -11,8 +10,6 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
-using Eiromplays.IdentityServer.Application.Identity.DTOs.Role;
-using Eiromplays.IdentityServer.Application.Identity.DTOs.User;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.DbContexts;
 
@@ -92,12 +89,12 @@ public class IdentityDbContext : IdentityDbContext<ApplicationUser, ApplicationR
     private static void ConfigureIdentityDbContext(ModelBuilder builder)
     {
         builder.Entity<ApplicationRole>().ToTable(TableConsts.IdentityRoles);
-        builder.Entity<RoleClaimDto>().ToTable(TableConsts.IdentityRoleClaims);
-        builder.Entity<UserRoleDto>().ToTable(TableConsts.IdentityUserRoles);
+        builder.Entity<ApplicationRoleClaim>().ToTable(TableConsts.IdentityRoleClaims);
+        builder.Entity<ApplicationUserRole>().ToTable(TableConsts.IdentityUserRoles);
 
         builder.Entity<ApplicationUser>().ToTable(TableConsts.IdentityUsers);
-        builder.Entity<UserLoginDto>().ToTable(TableConsts.IdentityUserLogins);
-        builder.Entity<UserClaimDto>().ToTable(TableConsts.IdentityUserClaims);
-        builder.Entity<UserTokenDto>().ToTable(TableConsts.IdentityUserTokens);
+        builder.Entity<ApplicationUserLogin>().ToTable(TableConsts.IdentityUserLogins);
+        builder.Entity<ApplicationUserClaim>().ToTable(TableConsts.IdentityUserClaims);
+        builder.Entity<ApplicationUserToken>().ToTable(TableConsts.IdentityUserTokens);
     }
 }

@@ -12,12 +12,15 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure<TUserDto, TRoleDto, TUser, TRole, TKey, TIdentityDbContext>(this IServiceCollection services, ConfigurationManager configurationManager)
+    public static IServiceCollection AddInfrastructure<TKey, TUserDto, TRoleDto, TUserClaimDto, TRoleClaimDto, TUserLoginDto, TUser, TRole, TIdentityDbContext>(this IServiceCollection services, ConfigurationManager configurationManager)
+        where TKey : IEquatable<TKey>
         where TUserDto : UserDto<TKey>
         where TRoleDto : RoleDto<TKey>
+        where TUserClaimDto : UserClaimDto<TKey>
+        where TRoleClaimDto : RoleClaimDto<TKey>
+        where TUserLoginDto : UserLoginDto<TKey>
         where TUser : IdentityUser<TKey>
         where TRole : IdentityRole<TKey>
-        where TKey : IEquatable<TKey>
         where TIdentityDbContext : DbContext
     {
         if (configurationManager.GetValue<bool>("UseInMemoryDatabase"))
@@ -39,7 +42,7 @@ public static class DependencyInjection
 
         services.AddIdentityServer();
 
-        services.AddTransient<IIdentityService<TUserDto, TRoleDto>, IdentityService<TUserDto, TRoleDto, TUser, TRole, TKey>>();
+        services.AddTransient<IIdentityService<TUserDto, TRoleDto>, IdentityService<TKey, TUserDto, TRoleDto, TUserClaimDto, TRoleClaimDto, TUserLoginDto, TUser, TRole>>();
 
         services.AddAuthorization(options =>
         {
