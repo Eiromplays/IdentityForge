@@ -1,10 +1,10 @@
 ﻿namespace Eiromplays.IdentityServer.Application.Identity.DTOs.User;
 
-public class UserClaimDto<TKey>
+public class UserClaimDto
 {
     public int ClaimId { get; set; }
 
-    public TKey? UserId { get; set; }
+    public string? UserId { get; set; }
 
     public string? ClaimType { get; set; }
 

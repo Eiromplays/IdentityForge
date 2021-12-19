@@ -1,8 +1,8 @@
 ﻿namespace Eiromplays.IdentityServer.Application.Identity.DTOs.Role;
 
-public class RoleDto<TKey>
+public class RoleDto
 {
-    public TKey? Id { get; set; }
+    public string? Id { get; set; }
 
     public string? Name { get; set; }
 }

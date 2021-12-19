@@ -1,8 +1,8 @@
 ﻿namespace Eiromplays.IdentityServer.Application.Identity.DTOs.User;
 
-public class UserDto<TKey>
+public class UserDto
 {
-    public TKey? Id { get; set; }
+    public string? Id { get; set; }
 
     public string? UserName { get; set; }
 

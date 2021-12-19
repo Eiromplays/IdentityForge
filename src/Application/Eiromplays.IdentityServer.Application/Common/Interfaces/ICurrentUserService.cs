@@ -1,4 +1,4 @@
-﻿namespace Eiromplays.IdentityServer.Application.Common.Interface
+﻿namespace Eiromplays.IdentityServer.Application.Common.Interfaces
 {
     public interface ICurrentUserService
     {

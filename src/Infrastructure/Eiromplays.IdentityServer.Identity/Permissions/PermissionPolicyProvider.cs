@@ -1,13 +1,11 @@
-using Eiromplays.IdentityServer.Application.Common.Interface;
+using Eiromplays.IdentityServer.Application.Identity.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Permissions
 {
-    internal class PermissionPolicyProvider<TUserDto, TRoleDto> : IAuthorizationPolicyProvider
-        where TUserDto : class
-        where TRoleDto : class
+    internal class PermissionPolicyProvider : IAuthorizationPolicyProvider
     {
         public DefaultAuthorizationPolicyProvider FallbackPolicyProvider { get; }
 
@@ -28,7 +26,7 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity.Permissions
         {
             using var scope = _serviceScopeFactory.CreateScope();
 
-            var identityService = scope.ServiceProvider.GetService<IIdentityService<TUserDto, TRoleDto>>();
+            var identityService = scope.ServiceProvider.GetService<IIdentityService>();
 
             if (identityService == null) return await FallbackPolicyProvider.GetPolicyAsync(policyName);
 

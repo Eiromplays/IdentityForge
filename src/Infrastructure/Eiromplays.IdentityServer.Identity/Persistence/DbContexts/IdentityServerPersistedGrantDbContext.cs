@@ -1,10 +1,10 @@
 ﻿using System.Reflection;
 using Duende.IdentityServer.EntityFramework.DbContexts;
-using Eiromplays.IdentityServer.Application.Common.Interface;
+using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 
-namespace Eiromplays.IdentityServer.Infrastructure.Identity.DbContexts
+namespace Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts
 {
     public class IdentityServerPersistedGrantDbContext : PersistedGrantDbContext<IdentityServerPersistedGrantDbContext>
     {

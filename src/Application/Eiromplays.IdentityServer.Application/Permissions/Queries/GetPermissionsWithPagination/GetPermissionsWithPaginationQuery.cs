@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Eiromplays.IdentityServer.Application.Common.Interface;
+using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Common.Mappings;
 using Eiromplays.IdentityServer.Application.Common.Models;
 using MediatR;

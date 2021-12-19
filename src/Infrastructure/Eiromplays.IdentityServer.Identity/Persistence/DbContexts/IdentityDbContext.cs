@@ -1,4 +1,5 @@
-﻿using Eiromplays.IdentityServer.Application.Common.Interface;
+﻿using System.Reflection;
+using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Domain.Common;
 using Eiromplays.IdentityServer.Domain.Constants;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
@@ -9,9 +10,8 @@ using EntityFrameworkCore.EncryptColumn.Util;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System.Reflection;
 
-namespace Eiromplays.IdentityServer.Infrastructure.Identity.DbContexts;
+namespace Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts;
 
 public class IdentityDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, ApplicationUserClaim,
     ApplicationUserRole, ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>

@@ -14,8 +14,4 @@
     <ProjectReference Include="..\Eiromplays.IdentityServer.Application\Eiromplays.IdentityServer.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="User\Queries\GetUsersWithPagination\" />
-  </ItemGroup>
-
 </Project>

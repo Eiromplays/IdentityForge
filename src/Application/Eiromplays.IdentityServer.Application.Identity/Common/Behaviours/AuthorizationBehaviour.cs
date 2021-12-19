@@ -1,15 +1,14 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
-using Eiromplays.IdentityServer.Application.Common.Interface;
+using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Application.Identity.Common.Security;
+using Eiromplays.IdentityServer.Application.Identity.Interfaces;
 using MediatR;
 
-namespace Eiromplays.IdentityServer.Application.Common.Behaviours
+namespace Eiromplays.IdentityServer.Application.Identity.Common.Behaviours
 {
-    /*public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+        where TRequest : notnull
     {
         private readonly ICurrentUserService _currentUserService;
         private readonly IIdentityService _identityService;
@@ -24,7 +23,7 @@ namespace Eiromplays.IdentityServer.Application.Common.Behaviours
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            var authorizeAttributes = request?.GetType().GetCustomAttributes<AuthorizeAttribute>();
+            var authorizeAttributes = request.GetType().GetCustomAttributes<AuthorizeAttribute>().ToList();
 
             if (!authorizeAttributes.Any()) return await next();
 
@@ -35,7 +34,7 @@ namespace Eiromplays.IdentityServer.Application.Common.Behaviours
             }
 
             // Role-based authorization
-            var authorizeAttributesWithRoles = authorizeAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Roles));
+            var authorizeAttributesWithRoles = authorizeAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Roles)).ToList();
 
             if (authorizeAttributesWithRoles.Any())
             {
@@ -46,8 +45,11 @@ namespace Eiromplays.IdentityServer.Application.Common.Behaviours
                     foreach (var role in roles)
                     {
                         var isInRole = await _identityService.IsInRoleAsync(_currentUserService.UserId, role.Trim());
+
                         if (!isInRole) continue;
+
                         authorized = true;
+
                         break;
                     }
                 }
@@ -60,7 +62,7 @@ namespace Eiromplays.IdentityServer.Application.Common.Behaviours
             }
 
             // Policy-based authorization
-            var authorizeAttributesWithPolicies = authorizeAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Policy));
+            var authorizeAttributesWithPolicies = authorizeAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Policy)).ToList();
 
             if (!authorizeAttributesWithPolicies.Any()) return await next();
 
@@ -77,5 +79,5 @@ namespace Eiromplays.IdentityServer.Application.Common.Behaviours
             // User is authorized / authorization not required
             return await next();
         }
-    }*/
+    }
 }

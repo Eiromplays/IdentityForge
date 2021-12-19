@@ -1,19 +1,19 @@
 ﻿using System.Reflection;
+using Duende.IdentityServer.EntityFramework.DbContexts;
+using Duende.IdentityServer.EntityFramework.Entities;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Domain.Common;
-using Eiromplays.IdentityServer.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts
+namespace Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts
 {
-    public class PermissionDbContext : DbContext, IPermissionDbContext
+    public class IdentityServerConfigurationDbContext : ConfigurationDbContext<IdentityServerConfigurationDbContext>
     {
-
         private readonly ICurrentUserService _currentUserService;
         private readonly IDateTime _dateTime;
         private readonly IDomainEventService _domainEventService;
 
-        public PermissionDbContext(DbContextOptions<PermissionDbContext> options,
+        public IdentityServerConfigurationDbContext(DbContextOptions<IdentityServerConfigurationDbContext> options,
             ICurrentUserService currentUserService, IDateTime dateTime,
             IDomainEventService domainEventService) : base(options)
         {
@@ -22,7 +22,44 @@ namespace Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts
             _domainEventService = domainEventService;
         }
 
-        public DbSet<Permission>? Permissions { get; set; }
+        public DbSet<ApiResourceProperty>? ApiResourceProperties { get; set; }
+
+        public DbSet<IdentityResourceProperty>? IdentityResourceProperties { get; set; }
+
+        public DbSet<ApiResourceSecret>? ApiSecrets { get; set; }
+
+        public DbSet<ApiScopeClaim>? ApiScopeClaims { get; set; }
+
+        public DbSet<IdentityResourceClaim>? IdentityClaims { get; set; }
+
+        public DbSet<ApiResourceClaim>? ApiResourceClaims { get; set; }
+
+        public DbSet<ClientGrantType>? ClientGrantTypes { get; set; }
+
+        public DbSet<ClientScope>? ClientScopes { get; set; }
+
+        public DbSet<ClientSecret>? ClientSecrets { get; set; }
+
+        public DbSet<ClientPostLogoutRedirectUri>? ClientPostLogoutRedirectUris { get; set; }
+
+        public DbSet<ClientIdPRestriction>? ClientIdPRestrictions { get; set; }
+
+        public DbSet<ClientRedirectUri>? ClientRedirectUris { get; set; }
+
+        public DbSet<ClientClaim>? ClientClaims { get; set; }
+
+        public DbSet<ClientProperty>? ClientProperties { get; set; }
+
+        public DbSet<ApiScopeProperty>? ApiScopeProperties { get; set; }
+
+        public DbSet<ApiResourceScope>? ApiResourceScopes { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+            base.OnModelCreating(builder);
+        }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
         {
@@ -49,13 +86,6 @@ namespace Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts
             return result;
         }
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
-            base.OnModelCreating(builder);
-        }
-
         private async Task DispatchEvents()
         {
             while (true)
@@ -65,7 +95,6 @@ namespace Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts
                     .Select(x => x.Entity.DomainEvents)
                     .SelectMany(x => x)
                     .FirstOrDefault(domainEvent => !domainEvent.IsPublished);
-
                 if (domainEventEntity == null) break;
 
                 domainEventEntity.IsPublished = true;

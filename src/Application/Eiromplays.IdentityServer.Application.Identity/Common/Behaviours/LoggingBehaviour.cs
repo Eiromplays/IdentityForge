@@ -1,20 +1,19 @@
-﻿using Eiromplays.IdentityServer.Application.Common.Interface;
+﻿using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Application.Identity.Interfaces;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
 
-namespace Eiromplays.IdentityServer.Application.Common.Behaviours
+namespace Eiromplays.IdentityServer.Application.Identity.Common.Behaviours
 {
-    public class LoggingBehaviour<TRequest, TUserDto, TRoleDto> : IRequestPreProcessor<TRequest>
-        where TRequest : class
-        where TUserDto : class
-        where TRoleDto : class
+    public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest>
+        where TRequest : notnull
+
     {
         private readonly ILogger _logger;
         private readonly ICurrentUserService _currentUserService;
-        private readonly IIdentityService<TUserDto, TRoleDto> _identityService;
+        private readonly IIdentityService _identityService;
 
-        public LoggingBehaviour(ILogger<TRequest> logger, ICurrentUserService currentUserService,
-            IIdentityService<TUserDto, TRoleDto> identityService)
+        public LoggingBehaviour(ILogger<TRequest> logger, ICurrentUserService currentUserService, IIdentityService identityService)
         {
             _logger = logger;
             _currentUserService = currentUserService;
@@ -25,7 +24,7 @@ namespace Eiromplays.IdentityServer.Application.Common.Behaviours
         {
             var requestName = typeof(TRequest).Name;
             var userId = _currentUserService.UserId;
-            var userName = "";
+            var userName = string.Empty;
 
             if (!string.IsNullOrEmpty(userId))
             {

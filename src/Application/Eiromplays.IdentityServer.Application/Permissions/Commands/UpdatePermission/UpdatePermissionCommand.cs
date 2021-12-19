@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
-using Eiromplays.IdentityServer.Application.Common.Interface;
+using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

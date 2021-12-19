@@ -1,9 +1,11 @@
-﻿using EntityFrameworkCore.EncryptColumn.Attribute;
+﻿using Eiromplays.IdentityServer.Application.Common.Mappings;
+using Eiromplays.IdentityServer.Application.Identity.DTOs.User;
+using EntityFrameworkCore.EncryptColumn.Attribute;
 using Microsoft.AspNetCore.Identity;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 
-public class ApplicationUser : IdentityUser
+public class ApplicationUser : IdentityUser, IMap<UserDto>
 {
     [PersonalData]
     public string? DisplayName { get; set; }

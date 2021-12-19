@@ -1,5 +1,5 @@
 ﻿using System;
-using Eiromplays.IdentityServer.Application.Common.Interface;
+using Eiromplays.IdentityServer.Application.Common.Interfaces;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Services
 {

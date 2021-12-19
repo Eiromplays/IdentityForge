@@ -1,4 +1,4 @@
-﻿using Eiromplays.IdentityServer.Application.Common.Interface;
+﻿using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Domain.Entities;
 using Eiromplays.IdentityServer.Domain.Events.Permission;
 using MediatR;
