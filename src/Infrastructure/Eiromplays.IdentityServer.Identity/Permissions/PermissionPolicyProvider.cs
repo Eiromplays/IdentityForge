@@ -28,7 +28,8 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity.Permissions
 
             var identityService = scope.ServiceProvider.GetService<IIdentityService>();
 
-            if (identityService == null) return await FallbackPolicyProvider.GetPolicyAsync(policyName);
+            if (identityService is null)
+                return await FallbackPolicyProvider.GetPolicyAsync(policyName);
 
             var policy = new AuthorizationPolicyBuilder();
 
