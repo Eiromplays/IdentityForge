@@ -1,6 +1,10 @@
-﻿using Eiromplays.IdentityServer.Application.Identity.Interfaces;
+﻿using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Application.Identity.Interfaces;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
+using Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Services;
+using Eiromplays.IdentityServer.Infrastructure.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,12 +28,28 @@ public static class DependencyInjection
                     b => b.MigrationsAssembly(typeof(Persistence.DbContexts.IdentityDbContext).Assembly.FullName)));
         }
 
-        services.AddDefaultIdentity<ApplicationUser>()
-            .AddRoles<ApplicationRole>()
-            .AddEntityFrameworkStores<Persistence.DbContexts.IdentityDbContext>();
+        services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<IdentityDbContext>()
+            .AddDefaultTokenProviders();
 
-        services.AddIdentityServer();
+        services.AddScoped<IDomainEventService, DomainEventService>();
 
+        services.AddIdentityServer(options =>
+            {
+                options.Events.RaiseErrorEvents = true;
+                options.Events.RaiseInformationEvents = true;
+                options.Events.RaiseFailureEvents = true;
+                options.Events.RaiseSuccessEvents = true;
+
+                // see https://docs.duendesoftware.com/identityserver/v5/fundamentals/resources/
+                options.EmitStaticAudienceClaim = true;
+            })
+            .AddInMemoryIdentityResources(Config.IdentityResources)
+            .AddInMemoryApiScopes(Config.ApiScopes)
+            .AddInMemoryClients(Config.Clients)
+            .AddAspNetIdentity<ApplicationUser>();
+
+        services.AddTransient<IDateTime, DateTimeService>();
         services.AddTransient<IIdentityService, IdentityService>();
 
         services.AddAuthorization(options =>

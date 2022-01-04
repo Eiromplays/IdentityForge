@@ -11,11 +11,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Persistence\Configurations\**" />
+    <EmbeddedResource Remove="Persistence\Configurations\**" />
+    <None Remove="Persistence\Configurations\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Eiromplays.IdentityServer.Infrastructure\Eiromplays.IdentityServer.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Persistence\Configurations\" />
+    <PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="6.0.0-preview.6" />
   </ItemGroup>
 
 </Project>
