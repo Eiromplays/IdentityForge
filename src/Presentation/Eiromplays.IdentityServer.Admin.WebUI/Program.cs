@@ -31,8 +31,9 @@ builder.Services.AddEndpointDefinitions(typeof(UserDto));
 builder.Services.AddRazorPages();
 
 // In production, the React files will be served from this directory
-builder.Services.AddSpaStaticFiles(configuration =>
-    configuration.RootPath = "ClientApp/build");
+if (builder.Environment.IsProduction())
+    builder.Services.AddSpaStaticFiles(configuration =>
+        configuration.RootPath = "ClientApp/build");
 
 var app = builder.Build();
 
