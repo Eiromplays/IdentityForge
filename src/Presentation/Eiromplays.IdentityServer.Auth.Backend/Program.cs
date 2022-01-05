@@ -19,8 +19,6 @@ builder.Services.AddControllersWithViews(options =>
         options.Filters.Add<ApiExceptionFilterAttribute>())
     .AddFluentValidation(x => x.AutomaticValidationEnabled = false);
 
-//builder.Services.AddRazorPages();
-
 // Customise default API behaviour
 builder.Services.Configure<ApiBehaviorOptions>(options =>
     options.SuppressModelStateInvalidFilter = true);
