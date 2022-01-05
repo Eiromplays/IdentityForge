@@ -23,7 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eiromplays.IdentityServer.I
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eiromplays.IdentityServer.Application.Identity", "src\Application\Eiromplays.IdentityServer.Application.Identity\Eiromplays.IdentityServer.Application.Identity.csproj", "{D9F96E17-CE49-479E-A979-4C556CE4C7E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eiromplays.IdentityServer.Admin.WebUI", "src\Presentation\Eiromplays.IdentityServer.Admin.WebUI\Eiromplays.IdentityServer.Admin.WebUI.csproj", "{BE9B23C4-42A1-492C-AD9C-ADBAE820825B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eiromplays.IdentityServer.Admin", "src\Presentation\Eiromplays.IdentityServer.Admin.WebUI\Eiromplays.IdentityServer.Admin.csproj", "{BE9B23C4-42A1-492C-AD9C-ADBAE820825B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eiromplays.IdentityServer.Auth.Backend", "src\Presentation\Eiromplays.IdentityServer.Auth.Backend\Eiromplays.IdentityServer.Auth.Backend.csproj", "{46365E16-DD8C-4799-96A2-026AF9223A8A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +61,10 @@ Global
 		{BE9B23C4-42A1-492C-AD9C-ADBAE820825B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE9B23C4-42A1-492C-AD9C-ADBAE820825B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE9B23C4-42A1-492C-AD9C-ADBAE820825B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46365E16-DD8C-4799-96A2-026AF9223A8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46365E16-DD8C-4799-96A2-026AF9223A8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46365E16-DD8C-4799-96A2-026AF9223A8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46365E16-DD8C-4799-96A2-026AF9223A8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,6 +77,7 @@ Global
 		{BF09C204-F97F-477C-ABEA-C8991C062C6B} = {C1CAD481-CF2F-4BEC-B8F8-B453B9A7CFFB}
 		{D9F96E17-CE49-479E-A979-4C556CE4C7E1} = {DE9F4ECE-5977-4682-88C6-1FEF28EC6EF8}
 		{BE9B23C4-42A1-492C-AD9C-ADBAE820825B} = {45FB9259-0362-49CB-BC16-8D9A8562AE4B}
+		{46365E16-DD8C-4799-96A2-026AF9223A8A} = {45FB9259-0362-49CB-BC16-8D9A8562AE4B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E8BF1AF7-AD5B-4C7F-A1F6-8C6FA17ADCC6}

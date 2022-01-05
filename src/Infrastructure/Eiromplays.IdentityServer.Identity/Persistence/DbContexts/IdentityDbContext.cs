@@ -1,15 +1,15 @@
-﻿using System.Reflection;
-using Eiromplays.IdentityServer.Application.Common.Interfaces;
+﻿using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Domain.Common;
 using Eiromplays.IdentityServer.Domain.Constants;
+using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
-using Eiromplays.IdentityServer.Infrastructure.Persistence.Configurations;
 using EntityFrameworkCore.EncryptColumn;
 using EntityFrameworkCore.EncryptColumn.Interfaces;
 using EntityFrameworkCore.EncryptColumn.Util;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Reflection;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts;
 
@@ -28,10 +28,14 @@ public class IdentityDbContext : IdentityDbContext<ApplicationUser, ApplicationR
         _dateTime = dateTime;
         _domainEventService = domainEventService;
 
-        var encryptionKeysConfiguration = configuration.GetSection(nameof(EncryptionKeysConfiguration))
-            .Get<EncryptionKeysConfiguration>();
+        var databaseConfiguration = configuration.GetSection(nameof(DatabaseConfiguration))
+            .Get<DatabaseConfiguration>();
 
-        Initialize.EncryptionKey = encryptionKeysConfiguration.IdentityEncryptionKey;
+        if (!string.IsNullOrWhiteSpace(databaseConfiguration.EncryptionKeysConfiguration?.IdentityEncryptionKey))
+        {
+            Initialize.EncryptionKey = databaseConfiguration.EncryptionKeysConfiguration.IdentityEncryptionKey;
+        }
+
         _encryptionProvider = new GenerateEncryptionProvider();
     }
 

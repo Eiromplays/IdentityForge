@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Security.Claims;
-using Eiromplays.IdentityServer.Application.Identity.Interfaces;
+using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts;
 using Microsoft.AspNetCore.Authorization;
 
@@ -268,15 +268,15 @@ public class IdentityService : IIdentityService
         return userClaimDto;
     }
 
-    public async Task<IReadOnlyList<UserLoginInfo>> GetUserProvidersAsync(string? userId)
+    public async Task<IReadOnlyList<UserLoginDto>> GetUserProvidersAsync(string? userId)
     {
         var userDto = await FindUserByIdAsync(userId);
 
         var user = _mapper.Map<ApplicationUser>(userDto);
 
-        var userLoginInfos = await _userManager.GetLoginsAsync(user!);
+        var userLoginInfos = await (await _userManager.GetLoginsAsync(user!)).AsQueryable().ProjectTo<UserLoginDto>(_mapper.ConfigurationProvider).ToListAsync();
 
-        return userLoginInfos.ToList();
+        return userLoginInfos;
     }
 
     public async Task<UserLoginDto?> GetUserProviderAsync(string? userId, string? providerKey)

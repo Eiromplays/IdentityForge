@@ -1,9 +1,9 @@
-﻿using System.Reflection;
-using Eiromplays.IdentityServer.Application.Common.Exceptions;
+﻿using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
-using Eiromplays.IdentityServer.Application.Identity.Common.Security;
-using Eiromplays.IdentityServer.Application.Identity.Interfaces;
 using MediatR;
+using System.Reflection;
+using Eiromplays.IdentityServer.Application.Common.Security;
+using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 
 namespace Eiromplays.IdentityServer.Application.Identity.Common.Behaviours
 {

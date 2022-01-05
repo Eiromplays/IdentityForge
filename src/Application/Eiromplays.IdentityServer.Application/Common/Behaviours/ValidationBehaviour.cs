@@ -5,7 +5,7 @@ using ValidationException = Eiromplays.IdentityServer.Application.Common.Excepti
 namespace Eiromplays.IdentityServer.Application.Common.Behaviours
 {
     public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : IRequest<TResponse>
+        where TRequest : notnull
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators;
 
@@ -23,7 +23,7 @@ namespace Eiromplays.IdentityServer.Application.Common.Behaviours
             var validationResults = await Task.WhenAll(_validators.Select(v => v.ValidateAsync(context, cancellationToken)));
             var failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null).ToList();
 
-            if (failures.Count != 0)
+            if (failures.Any())
                 throw new ValidationException(failures);
 
             return await next();

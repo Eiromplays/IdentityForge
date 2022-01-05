@@ -1,5 +1,5 @@
 ﻿using Eiromplays.IdentityServer.Application.Common.Interfaces;
-using Eiromplays.IdentityServer.Application.Identity.Interfaces;
+using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
 

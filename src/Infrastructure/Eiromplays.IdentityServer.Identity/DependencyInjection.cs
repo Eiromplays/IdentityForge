@@ -1,5 +1,7 @@
-﻿using Eiromplays.IdentityServer.Application.Common.Interfaces;
-using Eiromplays.IdentityServer.Application.Identity.Interfaces;
+﻿using Duende.IdentityServer;
+using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
+using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Services;
@@ -8,55 +10,191 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
+using Duende.IdentityServer.Configuration;
+using Duende.IdentityServer.EntityFramework.Storage;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, ConfigurationManager configurationManager)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        if (configurationManager.GetValue<bool>("UseInMemoryDatabase"))
-        {
-            services.AddDbContext<Persistence.DbContexts.IdentityDbContext>(options =>
-                options.UseInMemoryDatabase("CleanArchitectureDb"));
-        }
-        else
-        {
-            services.AddDbContext<Persistence.DbContexts.IdentityDbContext>(options =>
-                options.UseNpgsql(
-                    configurationManager.GetConnectionString("DefaultConnection"),
-                    b => b.MigrationsAssembly(typeof(Persistence.DbContexts.IdentityDbContext).Assembly.FullName)));
-        }
+        var databaseConfiguration =
+            configuration.GetSection(nameof(DatabaseConfiguration)).Get<DatabaseConfiguration>();
 
-        services.AddIdentity<ApplicationUser, IdentityRole>()
-            .AddEntityFrameworkStores<IdentityDbContext>()
-            .AddDefaultTokenProviders();
+        services.RegisterNpgSqlDbContexts(databaseConfiguration);
+
+        services.AddScoped(provider => provider.GetRequiredService<IdentityDbContext>());
 
         services.AddScoped<IDomainEventService, DomainEventService>();
 
-        services.AddIdentityServer(options =>
-            {
-                options.Events.RaiseErrorEvents = true;
-                options.Events.RaiseInformationEvents = true;
-                options.Events.RaiseFailureEvents = true;
-                options.Events.RaiseSuccessEvents = true;
+        services.AddAuthentication(configuration);
 
-                // see https://docs.duendesoftware.com/identityserver/v5/fundamentals/resources/
-                options.EmitStaticAudienceClaim = true;
-            })
-            .AddInMemoryIdentityResources(Config.IdentityResources)
-            .AddInMemoryApiScopes(Config.ApiScopes)
-            .AddInMemoryClients(Config.Clients)
-            .AddAspNetIdentity<ApplicationUser>();
+        services.AddIdentityServer(configuration);
 
         services.AddTransient<IDateTime, DateTimeService>();
         services.AddTransient<IIdentityService, IdentityService>();
 
-        services.AddAuthorization(options =>
-        {
-            options.AddPolicy("CanPurge", policy => policy.RequireRole("Administrator"));
-        });
+        services.AddSingleton<ICurrentUserService, CurrentUserService>();
+
+        services.AddHttpContextAccessor();
 
         return services;
+    }
+
+    public static void RegisterNpgSqlDbContexts(this IServiceCollection services, DatabaseConfiguration databaseConfiguration)
+    {
+        var migrationsAssembly = typeof(DependencyInjection).GetTypeInfo().Assembly.GetName().Name;
+
+        // Add Identity DbContext
+        if (databaseConfiguration.UseInMemoryDatabase)
+        {
+            services.AddDbContext<IdentityDbContext>(options =>
+                options.UseInMemoryDatabase("EiromplaysIdentityServerDb"));
+        }
+        else if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration?.IdentityDbConnection))
+        {
+            services.AddDbContext<IdentityDbContext>(options =>
+                options.UseNpgsql(databaseConfiguration.ConnectionStringsConfiguration.IdentityDbConnection,
+                    sql => sql.MigrationsAssembly(
+                        databaseConfiguration.DatabaseMigrationsConfiguration?.IdentityDbMigrationsAssembly ??
+                        migrationsAssembly)));
+        }
+
+        // Add Configuration DbContext
+        if (databaseConfiguration.UseInMemoryDatabase)
+        {
+            services.AddConfigurationDbContext<IdentityServerConfigurationDbContext>(options => options.ConfigureDbContext = sql =>
+                sql.UseInMemoryDatabase("EiromplaysIdentityServerConfigurationDb"));
+        }
+        else if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration?.ConfigurationDbConnection))
+        {
+            services.AddConfigurationDbContext<IdentityServerConfigurationDbContext>(options =>
+                options.ConfigureDbContext = b =>
+                    b.UseNpgsql(databaseConfiguration.ConnectionStringsConfiguration.ConfigurationDbConnection,
+                        sql => sql.MigrationsAssembly(
+                            databaseConfiguration.DatabaseMigrationsConfiguration?.ConfigurationDbMigrationsAssembly ??
+                            migrationsAssembly)));
+        }
+
+        // Add PersistedGrant DbContext
+        if (databaseConfiguration.UseInMemoryDatabase)
+        {
+            services.AddOperationalDbContext<IdentityServerPersistedGrantDbContext>(options => options.ConfigureDbContext = sql =>
+                sql.UseInMemoryDatabase("EiromplaysIdentityServerPersistedGrantDb"));
+        }
+        else if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration?.PersistedGrantDbConnection))
+        {
+            services.AddOperationalDbContext<IdentityServerPersistedGrantDbContext>(options =>
+                options.ConfigureDbContext = b =>
+                    b.UseNpgsql(databaseConfiguration.ConnectionStringsConfiguration.PersistedGrantDbConnection,
+                        sql => sql.MigrationsAssembly(
+                            databaseConfiguration.DatabaseMigrationsConfiguration?.PersistedGrantDbMigrationsAssembly ??
+                            migrationsAssembly)));
+        }
+
+        // Add Data Protection DbContext
+        if (databaseConfiguration.UseInMemoryDatabase)
+        {
+            services.AddDbContext<IdentityServerDataProtectionDbContext>(options =>
+                options.UseInMemoryDatabase("EiromplaysIdentityServerDataProtectionDb"));
+        }
+        else if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration?.DataProtectionDbConnection))
+        {
+            services.AddDbContext<IdentityServerDataProtectionDbContext>(options =>
+                options.UseNpgsql(databaseConfiguration.ConnectionStringsConfiguration.DataProtectionDbConnection,
+                    sql => sql.MigrationsAssembly(
+                        databaseConfiguration.DatabaseMigrationsConfiguration?.DataProtectionDbMigrationsAssembly ??
+                        migrationsAssembly)));
+        }
+    }
+
+    public static void AddAuthentication(this IServiceCollection services, IConfiguration configuration)
+    {
+        var identityOptions = configuration.GetSection(nameof(IdentityOptions)).Get<IdentityOptions>();
+
+        services
+            .AddSingleton(identityOptions)
+            .AddIdentity<ApplicationUser, ApplicationRole>(options => configuration.GetSection(nameof(IdentityOptions)).Bind(options))
+            .AddEntityFrameworkStores<IdentityDbContext>()
+            .AddDefaultTokenProviders();
+
+        services.AddAuthentication()
+            .AddOpenIdConnect("oidc", "Demo IdentityServer", options =>
+            {
+                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                options.SignOutScheme = IdentityServerConstants.SignoutScheme;
+                options.SaveTokens = true;
+
+                options.Authority = "https://demo.duendesoftware.com/";
+                options.ClientId = "interactive.confidential";
+                options.ClientSecret = "secret";
+                options.ResponseType = "code";
+
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    NameClaimType = "name",
+                    RoleClaimType = "role"
+                };
+            });
+    }
+
+    public static void AddIdentityServer(this IServiceCollection services, IConfiguration configuration)
+    {
+        var configurationSection = configuration.GetSection(nameof(IdentityServerOptions));
+
+        services.AddIdentityServer(options => configurationSection.Bind(options))
+            .AddConfigurationStore<IdentityServerConfigurationDbContext>()
+            .AddOperationalStore<IdentityServerPersistedGrantDbContext>()
+            .AddAspNetIdentity<ApplicationUser>();
+    }
+
+    public static async Task ApplyMigrationsAsync(this IServiceProvider serviceProvider)
+    {
+        await using var scope = serviceProvider.CreateAsyncScope();
+
+        var services = scope.ServiceProvider;
+
+        try
+        {
+            await using var identityDbContext = services.GetRequiredService<IdentityDbContext>();
+
+            if (identityDbContext.Database.IsNpgsql())
+            {
+                await identityDbContext.Database.MigrateAsync();
+            }
+
+            await using var identityServerConfigurationDbContext = services.GetRequiredService<IdentityServerConfigurationDbContext>();
+
+            if (identityServerConfigurationDbContext.Database.IsNpgsql())
+            {
+                await identityServerConfigurationDbContext.Database.MigrateAsync();
+            }
+
+            await using var identityServerPersistedGrantDbContext = services.GetRequiredService<IdentityServerPersistedGrantDbContext>();
+
+            if (identityServerPersistedGrantDbContext.Database.IsNpgsql())
+            {
+                await identityServerPersistedGrantDbContext.Database.MigrateAsync();
+            }
+
+            await using var identityServerDataProtectionDbContext = services.GetRequiredService<IdentityServerDataProtectionDbContext>();
+
+            if (identityServerDataProtectionDbContext.Database.IsNpgsql())
+            {
+                await identityServerDataProtectionDbContext.Database.MigrateAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger>();
+
+            logger.LogError(ex, "An error occurred while migrating or seeding the database(s).");
+
+            throw;
+        }
     }
 }

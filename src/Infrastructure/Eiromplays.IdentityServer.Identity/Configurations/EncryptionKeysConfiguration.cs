@@ -1,4 +1,4 @@
-﻿namespace Eiromplays.IdentityServer.Infrastructure.Persistence.Configurations
+﻿namespace Eiromplays.IdentityServer.Infrastructure.Identity.Configurations
 {
     public class EncryptionKeysConfiguration
     {

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
-using Eiromplays.IdentityServer.Application.Identity.Interfaces;
+using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
 

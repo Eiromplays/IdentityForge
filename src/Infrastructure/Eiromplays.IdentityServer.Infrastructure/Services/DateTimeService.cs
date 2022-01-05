@@ -1,10 +1,8 @@
-﻿using System;
-using Eiromplays.IdentityServer.Application.Common.Interfaces;
+﻿using Eiromplays.IdentityServer.Application.Common.Interfaces;
 
-namespace Eiromplays.IdentityServer.Infrastructure.Services
+namespace Eiromplays.IdentityServer.Infrastructure.Services;
+
+public class DateTimeService : IDateTime
 {
-    public class DateTimeService : IDateTime
-    {
-        public DateTime Now => DateTime.Now;
-    }
+    public DateTime Now => DateTime.Now;
 }

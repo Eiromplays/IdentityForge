@@ -6,6 +6,7 @@ using Eiromplays.IdentityServer.Application.Identity.DTOs.User;
 using Eiromplays.IdentityServer.Infrastructure.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,14 +31,15 @@ builder.Services.AddEndpointDefinitions(typeof(UserDto));
 
 builder.Services.AddRazorPages();
 
+builder.Services.AddBff();
+
 // In production, the React files will be served from this directory
-if (builder.Environment.IsProduction())
-    builder.Services.AddSpaStaticFiles(configuration =>
-        configuration.RootPath = "ClientApp/build");
+builder.Services.AddSpaStaticFiles(configuration =>
+    configuration.RootPath = "ClientApp/build");
 
 var app = builder.Build();
 
-app.UseEndpointDefinitions();
+//await app.Services.ApplyMigrationsAsync();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -53,35 +55,31 @@ else
 }
 
 app.UseStaticFiles();
-if (!app.Environment.IsDevelopment())
-{
-    app.UseSpaStaticFiles();
-}
+app.UseSpaStaticFiles();
 
 app.UseRouting();
 
 app.UseAuthentication();
-app.UseIdentityServer();
+app.UseBff();
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
+app.UseEndpointDefinitions();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapBffManagementEndpoints();
+});
 
 app.UseSpa(spa =>
 {
-    // To learn more about options for serving an React SPA from ASP.NET Core,
-    // see https://docs.microsoft.com/en-us/aspnet/core/client-side/spa/react?view=aspnetcore-6.0&tabs=visual-studio
-
     spa.Options.SourcePath = "ClientApp";
 
-    if (app.Environment.IsDevelopment())
+    if (builder.Environment.IsDevelopment())
     {
-        //spa.UseReactDevelopmentServer(npmScript: "start");
-        spa.UseProxyToSpaDevelopmentServer(app.Configuration["SpaBaseUrl"] ?? "http://localhost:4200");
+        spa.UseReactDevelopmentServer("start");
     }
 });
 
 app.MapFallbackToFile("index.html");
 
-app.Run();
+await app.RunAsync();
