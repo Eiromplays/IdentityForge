@@ -11,11 +11,14 @@ public class ConnectionStringsConfiguration
 
     public string? DataProtectionDbConnection { get; set; }
 
+    public string? PermissionDbConnection { get; set; }
+
     public void SetConnections(string commonConnectionString)
     {
         IdentityDbConnection = commonConnectionString;
         ConfigurationDbConnection = commonConnectionString;
         DataProtectionDbConnection = commonConnectionString;
         PersistedGrantDbConnection = commonConnectionString;
+        PermissionDbConnection = commonConnectionString;
     }
 }

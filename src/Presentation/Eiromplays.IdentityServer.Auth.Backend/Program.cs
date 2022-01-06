@@ -1,7 +1,6 @@
 using Eiromplays.IdentityServer.Application.Identity;
-using Eiromplays.IdentityServer.Application.Identity.DTOs.User;
+using Eiromplays.IdentityServer.Auth.Backend;
 using Eiromplays.IdentityServer.Auth.Backend.Filters;
-using Eiromplays.IdentityServer.Infrastructure.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
@@ -23,14 +22,11 @@ builder.Services.AddControllersWithViews(options =>
 builder.Services.Configure<ApiBehaviorOptions>(options =>
     options.SuppressModelStateInvalidFilter = true);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddEndpointDefinitions(typeof(UserDto));
+builder.Services.AddEndpointDefinitions(typeof(IEndpointDefinition));
 
 var app = builder.Build();
 
-await app.Services.ApplyMigrationsAsync();
+await app.Services.ApplyMigrationsAsync(app.Configuration);
 
 if (app.Environment.IsDevelopment())
 {

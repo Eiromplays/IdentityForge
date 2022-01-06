@@ -12,11 +12,14 @@ public class DatabaseMigrationsConfiguration
 
     public string? DataProtectionDbMigrationsAssembly { get; set; }
 
+    public string? PermissionDbMigrationsAssembly { get; set; }
+
     public void SetMigrationsAssemblies(string commonMigrationsAssembly)
     {
         IdentityDbMigrationsAssembly = commonMigrationsAssembly;
         ConfigurationDbMigrationsAssembly = commonMigrationsAssembly;
         DataProtectionDbMigrationsAssembly = commonMigrationsAssembly;
         PersistedGrantDbMigrationsAssembly = commonMigrationsAssembly;
+        PermissionDbMigrationsAssembly = commonMigrationsAssembly;
     }
 }

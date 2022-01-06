@@ -22,7 +22,7 @@ namespace Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts
             _domainEventService = domainEventService;
         }
 
-        public DbSet<Permission>? Permissions { get; set; }
+        public DbSet<Permission> Permissions => Set<Permission>();
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
         {

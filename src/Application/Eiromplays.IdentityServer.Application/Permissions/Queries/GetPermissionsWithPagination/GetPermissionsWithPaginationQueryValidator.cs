@@ -2,8 +2,7 @@
 
 namespace Eiromplays.IdentityServer.Application.Permissions.Queries.GetPermissionsWithPagination
 {
-    public class GetPermissionsWithPaginationQueryValidator<TPermissionDto, TKey> : AbstractValidator<GetPermissionsWithPaginationQuery<TPermissionDto, TKey>>
-        where TPermissionDto : PermissionDto<TKey>
+    public class GetPermissionsWithPaginationQueryValidator : AbstractValidator<GetPermissionsWithPaginationQuery>
     {
         public GetPermissionsWithPaginationQueryValidator()
         {

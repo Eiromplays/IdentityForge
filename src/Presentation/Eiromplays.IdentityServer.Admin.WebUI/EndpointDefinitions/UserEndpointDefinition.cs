@@ -3,9 +3,9 @@ using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Identity.DTOs.User;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
-namespace Eiromplays.IdentityServer.Admin.WebUI.EndpointDefinitions;
+namespace Eiromplays.IdentityServer.Admin.EndpointDefinitions;
 
-public class UserEndpointDefinition : IEndpointDefinition
+public class UserEndpointDefinition
 {
     public void DefineEndpoints(WebApplication app)
     {

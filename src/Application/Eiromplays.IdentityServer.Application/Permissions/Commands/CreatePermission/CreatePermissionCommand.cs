@@ -25,10 +25,7 @@ public class CreatePermissionCommandHandler : IRequestHandler<CreatePermissionCo
 
         entity.DomainEvents.Add(new PermissionCreatedEvent(entity));
 
-        if (_context.Permissions != null)
-        {
-            await _context.Permissions.AddAsync(entity, cancellationToken);
-        }
+        await _context.Permissions.AddAsync(entity, cancellationToken);
 
         await _context.SaveChangesAsync(cancellationToken);
 

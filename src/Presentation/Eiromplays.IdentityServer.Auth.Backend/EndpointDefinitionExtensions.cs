@@ -1,8 +1,4 @@
-﻿using Eiromplays.IdentityServer.Application.Common.Interfaces;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace Eiromplays.IdentityServer.Infrastructure.Extensions;
+﻿namespace Eiromplays.IdentityServer.Auth.Backend;
 
 public static class EndpointDefinitionExtensions
 {
