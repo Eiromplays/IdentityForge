@@ -38,6 +38,8 @@ public static class DependencyInjection
         services.AddTransient<IDateTime, DateTimeService>();
         services.AddTransient<IIdentityService, IdentityService>();
 
+        services.AddDatabaseDeveloperPageExceptionFilter();
+
         services.AddSingleton<ICurrentUserService, CurrentUserService>();
 
         services.AddHttpContextAccessor();
