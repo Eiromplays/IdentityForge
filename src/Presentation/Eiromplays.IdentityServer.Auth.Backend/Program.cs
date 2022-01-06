@@ -28,11 +28,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddEndpointDefinitions(typeof(UserDto));
 
-// Configure JSON logging to the console.
-//builder.Logging.AddJsonConsole();
 var app = builder.Build();
 
-//await app.Services.ApplyMigrationsAsync();
+await app.Services.ApplyMigrationsAsync();
 
 if (app.Environment.IsDevelopment())
 {

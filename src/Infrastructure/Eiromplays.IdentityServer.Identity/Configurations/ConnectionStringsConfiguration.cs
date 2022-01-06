@@ -1,5 +1,6 @@
 ﻿namespace Eiromplays.IdentityServer.Infrastructure.Identity.Configurations;
 
+[Serializable]
 public class ConnectionStringsConfiguration
 {
     public string? IdentityDbConnection { get; set; }

@@ -5,13 +5,13 @@ public class DatabaseConfiguration
     public DatabaseConfiguration(){}
 
     public DatabaseConfiguration(bool useInMemoryDatabase,
-        ConnectionStringsConfiguration connectionStringsConfiguration,
         DatabaseMigrationsConfiguration databaseMigrationsConfiguration,
+        ConnectionStringsConfiguration connectionStringsConfiguration,
         EncryptionKeysConfiguration encryptionKeysConfiguration)
     {
         UseInMemoryDatabase = useInMemoryDatabase;
-        ConnectionStringsConfiguration = connectionStringsConfiguration;
         DatabaseMigrationsConfiguration = databaseMigrationsConfiguration;
+        ConnectionStringsConfiguration = connectionStringsConfiguration;
         EncryptionKeysConfiguration = encryptionKeysConfiguration;
     }
 

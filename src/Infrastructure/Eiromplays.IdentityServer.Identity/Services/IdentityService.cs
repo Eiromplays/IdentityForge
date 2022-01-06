@@ -2,17 +2,17 @@
 using AutoMapper.QueryableExtensions;
 using Eiromplays.IdentityServer.Application.Common.Mappings;
 using Eiromplays.IdentityServer.Application.Common.Models;
+using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Identity.DTOs.Role;
 using Eiromplays.IdentityServer.Application.Identity.DTOs.User;
 using Eiromplays.IdentityServer.Infrastructure.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
+using Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Security.Claims;
-using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
-using Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 

@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
+using System.Text.Json;
 using Duende.IdentityServer.Configuration;
 using Duende.IdentityServer.EntityFramework.Storage;
 
@@ -27,7 +28,9 @@ public static class DependencyInjection
 
         services.RegisterNpgSqlDbContexts(databaseConfiguration);
 
-        services.AddScoped(provider => provider.GetRequiredService<IdentityDbContext>());
+        services.AddHttpContextAccessor();
+
+        services.AddSingleton<ICurrentUserService, CurrentUserService>(); ;
 
         services.AddScoped<IDomainEventService, DomainEventService>();
 
@@ -39,10 +42,6 @@ public static class DependencyInjection
         services.AddTransient<IIdentityService, IdentityService>();
 
         services.AddDatabaseDeveloperPageExceptionFilter();
-
-        services.AddSingleton<ICurrentUserService, CurrentUserService>();
-
-        services.AddHttpContextAccessor();
 
         return services;
     }

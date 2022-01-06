@@ -1,15 +1,15 @@
 ﻿using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Domain.Common;
 using Eiromplays.IdentityServer.Domain.Constants;
-using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations;
 using EntityFrameworkCore.EncryptColumn;
 using EntityFrameworkCore.EncryptColumn.Interfaces;
 using EntityFrameworkCore.EncryptColumn.Util;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System.Reflection;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts;
 

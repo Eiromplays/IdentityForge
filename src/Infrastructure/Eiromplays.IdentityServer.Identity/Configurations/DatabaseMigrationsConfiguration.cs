@@ -1,23 +1,22 @@
-﻿namespace Eiromplays.IdentityServer.Infrastructure.Identity.Configurations
+﻿namespace Eiromplays.IdentityServer.Infrastructure.Identity.Configurations;
+
+public class DatabaseMigrationsConfiguration
 {
-    public class DatabaseMigrationsConfiguration
+    public bool ApplyDatabaseMigrations { get; set; } = false;
+
+    public string? IdentityDbMigrationsAssembly { get; set; }
+
+    public string? ConfigurationDbMigrationsAssembly { get; set; }
+
+    public string? PersistedGrantDbMigrationsAssembly { get; set; }
+
+    public string? DataProtectionDbMigrationsAssembly { get; set; }
+
+    public void SetMigrationsAssemblies(string commonMigrationsAssembly)
     {
-        public bool ApplyDatabaseMigrations { get; set; } = false;
-
-        public string? IdentityDbMigrationsAssembly { get; set; }
-
-		public string? ConfigurationDbMigrationsAssembly { get; set; }
-
-		public string? PersistedGrantDbMigrationsAssembly { get; set; }
-
-        public string? DataProtectionDbMigrationsAssembly { get; set; }
-
-		public void SetMigrationsAssemblies(string commonMigrationsAssembly)
-		{
-            IdentityDbMigrationsAssembly = commonMigrationsAssembly;
-            ConfigurationDbMigrationsAssembly = commonMigrationsAssembly;
-			DataProtectionDbMigrationsAssembly = commonMigrationsAssembly;
-            PersistedGrantDbMigrationsAssembly = commonMigrationsAssembly;
-		}
+        IdentityDbMigrationsAssembly = commonMigrationsAssembly;
+        ConfigurationDbMigrationsAssembly = commonMigrationsAssembly;
+        DataProtectionDbMigrationsAssembly = commonMigrationsAssembly;
+        PersistedGrantDbMigrationsAssembly = commonMigrationsAssembly;
     }
 }

@@ -2,9 +2,8 @@
 using Eiromplays.IdentityServer.Application.Identity.DTOs.User;
 using Microsoft.AspNetCore.Identity;
 
-namespace Eiromplays.IdentityServer.Infrastructure.Identity.Entities
+namespace Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
+
+public class ApplicationUserClaim : IdentityUserClaim<string>, IMap<UserClaimDto>
 {
-    public class ApplicationUserClaim : IdentityUserClaim<string>, IMap<UserClaimDto>
-    {
-    }
 }
