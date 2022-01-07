@@ -8,7 +8,7 @@ using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 namespace Eiromplays.IdentityServer.Application.Identity.Common.Behaviours
 {
     public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : notnull
+        where TRequest : IRequest<TResponse>
     {
         private readonly ICurrentUserService _currentUserService;
         private readonly IIdentityService _identityService;

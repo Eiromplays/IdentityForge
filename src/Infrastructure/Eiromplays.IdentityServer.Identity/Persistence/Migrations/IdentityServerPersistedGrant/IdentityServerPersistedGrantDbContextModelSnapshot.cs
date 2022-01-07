@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Eiromplays.IdentityServer.Infrastructure.Identity.Migrations.IdentityServerPersistedGrantDb
+namespace Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.Migrations.IdentityServerPersistedGrant
 {
     [DbContext(typeof(IdentityServerPersistedGrantDbContext))]
     partial class IdentityServerPersistedGrantDbContextModelSnapshot : ModelSnapshot

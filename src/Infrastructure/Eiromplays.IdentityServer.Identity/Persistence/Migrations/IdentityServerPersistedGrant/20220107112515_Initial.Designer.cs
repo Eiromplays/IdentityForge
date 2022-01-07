@@ -9,10 +9,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Eiromplays.IdentityServer.Infrastructure.Identity.Migrations.IdentityServerPersistedGrantDb
+namespace Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.Migrations.IdentityServerPersistedGrant
 {
     [DbContext(typeof(IdentityServerPersistedGrantDbContext))]
-    [Migration("20220106190442_Initial")]
+    [Migration("20220107112515_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

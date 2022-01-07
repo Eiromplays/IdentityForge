@@ -5,7 +5,7 @@ using ValidationException = Eiromplays.IdentityServer.Application.Common.Excepti
 namespace Eiromplays.IdentityServer.Application.Common.Behaviours
 {
     public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : notnull
+        where TRequest : IRequest<TResponse>
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators;
 

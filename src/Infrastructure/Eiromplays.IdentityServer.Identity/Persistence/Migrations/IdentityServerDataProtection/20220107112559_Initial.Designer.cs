@@ -2,17 +2,19 @@
 using Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Eiromplays.IdentityServer.Infrastructure.Identity.Migrations.IdentityServerDataProtectionDb
+namespace Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.Migrations.IdentityServerDataProtection
 {
     [DbContext(typeof(IdentityServerDataProtectionDbContext))]
-    partial class IdentityServerDataProtectionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220107112559_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

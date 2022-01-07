@@ -1,5 +1,4 @@
-﻿using Eiromplays.IdentityServer.Application.Common.Models;
-using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
+﻿using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Identity.DTOs.User;
 
 namespace Eiromplays.IdentityServer.Auth.Backend.EndpointDefinitions;
@@ -10,18 +9,19 @@ public class UserEndpointDefinition : IEndpointDefinition
     {
         app.MapGet("/users/{search}/{pageIndex?}/{pageSize?}",
                 async (string search, int? pageIndex, int? pageSize, IIdentityService identityService) =>
-                    await GetAllUsersAsync(identityService, search, pageIndex ?? 1, pageSize ?? 10))
-            .Produces<PaginatedList<UserDto>>();
+                    await GetAllUsersAsync(identityService, search, pageIndex ?? 1, pageSize ?? 10));
         app.MapGet("/users/{id}", GetUserByIdAsync);
         app.MapPost("/users", CreateUserAsync);
         app.MapPut("/users/{id}", UpdateUserAsync);
         app.MapDelete("/users/{id}", DeleteUserByIdAsync);
     }
 
-    internal async Task<PaginatedList<UserDto>> GetAllUsersAsync(IIdentityService identityService, string? search,
+    internal async Task<IResult> GetAllUsersAsync(IIdentityService identityService, string? search,
         int pageIndex = 1, int pageSize = 10)
     {
-        return await identityService.GetUsersAsync(search, pageIndex, pageSize);
+        var users = await identityService.GetUsersAsync(search, pageIndex, pageSize);
+
+        return Results.Ok(users);
     }
 
     internal async Task<IResult> GetUserByIdAsync(IIdentityService identityService, string id)

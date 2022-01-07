@@ -5,11 +5,6 @@ using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations;
-using EntityFrameworkCore.EncryptColumn;
-using EntityFrameworkCore.EncryptColumn.Interfaces;
-using EntityFrameworkCore.EncryptColumn.Util;
-using Microsoft.Extensions.Configuration;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts;
 
@@ -19,24 +14,13 @@ public class IdentityDbContext : IdentityDbContext<ApplicationUser, ApplicationR
     private readonly ICurrentUserService _currentUserService;
     private readonly IDateTime _dateTime;
     private readonly IDomainEventService _domainEventService;
-    private readonly IEncryptionProvider _encryptionProvider;
 
     public IdentityDbContext(DbContextOptions<IdentityDbContext> options, ICurrentUserService currentUserService,
-        IDateTime dateTime, IDomainEventService domainEventService, IConfiguration configuration) : base(options)
+        IDateTime dateTime, IDomainEventService domainEventService) : base(options)
     {
         _currentUserService = currentUserService;
         _dateTime = dateTime;
         _domainEventService = domainEventService;
-
-        var databaseConfiguration = configuration.GetSection(nameof(DatabaseConfiguration))
-            .Get<DatabaseConfiguration>();
-
-        if (!string.IsNullOrWhiteSpace(databaseConfiguration.EncryptionKeysConfiguration?.IdentityEncryptionKey))
-        {
-            Initialize.EncryptionKey = databaseConfiguration.EncryptionKeysConfiguration.IdentityEncryptionKey;
-        }
-
-        _encryptionProvider = new GenerateEncryptionProvider();
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
