@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Eiromplays.IdentityServer.Application.Common.Exceptions;
+﻿using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Domain.Entities;
 using MediatR;
@@ -28,14 +23,14 @@ namespace Eiromplays.IdentityServer.Application.Permissions.Commands.DeletePermi
         public async Task<Unit> Handle(DeletePermissionCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Permissions!.FirstOrDefaultAsync(x => x.Id.ToString().Equals(request.Id),
-                cancellationToken: cancellationToken);
+                cancellationToken);
 
             if (entity == null)
             {
                 throw new NotFoundException(nameof(Permission), request.Id);
             }
 
-            _context.Permissions?.Remove(entity);
+            _context.Permissions.Remove(entity);
 
             await _context.SaveChangesAsync(cancellationToken);
 

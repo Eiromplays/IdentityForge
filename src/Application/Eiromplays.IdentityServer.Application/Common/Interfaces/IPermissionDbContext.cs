@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.Application.Common.Interfaces
 {
     public interface IPermissionDbContext
     {
-        DbSet<Permission>? Permissions {  get; set; }
+        DbSet<Permission> Permissions { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }

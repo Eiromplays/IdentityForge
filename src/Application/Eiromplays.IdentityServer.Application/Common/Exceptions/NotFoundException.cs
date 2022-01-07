@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Eiromplays.IdentityServer.Application.Common.Exceptions
+﻿namespace Eiromplays.IdentityServer.Application.Common.Exceptions
 {
     public class NotFoundException : Exception
     {

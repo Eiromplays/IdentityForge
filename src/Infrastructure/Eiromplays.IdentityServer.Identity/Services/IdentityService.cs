@@ -2,17 +2,19 @@
 using AutoMapper.QueryableExtensions;
 using Eiromplays.IdentityServer.Application.Common.Mappings;
 using Eiromplays.IdentityServer.Application.Common.Models;
+using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Identity.DTOs.Role;
 using Eiromplays.IdentityServer.Application.Identity.DTOs.User;
 using Eiromplays.IdentityServer.Infrastructure.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
+using Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Security.Claims;
-using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
-using Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts;
-using Microsoft.AspNetCore.Authorization;
+using System.Text.Json;
+using Eiromplays.IdentityServer.Application.Common.Exceptions;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
@@ -122,13 +124,14 @@ public class IdentityService : IIdentityService
         {
             Expression<Func<ApplicationUser, bool>> searchExpression = user => !string.IsNullOrWhiteSpace(user.Email) &&
                                                                                !string.IsNullOrWhiteSpace(search) &&
-                                                                               (user.UserName.Contains(search,
-                                                                                       StringComparison.OrdinalIgnoreCase)
-                                                                                   || user.Email.Contains(search,
-                                                                                       StringComparison.OrdinalIgnoreCase));
+                                                                               (user.UserName.Contains(search)
+                                                                                   || user.Email.Contains(search));
 
             var users = await _userManager.Users.Where(searchExpression)
                 .ProjectTo<UserDto>(_mapper.ConfigurationProvider).PaginatedListAsync(pageIndex, pageSize);
+
+            if (!users.Items.Any())
+                throw new NotFoundException("No Users found");
 
             return users;
         }, cancellationToken);

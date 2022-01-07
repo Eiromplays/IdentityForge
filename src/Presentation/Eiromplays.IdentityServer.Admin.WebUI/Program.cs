@@ -27,8 +27,6 @@ builder.Services.AddControllersWithViews(options =>
         options.Filters.Add<ApiExceptionFilterAttribute>())
     .AddFluentValidation(x => x.AutomaticValidationEnabled = false);
 
-builder.Services.AddEndpointDefinitions(typeof(UserDto));
-
 builder.Services.AddRazorPages();
 
 builder.Services.AddBff();
@@ -62,8 +60,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseBff();
 app.UseAuthorization();
-
-app.UseEndpointDefinitions();
 
 app.UseEndpoints(endpoints =>
 {

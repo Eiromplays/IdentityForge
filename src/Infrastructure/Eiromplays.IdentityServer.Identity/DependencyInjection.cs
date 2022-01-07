@@ -1,10 +1,13 @@
 ﻿using Duende.IdentityServer;
+using Duende.IdentityServer.Configuration;
+using Duende.IdentityServer.EntityFramework.Storage;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Services;
+using Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts;
 using Eiromplays.IdentityServer.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,8 +16,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
-using Duende.IdentityServer.Configuration;
-using Duende.IdentityServer.EntityFramework.Storage;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity;
 
@@ -27,8 +28,6 @@ public static class DependencyInjection
 
         services.RegisterNpgSqlDbContexts(databaseConfiguration);
 
-        services.AddScoped(provider => provider.GetRequiredService<IdentityDbContext>());
-
         services.AddScoped<IDomainEventService, DomainEventService>();
 
         services.AddAuthentication(configuration);
@@ -37,6 +36,8 @@ public static class DependencyInjection
 
         services.AddTransient<IDateTime, DateTimeService>();
         services.AddTransient<IIdentityService, IdentityService>();
+
+        services.AddDatabaseDeveloperPageExceptionFilter();
 
         services.AddSingleton<ICurrentUserService, CurrentUserService>();
 
@@ -110,6 +111,23 @@ public static class DependencyInjection
                         databaseConfiguration.DatabaseMigrationsConfiguration?.DataProtectionDbMigrationsAssembly ??
                         migrationsAssembly)));
         }
+
+        // Add Permission DbContext
+        if (databaseConfiguration.UseInMemoryDatabase)
+        {
+            services.AddDbContext<PermissionDbContext>(options =>
+                options.UseInMemoryDatabase("EiromplaysPermissionDb"));
+        }
+        else if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration?.PermissionDbConnection))
+        {
+            services.AddDbContext<PermissionDbContext>(options =>
+                options.UseNpgsql(databaseConfiguration.ConnectionStringsConfiguration.PermissionDbConnection,
+                    sql => sql.MigrationsAssembly(
+                        databaseConfiguration.DatabaseMigrationsConfiguration?.PermissionDbMigrationsAssembly ??
+                        migrationsAssembly)));
+
+            services.AddScoped<IPermissionDbContext>(provider => provider.GetRequiredService<PermissionDbContext>());
+        }
     }
 
     public static void AddAuthentication(this IServiceCollection services, IConfiguration configuration)
@@ -152,8 +170,14 @@ public static class DependencyInjection
             .AddAspNetIdentity<ApplicationUser>();
     }
 
-    public static async Task ApplyMigrationsAsync(this IServiceProvider serviceProvider)
+    public static async Task ApplyMigrationsAsync(this IServiceProvider serviceProvider, IConfiguration configuration)
     {
+        var databaseConfiguration =
+            configuration.GetSection(nameof(DatabaseConfiguration)).Get<DatabaseConfiguration>();
+
+        if (databaseConfiguration.DatabaseMigrationsConfiguration is not null &&
+            !databaseConfiguration.DatabaseMigrationsConfiguration.ApplyDatabaseMigrations) return;
+
         await using var scope = serviceProvider.CreateAsyncScope();
 
         var services = scope.ServiceProvider;
@@ -186,6 +210,13 @@ public static class DependencyInjection
             if (identityServerDataProtectionDbContext.Database.IsNpgsql())
             {
                 await identityServerDataProtectionDbContext.Database.MigrateAsync();
+            }
+
+            await using var permissionDbContext = services.GetRequiredService<PermissionDbContext>();
+
+            if (permissionDbContext.Database.IsNpgsql())
+            {
+                await permissionDbContext.Database.MigrateAsync();
             }
         }
         catch (Exception ex)

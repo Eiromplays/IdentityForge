@@ -1,14 +1,9 @@
 ﻿using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Domain.Common;
 using Eiromplays.IdentityServer.Domain.Constants;
-using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
-using EntityFrameworkCore.EncryptColumn;
-using EntityFrameworkCore.EncryptColumn.Interfaces;
-using EntityFrameworkCore.EncryptColumn.Util;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using System.Reflection;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts;
@@ -19,24 +14,13 @@ public class IdentityDbContext : IdentityDbContext<ApplicationUser, ApplicationR
     private readonly ICurrentUserService _currentUserService;
     private readonly IDateTime _dateTime;
     private readonly IDomainEventService _domainEventService;
-    private readonly IEncryptionProvider _encryptionProvider;
 
     public IdentityDbContext(DbContextOptions<IdentityDbContext> options, ICurrentUserService currentUserService,
-        IDateTime dateTime, IDomainEventService domainEventService, IConfiguration configuration) : base(options)
+        IDateTime dateTime, IDomainEventService domainEventService) : base(options)
     {
         _currentUserService = currentUserService;
         _dateTime = dateTime;
         _domainEventService = domainEventService;
-
-        var databaseConfiguration = configuration.GetSection(nameof(DatabaseConfiguration))
-            .Get<DatabaseConfiguration>();
-
-        if (!string.IsNullOrWhiteSpace(databaseConfiguration.EncryptionKeysConfiguration?.IdentityEncryptionKey))
-        {
-            Initialize.EncryptionKey = databaseConfiguration.EncryptionKeysConfiguration.IdentityEncryptionKey;
-        }
-
-        _encryptionProvider = new GenerateEncryptionProvider();
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())

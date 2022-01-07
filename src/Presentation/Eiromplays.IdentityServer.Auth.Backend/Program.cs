@@ -1,12 +1,24 @@
 using Eiromplays.IdentityServer.Application.Identity;
-using Eiromplays.IdentityServer.Application.Identity.DTOs.User;
+using Eiromplays.IdentityServer.Auth.Backend;
+using Eiromplays.IdentityServer.Auth.Backend.Extensions;
 using Eiromplays.IdentityServer.Auth.Backend.Filters;
-using Eiromplays.IdentityServer.Infrastructure.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// remove default logging providers
+builder.Logging.ClearProviders();
+
+// Serilog configuration
+var logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
+
+// Register Serilog
+builder.Logging.AddSerilog(logger);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -23,14 +35,11 @@ builder.Services.AddControllersWithViews(options =>
 builder.Services.Configure<ApiBehaviorOptions>(options =>
     options.SuppressModelStateInvalidFilter = true);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddEndpointDefinitions(typeof(UserDto));
+builder.Services.AddEndpointDefinitions(typeof(IEndpointDefinition));
 
 var app = builder.Build();
 
-//await app.Services.ApplyMigrationsAsync();
+await app.Services.ApplyMigrationsAsync(app.Configuration);
 
 if (app.Environment.IsDevelopment())
 {
@@ -59,5 +68,7 @@ app.UseIdentityServer();
 app.UseAuthorization();
 
 app.UseEndpointDefinitions();
+
+app.UseGlobalExceptionHandler();
 
 await app.RunAsync();

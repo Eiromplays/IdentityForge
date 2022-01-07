@@ -21,7 +21,7 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContex
             _domainEventService = domainEventService;
         }
 
-        public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
+        public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
         {

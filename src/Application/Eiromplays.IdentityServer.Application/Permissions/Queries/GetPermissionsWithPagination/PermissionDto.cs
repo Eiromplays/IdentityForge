@@ -1,11 +1,12 @@
-﻿using Eiromplays.IdentityServer.Application.Common.Mappings;
+﻿using AutoMapper;
 using Eiromplays.IdentityServer.Domain.Entities;
 
 namespace Eiromplays.IdentityServer.Application.Permissions.Queries.GetPermissionsWithPagination;
 
-public class PermissionDto<TKey> : IMap<Permission>
+[AutoMap(typeof(Permission), ReverseMap = true)]
+public class PermissionDto
 {
-    public TKey? Id { get; set; }
+    public string? Id { get; set; }
 
     public string? Name { get; set; }
 

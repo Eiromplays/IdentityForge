@@ -22,37 +22,37 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContex
             _domainEventService = domainEventService;
         }
 
-        public DbSet<ApiResourceProperty>? ApiResourceProperties { get; set; }
+        public DbSet<ApiResourceProperty> ApiResourceProperties => Set<ApiResourceProperty>();
 
-        public DbSet<IdentityResourceProperty>? IdentityResourceProperties { get; set; }
+        public DbSet<IdentityResourceProperty> IdentityResourceProperties => Set<IdentityResourceProperty>();
 
-        public DbSet<ApiResourceSecret>? ApiSecrets { get; set; }
+        public DbSet<ApiResourceSecret> ApiSecrets => Set<ApiResourceSecret>();
 
-        public DbSet<ApiScopeClaim>? ApiScopeClaims { get; set; }
+        public DbSet<ApiScopeClaim> ApiScopeClaims => Set<ApiScopeClaim>();
 
-        public DbSet<IdentityResourceClaim>? IdentityClaims { get; set; }
+        public DbSet<IdentityResourceClaim> IdentityClaims => Set<IdentityResourceClaim>();
 
-        public DbSet<ApiResourceClaim>? ApiResourceClaims { get; set; }
+        public DbSet<ApiResourceClaim> ApiResourceClaims => Set<ApiResourceClaim>();
 
-        public DbSet<ClientGrantType>? ClientGrantTypes { get; set; }
+        public DbSet<ClientGrantType> ClientGrantTypes => Set<ClientGrantType>();
 
-        public DbSet<ClientScope>? ClientScopes { get; set; }
+        public DbSet<ClientScope> ClientScopes => Set<ClientScope>();
 
-        public DbSet<ClientSecret>? ClientSecrets { get; set; }
+        public DbSet<ClientSecret> ClientSecrets => Set<ClientSecret>();
 
-        public DbSet<ClientPostLogoutRedirectUri>? ClientPostLogoutRedirectUris { get; set; }
+        public DbSet<ClientPostLogoutRedirectUri> ClientPostLogoutRedirectUris => Set<ClientPostLogoutRedirectUri>();
 
-        public DbSet<ClientIdPRestriction>? ClientIdPRestrictions { get; set; }
+        public DbSet<ClientIdPRestriction> ClientIdPRestrictions => Set<ClientIdPRestriction>();
 
-        public DbSet<ClientRedirectUri>? ClientRedirectUris { get; set; }
+        public DbSet<ClientRedirectUri> ClientRedirectUris => Set<ClientRedirectUri>();
 
-        public DbSet<ClientClaim>? ClientClaims { get; set; }
+        public DbSet<ClientClaim> ClientClaims => Set<ClientClaim>();
 
-        public DbSet<ClientProperty>? ClientProperties { get; set; }
+        public DbSet<ClientProperty> ClientProperties => Set<ClientProperty>();
 
-        public DbSet<ApiScopeProperty>? ApiScopeProperties { get; set; }
+        public DbSet<ApiScopeProperty> ApiScopeProperties => Set<ApiScopeProperty>();
 
-        public DbSet<ApiResourceScope>? ApiResourceScopes { get; set; }
+        public DbSet<ApiResourceScope> ApiResourceScopes => Set<ApiResourceScope>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
