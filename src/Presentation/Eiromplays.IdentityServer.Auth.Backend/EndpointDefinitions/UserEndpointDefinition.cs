@@ -31,7 +31,9 @@ public class UserEndpointDefinition : IEndpointDefinition
 
     internal async Task<IResult> CreateUserAsync(IIdentityService identityService, UserDto userDto)
     {
-        return Results.Ok(await identityService.CreateUserAsync(userDto));
+        var (result, userId) = await identityService.CreateUserAsync(userDto);
+
+        return result.Succeeded ? Results.Created($"users/{userId}", new { UserId = userId }) : Results.BadRequest(result);
     }
 
     internal async Task<IResult> UpdateUserAsync(IIdentityService identityService, UserDto userDto)
