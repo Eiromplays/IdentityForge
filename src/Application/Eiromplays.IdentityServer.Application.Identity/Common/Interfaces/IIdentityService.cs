@@ -40,6 +40,11 @@ public interface IIdentityService
     Task<Result> DeleteUserProviderAsync(string? userId, string? providerKey, string? loginProvider);
     Task<Result> ChangeUserPasswordAsync(string? userId, string? password);
     Task<Result> DeleteUserAsync(string? userId);
+
+    Task<Result> AddUserToRolesAsync(string? userId, IEnumerable<string> roles);
+
+    Task<Result> AddUserToRoleAsync(string? userId, string role);
+
     Task<RoleDto?> FindRoleByIdAsync(string? roleId);
     Task<bool> RoleExistsAsync(string? roleId);
     Task<IReadOnlyList<RoleDto>> GetRolesAsync();

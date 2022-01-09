@@ -41,6 +41,8 @@ var app = builder.Build();
 
 await app.Services.ApplyMigrationsAsync(app.Configuration);
 
+await app.Services.ApplySeedsAsync(app.Configuration);
+
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();

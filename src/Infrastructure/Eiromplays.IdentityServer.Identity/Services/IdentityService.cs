@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Mappings;
 using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
@@ -13,8 +14,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Security.Claims;
-using System.Text.Json;
-using Eiromplays.IdentityServer.Application.Common.Exceptions;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
@@ -332,6 +331,28 @@ public class IdentityService : IIdentityService
         var user = _mapper.Map<ApplicationUser>(userDto);
 
         return (await _userManager.DeleteAsync(user!)).ToApplicationResult();
+    }
+
+    public async Task<Result> AddUserToRolesAsync(string? userId, IEnumerable<string> roles)
+    {
+        var userDto = await FindUserByIdAsync(userId);
+
+        var user = _mapper.Map<ApplicationUser>(userDto);
+
+        var identityResult = await _userManager.AddToRolesAsync(user, roles);
+
+        return identityResult.ToApplicationResult();
+    }
+
+    public async Task<Result> AddUserToRoleAsync(string? userId, string role)
+    {
+        var userDto = await FindUserByIdAsync(userId);
+
+        var user = _mapper.Map<ApplicationUser>(userDto);
+
+        var identityResult = await _userManager.AddToRoleAsync(user, role);
+
+        return identityResult.ToApplicationResult();
     }
 
     #endregion

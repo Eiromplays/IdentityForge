@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
+using Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts.Seeds;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity;
 
@@ -176,7 +177,8 @@ public static class DependencyInjection
             configuration.GetSection(nameof(DatabaseConfiguration)).Get<DatabaseConfiguration>();
 
         if (databaseConfiguration.DatabaseMigrationsConfiguration is not null &&
-            !databaseConfiguration.DatabaseMigrationsConfiguration.ApplyDatabaseMigrations) return;
+            !databaseConfiguration.DatabaseMigrationsConfiguration.ApplyDatabaseMigrations)
+            return;
 
         await using var scope = serviceProvider.CreateAsyncScope();
 
@@ -227,5 +229,22 @@ public static class DependencyInjection
 
             throw;
         }
+    }
+
+    public static async Task ApplySeedsAsync(this IServiceProvider serviceProvider, IConfiguration configuration)
+    {
+        var databaseConfiguration =
+            configuration.GetSection(nameof(DatabaseConfiguration)).Get<DatabaseConfiguration>();
+
+        if (!databaseConfiguration.ApplyDefaultSeeds)
+            return;
+
+        await using var scope = serviceProvider.CreateAsyncScope();
+
+        var services = scope.ServiceProvider;
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
+
+        await IdentityDbContextSeed.SeedDefaultUserAsync(userManager, roleManager);
     }
 }
