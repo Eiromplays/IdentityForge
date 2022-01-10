@@ -12,6 +12,7 @@ public interface IIdentityService
     Task<(Result Result, string? UserId)> UpdateUserAsync(UserDto userDto);
     Task<bool> UserExistsAsync(string? userId);
     Task<UserDto?> FindUserByIdAsync(string? userId);
+    Task<UserDto?> FindUserByUsernameAsync(string? username);
     Task<string?> GetUserNameAsync(string? userId);
     Task<string?> GetDisplayNameAsync(string? userId);
     Task<PaginatedList<UserDto>> GetUsersAsync(string? search, int pageIndex = 1, int pageSize = 10, CancellationToken cancellationToken = default);

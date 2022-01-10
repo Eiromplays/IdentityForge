@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Eiromplays.IdentityServer.Auth.Backend.Filters;
+namespace Eiromplays.IdentityServer.Filters;
 
 public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
 {

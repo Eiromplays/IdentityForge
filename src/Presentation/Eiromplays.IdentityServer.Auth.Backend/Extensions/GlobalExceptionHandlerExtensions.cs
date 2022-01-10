@@ -3,10 +3,8 @@ using System.Net;
 using System.Text.Json;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Eiromplays.IdentityServer.Auth.Backend.Extensions;
+namespace Eiromplays.IdentityServer.Extensions;
 
 [ExcludeFromCodeCoverage]
 public static class GlobalExceptionHandlerExtensions

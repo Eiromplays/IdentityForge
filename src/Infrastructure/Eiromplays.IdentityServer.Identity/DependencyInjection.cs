@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
+using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations.Identity;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts.Seeds;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity;
@@ -26,6 +27,8 @@ public static class DependencyInjection
     {
         var databaseConfiguration =
             configuration.GetSection(nameof(DatabaseConfiguration)).Get<DatabaseConfiguration>();
+
+        RegisterIdentityDataConfiguration(services, configuration);
 
         services.RegisterNpgSqlDbContexts(databaseConfiguration);
 
@@ -45,6 +48,13 @@ public static class DependencyInjection
         services.AddHttpContextAccessor();
 
         return services;
+    }
+
+    private static void RegisterIdentityDataConfiguration(IServiceCollection services, IConfiguration configuration)
+    {
+        var identityDataConfiguration = configuration.GetSection(nameof(IdentityData)).Get<IdentityData>();
+
+        services.AddSingleton(identityDataConfiguration);
     }
 
     public static void RegisterNpgSqlDbContexts(this IServiceCollection services, DatabaseConfiguration databaseConfiguration)
@@ -244,7 +254,8 @@ public static class DependencyInjection
         var services = scope.ServiceProvider;
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
+        var identityData = services.GetRequiredService<IdentityData>();
 
-        await IdentityDbContextSeed.SeedDefaultUserAsync(userManager, roleManager);
+        await IdentityDbContextSeed.SeedDefaultUsersAndRolesAsync(userManager, roleManager, identityData);
     }
 }

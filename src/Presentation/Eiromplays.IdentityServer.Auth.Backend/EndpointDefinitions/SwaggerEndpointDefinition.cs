@@ -1,6 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 
-namespace Eiromplays.IdentityServer.Auth.Backend.EndpointDefinitions;
+namespace Eiromplays.IdentityServer.EndpointDefinitions;
 
 public class SwaggerEndpointDefinition : IEndpointDefinition
 {

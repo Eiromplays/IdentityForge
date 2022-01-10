@@ -1,7 +1,7 @@
 ﻿using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Identity.DTOs.User;
 
-namespace Eiromplays.IdentityServer.Auth.Backend.EndpointDefinitions;
+namespace Eiromplays.IdentityServer.EndpointDefinitions;
 
 public class UserEndpointDefinition : IEndpointDefinition
 {

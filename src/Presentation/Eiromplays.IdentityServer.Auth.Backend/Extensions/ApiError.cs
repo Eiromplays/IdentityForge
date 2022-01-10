@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Eiromplays.IdentityServer.Auth.Backend.Extensions;
+namespace Eiromplays.IdentityServer.Extensions;
 
 [ExcludeFromCodeCoverage]
 public class ApiError

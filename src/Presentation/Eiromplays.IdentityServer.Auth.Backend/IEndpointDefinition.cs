@@ -1,4 +1,4 @@
-﻿namespace Eiromplays.IdentityServer.Auth.Backend;
+﻿namespace Eiromplays.IdentityServer;
 
 public interface IEndpointDefinition
 {

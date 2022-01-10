@@ -48,6 +48,11 @@ public class IdentityService : IIdentityService
     {
         var user = _mapper.Map<ApplicationUser>(userDto);
 
+        if (string.IsNullOrWhiteSpace(user.ProfilePicture))
+        {
+            user.ProfilePicture = $"https://avatars.dicebear.com/api/initials/{user.UserName}.svg";
+        }
+
         var identityResult = await _userManager.CreateAsync(user);
 
         return (identityResult.ToApplicationResult(), user.Id);
@@ -102,6 +107,15 @@ public class IdentityService : IIdentityService
 
         return userDto;
     }
+    public async Task<UserDto?> FindUserByUsernameAsync(string? username)
+    {
+        var user = await _userManager.FindByNameAsync(username);
+
+        var userDto = _mapper.Map<UserDto>(user);
+
+        return userDto;
+    }
+
 
     public async Task<string?> GetUserNameAsync(string? userId)
     {

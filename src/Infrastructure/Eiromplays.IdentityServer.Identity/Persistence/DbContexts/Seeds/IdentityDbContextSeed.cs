@@ -1,25 +1,43 @@
-﻿using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
+﻿using System.Text.Json;
+using Eiromplays.IdentityServer.Infrastructure.Extensions;
+using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations.Identity;
+using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts.Seeds;
 
 public static class IdentityDbContextSeed
 {
-    public static async Task SeedDefaultUserAsync(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
+    public static async Task SeedDefaultUsersAndRolesAsync(UserManager<ApplicationUser> userManager,
+        RoleManager<ApplicationRole> roleManager, IdentityData identityData)
     {
-        var administratorRole = new ApplicationRole { Name = "Administrator" };
-
-        if (roleManager.Roles.All(r => r.Name != administratorRole.Name))
+        foreach (var role in identityData.Roles.Select(role => new ApplicationRole { Name = role.Name }))
         {
-            await roleManager.CreateAsync(administratorRole);
+            if (await roleManager.Roles.AllAsync(r => r.Name != role.Name))
+            {
+                await roleManager.CreateAsync(role);
+            }
         }
 
-        var administrator = new ApplicationUser { UserName = "administrator", Email = "administrator@localhost", EmailConfirmed = true };
-
-        if (userManager.Users.All(u => u.UserName != administrator.UserName))
+        foreach (var user in identityData.Users)
         {
-            await userManager.CreateAsync(administrator, "Administrator1!");
-            await userManager.AddToRolesAsync(administrator, new[] { administratorRole.Name });
+            var applicationUser = new ApplicationUser
+            {
+                DisplayName = user.DisplayName,
+                UserName = user.UserName,
+                Email = user.Email,
+                EmailConfirmed = true
+            };
+
+            if (!await userManager.Users.AllAsync(u => u.UserName != user.UserName)) continue;
+
+            var userIdentityResult = await userManager.CreateAsync(applicationUser, user.Password);
+            if (!userIdentityResult.Succeeded)
+                return;
+
+            await userManager.AddToRolesAsync(applicationUser, user.Roles);
         }
     }
 }

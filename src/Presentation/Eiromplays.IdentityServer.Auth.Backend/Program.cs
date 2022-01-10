@@ -1,7 +1,7 @@
+using Eiromplays.IdentityServer;
 using Eiromplays.IdentityServer.Application.Identity;
-using Eiromplays.IdentityServer.Auth.Backend;
-using Eiromplays.IdentityServer.Auth.Backend.Extensions;
-using Eiromplays.IdentityServer.Auth.Backend.Filters;
+using Eiromplays.IdentityServer.Extensions;
+using Eiromplays.IdentityServer.Filters;
 using Eiromplays.IdentityServer.Infrastructure.Identity;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +9,13 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// remove default logging providers
+// Add custom json configuration files
+
+builder.Configuration.AddJsonFile("identitydata.json", true, true);
+builder.Configuration.AddJsonFile($"identitydata.{builder.Environment.EnvironmentName}.json", true,
+    true);
+
+// Remove default logging providers
 builder.Logging.ClearProviders();
 
 // Serilog configuration
