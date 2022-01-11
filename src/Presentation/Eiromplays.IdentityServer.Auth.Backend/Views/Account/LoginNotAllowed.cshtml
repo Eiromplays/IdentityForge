@@ -1,0 +1,12 @@
+﻿@{
+    ViewData["Title"] = "Not allowed to login";
+}
+
+<header>
+    <h1 class="text-danger">@ViewData["Title"]</h1>
+    <p class="text-danger">You are not allowed to login to this account. The most common reason for this is <strong>Your email not being confirmed, or your phone number not being confirmed.</strong>
+    <p>If your email is confirmed and you are still experiencing this error, please contact us so we can take a look.</p>
+    <a asp-controller="Account" asp-action="">Resend email confirmation.</a>
+    <p>If your phone number is confirmed and you are still experiencing this error, please contact us so we can take a look.</p>
+    <a asp-controller="Account" asp-action="">Resend phone number confirmation.</a>
+</header>

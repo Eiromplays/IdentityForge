@@ -1,0 +1,36 @@
+﻿@model Eiromplays.IdentityServer.Quickstart.Account.LoginWith2FaViewModel
+@{
+    ViewData["Title"] = "Login with 2fa";
+}
+
+@await Html.PartialAsync("_ValidationSummary")
+
+<h2>@ViewData["Title"]</h2>
+<hr />
+<p>Login with two factor authentication</p>
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" asp-route-returnUrl="@Model?.ReturnUrl">
+            <input asp-for="RememberMe" type="hidden" />
+            <input asp-for="ReturnUrl" type="hidden" />
+            <div class="form-group">
+                <label asp-for="TwoFactorCode">Code</label>
+                <input asp-for="TwoFactorCode" class="form-control" autocomplete="off" autofocus />
+                <span asp-validation-for="TwoFactorCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <div>
+                        Remember
+                    </div>
+                    <toggle-button>
+                        <input asp-for="RememberMachine" />
+                    </toggle-button>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+        </form>
+    </div>
+</div>

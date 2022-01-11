@@ -10,7 +10,7 @@
         "DisplayName": "Administrator",
         "Username": "Administrator",
         "Password": "Administrator1!",
-        "Email": "admin@localhost.com",
+        "Email": "admin@localhost",
         "Roles": [
           "Administrator"
         ],

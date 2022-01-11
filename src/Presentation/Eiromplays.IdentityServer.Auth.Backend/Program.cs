@@ -1,6 +1,4 @@
-using Eiromplays.IdentityServer;
 using Eiromplays.IdentityServer.Application.Identity;
-using Eiromplays.IdentityServer.Extensions;
 using Eiromplays.IdentityServer.Filters;
 using Eiromplays.IdentityServer.Infrastructure.Identity;
 using FluentValidation.AspNetCore;
@@ -37,17 +35,22 @@ builder.Services.AddControllersWithViews(options =>
         options.Filters.Add<ApiExceptionFilterAttribute>())
     .AddFluentValidation(x => x.AutomaticValidationEnabled = false);
 
+builder.Services.AddControllers();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 // Customise default API behaviour
 builder.Services.Configure<ApiBehaviorOptions>(options =>
     options.SuppressModelStateInvalidFilter = true);
-
-builder.Services.AddEndpointDefinitions(typeof(IEndpointDefinition));
 
 var app = builder.Build();
 
 await app.Services.ApplyMigrationsAsync(app.Configuration);
 
 await app.Services.ApplySeedsAsync(app.Configuration);
+
+app.UseCookiePolicy();
 
 if (app.Environment.IsDevelopment())
 {
@@ -67,16 +70,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseSecurityHeaders(app.Configuration);
 
 app.UseStaticFiles();
-app.UseRouting();
 
-app.UseAuthentication();
 app.UseIdentityServer();
+
+app.UseRouting();
 app.UseAuthorization();
 
-app.UseEndpointDefinitions();
-
-app.UseGlobalExceptionHandler();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapDefaultControllerRoute();
+});
 
 await app.RunAsync();

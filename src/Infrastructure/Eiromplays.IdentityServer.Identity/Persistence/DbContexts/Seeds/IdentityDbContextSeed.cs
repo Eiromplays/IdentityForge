@@ -1,10 +1,7 @@
-﻿using System.Text.Json;
-using Eiromplays.IdentityServer.Infrastructure.Extensions;
-using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations.Identity;
+﻿using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations.Identity;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts.Seeds;
 

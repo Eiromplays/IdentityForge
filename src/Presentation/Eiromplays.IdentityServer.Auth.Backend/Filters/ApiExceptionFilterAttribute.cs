@@ -1,12 +1,12 @@
 ﻿using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Eiromplays.IdentityServer.Filters;
 
 public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
 {
-
     private readonly IDictionary<Type, Action<ExceptionContext>> _exceptionHandlers;
 
     public ApiExceptionFilterAttribute()
@@ -17,7 +17,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
                 { typeof(ValidationException), HandleValidationException },
                 { typeof(NotFoundException), HandleNotFoundException },
                 { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException },
-                { typeof(ForbiddenAccessException), HandleForbiddenAccessException },
+                { typeof(ForbiddenAccessException), HandleForbiddenAccessException }
             };
     }
 
@@ -30,7 +30,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
 
     private void HandleException(ExceptionContext context)
     {
-        Type type = context.Exception.GetType();
+        var type = context.Exception.GetType();
         if (_exceptionHandlers.ContainsKey(type))
         {
             _exceptionHandlers[type].Invoke(context);
@@ -42,7 +42,6 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
             HandleInvalidModelStateException(context);
             return;
         }
-
         HandleUnknownException(context);
     }
 
