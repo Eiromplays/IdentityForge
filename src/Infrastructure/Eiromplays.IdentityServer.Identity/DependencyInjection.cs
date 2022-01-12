@@ -1,29 +1,28 @@
-﻿using Duende.IdentityServer;
-using Duende.IdentityServer.Configuration;
+﻿using Duende.IdentityServer.Configuration;
 using Duende.IdentityServer.EntityFramework.Storage;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
+using Eiromplays.IdentityServer.Domain.Constants;
+using Eiromplays.IdentityServer.Infrastructure.Helpers;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations;
+using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations.Identity;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts;
+using Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts.Seeds;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts;
 using Eiromplays.IdentityServer.Infrastructure.Services;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
+using System.Net;
+using System.Net.Mail;
 using System.Reflection;
-using Eiromplays.IdentityServer.Domain.Constants;
-using Eiromplays.IdentityServer.Infrastructure.Helpers;
-using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations.Identity;
-using Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts.Seeds;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Extensions.FileProviders;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity;
 
@@ -312,11 +311,15 @@ public static class DependencyInjection
     public static void AddEmailSenders(this IServiceCollection services, IConfiguration configuration)
     {
         var emailConfiguration = configuration.GetSection(nameof(EmailConfiguration)).Get<EmailConfiguration>();
-
         services
-            .AddFluentEmail(emailConfiguration.From)
-            .AddRazorRenderer(services.GetType())
-            .AddSmtpSender(emailConfiguration.Host, emailConfiguration.Port, emailConfiguration.Login, emailConfiguration.Password);
+            .AddFluentEmail(emailConfiguration.From, emailConfiguration.DefaultFromName)
+            .AddRazorRenderer()
+            .AddSmtpSender(new SmtpClient(emailConfiguration.Host, emailConfiguration.Port)
+            {
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(emailConfiguration.Login, emailConfiguration.Password),
+                EnableSsl = emailConfiguration.UseSsl
+            });
     }
 
     public static void UseSecurityHeaders(this IApplicationBuilder app, IConfiguration configuration)

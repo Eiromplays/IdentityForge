@@ -10,10 +10,4 @@
     <NoWarn>$(NoWarn);NU1701;NU1702;CS0436</NoWarn>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Enums\**" />
-    <EmbeddedResource Remove="Enums\**" />
-    <None Remove="Enums\**" />
-  </ItemGroup>
-
 </Project>

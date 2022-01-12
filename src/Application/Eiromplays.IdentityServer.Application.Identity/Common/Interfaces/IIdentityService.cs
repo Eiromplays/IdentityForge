@@ -8,6 +8,7 @@ public interface IIdentityService
 {
     Task<(Result Result, string? UserId)> CreateUserAsync(UserDto? userDto);
     Task<bool> IsInRoleAsync(string userId, string role);
+    Task<bool> CanSignInAsync(string userId);
     Task<bool> AuthorizeAsync(string userId, string policyName);
     Task<(Result Result, string? UserId)> UpdateUserAsync(UserDto userDto);
     Task<bool> UserExistsAsync(string? userId);

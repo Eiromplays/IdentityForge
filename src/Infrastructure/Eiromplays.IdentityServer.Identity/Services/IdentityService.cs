@@ -25,6 +25,7 @@ public class IdentityService : IIdentityService
     private readonly IUserClaimsPrincipalFactory<ApplicationUser> _userClaimsPrincipalFactory;
     private readonly IAuthorizationService _authorizationService;
     private readonly IMapper _mapper;
+    private readonly IUserConfirmation<ApplicationUser> _userConfirmation;
 
     public IdentityService(
         IdentityDbContext identityDbContext,
@@ -32,7 +33,8 @@ public class IdentityService : IIdentityService
         RoleManager<ApplicationRole> roleManager,
         IMapper mapper,
         IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
-        IAuthorizationService authorizationService)
+        IAuthorizationService authorizationService,
+        IUserConfirmation<ApplicationUser> userConfirmation)
     {
         _identityDbContext = identityDbContext;
         _userManager = userManager;
@@ -40,6 +42,7 @@ public class IdentityService : IIdentityService
         _mapper = mapper;
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
         _authorizationService = authorizationService;
+        _userConfirmation = userConfirmation;
     }
 
     #region User Methods
@@ -65,6 +68,17 @@ public class IdentityService : IIdentityService
         var user = _mapper.Map<ApplicationUser>(userDto);
 
         return user is not null && await _userManager.IsInRoleAsync(user, role);
+    }
+
+    public async Task<bool> CanSignInAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        return (!_userManager.Options.SignIn.RequireConfirmedEmail || await _userManager.IsEmailConfirmedAsync(user)) &&
+                (!_userManager.Options.SignIn.RequireConfirmedPhoneNumber ||
+                await _userManager.IsPhoneNumberConfirmedAsync(user)) &&
+                (!_userManager.Options.SignIn.RequireConfirmedAccount ||
+                await _userConfirmation.IsConfirmedAsync(_userManager, user));
     }
 
     public async Task<bool> AuthorizeAsync(string userId, string policyName)
