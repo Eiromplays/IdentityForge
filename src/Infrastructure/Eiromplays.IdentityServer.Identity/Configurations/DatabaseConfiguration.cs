@@ -4,22 +4,24 @@ public class DatabaseConfiguration
 {
     public DatabaseConfiguration(){}
 
-    public DatabaseConfiguration(bool useInMemoryDatabase,
+    public DatabaseConfiguration(
+        bool useInMemoryDatabase,
+        bool applyDefaultSeeds,
         DatabaseMigrationsConfiguration databaseMigrationsConfiguration,
-        ConnectionStringsConfiguration connectionStringsConfiguration,
-        EncryptionKeysConfiguration encryptionKeysConfiguration)
+        ConnectionStringsConfiguration connectionStringsConfiguration)
     {
         UseInMemoryDatabase = useInMemoryDatabase;
+        ApplyDefaultSeeds = applyDefaultSeeds;
         DatabaseMigrationsConfiguration = databaseMigrationsConfiguration;
         ConnectionStringsConfiguration = connectionStringsConfiguration;
-        EncryptionKeysConfiguration = encryptionKeysConfiguration;
     }
 
-    public bool UseInMemoryDatabase;
+    public bool UseInMemoryDatabase { get; set; }
+
+    public bool ApplyDefaultSeeds { get; set; }
 
     public DatabaseMigrationsConfiguration? DatabaseMigrationsConfiguration { get; set; }
 
     public ConnectionStringsConfiguration? ConnectionStringsConfiguration { get; set; }
 
-    public EncryptionKeysConfiguration? EncryptionKeysConfiguration { get; set; }
 }

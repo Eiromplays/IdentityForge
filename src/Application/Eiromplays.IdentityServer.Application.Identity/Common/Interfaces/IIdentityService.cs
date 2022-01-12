@@ -8,10 +8,12 @@ public interface IIdentityService
 {
     Task<(Result Result, string? UserId)> CreateUserAsync(UserDto? userDto);
     Task<bool> IsInRoleAsync(string userId, string role);
+    Task<bool> CanSignInAsync(string userId);
     Task<bool> AuthorizeAsync(string userId, string policyName);
     Task<(Result Result, string? UserId)> UpdateUserAsync(UserDto userDto);
     Task<bool> UserExistsAsync(string? userId);
     Task<UserDto?> FindUserByIdAsync(string? userId);
+    Task<UserDto?> FindUserByUsernameAsync(string? username);
     Task<string?> GetUserNameAsync(string? userId);
     Task<string?> GetDisplayNameAsync(string? userId);
     Task<PaginatedList<UserDto>> GetUsersAsync(string? search, int pageIndex = 1, int pageSize = 10, CancellationToken cancellationToken = default);
@@ -40,6 +42,11 @@ public interface IIdentityService
     Task<Result> DeleteUserProviderAsync(string? userId, string? providerKey, string? loginProvider);
     Task<Result> ChangeUserPasswordAsync(string? userId, string? password);
     Task<Result> DeleteUserAsync(string? userId);
+
+    Task<Result> AddUserToRolesAsync(string? userId, IEnumerable<string> roles);
+
+    Task<Result> AddUserToRoleAsync(string? userId, string role);
+
     Task<RoleDto?> FindRoleByIdAsync(string? roleId);
     Task<bool> RoleExistsAsync(string? roleId);
     Task<IReadOnlyList<RoleDto>> GetRolesAsync();

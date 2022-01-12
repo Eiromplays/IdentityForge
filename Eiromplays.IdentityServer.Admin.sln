@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eiromplays.IdentityServer.I
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eiromplays.IdentityServer.Application.Identity", "src\Application\Eiromplays.IdentityServer.Application.Identity\Eiromplays.IdentityServer.Application.Identity.csproj", "{D9F96E17-CE49-479E-A979-4C556CE4C7E1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eiromplays.IdentityServer.Auth.Backend", "src\Presentation\Eiromplays.IdentityServer.Auth.Backend\Eiromplays.IdentityServer.Auth.Backend.csproj", "{46365E16-DD8C-4799-96A2-026AF9223A8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eiromplays.IdentityServer", "src\Presentation\Eiromplays.IdentityServer\Eiromplays.IdentityServer.csproj", "{46365E16-DD8C-4799-96A2-026AF9223A8A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Mappings;
 using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
@@ -13,8 +14,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Security.Claims;
-using System.Text.Json;
-using Eiromplays.IdentityServer.Application.Common.Exceptions;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
@@ -26,6 +25,7 @@ public class IdentityService : IIdentityService
     private readonly IUserClaimsPrincipalFactory<ApplicationUser> _userClaimsPrincipalFactory;
     private readonly IAuthorizationService _authorizationService;
     private readonly IMapper _mapper;
+    private readonly IUserConfirmation<ApplicationUser> _userConfirmation;
 
     public IdentityService(
         IdentityDbContext identityDbContext,
@@ -33,7 +33,8 @@ public class IdentityService : IIdentityService
         RoleManager<ApplicationRole> roleManager,
         IMapper mapper,
         IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
-        IAuthorizationService authorizationService)
+        IAuthorizationService authorizationService,
+        IUserConfirmation<ApplicationUser> userConfirmation)
     {
         _identityDbContext = identityDbContext;
         _userManager = userManager;
@@ -41,6 +42,7 @@ public class IdentityService : IIdentityService
         _mapper = mapper;
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
         _authorizationService = authorizationService;
+        _userConfirmation = userConfirmation;
     }
 
     #region User Methods
@@ -48,6 +50,11 @@ public class IdentityService : IIdentityService
     public async Task<(Result Result, string? UserId)> CreateUserAsync(UserDto? userDto)
     {
         var user = _mapper.Map<ApplicationUser>(userDto);
+
+        if (string.IsNullOrWhiteSpace(user.ProfilePicture))
+        {
+            user.ProfilePicture = $"https://avatars.dicebear.com/api/initials/{user.UserName}.svg";
+        }
 
         var identityResult = await _userManager.CreateAsync(user);
 
@@ -61,6 +68,17 @@ public class IdentityService : IIdentityService
         var user = _mapper.Map<ApplicationUser>(userDto);
 
         return user is not null && await _userManager.IsInRoleAsync(user, role);
+    }
+
+    public async Task<bool> CanSignInAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        return (!_userManager.Options.SignIn.RequireConfirmedEmail || await _userManager.IsEmailConfirmedAsync(user)) &&
+                (!_userManager.Options.SignIn.RequireConfirmedPhoneNumber ||
+                await _userManager.IsPhoneNumberConfirmedAsync(user)) &&
+                (!_userManager.Options.SignIn.RequireConfirmedAccount ||
+                await _userConfirmation.IsConfirmedAsync(_userManager, user));
     }
 
     public async Task<bool> AuthorizeAsync(string userId, string policyName)
@@ -103,6 +121,15 @@ public class IdentityService : IIdentityService
 
         return userDto;
     }
+    public async Task<UserDto?> FindUserByUsernameAsync(string? username)
+    {
+        var user = await _userManager.FindByNameAsync(username);
+
+        var userDto = _mapper.Map<UserDto>(user);
+
+        return userDto;
+    }
+
 
     public async Task<string?> GetUserNameAsync(string? userId)
     {
@@ -332,6 +359,28 @@ public class IdentityService : IIdentityService
         var user = _mapper.Map<ApplicationUser>(userDto);
 
         return (await _userManager.DeleteAsync(user!)).ToApplicationResult();
+    }
+
+    public async Task<Result> AddUserToRolesAsync(string? userId, IEnumerable<string> roles)
+    {
+        var userDto = await FindUserByIdAsync(userId);
+
+        var user = _mapper.Map<ApplicationUser>(userDto);
+
+        var identityResult = await _userManager.AddToRolesAsync(user, roles);
+
+        return identityResult.ToApplicationResult();
+    }
+
+    public async Task<Result> AddUserToRoleAsync(string? userId, string role)
+    {
+        var userDto = await FindUserByIdAsync(userId);
+
+        var user = _mapper.Map<ApplicationUser>(userDto);
+
+        var identityResult = await _userManager.AddToRoleAsync(user, role);
+
+        return identityResult.ToApplicationResult();
     }
 
     #endregion

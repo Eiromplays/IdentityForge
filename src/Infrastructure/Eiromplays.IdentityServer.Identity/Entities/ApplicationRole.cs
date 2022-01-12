@@ -7,5 +7,4 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 [AutoMap(typeof(RoleDto), ReverseMap = true)]
 public class ApplicationRole : IdentityRole
 {
-
 }
