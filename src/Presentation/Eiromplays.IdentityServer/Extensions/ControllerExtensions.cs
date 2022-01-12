@@ -1,4 +1,4 @@
-﻿using Eiromplays.IdentityServer.Quickstart.Home;
+﻿using Eiromplays.IdentityServer.Controllers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
