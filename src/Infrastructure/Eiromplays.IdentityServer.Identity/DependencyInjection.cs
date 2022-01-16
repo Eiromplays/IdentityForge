@@ -3,6 +3,7 @@ using Duende.IdentityServer.EntityFramework.Storage;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 using Eiromplays.IdentityServer.Domain.Constants;
+using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure.Helpers;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations.Identity;
@@ -12,6 +13,7 @@ using Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts.S
 using Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts;
 using Eiromplays.IdentityServer.Infrastructure.Services;
+using FluentEmail.Graph;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -23,10 +25,6 @@ using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Net.Mail;
 using System.Reflection;
-using Eiromplays.IdentityServer.Domain.Enums;
-using FluentEmail.Graph;
-using FluentEmail.Mailgun;
-using FluentEmail.MailKitSmtp;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity;
 
@@ -319,7 +317,6 @@ public static class DependencyInjection
             .AddFluentEmail(emailConfiguration.From, emailConfiguration.DefaultFromName)
             .AddRazorRenderer();
 
-        Console.WriteLine($"EmailProvider {emailConfiguration.EmailProvider}");
         switch (emailConfiguration.EmailProvider)
         {
             case EmailProvider.Smtp:
@@ -361,7 +358,8 @@ public static class DependencyInjection
                 fluentEmailServicesBuilder.AddGraphSender(emailConfiguration.GraphConfiguration);
                 break;
             default:
-                throw new ArgumentOutOfRangeException(nameof(emailConfiguration.EmailProvider), $"EmailProvider needs to be one of these: {string.Join(", ", Enum.GetNames(typeof(EmailProvider)))}.");
+                var nameOfEmailProvider = nameof(emailConfiguration.EmailProvider);
+                throw new ArgumentOutOfRangeException(nameOfEmailProvider, $"EmailProvider needs to be one of these: {string.Join(", ", Enum.GetNames(typeof(EmailProvider)))}.");
         }
     }
 

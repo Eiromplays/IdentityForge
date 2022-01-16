@@ -60,7 +60,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
         context.ExceptionHandled = true;
     }
 
-    private void HandleInvalidModelStateException(ExceptionContext context)
+    private static void HandleInvalidModelStateException(ExceptionContext context)
     {
         var details = new ValidationProblemDetails(context.ModelState)
         {
@@ -76,7 +76,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
     {
         var exception = (NotFoundException)context.Exception;
 
-        var details = new ProblemDetails()
+        var details = new ProblemDetails
         {
             Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4",
             Title = "The specified resource was not found.",
@@ -122,7 +122,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
         context.ExceptionHandled = true;
     }
 
-    private void HandleUnknownException(ExceptionContext context)
+    private static void HandleUnknownException(ExceptionContext context)
     {
         var details = new ProblemDetails
         {
