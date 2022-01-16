@@ -12,12 +12,12 @@ using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Validation;
 using Eiromplays.IdentityServer.Application.Common.Security;
 using Eiromplays.IdentityServer.Configuration;
-using Eiromplays.IdentityServer.ViewModels.V1.Consent;
-using Eiromplays.IdentityServer.ViewModels.V1.Device;
+using Eiromplays.IdentityServer.ViewModels.Consent;
+using Eiromplays.IdentityServer.ViewModels.Device;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
-namespace Eiromplays.IdentityServer.Controllers.V1;
+namespace Eiromplays.IdentityServer.Controllers;
 
 [SecurityHeaders]
 [Microsoft.AspNetCore.Authorization.Authorize]

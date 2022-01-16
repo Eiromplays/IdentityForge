@@ -42,6 +42,7 @@ builder.Services.AddApiVersioning(options =>
     options.AssumeDefaultVersionWhenUnspecified = true;
     options.DefaultApiVersion = ApiVersion.Default;
     options.ApiVersionReader = ApiVersionReader.Combine(
+        new UrlSegmentApiVersionReader(),
         new MediaTypeApiVersionReader("version"),
         new HeaderApiVersionReader("X-Version")
     );
@@ -86,9 +87,8 @@ app.UseSecurityHeaders(app.Configuration);
 
 app.UseStaticFiles();
 
-app.UseIdentityServer();
-
 app.UseRouting();
+app.UseIdentityServer();
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>

@@ -14,7 +14,7 @@ using Eiromplays.IdentityServer.Application.Common.Security;
 using Eiromplays.IdentityServer.Configuration;
 using Eiromplays.IdentityServer.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
-using Eiromplays.IdentityServer.ViewModels.V1.Account;
+using Eiromplays.IdentityServer.ViewModels.Account;
 using FluentEmail.Core;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
@@ -23,11 +23,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace Eiromplays.IdentityServer.Controllers.V1;
+namespace Eiromplays.IdentityServer.Controllers;
 
 [SecurityHeaders]
 [AllowAnonymous]
-[ApiVersion("1.0")]
 public class AccountController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -87,7 +86,7 @@ public class AccountController : Controller
         var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
 
         // the user clicked the "cancel" button
-        if (button != "login")
+        if (button is not "login")
         {
             if (context is null) return Redirect("~/");
             // if the user cancels, send a result back into IdentityServer as if they

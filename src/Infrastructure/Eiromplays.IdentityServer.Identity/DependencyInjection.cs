@@ -23,6 +23,10 @@ using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Net.Mail;
 using System.Reflection;
+using Eiromplays.IdentityServer.Domain.Enums;
+using FluentEmail.Graph;
+using FluentEmail.Mailgun;
+using FluentEmail.MailKitSmtp;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity;
 
@@ -311,15 +315,54 @@ public static class DependencyInjection
     public static void AddEmailSenders(this IServiceCollection services, IConfiguration configuration)
     {
         var emailConfiguration = configuration.GetSection(nameof(EmailConfiguration)).Get<EmailConfiguration>();
-        services
+        var fluentEmailServicesBuilder =services
             .AddFluentEmail(emailConfiguration.From, emailConfiguration.DefaultFromName)
-            .AddRazorRenderer()
-            .AddSmtpSender(new SmtpClient(emailConfiguration.Host, emailConfiguration.Port)
-            {
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(emailConfiguration.Login, emailConfiguration.Password),
-                EnableSsl = emailConfiguration.UseSsl
-            });
+            .AddRazorRenderer();
+
+        Console.WriteLine($"EmailProvider {emailConfiguration.EmailProvider}");
+        switch (emailConfiguration.EmailProvider)
+        {
+            case EmailProvider.Smtp:
+                if (emailConfiguration.SmtpEmailConfiguration is null)
+                    break;
+                fluentEmailServicesBuilder.AddSmtpSender(new SmtpClient(emailConfiguration.SmtpEmailConfiguration.Host, emailConfiguration.SmtpEmailConfiguration.Port)
+                {
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(emailConfiguration.SmtpEmailConfiguration.Login, emailConfiguration.SmtpEmailConfiguration.Password),
+                    EnableSsl = emailConfiguration.SmtpEmailConfiguration.UseSsl
+                });
+                break;
+            case EmailProvider.MailKit:
+                if (emailConfiguration.MailKitConfiguration is null)
+                    break;
+                fluentEmailServicesBuilder.AddMailKitSender(emailConfiguration.MailKitConfiguration);
+                break;
+            case EmailProvider.SendGrid:
+                if (emailConfiguration.SendGridConfiguration is null)
+                    break;
+                fluentEmailServicesBuilder.AddSendGridSender(emailConfiguration.SendGridConfiguration.ApiKey, emailConfiguration.SendGridConfiguration.SandboxMode);
+                break;
+            case EmailProvider.Mailgun:
+                if (emailConfiguration.MailgunConfiguration is null)
+                    break;
+                fluentEmailServicesBuilder.AddMailGunSender(emailConfiguration.MailgunConfiguration.DomainName,
+                    emailConfiguration.MailgunConfiguration.ApiKey, emailConfiguration.MailgunConfiguration.Region);
+                break;
+            case EmailProvider.Mailtrap:
+                if (emailConfiguration.MailtrapConfiguration is null)
+                    break;
+                fluentEmailServicesBuilder.AddMailtrapSender(emailConfiguration.MailtrapConfiguration.UserName,
+                    emailConfiguration.MailtrapConfiguration.Password, emailConfiguration.MailtrapConfiguration.Host,
+                    emailConfiguration.MailtrapConfiguration.Port);
+                break;
+            case EmailProvider.Graph:
+                if (emailConfiguration.GraphConfiguration is null)
+                    break;
+                fluentEmailServicesBuilder.AddGraphSender(emailConfiguration.GraphConfiguration);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(emailConfiguration.EmailProvider), $"EmailProvider needs to be one of these: {string.Join(", ", Enum.GetNames(typeof(EmailProvider)))}.");
+        }
     }
 
     public static void UseSecurityHeaders(this IApplicationBuilder app, IConfiguration configuration)

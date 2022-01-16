@@ -6,11 +6,11 @@
 
 using Duende.IdentityServer.Services;
 using Eiromplays.IdentityServer.Application.Common.Security;
-using Eiromplays.IdentityServer.ViewModels.V1.Home;
+using Eiromplays.IdentityServer.ViewModels.Home;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Eiromplays.IdentityServer.Controllers.V1;
+namespace Eiromplays.IdentityServer.Controllers;
 
 [SecurityHeaders]
 [AllowAnonymous]

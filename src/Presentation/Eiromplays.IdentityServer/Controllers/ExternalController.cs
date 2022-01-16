@@ -153,33 +153,31 @@ public class ExternalController : Controller
                 {
                     if (!await _identityService.CanSignInAsync(user.Id))
                     {
-                        if (!await _userManager.IsEmailConfirmedAsync(user))
-                        {
-                            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                            var verificationUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code },
-                                HttpContext.Request.Scheme);
+                        if (await _userManager.IsEmailConfirmedAsync(user))
+                            return RedirectToAction("RegisterConfirmation", "Account");
 
-                            var confirmEmailViewModel = new ConfirmEmailViewModel
-                                { Username = user.UserName, VerificationUrl = verificationUrl };
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                        var verificationUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code },
+                            HttpContext.Request.Scheme);
 
-                            var sendEmailResponse = await _fluentEmail
-                                .To(user.Email)
-                                .Subject("Email Confirmation")
-                                .UsingTemplateFromFile($"{Directory.GetCurrentDirectory()}/Views/Shared/Templates/Email/ConfirmEmail.cshtml", confirmEmailViewModel)
-                                .SendAsync();
+                        var confirmEmailViewModel = new ConfirmEmailViewModel
+                            { Username = user.UserName, VerificationUrl = verificationUrl };
 
-                            if (!sendEmailResponse.Successful)
-                            {
-                                ViewData["LoginProvider"] = info.LoginProvider;
-                                ViewData["ReturnUrl"] = returnUrl;
+                        var sendEmailResponse = await _fluentEmail
+                            .To(user.Email)
+                            .Subject("Email Confirmation")
+                            .UsingTemplateFromFile($"{Directory.GetCurrentDirectory()}/Views/Shared/Templates/Email/ConfirmEmail.cshtml", confirmEmailViewModel)
+                            .SendAsync();
 
-                                this.AddErrors(sendEmailResponse.ErrorMessages);
-                                return View(model);
-                            }
-                        }
+                        if (sendEmailResponse.Successful)
+                            return RedirectToAction("RegisterConfirmation", "Account");
 
-                        return RedirectToAction("RegisterConfirmation", "Account");
+                        ViewData["LoginProvider"] = info.LoginProvider;
+                        ViewData["ReturnUrl"] = returnUrl;
+
+                        this.AddErrors(sendEmailResponse.ErrorMessages);
+                        return View(model);
                     }
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
