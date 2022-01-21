@@ -35,7 +35,9 @@ public static class DependencyInjection
         var databaseConfiguration =
             configuration.GetSection(nameof(DatabaseConfiguration)).Get<DatabaseConfiguration>();
 
-        RegisterIdentityDataConfiguration(services, configuration);
+        services.RegisterIdentityDataConfiguration(configuration);
+
+        services.RegisterProfilePictureConfiguration(configuration);
 
         services.RegisterNpgSqlDbContexts(databaseConfiguration);
 
@@ -61,7 +63,7 @@ public static class DependencyInjection
         return services;
     }
 
-    private static void RegisterIdentityDataConfiguration(IServiceCollection services, IConfiguration configuration)
+    private static void RegisterIdentityDataConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
         var identityDataConfiguration = configuration.GetSection(nameof(IdentityData)).Get<IdentityData>();
 
@@ -361,6 +363,14 @@ public static class DependencyInjection
                 var nameOfEmailProvider = nameof(emailConfiguration.EmailProvider);
                 throw new ArgumentOutOfRangeException(nameOfEmailProvider, $"EmailProvider needs to be one of these: {string.Join(", ", Enum.GetNames(typeof(EmailProvider)))}.");
         }
+    }
+
+    public static void RegisterProfilePictureConfiguration(this IServiceCollection services, IConfiguration configuration)
+    {
+        var profilePictureConfiguration = configuration.GetSection(nameof(ProfilePictureConfiguration))
+            .Get<ProfilePictureConfiguration>();
+
+        services.AddSingleton(profilePictureConfiguration);
     }
 
     public static void UseSecurityHeaders(this IApplicationBuilder app, IConfiguration configuration)

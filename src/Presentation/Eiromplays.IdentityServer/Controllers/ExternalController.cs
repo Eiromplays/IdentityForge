@@ -11,6 +11,7 @@ using Duende.IdentityServer.Services;
 using Eiromplays.IdentityServer.Application.Common.Security;
 using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 using Eiromplays.IdentityServer.Extensions;
+using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.ViewModels.Account;
 using FluentEmail.Core;
@@ -33,6 +34,7 @@ public class ExternalController : Controller
     private readonly ILogger<ExternalController> _logger;
     private readonly IFluentEmail _fluentEmail;
     private readonly IIdentityService _identityService;
+    private readonly ProfilePictureConfiguration _profilePictureConfiguration;
 
     public ExternalController(
         UserManager<ApplicationUser> userManager,
@@ -41,7 +43,8 @@ public class ExternalController : Controller
         IEventService events,
         ILogger<ExternalController> logger,
         IFluentEmail fluentEmail,
-        IIdentityService identityService)
+        IIdentityService identityService,
+        ProfilePictureConfiguration profilePictureConfiguration)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -50,6 +53,7 @@ public class ExternalController : Controller
         _logger = logger;
         _fluentEmail = fluentEmail;
         _identityService = identityService;
+        _profilePictureConfiguration = profilePictureConfiguration;
     }
 
     /// <summary>
@@ -144,6 +148,12 @@ public class ExternalController : Controller
                 DisplayName = model.DisplayName,
                 Email = model.Email
             };
+
+            if (_profilePictureConfiguration.IsProfilePictureEnabled &&
+                _profilePictureConfiguration.AutoGenerateProfilePicture)
+            {
+                user.ProfilePicture = $"{_profilePictureConfiguration.ProfilePictureGeneratorUrl}/{user.UserName}.svg";
+            }
 
             var result = await _userManager.CreateAsync(user);
             if (result.Succeeded)
