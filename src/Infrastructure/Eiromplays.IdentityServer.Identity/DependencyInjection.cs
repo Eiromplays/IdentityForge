@@ -1,12 +1,14 @@
 ﻿using Duende.IdentityServer.Configuration;
 using Duende.IdentityServer.EntityFramework.Storage;
+using Eiromplays.IdentityServer.Application.Common.Configurations;
+using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
+using Eiromplays.IdentityServer.Application.Common.Configurations.Database;
+using Eiromplays.IdentityServer.Application.Common.Configurations.Identity;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 using Eiromplays.IdentityServer.Domain.Constants;
 using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure.Helpers;
-using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations;
-using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations.Identity;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts.Seeds;
@@ -37,7 +39,7 @@ public static class DependencyInjection
 
         services.RegisterIdentityDataConfiguration(configuration);
 
-        services.RegisterProfilePictureConfiguration(configuration);
+        services.RegisterAccountConfiguration(configuration);
 
         services.RegisterNpgSqlDbContexts(databaseConfiguration);
 
@@ -170,6 +172,7 @@ public static class DependencyInjection
 
         services
             .AddSingleton(identityOptions)
+            .AddScoped<IUserResolver<ApplicationUser>, UserResolver>()
             .AddIdentity<ApplicationUser, ApplicationRole>(options => configuration.GetSection(nameof(IdentityOptions)).Bind(options))
             .AddEntityFrameworkStores<IdentityDbContext>()
             .AddDefaultTokenProviders();
@@ -365,12 +368,17 @@ public static class DependencyInjection
         }
     }
 
-    public static void RegisterProfilePictureConfiguration(this IServiceCollection services, IConfiguration configuration)
+    /*
+        Registers the Profile Picture Configuration
+        You can find more avatar styles here: https://avatars.dicebear.com/styles/
+        You can also use a custom provider
+    */
+    public static void RegisterAccountConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
-        var profilePictureConfiguration = configuration.GetSection(nameof(ProfilePictureConfiguration))
-            .Get<ProfilePictureConfiguration>();
+        var accountConfiguration = configuration.GetSection(nameof(AccountConfiguration))
+            .Get<AccountConfiguration>();
 
-        services.AddSingleton(profilePictureConfiguration);
+        services.AddSingleton(accountConfiguration);
     }
 
     public static void UseSecurityHeaders(this IApplicationBuilder app, IConfiguration configuration)

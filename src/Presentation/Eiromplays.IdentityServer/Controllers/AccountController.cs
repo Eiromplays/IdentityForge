@@ -4,14 +4,15 @@
 // Original file: https://github.com/DuendeSoftware/Samples/blob/main/IdentityServer/v6/Quickstarts
 // Modified by Eirik Sjøløkken
 
-using System.Text;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
+using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Application.Common.Security;
 using Eiromplays.IdentityServer.Configuration;
+using Eiromplays.IdentityServer.Domain.Constants;
 using Eiromplays.IdentityServer.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.ViewModels.Account;
@@ -22,6 +23,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using System.Text;
+using System.Text.Encodings.Web;
+using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 
 namespace Eiromplays.IdentityServer.Controllers;
 
@@ -37,6 +41,8 @@ public class AccountController : Controller
     private readonly IEventService _events;
     private readonly IFluentEmail _fluentEmail;
     private readonly IAuthenticationHandlerProvider _authenticationHandlerProvider;
+    private readonly AccountConfiguration _accountConfiguration;
+    private readonly IUserResolver<ApplicationUser> _userResolver;
 
     public AccountController(
         UserManager<ApplicationUser> userManager,
@@ -45,7 +51,9 @@ public class AccountController : Controller
         IClientStore clientStore,
         IAuthenticationSchemeProvider schemeProvider,
         IEventService events, IFluentEmail fluentEmail,
-        IAuthenticationHandlerProvider authenticationHandlerProvider)
+        IAuthenticationHandlerProvider authenticationHandlerProvider,
+        AccountConfiguration accountConfiguration,
+        IUserResolver<ApplicationUser> userResolver)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -55,6 +63,8 @@ public class AccountController : Controller
         _events = events;
         _fluentEmail = fluentEmail;
         _authenticationHandlerProvider = authenticationHandlerProvider;
+        _accountConfiguration = accountConfiguration;
+        _userResolver = userResolver;
     }
 
     /// <summary>
@@ -100,43 +110,46 @@ public class AccountController : Controller
 
         if (ModelState.IsValid)
         {
-            var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure: true);
-            if (result.Succeeded)
+            var user = await _userResolver.GetUserAsync(model.Login);
+            if (user is not null)
             {
-                var user = await _userManager.FindByNameAsync(model.Username);
-                await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.Client.ClientId));
-
-                if (context is not null)
+                var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberLogin, lockoutOnFailure: true);
+                if (result.Succeeded)
                 {
-                    return context.IsNativeClient() ? this.LoadingPage("Redirect", model.ReturnUrl) : Redirect(model.ReturnUrl!);
+                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.Client.ClientId));
+
+                    if (context is not null)
+                    {
+                        return context.IsNativeClient() ? this.LoadingPage("Redirect", model.ReturnUrl) : Redirect(model.ReturnUrl!);
+                    }
+
+                    // request for a local page
+                    if (Url.IsLocalUrl(model.ReturnUrl))
+                    {
+                        return Redirect(model.ReturnUrl);
+                    }
+
+                    if (string.IsNullOrEmpty(model.ReturnUrl))
+                    {
+                        return Redirect("~/");
+                    }
+
+                    // user might have clicked on a malicious link - should be logged
+                    throw new Exception("Invalid return URL");
                 }
 
-                // request for a local page
-                if (Url.IsLocalUrl(model.ReturnUrl))
+                if (result.RequiresTwoFactor)
                 {
-                    return Redirect(model.ReturnUrl);
+                    return RedirectToAction(nameof(LoginWith2Fa), new { model.ReturnUrl, RememberMe = model.RememberLogin });
                 }
 
-                if (string.IsNullOrEmpty(model.ReturnUrl))
+                if (result.IsLockedOut)
                 {
-                    return Redirect("~/");
+                    return View("Lockout");
                 }
-
-                // user might have clicked on a malicious link - should be logged
-                throw new Exception("Invalid return URL");
             }
 
-            if (result.RequiresTwoFactor)
-            {
-                return RedirectToAction(nameof(LoginWith2Fa), new { model.ReturnUrl, RememberMe = model.RememberLogin });
-            }
-
-            if (result.IsLockedOut)
-            {
-                return View("Lockout");
-            }
-
-            await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "Invalid credentials", clientId: context?.Client.ClientId));
+            await _events.RaiseAsync(new UserLoginFailureEvent(model.Login, "Invalid credentials", clientId: context?.Client.ClientId));
             ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
         }
 
@@ -178,9 +191,7 @@ public class AccountController : Controller
 
         var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
         if (user is null)
-        {
             throw new InvalidOperationException("Unable to get user");
-        }
 
         var authenticatorCode = model.TwoFactorCode?.Replace(" ", string.Empty).Replace("-", string.Empty);
 
@@ -203,12 +214,84 @@ public class AccountController : Controller
 
     [HttpGet]
     [AllowAnonymous]
+    public IActionResult Register(string? returnUrl = null)
+    {
+        ViewData["ReturnUrl"] = returnUrl;
+
+        return _accountConfiguration.LoginConfiguration?.LoginPolicy is null ? View("RegisterFailure") : View();
+    }
+
+    [HttpPost]
+    [AllowAnonymous]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Register(RegisterViewModel model, string? returnUrl = null)
+    {
+        if (_accountConfiguration.RegisterConfiguration is {Enabled: false}) return View("RegisterFailure");
+
+        returnUrl ??= Url.Content("~/");
+
+        ViewData["ReturnUrl"] = returnUrl;
+        Console.WriteLine("Test");
+        if (!ModelState.IsValid) return View(model);
+
+        var user = new ApplicationUser
+        {
+            UserName = model.UserName,
+            DisplayName = model.DisplayName,
+            Email = model.Email
+        };
+
+        var result = await _userManager.CreateAsync(user, model.Password);
+        if (result.Succeeded)
+        {
+            if (await _userManager.IsEmailConfirmedAsync(user))
+                return RedirectToAction("RegisterConfirmation", "Account");
+
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var verificationUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code },
+                HttpContext.Request.Scheme);
+
+            var confirmEmailViewModel = new ConfirmEmailViewModel
+                { Username = user.UserName, VerificationUrl = verificationUrl };
+
+            var sendEmailResponse = await _fluentEmail
+                .To(user.Email)
+                .Subject("Email Confirmation")
+                .UsingTemplateFromFile($"{Directory.GetCurrentDirectory()}/Views/Shared/Templates/Email/ConfirmEmail.cshtml", confirmEmailViewModel)
+                .SendAsync();
+
+            if (_signInManager.Options.SignIn.RequireConfirmedAccount && sendEmailResponse.Successful)
+            {
+                return View("RegisterConfirmation");
+            }
+
+            if (!sendEmailResponse.Successful)
+            {
+                this.AddErrors(sendEmailResponse.ErrorMessages);
+                return View(model);
+            }
+
+            await _signInManager.SignInAsync(user, isPersistent: false);
+            return LocalRedirect(returnUrl);
+        }
+
+        this.AddErrors(result);
+
+        // If we got this far, something failed, redisplay form
+        return View(model);
+    }
+
+
+    [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> ConfirmEmail(string? userId, string? code)
     {
         if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(code))
         {
             return View("Error");
         }
+
         var user = await _userManager.FindByIdAsync(userId);
         if (user is null)
         {
@@ -355,12 +438,12 @@ public class AccountController : Controller
     }
 
     /*****************************************/
-    /* helper APIs for the AccountController */
+    /* Helper APIs for the AccountController */
     /*****************************************/
     private async Task<LoginViewModel> BuildLoginViewModelAsync(string? returnUrl)
     {
         var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
-        if (context?.IdP is not null && await _schemeProvider.GetSchemeAsync(context.IdP) != null)
+        if (context?.IdP is not null && await _schemeProvider.GetSchemeAsync(context.IdP) is not null)
         {
             var local = context.IdP == Duende.IdentityServer.IdentityServerConstants.LocalIdentityProvider;
 
@@ -369,7 +452,7 @@ public class AccountController : Controller
             {
                 EnableLocalLogin = local,
                 ReturnUrl = returnUrl,
-                Username = context?.LoginHint,
+                Login = context.LoginHint,
             };
 
             if (!local)
@@ -397,7 +480,7 @@ public class AccountController : Controller
                 AllowRememberLogin = AccountOptions.AllowRememberLogin,
                 EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
                 ReturnUrl = returnUrl,
-                Username = context?.LoginHint,
+                Login = context?.LoginHint,
                 ExternalProviders = providers.ToArray()
             };
         var client = await _clientStore.FindEnabledClientByIdAsync(context.Client.ClientId);
@@ -408,7 +491,7 @@ public class AccountController : Controller
                 AllowRememberLogin = AccountOptions.AllowRememberLogin,
                 EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
                 ReturnUrl = returnUrl,
-                Username = context.LoginHint,
+                Login = context.LoginHint,
                 ExternalProviders = providers.ToArray()
             };
 
@@ -424,7 +507,7 @@ public class AccountController : Controller
             AllowRememberLogin = AccountOptions.AllowRememberLogin,
             EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
             ReturnUrl = returnUrl,
-            Username = context.LoginHint,
+            Login = context.LoginHint,
             ExternalProviders = providers.ToArray()
         };
     }
@@ -432,7 +515,7 @@ public class AccountController : Controller
     private async Task<LoginViewModel> BuildLoginViewModelAsync(LoginInputModel model)
     {
         var vm = await BuildLoginViewModelAsync(model.ReturnUrl);
-        vm.Username = model.Username;
+        vm.Login = model.Login;
         vm.RememberLogin = model.RememberLogin;
         return vm;
     }

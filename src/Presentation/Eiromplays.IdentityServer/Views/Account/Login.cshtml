@@ -1,4 +1,6 @@
+@using Eiromplays.IdentityServer.Application.Common.Configurations.Account
 @model Eiromplays.IdentityServer.ViewModels.Account.LoginViewModel
+@inject AccountConfiguration _accountConfiguration;
 
 <div class="login-page">
     <div class="lead">
@@ -23,8 +25,8 @@
                             <input type="hidden" asp-for="ReturnUrl" />
 
                             <div class="form-group">
-                                <label asp-for="Username"></label>
-                                <input class="form-control" placeholder="Username" asp-for="Username" autofocus>
+                                <label asp-for="Login"></label>
+                                <input class="form-control" placeholder="Username" asp-for="Login" autofocus>
                             </div>
                             <div class="form-group">
                                 <label asp-for="Password"></label>
@@ -43,6 +45,10 @@
                             }
                             <button class="btn btn-primary" name="button" value="login">Login</button>
                             <button class="btn btn-secondary" name="button" value="cancel">Cancel</button>
+                            @if (_accountConfiguration is {RegisterConfiguration.Enabled: true })
+                            {
+                                <a class="btn btn-dark" asp-action="Register" asp-controller="Account" asp-route-returnUrl="@Model.ReturnUrl" value="register">Register</a>
+                            }
                         </form>
                     </div>
                 </div>

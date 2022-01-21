@@ -1,4 +1,4 @@
-﻿using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations.Identity;
+﻿using Eiromplays.IdentityServer.Application.Common.Configurations.Identity;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

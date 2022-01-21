@@ -3,7 +3,7 @@ using FluentEmail.Graph;
 using FluentEmail.Mailgun;
 using FluentEmail.MailKitSmtp;
 
-namespace Eiromplays.IdentityServer.Infrastructure.Identity.Configurations;
+namespace Eiromplays.IdentityServer.Application.Common.Configurations;
 
 public class EmailConfiguration
 {

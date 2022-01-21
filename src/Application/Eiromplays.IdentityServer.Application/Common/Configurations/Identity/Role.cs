@@ -1,4 +1,4 @@
-﻿namespace Eiromplays.IdentityServer.Infrastructure.Identity.Configurations.Identity;
+﻿namespace Eiromplays.IdentityServer.Application.Common.Configurations.Identity;
 
 public class Role
 {

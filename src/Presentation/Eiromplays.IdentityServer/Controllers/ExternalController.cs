@@ -4,14 +4,11 @@
 // Original file: https://github.com/DuendeSoftware/Samples/blob/main/IdentityServer/v6/Quickstarts
 // Modified by Eirik Sjøløkken
 
-using System.Security.Claims;
-using System.Text;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Services;
 using Eiromplays.IdentityServer.Application.Common.Security;
 using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 using Eiromplays.IdentityServer.Extensions;
-using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.ViewModels.Account;
 using FluentEmail.Core;
@@ -19,6 +16,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using System.Security.Claims;
+using System.Text;
+using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 
 namespace Eiromplays.IdentityServer.Controllers;
 
@@ -34,7 +34,7 @@ public class ExternalController : Controller
     private readonly ILogger<ExternalController> _logger;
     private readonly IFluentEmail _fluentEmail;
     private readonly IIdentityService _identityService;
-    private readonly ProfilePictureConfiguration _profilePictureConfiguration;
+    private readonly AccountConfiguration _accountConfiguration;
 
     public ExternalController(
         UserManager<ApplicationUser> userManager,
@@ -44,7 +44,7 @@ public class ExternalController : Controller
         ILogger<ExternalController> logger,
         IFluentEmail fluentEmail,
         IIdentityService identityService,
-        ProfilePictureConfiguration profilePictureConfiguration)
+        AccountConfiguration accountConfiguration)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -53,7 +53,7 @@ public class ExternalController : Controller
         _logger = logger;
         _fluentEmail = fluentEmail;
         _identityService = identityService;
-        _profilePictureConfiguration = profilePictureConfiguration;
+        _accountConfiguration = accountConfiguration;
     }
 
     /// <summary>
@@ -149,10 +149,9 @@ public class ExternalController : Controller
                 Email = model.Email
             };
 
-            if (_profilePictureConfiguration.IsProfilePictureEnabled &&
-                _profilePictureConfiguration.AutoGenerateProfilePicture)
+            if (_accountConfiguration.ProfilePictureConfiguration is {IsProfilePictureEnabled: true, AutoGenerateProfilePicture: true})
             {
-                user.ProfilePicture = $"{_profilePictureConfiguration.ProfilePictureGeneratorUrl}/{user.UserName}.svg";
+                user.ProfilePicture = $"{_accountConfiguration.ProfilePictureConfiguration.ProfilePictureGeneratorUrl}/{user.UserName}.svg";
             }
 
             var result = await _userManager.CreateAsync(user);
