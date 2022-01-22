@@ -1,7 +1,6 @@
 ﻿using Duende.IdentityServer.Configuration;
 using Duende.IdentityServer.EntityFramework.Storage;
 using Eiromplays.IdentityServer.Application.Common.Configurations;
-using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Database;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Identity;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
@@ -38,8 +37,6 @@ public static class DependencyInjection
             configuration.GetSection(nameof(DatabaseConfiguration)).Get<DatabaseConfiguration>();
 
         services.RegisterIdentityDataConfiguration(configuration);
-
-        services.RegisterAccountConfiguration(configuration);
 
         services.RegisterNpgSqlDbContexts(databaseConfiguration);
 
@@ -366,19 +363,6 @@ public static class DependencyInjection
                 var nameOfEmailProvider = nameof(emailConfiguration.EmailProvider);
                 throw new ArgumentOutOfRangeException(nameOfEmailProvider, $"EmailProvider needs to be one of these: {string.Join(", ", Enum.GetNames(typeof(EmailProvider)))}.");
         }
-    }
-
-    /*
-        Registers the Profile Picture Configuration
-        You can find more avatar styles here: https://avatars.dicebear.com/styles/
-        You can also use a custom provider
-    */
-    public static void RegisterAccountConfiguration(this IServiceCollection services, IConfiguration configuration)
-    {
-        var accountConfiguration = configuration.GetSection(nameof(AccountConfiguration))
-            .Get<AccountConfiguration>();
-
-        services.AddSingleton(accountConfiguration);
     }
 
     public static void UseSecurityHeaders(this IApplicationBuilder app, IConfiguration configuration)

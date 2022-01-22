@@ -4,6 +4,7 @@
 // Original file: https://github.com/DuendeSoftware/Samples/blob/main/IdentityServer/v6/Quickstarts
 // Modified by Eirik Sjøløkken
 
+using System.Globalization;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
@@ -25,7 +26,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 using System.Text.Encodings.Web;
+using System.Text.Json;
 using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
+using Eiromplays.IdentityServer.Validators.Account;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Eiromplays.IdentityServer.Controllers;
 
@@ -231,15 +235,21 @@ public class AccountController : Controller
         returnUrl ??= Url.Content("~/");
 
         ViewData["ReturnUrl"] = returnUrl;
-        Console.WriteLine("Test");
-        if (!ModelState.IsValid) return View(model);
+        var validator = new RegisterValidator(_accountConfiguration);
+
+        var validationResult = await validator.ValidateAsync(model);
+
+        if (!validationResult.IsValid) return View(model);
 
         var user = new ApplicationUser
         {
-            UserName = model.UserName,
-            DisplayName = model.DisplayName,
+            UserName = model.UserName ?? model.Email,
+            DisplayName = model.DisplayName ?? model.Email,
             Email = model.Email
         };
+
+        if (_accountConfiguration.ProfilePictureConfiguration is { IsProfilePictureEnabled: true, AutoGenerateProfilePicture: true })
+            user.ProfilePicture = $"{_accountConfiguration.ProfilePictureConfiguration.ProfilePictureGeneratorUrl}/{user.UserName}.svg";
 
         var result = await _userManager.CreateAsync(user, model.Password);
         if (result.Succeeded)

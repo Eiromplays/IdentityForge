@@ -137,7 +137,7 @@ public class ExternalController : Controller
         var info = await _signInManager.GetExternalLoginInfoAsync();
         if (info is null)
         {
-            return View("ExternalLoginFailure");
+            return ExternalLoginFailure();
         }
 
         if (ModelState.IsValid)
@@ -202,5 +202,11 @@ public class ExternalController : Controller
         ViewData["ReturnUrl"] = returnUrl;
 
         return View(model);
+    }
+
+    [HttpGet]
+    public IActionResult ExternalLoginFailure()
+    {
+        return View();
     }
 }
