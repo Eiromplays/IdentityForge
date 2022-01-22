@@ -6,5 +6,7 @@ public class ProfilePictureConfiguration
 
     public bool AutoGenerateProfilePicture { get; set; } = true;
 
+    public bool AllowUploadingProfilePicture { get; set; } = true;
+
     public string? ProfilePictureGeneratorUrl { get; set; } = "https://avatars.dicebear.com/api/initials/";
 }
