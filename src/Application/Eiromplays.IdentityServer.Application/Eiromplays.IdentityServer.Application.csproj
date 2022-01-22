@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.0.1" />
     <PackageReference Include="FluentEmail.Graph" Version="1.2.0" />
     <PackageReference Include="FluentEmail.Mailgun" Version="3.0.0" />
     <PackageReference Include="FluentEmail.MailKit" Version="3.0.0" />

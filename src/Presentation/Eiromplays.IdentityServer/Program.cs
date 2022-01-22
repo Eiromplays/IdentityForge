@@ -14,6 +14,10 @@ builder.Configuration.AddJsonFile("identitydata.json", true, true);
 builder.Configuration.AddJsonFile($"identitydata.{builder.Environment.EnvironmentName}.json", true,
     true);
 
+builder.Configuration.AddJsonFile("identityserverdata.json", true, true);
+builder.Configuration.AddJsonFile($"identityserverdata.{builder.Environment.EnvironmentName}.json", true,
+    true);
+
 // Remove default logging providers
 builder.Logging.ClearProviders();
 

@@ -67,6 +67,10 @@ public static class DependencyInjection
         var identityDataConfiguration = configuration.GetSection(nameof(IdentityData)).Get<IdentityData>();
 
         services.AddSingleton(identityDataConfiguration);
+
+        var identityServerDataConfiguration = configuration.GetSection(nameof(IdentityServerData)).Get<IdentityServerData>();
+
+        services.AddSingleton(identityServerDataConfiguration);
     }
 
     public static void RegisterNpgSqlDbContexts(this IServiceCollection services, DatabaseConfiguration databaseConfiguration)
@@ -499,5 +503,11 @@ public static class DependencyInjection
         var identityData = services.GetRequiredService<IdentityData>();
 
         await IdentityDbContextSeed.SeedDefaultUsersAndRolesAsync(userManager, roleManager, identityData);
+
+        var identityServerDataConfiguration = scope.ServiceProvider.GetRequiredService<IdentityServerData>();
+        var identityServerConfigurationDbContext = services.GetRequiredService<IdentityServerConfigurationDbContext>();
+
+        await IdentityServerConfigurationDbContextSeed.SeedIdentityServerDataAsync(
+            identityServerConfigurationDbContext, identityServerDataConfiguration);
     }
 }
