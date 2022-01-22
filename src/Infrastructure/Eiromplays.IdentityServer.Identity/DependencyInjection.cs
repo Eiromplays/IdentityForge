@@ -1,17 +1,20 @@
 ﻿using Duende.IdentityServer.Configuration;
 using Duende.IdentityServer.EntityFramework.Storage;
+using Eiromplays.IdentityServer.Application.Common.Configurations;
+using Eiromplays.IdentityServer.Application.Common.Configurations.Database;
+using Eiromplays.IdentityServer.Application.Common.Configurations.Identity;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 using Eiromplays.IdentityServer.Domain.Constants;
+using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure.Helpers;
-using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations;
-using Eiromplays.IdentityServer.Infrastructure.Identity.Configurations.Identity;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContexts.Seeds;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts;
 using Eiromplays.IdentityServer.Infrastructure.Services;
+using FluentEmail.Graph;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -33,7 +36,7 @@ public static class DependencyInjection
         var databaseConfiguration =
             configuration.GetSection(nameof(DatabaseConfiguration)).Get<DatabaseConfiguration>();
 
-        RegisterIdentityDataConfiguration(services, configuration);
+        services.RegisterIdentityDataConfiguration(configuration);
 
         services.RegisterNpgSqlDbContexts(databaseConfiguration);
 
@@ -59,11 +62,15 @@ public static class DependencyInjection
         return services;
     }
 
-    private static void RegisterIdentityDataConfiguration(IServiceCollection services, IConfiguration configuration)
+    private static void RegisterIdentityDataConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
         var identityDataConfiguration = configuration.GetSection(nameof(IdentityData)).Get<IdentityData>();
 
         services.AddSingleton(identityDataConfiguration);
+
+        var identityServerDataConfiguration = configuration.GetSection(nameof(IdentityServerData)).Get<IdentityServerData>();
+
+        services.AddSingleton(identityServerDataConfiguration);
     }
 
     public static void RegisterNpgSqlDbContexts(this IServiceCollection services, DatabaseConfiguration databaseConfiguration)
@@ -166,6 +173,7 @@ public static class DependencyInjection
 
         services
             .AddSingleton(identityOptions)
+            .AddScoped<IUserResolver<ApplicationUser>, UserResolver>()
             .AddIdentity<ApplicationUser, ApplicationRole>(options => configuration.GetSection(nameof(IdentityOptions)).Bind(options))
             .AddEntityFrameworkStores<IdentityDbContext>()
             .AddDefaultTokenProviders();
@@ -311,15 +319,54 @@ public static class DependencyInjection
     public static void AddEmailSenders(this IServiceCollection services, IConfiguration configuration)
     {
         var emailConfiguration = configuration.GetSection(nameof(EmailConfiguration)).Get<EmailConfiguration>();
-        services
+        var fluentEmailServicesBuilder =services
             .AddFluentEmail(emailConfiguration.From, emailConfiguration.DefaultFromName)
-            .AddRazorRenderer()
-            .AddSmtpSender(new SmtpClient(emailConfiguration.Host, emailConfiguration.Port)
-            {
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(emailConfiguration.Login, emailConfiguration.Password),
-                EnableSsl = emailConfiguration.UseSsl
-            });
+            .AddRazorRenderer();
+
+        switch (emailConfiguration.EmailProvider)
+        {
+            case EmailProvider.Smtp:
+                if (emailConfiguration.SmtpEmailConfiguration is null)
+                    break;
+                fluentEmailServicesBuilder.AddSmtpSender(new SmtpClient(emailConfiguration.SmtpEmailConfiguration.Host, emailConfiguration.SmtpEmailConfiguration.Port)
+                {
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(emailConfiguration.SmtpEmailConfiguration.Login, emailConfiguration.SmtpEmailConfiguration.Password),
+                    EnableSsl = emailConfiguration.SmtpEmailConfiguration.UseSsl
+                });
+                break;
+            case EmailProvider.MailKit:
+                if (emailConfiguration.MailKitConfiguration is null)
+                    break;
+                fluentEmailServicesBuilder.AddMailKitSender(emailConfiguration.MailKitConfiguration);
+                break;
+            case EmailProvider.SendGrid:
+                if (emailConfiguration.SendGridConfiguration is null)
+                    break;
+                fluentEmailServicesBuilder.AddSendGridSender(emailConfiguration.SendGridConfiguration.ApiKey, emailConfiguration.SendGridConfiguration.SandboxMode);
+                break;
+            case EmailProvider.Mailgun:
+                if (emailConfiguration.MailgunConfiguration is null)
+                    break;
+                fluentEmailServicesBuilder.AddMailGunSender(emailConfiguration.MailgunConfiguration.DomainName,
+                    emailConfiguration.MailgunConfiguration.ApiKey, emailConfiguration.MailgunConfiguration.Region);
+                break;
+            case EmailProvider.Mailtrap:
+                if (emailConfiguration.MailtrapConfiguration is null)
+                    break;
+                fluentEmailServicesBuilder.AddMailtrapSender(emailConfiguration.MailtrapConfiguration.UserName,
+                    emailConfiguration.MailtrapConfiguration.Password, emailConfiguration.MailtrapConfiguration.Host,
+                    emailConfiguration.MailtrapConfiguration.Port);
+                break;
+            case EmailProvider.Graph:
+                if (emailConfiguration.GraphConfiguration is null)
+                    break;
+                fluentEmailServicesBuilder.AddGraphSender(emailConfiguration.GraphConfiguration);
+                break;
+            default:
+                var nameOfEmailProvider = nameof(emailConfiguration.EmailProvider);
+                throw new ArgumentOutOfRangeException(nameOfEmailProvider, $"EmailProvider needs to be one of these: {string.Join(", ", Enum.GetNames(typeof(EmailProvider)))}.");
+        }
     }
 
     public static void UseSecurityHeaders(this IApplicationBuilder app, IConfiguration configuration)
@@ -456,5 +503,11 @@ public static class DependencyInjection
         var identityData = services.GetRequiredService<IdentityData>();
 
         await IdentityDbContextSeed.SeedDefaultUsersAndRolesAsync(userManager, roleManager, identityData);
+
+        var identityServerDataConfiguration = scope.ServiceProvider.GetRequiredService<IdentityServerData>();
+        var identityServerConfigurationDbContext = services.GetRequiredService<IdentityServerConfigurationDbContext>();
+
+        await IdentityServerConfigurationDbContextSeed.SeedIdentityServerDataAsync(
+            identityServerConfigurationDbContext, identityServerDataConfiguration);
     }
 }

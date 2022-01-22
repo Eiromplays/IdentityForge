@@ -3,6 +3,7 @@ using Eiromplays.IdentityServer.Filters;
 using Eiromplays.IdentityServer.Infrastructure.Identity;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile("identitydata.json", true, true);
 builder.Configuration.AddJsonFile($"identitydata.{builder.Environment.EnvironmentName}.json", true,
+    true);
+
+builder.Configuration.AddJsonFile("identityserverdata.json", true, true);
+builder.Configuration.AddJsonFile($"identityserverdata.{builder.Environment.EnvironmentName}.json", true,
     true);
 
 // Remove default logging providers
@@ -27,7 +32,7 @@ builder.Logging.AddSerilog(logger);
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
-builder.Services.AddApplication();
+builder.Services.AddApplication(builder.Configuration);
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
@@ -36,6 +41,18 @@ builder.Services.AddControllersWithViews(options =>
     .AddFluentValidation(x => x.AutomaticValidationEnabled = false);
 
 builder.Services.AddControllers();
+builder.Services.AddApiVersioning(options =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = ApiVersion.Default;
+    options.ApiVersionReader = ApiVersionReader.Combine(
+        new UrlSegmentApiVersionReader(),
+        new MediaTypeApiVersionReader("version"),
+        new HeaderApiVersionReader("X-Version")
+    );
+
+    options.ReportApiVersions = true;
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -74,9 +91,8 @@ app.UseSecurityHeaders(app.Configuration);
 
 app.UseStaticFiles();
 
-app.UseIdentityServer();
-
 app.UseRouting();
+app.UseIdentityServer();
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>

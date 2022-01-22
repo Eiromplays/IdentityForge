@@ -1,6 +1,6 @@
-﻿@model Eiromplays.IdentityServer.Quickstart.Account.LoggedOutViewModel
+﻿@model Eiromplays.IdentityServer.ViewModels.Account.LoggedOutViewModel
 
-@{ 
+@{
     // set this so the layout rendering sees an anonymous user
     ViewData["signed-out"] = true;
 }
@@ -11,7 +11,7 @@
         <small>You are now logged out</small>
     </h1>
 
-    @if (Model.PostLogoutRedirectUri != null)
+    @if (Model is {PostLogoutRedirectUri: { } })
     {
         <div>
             Click <a class="PostLogoutRedirectUri" href="@Model.PostLogoutRedirectUri">here</a> to return to the
@@ -19,7 +19,7 @@
         </div>
     }
 
-    @if (Model.SignOutIframeUrl != null)
+    @if (Model is {SignOutIframeUrl: { } })
     {
         <iframe width="0" height="0" class="signout" src="@Model.SignOutIframeUrl"></iframe>
     }
@@ -27,7 +27,7 @@
 
 @section scripts
 {
-    @if (Model.AutomaticRedirectAfterSignOut)
+    @if (Model is {AutomaticRedirectAfterSignOut: true })
     {
         <script src="~/js/signout-redirect.js"></script>
     }

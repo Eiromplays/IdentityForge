@@ -1,4 +1,4 @@
-﻿@model Eiromplays.IdentityServer.Quickstart.Account.LogoutViewModel
+﻿@model Eiromplays.IdentityServer.ViewModels.Account.LogoutViewModel
 
 <div class="logout-page">
     <div class="lead">
@@ -7,7 +7,7 @@
     </div>
 
     <form asp-action="Logout">
-        <input type="hidden" name="logoutId" value="@Model.LogoutId"  />
+        <input type="hidden" name="logoutId" value="@Model?.LogoutId"  />
         <div class="form-group">
             <button class="btn btn-primary">Yes</button>
         </div>
