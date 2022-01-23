@@ -63,15 +63,6 @@
     ],
     "ApiScopes": [
       {
-        "Name": "eiromplays_identity_admin_api",
-        "DisplayName": "eiromplays_identity_admin_api",
-        "Required": true,
-        "UserClaims": [
-          "role",
-          "name"
-        ]
-      },
-      {
         "Name": "api",
         "DisplayName": "api",
         "UserClaims": [
@@ -79,88 +70,32 @@
         ]
       }
     ],
-    "ApiResources": [
-      {
-        "Name": "eiromplays_identity_admin_api",
-        "Scopes": [
-          "eiromplays_identity_admin_api"
-        ]
-      }
-    ],
+    "ApiResources": [],
     "Clients": [
       {
         "ClientId": "eiromplays_identity_spa",
         "ClientName": "eiromplays_identity_spa",
-        "ClientUri": "https://localhost:5002/",
+        "ClientUri": "http://localhost:44409/",
         "AllowedGrantTypes": [
           "authorization_code",
           "client_credentials"
         ],
-        "RequireClientSecret": false,
         "RedirectUris": [
-          "https://localhost:5002/signin-oidc"
+          "http://localhost:44409/signin-oidc"
         ],
-        //"FrontChannelLogoutUri": "https://localhost:5002/signout-oidc",
-        "BackChannelLogoutUri": "https://localhost:5002/bff/backchannel",
+        //"FrontChannelLogoutUri": "http://localhost:44409/signout-oidc",
+        "BackChannelLogoutUri": "http://localhost:44409/bff/backchannel",
         "PostLogoutRedirectUris": [
-          "https://localhost:5002/signout-callback-oidc"
+          "http://localhost:44409/signout-callback-oidc"
         ],
         "AllowedCorsOrigins": [
-          "https://localhost:5002"
+          "http://localhost:44409"
         ],
         "AllowOfflineAccess": true,
         "AllowedScopes": [
           "openid",
           "profile",
           "api"
-        ]
-      },
-      {
-        "ClientId": "eiromplays_identity_admin",
-        "ClientName": "eiromplays_identity_admin",
-        "ClientUri": "https://localhost:44303",
-        "AllowedGrantTypes": [
-          "authorization_code"
-        ],
-        "RequirePkce": true,
-        "ClientSecrets": [
-          {
-            "Value": "eiromplays_admin_client_secret"
-          }
-        ],
-        "RedirectUris": [
-          "https://localhost:44303/signin-oidc"
-        ],
-        "FrontChannelLogoutUri": "https://localhost:44303/signout-oidc",
-        "PostLogoutRedirectUris": [
-          "https://localhost:44303/signout-callback-oidc"
-        ],
-        "AllowedCorsOrigins": [
-          "https://localhost:44303"
-        ],
-        "AllowedScopes": [
-          "openid",
-          "email",
-          "profile",
-          "roles"
-        ]
-      },
-      {
-        "ClientId": "eiromplays_identity_admin_api_swaggerui",
-        "ClientName": "eiromplays_identity_admin_api_swaggerui",
-        "AllowedGrantTypes": [
-          "authorization_code"
-        ],
-        "RequireClientSecret": false,
-        "RequirePkce": true,
-        "RedirectUris": [
-          "https://localhost:44302/swagger/oauth2-redirect.html"
-        ],
-        "AllowedScopes": [
-          "eiromplays_identity_admin_api"
-        ],
-        "AllowedCorsOrigins": [
-          "https://localhost:44302"
         ]
       }
     ]

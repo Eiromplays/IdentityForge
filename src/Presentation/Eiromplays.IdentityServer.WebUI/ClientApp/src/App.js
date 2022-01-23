@@ -12,10 +12,10 @@ export default class App extends Component {
   render() {
     return (
       <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/user-session" element={<UserSession />} />
-        </Routes>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/user-session" element={<UserSession />} />
+          </Routes>
       </Layout>
     );
   }

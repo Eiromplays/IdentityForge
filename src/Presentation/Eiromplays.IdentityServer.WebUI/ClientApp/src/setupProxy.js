@@ -13,7 +13,7 @@ module.exports = function (app) {
   const appProxy = createProxyMiddleware(context, {
     target: target,
     secure: false,
+    logLevel: "debug",
   });
-
   app.use(appProxy);
 };
