@@ -1,157 +1,43 @@
-import React, { Component } from "react";
+import React from 'react';
+import useClaims from '../apis/claims';
 
-export class Home extends Component {
-  static displayName = Home.name;
+function Home() {
+  const { data: claims, isLoading } = useClaims();
+  let logoutUrl = claims?.find(claim => claim.type === 'bff:logout_url') 
+  let nameDict = claims?.find(claim => claim.type === 'name') ||  claims?.find(claim => claim.type === 'sub');
+  let username = nameDict?.value; 
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      todos: [],
-      loading: true,
-      error: null,
-      todoName: "Do something",
-      todoDate: "2021-03-01",
-    };
+  if(isLoading)
+    return <div>Loading...</div>
 
-    this.createTodo = this.createTodo.bind(this);
-    this.deleteTodo = this.deleteTodo.bind(this);
-  }
-
-  componentDidMount() {
-    (async () => this.populateTodos())();
-  }
-
-  async populateTodos() {
-    const response = await fetch("todos", {
-      headers: {
-        "X-CSRF": 1,
-      },
-    });
-    if (response.ok) {
-      const data = await response.json();
-      this.setState({ todos: data, loading: false, error: null });
-    } else if (response.status !== 401) {
-      this.setState({ error: response.status });
-    }
-  }
-
-  async createTodo(e) {
-    e.preventDefault();
-    const response = await fetch("todos", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-csrf": "1",
-      },
-      body: JSON.stringify({
-        name: this.state.todoName,
-        date: this.state.todoDate,
-      }),
-    });
-
-    if (response.ok) {
-      var item = await response.json();
-      this.setState({
-        todos: [...this.state.todos, item],
-        todoName: "Do something",
-        todoDate: "2021-03-02",
-      });
-    } else {
-      this.setState({ error: response.status });
-    }
-  }
-
-  async deleteTodo(id) {
-    const response = await fetch(`todos/${id}`, {
-      method: "DELETE",
-      headers: {
-        "x-csrf": 1,
-      },
-    });
-    if (response.ok) {
-      const todos = this.state.todos.filter((x) => x.id !== id);
-      this.setState({ todos });
-    } else {
-      this.setState({ error: response.status });
-    }
-  }
-
-  render() {
-    return (
-      <>
-        <div className="banner">
-          <h1>TODOs</h1>
-        </div>
-
-        <div className="row">
-          <div className="col">
-            <h3>Add New</h3>
-          </div>
-          <div className="form-inline">
-            <label htmlFor="date">Todo Date</label>
-            <input
-              className="form-control"
-              type="date"
-              value={this.state.todoDate}
-              onChange={(e) => this.setState({ todoDate: e.target.value })}
-            />
-            <label htmlFor="name">Todo Name</label>
-            <input
-              className="form-control"
-              value={this.state.todoName}
-              onChange={(e) => this.setState({ todoName: e.target.value })}
-            />
-            <button
-              className="form-control btn-success"
-              onClick={this.createTodo}
-            >
-              Create
-            </button>
-          </div>
-        </div>
-        {this.state.error !== null && (
-          <div className="row">
-            <div className="col">
-              <div className="alert alert-warning hide">
-                <strong>Error: </strong>
-                <span>{this.state.error}</span>
+  return ( 
+    <div className="p-20">
+      {
+        !username ? (
+          <a 
+            href="/bff/login?returnUrl=/"
+            className="inline-block px-4 py-2 text-base font-medium text-center text-white bg-blue-500 border border-transparent rounded-md hover:bg-opacity-75"
+          >
+            Login
+          </a>
+        ) : (
+          <div className="flex-shrink-0 block">
+            <div className="flex items-center">
+              <div className="ml-3">
+                <p className="block text-base font-medium text-blue-500 md:text-sm">{`Hi, ${username}!`}</p>
+                <a 
+                  href={logoutUrl?.value}
+                  className="block mt-1 text-sm font-medium text-blue-200 hover:text-blue-500 md:text-xs"
+                >
+                  Logout
+                </a>
               </div>
             </div>
           </div>
-        )}
-
-        <div className="row">
-          <table className="table table-striped table-sm">
-            <thead>
-              <tr>
-                <th/>
-                <th>Id</th>
-                <th>Date</th>
-                <th>Note</th>
-                <th>User</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.todos.map((todo) => (
-                <tr key={todo.id}>
-                  <td>
-                    <button
-                      onClick={async () => this.deleteTodo(todo.id)}
-                      className="btn btn-danger"
-                    >
-                      delete
-                    </button>
-                  </td>
-                  <td>{todo.id}</td>
-                  <td>{todo.date}</td>
-                  <td>{todo.name}</td>
-                  <td>{todo.user}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </>
-    );
-  }
+        )
+      }
+    </div>
+  )
 }
+
+export { Home };
