@@ -7,6 +7,7 @@
         "precaching",
         "signin",
         "signout",
+        "spdy",
         "todos",
         "webui"
     ]

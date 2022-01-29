@@ -1,9 +1,9 @@
 import { Component } from "react";
 import { Route } from "react-router";
 import { Routes} from "react-router-dom";
-import { Home } from "../../pages/Home/Home";
+import Home from "../../pages/Home/Home";
 import { Layout } from "../Layout/Layout";
-import { UserSession } from "../UserSession/UserSession";
+import UserSession from "../UserSession/UserSession";
 import { QueryClient, QueryClientProvider } from 'react-query'
 import "./app.scss";
 

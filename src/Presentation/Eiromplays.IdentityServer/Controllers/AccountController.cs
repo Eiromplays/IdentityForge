@@ -4,7 +4,6 @@
 // Original file: https://github.com/DuendeSoftware/Samples/blob/main/IdentityServer/v6/Quickstarts
 // Modified by Eirik Sjøløkken
 
-using System.Globalization;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
@@ -12,10 +11,11 @@ using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Application.Common.Security;
+using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 using Eiromplays.IdentityServer.Configuration;
-using Eiromplays.IdentityServer.Domain.Constants;
 using Eiromplays.IdentityServer.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
+using Eiromplays.IdentityServer.Validators.Account;
 using Eiromplays.IdentityServer.ViewModels.Account;
 using FluentEmail.Core;
 using IdentityModel;
@@ -25,11 +25,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
-using System.Text.Encodings.Web;
-using System.Text.Json;
-using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
-using Eiromplays.IdentityServer.Validators.Account;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Eiromplays.IdentityServer.Controllers;
 

@@ -64,13 +64,25 @@
     "ApiScopes": [
       {
         "Name": "api",
-        "DisplayName": "api",
+        "DisplayName": "API",
         "UserClaims": [
           "name"
         ]
       }
     ],
-    "ApiResources": [],
+    "ApiResources": [
+      {
+        "Name": "api",
+        "DisplayName": "API",
+        "UserClaims": [
+          "name",
+          "email"
+        ],
+        "Scopes": [
+          "api"
+        ]
+      }
+    ],
     "Clients": [
       {
         "ClientId": "eiromplays_identity_spa",

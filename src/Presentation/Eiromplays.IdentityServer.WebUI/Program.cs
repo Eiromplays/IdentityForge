@@ -5,6 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddAuthorization();
+
 builder.Services.AddBff()
     .AddRemoteApis();
 
@@ -55,19 +57,24 @@ else
     app.UseHsts();
 }
 
+app.UseDefaultFiles();
 app.UseStaticFiles();
+
 app.UseRouting();
 app.UseAuthentication();
+
 app.UseBff();
+
 app.UseAuthorization();
-app.MapBffManagementEndpoints();
 
 app.MapControllers()
     .RequireAuthorization()
     .AsBffApiEndpoint();
 
-// app.MapRemoteBffApiEndpoint("/todos", "https://localhost:5020/todos")
-//     .RequireAccessToken(Duende.Bff.TokenType.User);
+app.MapBffManagementEndpoints();
+
+app.MapRemoteBffApiEndpoint("/todos", "https://localhost:5003/todos")
+    .RequireAccessToken(Duende.Bff.TokenType.User);
 
 app.MapFallbackToFile("index.html");
 
