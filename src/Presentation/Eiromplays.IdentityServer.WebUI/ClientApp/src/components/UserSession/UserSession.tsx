@@ -1,9 +1,21 @@
-import React, { Component } from "react";
+import { Component } from "react";
 
-export class UserSession extends Component {
+const requestHeaders: HeadersInit = new Headers();
+requestHeaders.set('X-CSRF', '1');
+
+type MyProps = {
+
+};
+
+type MyState = {
+  loading: boolean,
+  userSessionInfo: {}
+};
+
+export class UserSession extends Component<MyProps, MyState> {
   static displayName = UserSession.name;
 
-  constructor(props) {
+  constructor(props:any) {
     super(props);
     this.state = { userSessionInfo: {}, loading: true };
   }
@@ -12,7 +24,7 @@ export class UserSession extends Component {
     this.fetchUserSessionInfo();
   }
 
-  static renderUserSessionTable(userSession) {
+  static renderUserSessionTable(userSession:any) {
     return (
       <table className="table table-striped" aria-labelledby="tabelLabel">
         <thead>
@@ -22,7 +34,7 @@ export class UserSession extends Component {
           </tr>
         </thead>
         <tbody>
-          {userSession.map((claim) => (
+          {userSession.map((claim:any) => (
             <tr key={claim.type}>
               <td>{claim.type}</td>
               <td>{claim.value}</td>
@@ -53,9 +65,7 @@ export class UserSession extends Component {
 
   async fetchUserSessionInfo() {
     const response = await fetch("bff/user", {
-      headers: {
-        "X-CSRF": 1,
-      },
+      headers: requestHeaders
     });
     const data = await response.json();
     this.setState({ userSessionInfo: data, loading: false });

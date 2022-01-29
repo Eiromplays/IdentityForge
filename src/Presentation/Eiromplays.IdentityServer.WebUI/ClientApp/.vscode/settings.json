@@ -1,5 +1,13 @@
 {
     "cSpell.words": [
-        "ASPNETCORE"
+        "APPDATA",
+        "ASPNETCORE",
+        "identityserver",
+        "oidc",
+        "precaching",
+        "signin",
+        "signout",
+        "todos",
+        "webui"
     ]
 }

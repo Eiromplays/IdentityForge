@@ -1,9 +1,23 @@
-import React, { Component } from "react";
+import { Component } from "react";
 
-export class Home extends Component {
+const requestHeaders: HeadersInit = new Headers();
+requestHeaders.set('Content-Type', 'application/json');
+requestHeaders.set('X-CSRF', '1');
+
+type MyProps = {};
+
+type MyState = {
+  todos: any[],
+  loading: boolean,
+  error: number | null,
+  todoName: string,
+  todoDate: string,
+};
+
+export class Home extends Component<MyProps, MyState>{
   static displayName = Home.name;
 
-  constructor(props) {
+  constructor(props: any) {
     super(props);
     this.state = {
       todos: [],
@@ -23,9 +37,7 @@ export class Home extends Component {
 
   async populateTodos() {
     const response = await fetch("todos", {
-      headers: {
-        "X-CSRF": 1,
-      },
+      headers: requestHeaders
     });
     if (response.ok) {
       const data = await response.json();
@@ -35,14 +47,11 @@ export class Home extends Component {
     }
   }
 
-  async createTodo(e) {
+  async createTodo(e: { preventDefault: () => void; }) {
     e.preventDefault();
     const response = await fetch("todos", {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-csrf": "1",
-      },
+      headers: requestHeaders,
       body: JSON.stringify({
         name: this.state.todoName,
         date: this.state.todoDate,
@@ -61,13 +70,12 @@ export class Home extends Component {
     }
   }
 
-  async deleteTodo(id) {
+  async deleteTodo(id: any) {
+    
     const response = await fetch(`todos/${id}`, {
-      method: "DELETE",
-      headers: {
-        "x-csrf": 1,
-      },
-    });
+        method: "DELETE",
+        headers: requestHeaders
+      });
     if (response.ok) {
       const todos = this.state.todos.filter((x) => x.id !== id);
       this.setState({ todos });
