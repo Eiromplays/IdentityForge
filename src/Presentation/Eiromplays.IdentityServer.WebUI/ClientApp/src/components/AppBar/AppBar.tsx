@@ -16,6 +16,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Link from '@mui/material/Link';
 import LoginIcon from '@mui/icons-material/Login';
 import Grid from '@mui/material/Grid';
+import Avatar from '@mui/material/Avatar';
 
 const requestHeaders: HeadersInit = new Headers();
 requestHeaders.set('X-CSRF', '1');
@@ -37,15 +38,14 @@ const fetchUserSessionInfo = async (): Promise<any> => {
   return false;
 }
 
-const fetchProfilePicture = async (): Promise<any> => {
-  const response = await fetch('/profilePicture', { headers: requestHeaders });
+const fetchUser = async (): Promise<any> => {
+  const response = await fetch('/users', { headers: requestHeaders });
   if (response.ok && response.status === 200) {
     return response.json();
   }
 
   return false;
 }
-
 
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -54,7 +54,7 @@ const ResponsiveAppBar = () => {
   let logoutUrl = '/bff/logout';
   const { data: userSessionInfo, isLoading: userSessionInfoIsLoading, error: userSessionInfoError } = useQuery<any, ErrorConstructor>('userSessionInfo', fetchUserSessionInfo);
 
-  const { data: profilePicture, isLoading: profilePictureIsLoading, error: profilePictureError } = useQuery<any, ErrorConstructor>('profilePicture', fetchProfilePicture);
+  const { data: user, isLoading: userIsLoading, error: userError } = useQuery<any, ErrorConstructor>('user', fetchUser);
 
   if (userSessionInfo) {
     logoutUrl = userSessionInfo.find((claim:any) => claim.type === "bff:logout_url")?.value ?? logoutUrl;
@@ -161,7 +161,20 @@ const ResponsiveAppBar = () => {
               <div>
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <AccountCircle />
+                    {userIsLoading && (
+                      <CircularProgress color="secondary" />
+                    )}
+                    {userError && (
+                      <div>Something went wrong while loading user.</div>
+                    )}
+                    {user && !userIsLoading && !userError && (  
+                        <>
+                          {!user.profilePicture ? (
+                            <AccountCircle />
+                          ) :
+                          <Avatar alt="profile picture" src={user.profilePicture} />}
+                        </>
+                    )}
                   </IconButton>
                 </Tooltip>
                 <Menu
@@ -195,15 +208,6 @@ const ResponsiveAppBar = () => {
                     <Link href='/bff/login' underline="hover" color="inherit">Login</Link>
                   </Grid>
                 </div>
-            )}
-            {profilePictureIsLoading && (
-              <CircularProgress color="secondary" />
-            )}
-            {profilePictureError && (
-              <div>Something went wrong while loading profile picture information.</div>
-            )}
-            {profilePicture && !profilePictureIsLoading && !profilePictureError && (  
-                <div>PP: {profilePicture}</div>
             )}
           </Box>
         </Toolbar>

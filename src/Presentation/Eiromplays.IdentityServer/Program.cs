@@ -34,7 +34,7 @@ builder.Logging.AddSerilog(logger);
 
 builder.Services.AddApplication(builder.Configuration);
 
-builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration, true);
 
 builder.Services.AddControllersWithViews(options =>
         options.Filters.Add<ApiExceptionFilterAttribute>())

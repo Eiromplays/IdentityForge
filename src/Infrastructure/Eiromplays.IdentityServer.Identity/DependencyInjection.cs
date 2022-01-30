@@ -31,12 +31,12 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration, bool isIdentityServer = false)
     {
         var databaseConfiguration =
             configuration.GetSection(nameof(DatabaseConfiguration)).Get<DatabaseConfiguration>();
 
-        services.RegisterIdentityDataConfiguration(configuration);
+        services.RegisterIdentityDataConfiguration(configuration, isIdentityServer);
 
         services.RegisterNpgSqlDbContexts(databaseConfiguration);
 
@@ -44,9 +44,9 @@ public static class DependencyInjection
 
         services.AddScoped<IDomainEventService, DomainEventService>();
 
-        services.AddAuthentication(configuration);
+        services.AddAuthentication(configuration, isIdentityServer);
 
-        services.AddIdentityServer(configuration);
+        services.AddIdentityServer(configuration, isIdentityServer);
 
         services.AddTransient<IDateTime, DateTimeService>();
         services.AddTransient<IIdentityService, IdentityService>();
@@ -62,8 +62,10 @@ public static class DependencyInjection
         return services;
     }
 
-    private static void RegisterIdentityDataConfiguration(this IServiceCollection services, IConfiguration configuration)
+    private static void RegisterIdentityDataConfiguration(this IServiceCollection services, IConfiguration configuration, bool isIdentityServer = false)
     {
+        if (!isIdentityServer) return;
+
         var identityDataConfiguration = configuration.GetSection(nameof(IdentityData)).Get<IdentityData>();
 
         services.AddSingleton(identityDataConfiguration);
@@ -157,7 +159,7 @@ public static class DependencyInjection
         }
     }
 
-    public static void AddAuthentication(this IServiceCollection services, IConfiguration configuration)
+    public static void AddAuthentication(this IServiceCollection services, IConfiguration configuration, bool isIdentityServer = false)
     {
         services.Configure<CookiePolicyOptions>(options =>
         {
@@ -178,11 +180,13 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<IdentityDbContext>()
             .AddDefaultTokenProviders();
 
-        services.AddExternalProviders(configuration);
+        services.AddExternalProviders(configuration, isIdentityServer);
     }
 
-    public static void AddIdentityServer(this IServiceCollection services, IConfiguration configuration)
+    public static void AddIdentityServer(this IServiceCollection services, IConfiguration configuration, bool isIdentityServer = false)
     {
+        if (!isIdentityServer) return;
+
         var configurationSection = configuration.GetSection(nameof(IdentityServerOptions));
 
         services.AddIdentityServer(options => configurationSection.Bind(options))
@@ -191,12 +195,14 @@ public static class DependencyInjection
             .AddAspNetIdentity<ApplicationUser>();
     }
 
-    public static void AddExternalProviders(this IServiceCollection services, IConfiguration configuration)
+    public static void AddExternalProviders(this IServiceCollection services, IConfiguration configuration, bool isIdentityServer = false)
     {
-        var externalProviderConfiguration = configuration.GetSection(nameof(ExternalProvidersConfiguration))
-            .Get<ExternalProvidersConfiguration>();
+        if (!isIdentityServer) return;
 
         var authenticationBuilder = services.AddAuthentication();
+
+        var externalProviderConfiguration = configuration.GetSection(nameof(ExternalProvidersConfiguration))
+            .Get<ExternalProvidersConfiguration>();
 
         if (externalProviderConfiguration.UseGoogleProvider &&
             !string.IsNullOrWhiteSpace(externalProviderConfiguration.GoogleClientId) &&
@@ -424,7 +430,6 @@ public static class DependencyInjection
                 });
             });
         }
-
     }
 
     public static async Task ApplyMigrationsAsync(this IServiceProvider serviceProvider, IConfiguration configuration)
@@ -479,7 +484,7 @@ public static class DependencyInjection
         }
         catch (Exception ex)
         {
-            var logger = scope.ServiceProvider.GetRequiredService<ILogger>();
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<WebApplication>>();
 
             logger.LogError(ex, "An error occurred while migrating or seeding the database(s).");
 

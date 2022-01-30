@@ -12,7 +12,7 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity.Persistence.DbContex
         private readonly IDateTime _dateTime;
         private readonly IDomainEventService _domainEventService;
 
-        public IdentityServerPersistedGrantDbContext(DbContextOptions options, ICurrentUserService currentUserService,
+        public IdentityServerPersistedGrantDbContext(DbContextOptions<IdentityServerPersistedGrantDbContext> options, ICurrentUserService currentUserService,
             IDateTime dateTime, IDomainEventService domainEventService) : base(options)
         {
             _currentUserService = currentUserService;

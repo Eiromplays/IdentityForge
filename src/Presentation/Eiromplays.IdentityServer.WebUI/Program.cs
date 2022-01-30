@@ -73,7 +73,7 @@ app.MapControllers()
 
 app.MapBffManagementEndpoints();
 
-app.MapRemoteBffApiEndpoint("/todos", "https://localhost:5003/todos")
+app.MapRemoteBffApiEndpoint("/users", "https://localhost:5003/api/v1/users")
     .RequireAccessToken(Duende.Bff.TokenType.User);
 
 app.MapFallbackToFile("index.html");
