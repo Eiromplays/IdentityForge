@@ -243,8 +243,8 @@ public class AccountController : Controller
             Email = model.Email
         };
 
-        if (_accountConfiguration.ProfilePictureConfiguration is { IsProfilePictureEnabled: true, AutoGenerateProfilePicture: true })
-            user.ProfilePicture = $"{_accountConfiguration.ProfilePictureConfiguration.ProfilePictureGeneratorUrl}/{user.UserName}.svg";
+        if (_accountConfiguration.ProfilePictureConfiguration is { IsProfilePictureEnabled: true, AutoGenerate: true })
+            user.ProfilePicture = $"{_accountConfiguration.ProfilePictureConfiguration.DefaultUrl}/{user.UserName}.svg";
 
         var result = await _userManager.CreateAsync(user, model.Password);
         if (result.Succeeded)

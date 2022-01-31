@@ -149,9 +149,9 @@ public class ExternalController : Controller
                 Email = model.Email
             };
 
-            if (_accountConfiguration.ProfilePictureConfiguration is {IsProfilePictureEnabled: true, AutoGenerateProfilePicture: true})
+            if (_accountConfiguration.ProfilePictureConfiguration is {IsProfilePictureEnabled: true, AutoGenerate: true})
             {
-                user.ProfilePicture = $"{_accountConfiguration.ProfilePictureConfiguration.ProfilePictureGeneratorUrl}/{user.UserName}.svg";
+                user.ProfilePicture = $"{_accountConfiguration.ProfilePictureConfiguration.DefaultUrl}/{user.UserName}.svg";
             }
 
             var result = await _userManager.CreateAsync(user);

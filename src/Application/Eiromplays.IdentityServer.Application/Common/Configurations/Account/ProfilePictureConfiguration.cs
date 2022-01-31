@@ -2,11 +2,11 @@
 
 public class ProfilePictureConfiguration
 {
-    public bool IsProfilePictureEnabled { get; set; } = true;
+    public bool Enabled { get; set; } = true;
 
-    public bool AutoGenerateProfilePicture { get; set; } = true;
+    public bool AutoGenerate { get; set; } = true;
 
-    public bool AllowUploadingProfilePicture { get; set; } = true;
+    public bool AllowUploading { get; set; } = true;
 
-    public string? ProfilePictureGeneratorUrl { get; set; } = "https://avatars.dicebear.com/api/initials/";
+    public string? DefaultUrl { get; set; } = "https://avatars.dicebear.com/api/initials/";
 }
