@@ -149,7 +149,7 @@ public class ExternalController : Controller
                 Email = model.Email
             };
 
-            if (_accountConfiguration.ProfilePictureConfiguration is {IsProfilePictureEnabled: true, AutoGenerate: true})
+            if (_accountConfiguration.ProfilePictureConfiguration is {Enabled: true, AutoGenerate: true})
             {
                 user.ProfilePicture = $"{_accountConfiguration.ProfilePictureConfiguration.DefaultUrl}/{user.UserName}.svg";
             }

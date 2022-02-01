@@ -55,7 +55,7 @@ builder.Services.AddAuthentication(options =>
     })
     .AddJwtBearer("token", options =>
     {
-        options.Authority = "https://localhost:5001";
+        options.Authority = "https://localhost:7001";
         options.Audience = "api";
 
         options.MapInboundClaims = false;
@@ -96,6 +96,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHttpsRedirection();
 app.UseSecurityHeaders(app.Configuration);
 
 app.UseStaticFiles();

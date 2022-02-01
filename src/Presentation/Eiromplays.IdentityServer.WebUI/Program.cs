@@ -21,7 +21,7 @@ builder.Services.AddAuthentication(options =>
     options.Cookie.SameSite = SameSiteMode.Strict;
 }).AddOpenIdConnect("oidc", options =>
 {
-    options.Authority = "https://localhost:5001";
+    options.Authority = "https://localhost:7001";
     options.ClientId = "eiromplays_identity_spa";
     options.ClientSecret = "secret";
     options.ResponseType = "code";
@@ -73,7 +73,7 @@ app.MapControllers()
 
 app.MapBffManagementEndpoints();
 
-app.MapRemoteBffApiEndpoint("/users", "https://localhost:5003/api/v1/users")
+app.MapRemoteBffApiEndpoint("/users", "https://localhost:7003/api/v1/users")
     .RequireAccessToken(Duende.Bff.TokenType.User);
 
 app.MapFallbackToFile("index.html");
