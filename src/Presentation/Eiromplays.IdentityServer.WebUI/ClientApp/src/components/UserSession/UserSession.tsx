@@ -1,4 +1,3 @@
-import { useQuery } from 'react-query';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -8,21 +7,10 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Box from "@mui/material/Box";
 import CircularProgress from '@mui/material/CircularProgress';
-
-const requestHeaders: HeadersInit = new Headers();
-requestHeaders.set('X-CSRF', '1');
-
-const fetchUserSessionInfo = async (): Promise<any> => {
-  const response = await fetch('/bff/user', { headers: requestHeaders });
-  if (response.ok && response.status === 200) {
-    return response.json();
-  }
-
-  return false;
-}
+import useUserSession from './UseUserSession';
 
 export default function UserSession() {
-  const { data: userSessionInfo, isLoading, error } = useQuery<any, ErrorConstructor>('userSessionInfo', fetchUserSessionInfo);
+  const {userSessionInfo, isLoading, error} = useUserSession();
 
   return (
     <>

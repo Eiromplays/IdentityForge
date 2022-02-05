@@ -17,53 +17,50 @@ import Link from '@mui/material/Link';
 import LoginIcon from '@mui/icons-material/Login';
 import Grid from '@mui/material/Grid';
 import Avatar from '@mui/material/Avatar';
+import toast from 'react-hot-toast';
 
 const requestHeaders: HeadersInit = new Headers();
 requestHeaders.set('X-CSRF', '1');
 
 const pages: { name: string, url: string }[] = [
-  { name: 'Home', url: '/' }
+  { name: 'Home', url: '/' },
 ];
 
 let settings: { name: string, url: string }[] = [
   { name: 'Show User Session', url: '/user-session' },
+  { name: 'Profile', url: '/profile' }
 ];
 
 const fetchUserSessionInfo = async (): Promise<any> => {
   const response = await fetch('/bff/user', { headers: requestHeaders });
-  if (response.ok && response.status === 200) {
+  if (response.ok) {
     return response.json();
   }
 
-  return false;
+  if (response.status !== 401){
+    toast.error(`Failed to fetch user session info: ${response.status} ${response.statusText}`);
+  }
 }
 
 const fetchUser = async (): Promise<any> => {
   const response = await fetch('/users', { headers: requestHeaders });
-  if (response.ok && response.status === 200) {
+
+  if (response.ok) {
     return response.json();
   }
 
-  return false;
+  if (response.status !== 401){
+    toast.error(`Failed to fetch user: ${response.status} ${response.statusText}`);
+  }
 }
 
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
-  let logoutUrl = '/bff/logout';
   const { data: userSessionInfo, isLoading: userSessionInfoIsLoading, error: userSessionInfoError } = useQuery<any, ErrorConstructor>('userSessionInfo', fetchUserSessionInfo);
 
   const { data: user, isLoading: userIsLoading, error: userError } = useQuery<any, ErrorConstructor>('user', fetchUser);
-
-  if (userSessionInfo) {
-    logoutUrl = userSessionInfo.find((claim:any) => claim.type === "bff:logout_url")?.value ?? logoutUrl;
-
-    const index = settings.findIndex(setting => setting.name === 'Logout');
-    if (index === -1){
-      settings.push({ name: 'Logout', url: logoutUrl });
-    }
-  }
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -165,16 +162,16 @@ const ResponsiveAppBar = () => {
                       <CircularProgress color="secondary" />
                     )}
                     {userError && (
-                      <div>Something went wrong while loading user.</div>
+                      <div>Something went wrong while loading user information.</div>
                     )}
-                    {user && !userIsLoading && !userError && (  
+                    {user && !userIsLoading && !userError ? (  
                         <>
                           {!user.profilePicture ? (
                             <AccountCircle />
                           ) :
                           <Avatar alt="profile picture" src={user.profilePicture} />}
                         </>
-                    )}
+                    ) : !userIsLoading && <AccountCircle />}
                   </IconButton>
                 </Tooltip>
                 <Menu
@@ -198,6 +195,9 @@ const ResponsiveAppBar = () => {
                       <Typography textAlign="center"><Link href={setting.url}>{setting.name}</Link></Typography>
                     </MenuItem>
                   ))}
+                  <MenuItem key="logout" onClick={handleCloseUserMenu}>
+                      <Typography textAlign="center"><Link href={userSessionInfo.find((claim:any) => claim.type === "bff:logout_url")?.value ?? "/bff/logout"}>Logout</Link></Typography>
+                  </MenuItem>
                 </Menu>
               </div>
             )}

@@ -20,6 +20,7 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 public class IdentityService : IIdentityService
 {
     private readonly IdentityDbContext _identityDbContext;
+    private readonly IUserResolver<ApplicationUser> _userResolver;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly IUserClaimsPrincipalFactory<ApplicationUser> _userClaimsPrincipalFactory;
@@ -29,6 +30,7 @@ public class IdentityService : IIdentityService
 
     public IdentityService(
         IdentityDbContext identityDbContext,
+        IUserResolver<ApplicationUser> userResolver,
         UserManager<ApplicationUser> userManager,
         RoleManager<ApplicationRole> roleManager,
         IMapper mapper,
@@ -37,6 +39,7 @@ public class IdentityService : IIdentityService
         IUserConfirmation<ApplicationUser> userConfirmation)
     {
         _identityDbContext = identityDbContext;
+        _userResolver = userResolver;
         _userManager = userManager;
         _roleManager = roleManager;
         _mapper = mapper;
@@ -103,9 +106,17 @@ public class IdentityService : IIdentityService
     {
         var user = _mapper.Map<ApplicationUser>(userDto);
 
+        await MapOriginalPasswordHashAsync(user);
+
         var identityResult = await _userManager.UpdateAsync(user);
 
         return (identityResult.ToApplicationResult(), user.Id);
+    }
+
+    private async Task MapOriginalPasswordHashAsync(ApplicationUser user)
+    {
+        var userIdentity = await _userResolver.GetUserAsync(user.Id);
+        user.PasswordHash = userIdentity?.PasswordHash;
     }
 
     public async Task<bool> UserExistsAsync(string? userId)

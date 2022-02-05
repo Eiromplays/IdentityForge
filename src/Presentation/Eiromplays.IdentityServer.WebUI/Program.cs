@@ -73,7 +73,7 @@ app.MapControllers()
 
 app.MapBffManagementEndpoints();
 
-app.MapRemoteBffApiEndpoint("/users", "https://localhost:7003/api/v1/users")
+app.MapRemoteBffApiEndpoint("/users", "https://localhost:7003/v1/users")
     .RequireAccessToken();
 
 app.MapFallbackToFile("index.html");
