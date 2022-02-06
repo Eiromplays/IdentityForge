@@ -17,10 +17,7 @@ import Link from '@mui/material/Link';
 import LoginIcon from '@mui/icons-material/Login';
 import Grid from '@mui/material/Grid';
 import Avatar from '@mui/material/Avatar';
-import toast from 'react-hot-toast';
-
-const requestHeaders: HeadersInit = new Headers();
-requestHeaders.set('X-CSRF', '1');
+import useUserSessionInfo from 'src/hooks/User/UseUserSession';
 
 const pages: { name: string, url: string }[] = [
   { name: 'Home', url: '/' },
@@ -31,36 +28,13 @@ let settings: { name: string, url: string }[] = [
   { name: 'Profile', url: '/profile' }
 ];
 
-const fetchUserSessionInfo = async (): Promise<any> => {
-  const response = await fetch('/bff/user', { headers: requestHeaders });
-  if (response.ok) {
-    return response.json();
-  }
-
-  if (response.status !== 401){
-    toast.error(`Failed to fetch user session info: ${response.status} ${response.statusText}`);
-  }
-}
-
-const fetchUser = async (): Promise<any> => {
-  const response = await fetch('/users', { headers: requestHeaders });
-
-  if (response.ok) {
-    return response.json();
-  }
-
-  if (response.status !== 401){
-    toast.error(`Failed to fetch user: ${response.status} ${response.statusText}`);
-  }
-}
-
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
-  const { data: userSessionInfo, isLoading: userSessionInfoIsLoading, error: userSessionInfoError } = useQuery<any, ErrorConstructor>('userSessionInfo', fetchUserSessionInfo);
+  const { userSessionInfo, userSessionInfoIsLoading, userSessionInfoError } = useUserSessionInfo();
 
-  const { data: user, isLoading: userIsLoading, error: userError } = useQuery<any, ErrorConstructor>('user', fetchUser);
+  const { data: user, isLoading: userIsLoading, error: userError } = useQuery<any>(["GET", "/users", {}]);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -166,10 +140,10 @@ const ResponsiveAppBar = () => {
                     )}
                     {user && !userIsLoading && !userError ? (  
                         <>
-                          {!user.profilePicture ? (
+                          {!user.data.profilePicture ? (
                             <AccountCircle />
                           ) :
-                          <Avatar alt="profile picture" src={user.profilePicture} />}
+                          <Avatar alt="profile picture" src={user.data.profilePicture} />}
                         </>
                     ) : !userIsLoading && <AccountCircle />}
                   </IconButton>
@@ -196,7 +170,7 @@ const ResponsiveAppBar = () => {
                     </MenuItem>
                   ))}
                   <MenuItem key="logout" onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center"><Link href={userSessionInfo.find((claim:any) => claim.type === "bff:logout_url")?.value ?? "/bff/logout"}>Logout</Link></Typography>
+                      <Typography textAlign="center"><Link href={userSessionInfo.data.find((claim:any) => claim.type === "bff:logout_url")?.value ?? "/bff/logout"}>Logout</Link></Typography>
                   </MenuItem>
                 </Menu>
               </div>

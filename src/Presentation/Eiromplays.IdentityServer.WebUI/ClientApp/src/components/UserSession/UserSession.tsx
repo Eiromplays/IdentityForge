@@ -7,24 +7,24 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Box from "@mui/material/Box";
 import CircularProgress from '@mui/material/CircularProgress';
-import useUserSession from './UseUserSession';
+import useUserSession from '../../hooks/User/UseUserSession';
 
 export default function UserSession() {
-  const {userSessionInfo, isLoading, error} = useUserSession();
+  const {userSessionInfo, userSessionInfoIsLoading, userSessionInfoError} = useUserSession();
 
   return (
     <>
-      {isLoading && (
+      {userSessionInfoIsLoading && (
           <div>
               <Box sx={{ display: 'flex' }}>
                 <CircularProgress color="secondary" />
               </Box>
           </div>
       )}
-      {error && (
+      {userSessionInfoError && (
         <div>Something went wrong while loading user information.</div>
       )}
-      {userSessionInfo && !isLoading && !error && (
+      {userSessionInfo && !userSessionInfoIsLoading && !userSessionInfoError && (
         <div>
             <h1>User Session</h1>
             <p>This pages shows the current user's session.</p>
@@ -37,7 +37,7 @@ export default function UserSession() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {userSessionInfo.map((claim:any) => (
+                  {userSessionInfo.data.map((claim:any) => (
                     <TableRow
                       key={claim.type}
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
