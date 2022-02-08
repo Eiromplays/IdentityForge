@@ -3,13 +3,24 @@
         "appbar",
         "APPDATA",
         "ASPNETCORE",
+        "browserslist",
+        "cacheable",
+        "craco",
+        "flowtype",
         "identityserver",
         "oidc",
         "precaching",
+        "prestart",
         "signin",
         "signout",
         "spdy",
+        "toastify",
         "todos",
         "webui"
-    ]
+    ],
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "files.eol": "\n",
 }

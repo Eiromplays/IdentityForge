@@ -1,14 +1,17 @@
-import { Component } from "react";
-import { Route } from "react-router";
-import { Routes} from "react-router-dom";
-import Home from "../../pages/Home/Home";
-import Profile from "../../pages/Profile/Profile";
-import { Layout } from "../Layout/Layout";
-import UserSession from "../UserSession/UserSession";
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { Toaster } from 'react-hot-toast';
-import { defaultQueryFn } from "../../api/request";
-import "./app.scss";
+import { ToastContainer } from '@lib/react-toastify';
+import { Component } from 'react';
+import { Route } from 'react-router';
+import { Routes } from 'react-router-dom';
+
+import { defaultQueryFn } from '../../api/request';
+import Home from '../../pages/Home/Home';
+import Profile from '../../pages/Profile/Profile';
+import { Layout } from '../Layout/Layout';
+import UserSession from '../UserSession/UserSession';
+
+import { queryClient, QueryClientProvider } from '@/lib/react-query';
+
+import './app.scss';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,7 +34,7 @@ export default class App extends Component {
             <Route path="/profile" element={<Profile />} />
           </Routes>
         </Layout>
-        <Toaster position="top-right" />
+        <ToastContainer newestOnTop={true} />
       </QueryClientProvider>
     );
   }
