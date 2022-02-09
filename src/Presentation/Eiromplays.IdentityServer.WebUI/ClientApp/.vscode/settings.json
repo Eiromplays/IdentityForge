@@ -1,15 +1,33 @@
 {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "files.eol": "\n",
     "cSpell.words": [
         "appbar",
         "APPDATA",
         "ASPNETCORE",
+        "browserslist",
+        "cacheable",
+        "CHOKIDAR",
+        "craco",
+        "flowtype",
+        "headlessui",
+        "heroicons",
         "identityserver",
+        "mswjs",
         "oidc",
+        "precached",
         "precaching",
+        "prestart",
         "signin",
         "signout",
         "spdy",
+        "toastify",
         "todos",
-        "webui"
+        "USEPOLLING",
+        "webui",
+        "zustand"
     ]
 }
