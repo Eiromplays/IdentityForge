@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2017",
     "lib": [
       "dom",
+      "es6",
       "dom.iterable",
       "esnext"
     ],
@@ -18,13 +19,13 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "baseUrl": "./"
   },
   "include": [
     "src"
-  ],
-  "exclude": [
-    "node_modules"
-  ],
-  "extends": "./tsconfig.paths.json"
+  ]
 }

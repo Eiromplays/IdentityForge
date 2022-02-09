@@ -3,18 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@craco/craco": "^6.4.3",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@mui/icons-material": "^5.3.1",
     "@mui/material": "^5.3.1",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "@types/jest": "^26.0.15",
-    "@types/node": "^16.0.0",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
+    "@types/jest": "^27.4.0",
+    "@types/node": "^17.0.13",
+    "@types/react": "^17.0.38",
+    "@types/react-dom": "^17.0.11",
     "axios": "^0.25.0",
     "http-proxy-middleware": "^2.0.2",
     "jquery": "^3.5.1",
@@ -23,60 +19,49 @@
     "oidc-client": "^1.11.5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-error-boundary": "^3.1.3",
-    "react-helmet-async": "^1.1.2",
-    "react-hook-form": "^7.7.1",
-    "react-query": "^3.18.1",
-    "react-query-auth": "^1.0.0",
+    "react-hot-toast": "^2.2.0",
+    "react-query": "^3.34.12",
     "react-router-dom": "^6.2.1",
     "react-scripts": "^4.0.3",
-    "react-toastify": "^8.1.1",
-    "type-fest": "^1.2.0",
-    "typescript": "^4.1.2",
-    "web-vitals": "^1.0.1"
+    "rimraf": "^2.6.2",
+    "web-vitals": "^0.2.4",
+    "workbox-background-sync": "^5.1.3",
+    "workbox-broadcast-update": "^5.1.3",
+    "workbox-cacheable-response": "^5.1.3",
+    "workbox-core": "^5.1.4",
+    "workbox-expiration": "^5.1.4",
+    "workbox-google-analytics": "^5.1.3",
+    "workbox-navigation-preload": "^5.1.3",
+    "workbox-precaching": "^5.1.4",
+    "workbox-range-requests": "^5.1.3",
+    "workbox-routing": "^5.1.4",
+    "workbox-strategies": "^5.1.4",
+    "workbox-streams": "^5.1.3"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.25.0",
-    "@typescript-eslint/parser": "^4.25.0",
     "ajv": "^6.9.1",
     "cross-env": "^7.0.3",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-import-resolver-typescript": "^2.4.0",
-    "eslint-plugin-cypress": "^2.11.3",
-    "eslint-plugin-import": "^2.23.4",
-    "eslint-plugin-jest-dom": "^3.9.0",
+    "eslint": "^7.25.0",
+    "eslint-config-react-app": "^6.0.0",
+    "eslint-plugin-flowtype": "^5.7.2",
+    "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-prettier": "^3.4.0",
-    "eslint-plugin-react": "^7.24.0",
-    "eslint-plugin-react-hooks": "^4.2.0",
-    "eslint-plugin-testing-library": "^4.6.0",
-    "msw": "^0.29.0",
-    "npm-run-all": "^4.1.5",
-    "plop": "^2.7.4",
-    "prettier": "^2.3.0",
-    "react-test-renderer": "^17.0.2",
-    "serve": "^12.0.0",
-    "start-server-and-test": "^1.12.5",
-    "tsconfig-paths-webpack-plugin": "^3.5.1"
+    "eslint-plugin-react": "^7.23.2",
+    "nan": "^2.14.2",
+    "typescript": "^4.5.5"
   },
   "scripts": {
-    "start": "craco start",
-    "start:cli": "cross-env BROWSER=none craco start",
-    "build": "craco build",
-    "test": "is-ci \"test:coverage\" \"test:watch\"",
-    "test:jest": "craco test",
-    "test:coverage": "CI=1 yarn test:jest -- --coverage",
     "prestart": "node aspnetcore-https && node aspnetcore-react",
-    "serve": "serve --no-clipboard --single --listen 3000 build",
+    "start": "rimraf ./build && react-scripts start",
+    "build": "react-scripts build",
+    "test": "cross-env CI=true react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "lint": "eslint --fix --ext .js,.ts,.tsx ./src --ignore-path .gitignore",
-    "prettier": "prettier --ignore-path .gitignore --write \"**/*.+(js|json|ts|tsx)\"",
-    "format": "npm run prettier -- --write",
-    "check-types": "tsc --project tsconfig.json --pretty --noEmit",
-    "check-format": "npm run prettier -- --list-different",
-    "validate-and-build": "npm-run-all --parallel check-types check-format lint build",
-    "validate": "npm-run-all --parallel check-types && lint-staged",
-    "generate": "plop"
+    "lint": "eslint ./src/"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
   },
   "browserslist": {
     "production": [
@@ -88,37 +73,6 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
-    ]
-  },
-  "msw": {
-    "workerDirectory": "public"
-  },
-  "jest": {
-    "moduleNameMapper": {
-      "^@/(.+)": "<rootDir>/src/$1"
-    },
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx,ts,tsx}",
-      "!src/**/*.d.ts",
-      "!src/**/*.stories.{js,jsx,ts,tsx}",
-      "!src/test/**/*.{js,jsx,ts,tsx}"
-    ]
-  },
-  "eslintConfig": {
-    "overrides": [
-      {
-        "files": [
-          "**/*.stories.*"
-        ],
-        "rules": {
-          "import/no-anonymous-default-export": "off"
-        }
-      }
-    ]
-  },
-  "lint-staged": {
-    "*.+(ts|tsx)": [
-      "yarn lint"
     ]
   }
 }
