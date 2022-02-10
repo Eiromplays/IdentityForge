@@ -4,7 +4,7 @@ module.exports = {
     node: true,
     es6: true,
   },
-  parserOptions: { ecmaVersion: 8, sourceType: 'module' },
+  parserOptions: { ecmaVersion: 8, sourceType: 'module', warnOnUnsupportedTypeScriptVersion: false },
   ignorePatterns: ['node_modules/*'],
   extends: ['eslint:recommended'],
   overrides: [
