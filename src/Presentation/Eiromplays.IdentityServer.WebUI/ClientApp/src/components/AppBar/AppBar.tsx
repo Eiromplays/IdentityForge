@@ -5,7 +5,6 @@ import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
@@ -16,9 +15,8 @@ import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import React from 'react';
-import { useQuery } from 'react-query';
 
-import useUserSessionInfo from 'src/hooks/User/UseUserSession';
+import { useAuth } from '@/lib/auth';
 
 const pages: { name: string; url: string }[] = [{ name: 'Home', url: '/' }];
 
@@ -31,13 +29,7 @@ const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
-  const { userSessionInfo, userSessionInfoIsLoading, userSessionInfoError } = useUserSessionInfo();
-
-  const {
-    data: user,
-    isLoading: userIsLoading,
-    error: userError,
-  } = useQuery<any>(['GET', '/users', {}]);
+  const { user } = useAuth();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -127,26 +119,14 @@ const ResponsiveAppBar = () => {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            {userSessionInfoIsLoading && <CircularProgress color="secondary" />}
-            {userSessionInfoError && (
-              <div>Something went wrong while loading user information.</div>
-            )}
-            {userSessionInfo && !userSessionInfoIsLoading && !userSessionInfoError && (
+            {user && (
               <div>
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    {userIsLoading && <CircularProgress color="secondary" />}
-                    {userError && <div>Something went wrong while loading user information.</div>}
-                    {user && !userIsLoading && !userError ? (
-                      <>
-                        {!user.data.profilePicture ? (
-                          <AccountCircle />
-                        ) : (
-                          <Avatar alt="profile picture" src={user.data.profilePicture} />
-                        )}
-                      </>
+                    {!user.userName ? (
+                      <AccountCircle />
                     ) : (
-                      !userIsLoading && <AccountCircle />
+                      <Avatar alt="profile picture" src={user.userName} />
                     )}
                   </IconButton>
                 </Tooltip>
@@ -177,8 +157,8 @@ const ResponsiveAppBar = () => {
                     <Typography textAlign="center">
                       <Link
                         href={
-                          userSessionInfo.data.find((claim: any) => claim.type === 'bff:logout_url')
-                            ?.value ?? '/bff/logout'
+                          //user.find((claim: any) => claim.type === 'bff:logout_url')?.value ??
+                          '/bff/logout'
                         }
                       >
                         Logout
@@ -188,7 +168,7 @@ const ResponsiveAppBar = () => {
                 </Menu>
               </div>
             )}
-            {!userSessionInfo && !userSessionInfoIsLoading && !userSessionInfoError && (
+            {!user && (
               <div>
                 <Grid container direction="row" alignItems="center">
                   <LoginIcon fontSize="small" />
