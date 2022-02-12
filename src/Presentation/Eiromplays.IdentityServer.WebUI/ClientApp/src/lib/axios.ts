@@ -1,6 +1,5 @@
 import Axios from 'axios';
-
-import { useNotificationStore } from '@/stores/notifications';
+import { toast } from 'react-toastify';
 
 export const axios = Axios.create({
   headers: {
@@ -16,11 +15,7 @@ axios.interceptors.response.use(
   },
   (error) => {
     const message = error.response?.data?.message || error.message;
-    useNotificationStore.getState().addNotification({
-      type: 'error',
-      title: 'Error',
-      message,
-    });
+    toast.error(message);
 
     return Promise.reject(error);
   }
