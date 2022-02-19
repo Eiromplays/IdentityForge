@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "Eiromplays.IdentityServer.Auth.Backend": {
+    "Eiromplays.IdentityServer": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

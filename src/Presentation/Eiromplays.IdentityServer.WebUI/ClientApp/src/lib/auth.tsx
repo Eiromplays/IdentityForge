@@ -1,10 +1,10 @@
 import CircularProgress from '@mui/material/CircularProgress';
-import { initReactQueryAuth } from 'react-query-auth';
 
-import { getUser, User } from '@/features/auth';
+import { AuthUser, getAuthUser } from '@/features/auth';
+import { initReactQueryAuth } from '@/providers/AuthProvider';
 
 async function loadUser() {
-  const data = await getUser();
+  const data = await getAuthUser();
   return data;
 }
 
@@ -19,7 +19,8 @@ async function registerFn() {
 }
 
 async function logoutFn() {
-  window.location.assign(window.location.origin as unknown as string);
+  const user = await loadUser();
+  window.location.assign(user.sessionInfo.logoutUrl);
 }
 
 const authConfig = {
@@ -45,7 +46,7 @@ type RegisterCredentials = {
 };
 
 export const { AuthProvider, useAuth } = initReactQueryAuth<
-  User | null,
+  AuthUser | null,
   unknown,
   LoginCredentials,
   RegisterCredentials

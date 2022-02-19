@@ -1,6 +1,8 @@
 import Axios from 'axios';
 import { toast } from 'react-toastify';
 
+const WhitelistedUrls: any[] = ['/users', '/bff/user'];
+
 export const axios = Axios.create({
   headers: {
     'X-CSRF': '1',
@@ -14,6 +16,10 @@ axios.interceptors.response.use(
     return response.data;
   },
   (error) => {
+    if (WhitelistedUrls.includes(new URL(error.request.responseURL).pathname)) {
+      return;
+    }
+
     const message = error.response?.data?.message || error.message;
     toast.error(message);
 

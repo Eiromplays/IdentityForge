@@ -123,10 +123,10 @@ const ResponsiveAppBar = () => {
               <div>
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    {!user.userName ? (
+                    {!user.data.userName ? (
                       <AccountCircle />
                     ) : (
-                      <Avatar alt="profile picture" src={user.userName} />
+                      <Avatar alt="profile picture" src={user.data.profilePicture} />
                     )}
                   </IconButton>
                 </Tooltip>
@@ -155,14 +155,7 @@ const ResponsiveAppBar = () => {
                   ))}
                   <MenuItem key="logout" onClick={handleCloseUserMenu}>
                     <Typography textAlign="center">
-                      <Link
-                        href={
-                          //user.find((claim: any) => claim.type === 'bff:logout_url')?.value ??
-                          '/bff/logout'
-                        }
-                      >
-                        Logout
-                      </Link>
+                      <Link href={user.sessionInfo.logoutUrl}>Logout</Link>
                     </Typography>
                   </MenuItem>
                 </Menu>

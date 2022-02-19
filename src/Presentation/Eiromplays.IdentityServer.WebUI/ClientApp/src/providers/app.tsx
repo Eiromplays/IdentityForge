@@ -8,8 +8,11 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
+import { SideBar } from '@/components/SideBar/SideBar';
 import { AuthProvider } from '@/lib/auth';
 import { queryClient } from '@/lib/react-query';
+
+import 'react-toastify/dist/ReactToastify.min.css';
 
 const ErrorFallback = () => {
   return (
@@ -43,18 +46,20 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         <HelmetProvider>
           <QueryClientProvider client={queryClient}>
             {process.env.NODE_ENV !== 'test' && <ReactQueryDevtools />}
-            <ToastContainer
-              position="top-right"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-            />
             <AuthProvider>
+              <ToastContainer
+                position="top-right"
+                theme="dark"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+              />
+              <SideBar />
               <Router>{children}</Router>
             </AuthProvider>
           </QueryClientProvider>
