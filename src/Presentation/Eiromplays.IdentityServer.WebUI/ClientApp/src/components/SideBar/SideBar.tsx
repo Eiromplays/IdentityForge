@@ -1,16 +1,9 @@
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
-import CloudDownloadOutlinedIcon from '@mui/icons-material/CloudDownloadOutlined';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LoginIcon from '@mui/icons-material/Login';
 import MenuIcon from '@mui/icons-material/Menu';
-import PasswordOutlinedIcon from '@mui/icons-material/PasswordOutlined';
-import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
-import ScreenLockLandscapeOutlinedIcon from '@mui/icons-material/ScreenLockLandscapeOutlined';
 import { Avatar, Container, Grid, Link, Menu, MenuItem, Tooltip } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
@@ -23,10 +16,10 @@ import * as React from 'react';
 
 import { useAuth } from '@/lib/auth';
 
-const settings: { name: string; url: string }[] = [
-  { name: 'Show User Session', url: '/user-session' },
-  { name: 'Profile', url: '/profile' },
-];
+type Setting = {
+  name: string;
+  url: string;
+};
 
 type Page = {
   name: string;
@@ -34,22 +27,13 @@ type Page = {
   icon: JSX.Element;
 };
 
-const drawerPages: Page[] = [
-  { name: 'My Profile', url: '/profile', icon: <PersonOutlinedIcon /> },
-  { name: 'Personal Data', url: '/personalData', icon: <ScreenLockLandscapeOutlinedIcon /> },
-  {
-    name: 'Two-factor authentication',
-    url: '/two-factorAuthentication',
-    icon: <LockOutlinedIcon />,
-  },
-  { name: 'Change Password', url: '/changePassword', icon: <PasswordOutlinedIcon /> },
-  { name: 'Discovery Document', url: '/discoveryDocument', icon: <ArticleOutlinedIcon /> },
-  { name: 'Persisted Grants', url: '/persistedGrants', icon: <CloudDownloadOutlinedIcon /> },
-];
+type SideBarProps = {
+  pages: Page[];
+  settings: Setting[];
+  drawerWidth?: 240;
+};
 
-const drawerWidth = 240;
-
-export const SideBar = () => {
+export const SideBar = ({ pages, settings, drawerWidth }: SideBarProps) => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -72,10 +56,10 @@ export const SideBar = () => {
       <Toolbar />
       <Divider />
       <List>
-        {drawerPages.map((page: Page, index) => (
+        {pages.map((page: Page, index) => (
           <ListItem button key={index}>
             <ListItemIcon>{page.icon}</ListItemIcon>
-            <Link href={page.url} underline="none">
+            <Link href={page.url} underline="none" color="white">
               {page.name}
             </Link>
           </ListItem>
@@ -86,9 +70,8 @@ export const SideBar = () => {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
       <AppBar
-        position="static"
+        position="fixed"
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
