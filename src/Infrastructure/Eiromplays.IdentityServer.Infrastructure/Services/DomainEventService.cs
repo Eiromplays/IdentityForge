@@ -19,7 +19,7 @@ public class DomainEventService : IDomainEventService
 
     public async Task Publish(DomainEvent domainEvent)
     {
-        _logger.LogInformation("Publishing domain event. Event - {event}", domainEvent.GetType().Name);
+        _logger.LogInformation("Publishing domain event. Event - {Event}", domainEvent.GetType().Name);
         await _mediator.Publish(GetNotificationCorrespondingToDomainEvent(domainEvent));
     }
 

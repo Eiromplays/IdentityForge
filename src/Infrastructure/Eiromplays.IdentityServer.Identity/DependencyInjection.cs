@@ -486,7 +486,7 @@ public static class DependencyInjection
         {
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<WebApplication>>();
 
-            logger.LogError(ex, "An error occurred while migrating or seeding the database(s).");
+            logger.LogError(ex, "An error occurred while migrating or seeding the database(s)");
 
             throw;
         }

@@ -2,7 +2,7 @@
 // See LICENSE in the project root for license information.
 
 // Original file: https://github.com/DuendeSoftware/Samples/blob/main/IdentityServer/v6/Quickstarts
-// Modified by Eirik Sjøløkken
+// Modified by Eirik Sjï¿½lï¿½kken
 
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
@@ -131,13 +131,13 @@ public class ConsentController : Controller
             await _interaction.GrantConsentAsync(request, grantedConsent);
 
             // indicate that's it ok to redirect back to authorization endpoint
-            result.RedirectUri = model?.ReturnUrl;
+            result.RedirectUri = model.ReturnUrl;
             result.Client = request.Client;
         }
         else
         {
             // we need to redisplay the consent UI
-            result.ViewModel = await BuildViewModelAsync(model?.ReturnUrl, model);
+            result.ViewModel = await BuildViewModelAsync(model.ReturnUrl, model);
         }
 
         return result;

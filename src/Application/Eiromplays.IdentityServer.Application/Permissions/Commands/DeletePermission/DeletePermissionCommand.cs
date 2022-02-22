@@ -22,7 +22,7 @@ namespace Eiromplays.IdentityServer.Application.Permissions.Commands.DeletePermi
 
         public async Task<Unit> Handle(DeletePermissionCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Permissions!.FirstOrDefaultAsync(x => x.Id.ToString().Equals(request.Id),
+            var entity = await _context.Permissions.FirstOrDefaultAsync(x => x.Id.ToString().Equals(request.Id),
                 cancellationToken);
 
             if (entity == null)

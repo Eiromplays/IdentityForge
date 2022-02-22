@@ -2,7 +2,7 @@
 // See LICENSE in the project root for license information.
 
 // Original file: https://github.com/DuendeSoftware/Samples/blob/main/IdentityServer/v6/Quickstarts
-// Modified by Eirik Sjøløkken
+// Modified by Eirik Sjï¿½lï¿½kken
 
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
@@ -462,7 +462,7 @@ public class AccountController : Controller
 
             if (!local)
             {
-                vm.ExternalProviders = new[] { new ExternalProvider { AuthenticationScheme = context?.IdP } };
+                vm.ExternalProviders = new[] { new ExternalProvider { AuthenticationScheme = context.IdP } };
             }
 
             return vm;

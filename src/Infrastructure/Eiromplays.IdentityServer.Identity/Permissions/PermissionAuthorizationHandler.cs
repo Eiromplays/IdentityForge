@@ -5,11 +5,6 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity.Permissions
 {
     internal class PermissionAuthorizationHandler : AuthorizationHandler<PermissionRequirement>
     {
-        public PermissionAuthorizationHandler()
-        {
-
-        }
-
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
         {
             var userId = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;

@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace Eiromplays.IdentityServer.Domain.Common
+﻿namespace Eiromplays.IdentityServer.Domain.Common
 {
     // Learn more: https://docs.microsoft.com/en-us/dotnet/standard/microservices-architecture/microservice-ddd-cqrs-patterns/implement-value-objects
     public abstract class ValueObject
     {
-        protected static bool EqualOperator(ValueObject? left, ValueObject? right)
+        private static bool EqualOperator(ValueObject? left, ValueObject? right)
         {
             if (left is null ^ right is null)
             {

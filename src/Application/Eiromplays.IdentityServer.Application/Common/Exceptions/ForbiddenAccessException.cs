@@ -1,9 +1,5 @@
-﻿using System;
+﻿namespace Eiromplays.IdentityServer.Application.Common.Exceptions;
 
-namespace Eiromplays.IdentityServer.Application.Common.Exceptions
+public class ForbiddenAccessException : Exception
 {
-    public class ForbiddenAccessException : Exception
-    {
-        public ForbiddenAccessException() : base() { }
-    }
 }

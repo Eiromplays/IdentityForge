@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using FluentValidation.Results;
+﻿using FluentValidation.Results;
 
 namespace Eiromplays.IdentityServer.Application.Common.Exceptions
 {
     public class ValidationException : Exception
     {
-        public ValidationException()
+        private ValidationException()
             : base("One or more validation failures have occurred.")
         {
             Errors = new Dictionary<string, string[]>();

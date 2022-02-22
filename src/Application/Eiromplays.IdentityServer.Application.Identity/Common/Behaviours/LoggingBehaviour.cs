@@ -9,7 +9,7 @@ namespace Eiromplays.IdentityServer.Application.Identity.Common.Behaviours
         where TRequest : notnull
 
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<TRequest> _logger;
         private readonly ICurrentUserService _currentUserService;
         private readonly IIdentityService _identityService;
 

@@ -1,7 +1,7 @@
-﻿using Eiromplays.IdentityServer.Application.Common.Security;
+﻿using Eiromplays.IdentityServer.Application.Common.Models;
+using Eiromplays.IdentityServer.Application.Common.Security;
 using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Identity.DTOs.Role;
-using Eiromplays.IdentityServer.Application.Identity.DTOs.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eiromplays.IdentityServer.API.Controllers.v1;
@@ -21,11 +21,9 @@ public class RolesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IReadOnlyList<RoleDto>> Get()
+    public async Task<PaginatedList<RoleDto>> Get(string? search, int pageIndex = 1, int pageSize = 10)
     {
-        var roles = await _identityService.GetRolesAsync();
-
-        return roles;
+        return await _identityService.GetRolesAsync(search, pageIndex, pageSize);
     }
 
 

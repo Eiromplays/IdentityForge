@@ -275,9 +275,9 @@ public class IdentityService : IIdentityService
 
         var userClaimDto = await GetUserClaimAsync(newUserClaimDto.ClaimId);
 
-        if (!string.IsNullOrWhiteSpace(userClaimDto?.ClaimType) && !string.IsNullOrWhiteSpace(userClaimDto?.ClaimValue) && user is not null)
+        if (!string.IsNullOrWhiteSpace(userClaimDto?.ClaimType) && !string.IsNullOrWhiteSpace(userClaimDto.ClaimValue) && user is not null)
         {
-            await _userManager.RemoveClaimAsync(user, new Claim(userClaimDto?.ClaimType!, userClaimDto?.ClaimValue!));
+            await _userManager.RemoveClaimAsync(user, new Claim(userClaimDto.ClaimType, userClaimDto.ClaimValue));
         }
 
         return (await _userManager.AddClaimAsync(user!, new Claim(newUserClaimDto.ClaimType!, newUserClaimDto.ClaimValue!)))
@@ -294,7 +294,7 @@ public class IdentityService : IIdentityService
 
         if (userClaimDto is not null)
             return (await _userManager.RemoveClaimAsync(user!,
-                    new Claim(userClaimDto?.ClaimType!, userClaimDto?.ClaimValue!)))
+                    new Claim(userClaimDto.ClaimType!, userClaimDto.ClaimValue!)))
                 .ToApplicationResult();
 
         return Result.Failure(new List<string>{ "User Claim not found." });
@@ -516,10 +516,10 @@ public class IdentityService : IIdentityService
 
         if (!string.IsNullOrWhiteSpace(roleClaimDto?.ClaimType) && !string.IsNullOrWhiteSpace(roleClaimDto.ClaimValue))
         {
-            await _roleManager.RemoveClaimAsync(role!, new Claim(roleClaimDto.ClaimType, roleClaimDto.ClaimValue));
+            await _roleManager.RemoveClaimAsync(role, new Claim(roleClaimDto.ClaimType, roleClaimDto.ClaimValue));
         }
 
-        return (await _roleManager.AddClaimAsync(role!, new Claim(newRoleClaim.ClaimType!, newRoleClaim.ClaimValue!)))
+        return (await _roleManager.AddClaimAsync(role, new Claim(newRoleClaim.ClaimType!, newRoleClaim.ClaimValue!)))
             .ToApplicationResult();
     }
 
