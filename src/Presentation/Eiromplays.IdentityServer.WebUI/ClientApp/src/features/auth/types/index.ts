@@ -6,8 +6,9 @@ export type UserData = {
 };
 
 export type UserSessionInfo = {
-  logoutUrl: string;
+  id?: string;
   username?: string;
+  logoutUrl: string;
 };
 
 export type AuthUser = {

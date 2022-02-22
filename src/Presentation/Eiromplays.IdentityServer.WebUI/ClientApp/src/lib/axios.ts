@@ -16,7 +16,7 @@ axios.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    if (WhitelistedUrls.includes(new URL(error.request.responseURL).pathname)) {
+    if (WhitelistedUrls.includes(new URL(error.request.responseURL).pathname.replace(/\/$/, ''))) {
       return;
     }
 

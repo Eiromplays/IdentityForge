@@ -1,4 +1,5 @@
-﻿using Eiromplays.IdentityServer.Application.Common.Security;
+﻿using Eiromplays.IdentityServer.Application.Common.Models;
+using Eiromplays.IdentityServer.Application.Common.Security;
 using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Identity.DTOs.User;
 using Microsoft.AspNetCore.Mvc;
@@ -18,17 +19,15 @@ public class UsersController : ControllerBase
     {
         _identityService = identityService;
     }
-
+    
     [HttpGet]
-    public async Task<UserDto?> Get()
+    public async Task<PaginatedList<UserDto>> Get(string? search, int pageIndex = 1, int pageSize = 10)
     {
-        var user = await _identityService.FindUserByIdAsync(User.FindFirst("sub")?.Value);
-
-        return user;
+        return await _identityService.GetUsersAsync(search, pageIndex, pageSize);
     }
 
     [HttpGet("{id}")]
-    public async Task<UserDto?> Get(string id)
+    public async Task<UserDto?> GetUser(string id)
     {
         var user = await _identityService.FindUserByIdAsync(id);
 
@@ -40,19 +39,7 @@ public class UsersController : ControllerBase
     {
         var (_, userId) = await _identityService.CreateUserAsync(userDto);
 
-        return Created(Url.Action(nameof(Get), new { id = userId})!, userDto);
-    }
-
-    [HttpPut]
-    public async Task<IActionResult> Put([FromBody] UserDto userDto)
-    {
-        var user = await _identityService.FindUserByIdAsync(User.FindFirst("sub")?.Value);
-
-        if (user is null) return NotFound();
-
-        await _identityService.UpdateUserAsync(userDto);
-
-        return NoContent();
+        return Created(Url.Action(nameof(GetUser), new { id = userId})!, userDto);
     }
 
     [HttpPut("{id}")]

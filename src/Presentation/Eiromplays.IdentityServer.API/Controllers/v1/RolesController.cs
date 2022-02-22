@@ -21,7 +21,7 @@ public class RolesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IReadOnlyList<RoleDto>> GetAll()
+    public async Task<IReadOnlyList<RoleDto>> Get()
     {
         var roles = await _identityService.GetRolesAsync();
 
