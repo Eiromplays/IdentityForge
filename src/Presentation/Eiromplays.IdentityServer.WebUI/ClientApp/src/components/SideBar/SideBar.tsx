@@ -53,7 +53,20 @@ export const SideBar = ({ pages, settings, drawerWidth }: SideBarProps) => {
 
   const drawer = (
     <div>
-      <Toolbar />
+      <Toolbar>
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="start"
+          onClick={handleDrawerToggle}
+          sx={{ mr: 2, display: { md: 'none' } }}
+        >
+          <MenuIcon />
+        </IconButton>
+        <Typography variant="h6" component="div">
+          Eiromplays IdentityServer User Dashboard
+        </Typography>
+      </Toolbar>
       <Divider />
       <List>
         {pages.map((page: Page, index) => (
@@ -73,8 +86,8 @@ export const SideBar = ({ pages, settings, drawerWidth }: SideBarProps) => {
       <AppBar
         position="fixed"
         sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
+          width: { md: `calc(100% - ${drawerWidth}px)` },
+          ml: { md: `${drawerWidth}px` },
         }}
       >
         <Container maxWidth="xl">
@@ -84,12 +97,12 @@ export const SideBar = ({ pages, settings, drawerWidth }: SideBarProps) => {
               aria-label="open drawer"
               edge="start"
               onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: 'none' } }}
+              sx={{ mr: 2, display: { md: 'none' } }}
             >
               <MenuIcon />
             </IconButton>
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}></Box>
-            <Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' } }}>
+            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'flex' } }}></Box>
+            <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'flex' } }}>
               {user && (
                 <div>
                   <Tooltip title="Open settings">
@@ -100,7 +113,9 @@ export const SideBar = ({ pages, settings, drawerWidth }: SideBarProps) => {
                         <Avatar alt="profile picture" src={user.data.profilePicture} />
                       )}
                       &nbsp;&nbsp;
-                      <p>{user.data.userName}</p>
+                      <Typography sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' } }}>
+                        {user.data.userName}
+                      </Typography>
                     </IconButton>
                   </Tooltip>
                   <Menu
@@ -163,7 +178,7 @@ export const SideBar = ({ pages, settings, drawerWidth }: SideBarProps) => {
             keepMounted: true, // Better open performance on mobile.
           }}
           sx={{
-            display: { xs: 'block', sm: 'none' },
+            display: { xs: 'block', md: 'none' },
             '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
           }}
         >
@@ -172,7 +187,7 @@ export const SideBar = ({ pages, settings, drawerWidth }: SideBarProps) => {
         <Drawer
           variant="permanent"
           sx={{
-            display: { xs: 'none', sm: 'block' },
+            display: { xs: 'none', md: 'block' },
             '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
           }}
           open

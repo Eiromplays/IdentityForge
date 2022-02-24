@@ -1,7 +1,7 @@
 import Axios from 'axios';
 import { toast } from 'react-toastify';
 
-const WhitelistedUrls: any[] = ['/users', '/bff/user'];
+const WhitelistedUnAuthorizedUrls: any[] = ['/users', '/users/undefined', '/bff/user'];
 
 export const axios = Axios.create({
   headers: {
@@ -16,7 +16,11 @@ axios.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    if (WhitelistedUrls.includes(new URL(error.request.responseURL).pathname.replace(/\/$/, ''))) {
+    if (
+      WhitelistedUnAuthorizedUrls.includes(
+        new URL(error.request.responseURL).pathname.replace(/\/$/, '')
+      )
+    ) {
       return;
     }
 

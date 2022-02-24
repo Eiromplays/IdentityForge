@@ -1,4 +1,6 @@
-﻿using Eiromplays.IdentityServer.Application.Common.Models;
+﻿using System.Security.Claims;
+using System.Text.Json;
+using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Common.Security;
 using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Identity.DTOs.User;
@@ -14,10 +16,12 @@ namespace Eiromplays.IdentityServer.API.Controllers.v1;
 public class UsersController : ControllerBase
 {
     private readonly IIdentityService _identityService;
+    private readonly ILogger<UsersController> _logger;
 
-    public UsersController(IIdentityService identityService)
+    public UsersController(IIdentityService identityService, ILogger<UsersController> logger)
     {
         _identityService = identityService;
+        _logger = logger;
     }
     
     [HttpGet]
@@ -27,7 +31,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<UserDto?> GetUser(string id)
+    public async Task<UserDto?> Get(string id)
     {
         var user = await _identityService.FindUserByIdAsync(id);
 
@@ -39,7 +43,7 @@ public class UsersController : ControllerBase
     {
         var (_, userId) = await _identityService.CreateUserAsync(userDto);
 
-        return Created(Url.Action(nameof(GetUser), new { id = userId})!, userDto);
+        return Created(Url.Action(nameof(Get), new { id = userId})!, userDto);
     }
 
     [HttpPut("{id}")]
