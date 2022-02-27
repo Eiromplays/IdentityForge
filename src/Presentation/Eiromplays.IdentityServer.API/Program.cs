@@ -1,9 +1,9 @@
-using Eiromplays.IdentityServer.API.Filters;
-using Eiromplays.IdentityServer.Application.Identity;
-using Eiromplays.IdentityServer.Infrastructure.Identity;
+using Eiromplays.IdentityServer.Application;
+using Eiromplays.IdentityServer.Domain.Enums;
+using Eiromplays.IdentityServer.Infrastructure;
+using FastEndpoints;
+using FastEndpoints.Swagger;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Versioning;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,27 +24,9 @@ builder.Logging.AddSerilog(logger);
 
 builder.Services.AddApplication(builder.Configuration);
 
-builder.Services.AddInfrastructure(builder.Configuration);
-
-builder.Services.AddControllersWithViews(options =>
-        options.Filters.Add<ApiExceptionFilterAttribute>())
-    .AddFluentValidation(x => x.AutomaticValidationEnabled = false);
+builder.Services.AddInfrastructure(builder.Configuration, ProjectType.Api);
 
 // Add services to the container.
-
-builder.Services.AddControllers();
-builder.Services.AddApiVersioning(options =>
-{
-    options.AssumeDefaultVersionWhenUnspecified = true;
-    options.DefaultApiVersion = ApiVersion.Default;
-    options.ApiVersionReader = ApiVersionReader.Combine(
-        new UrlSegmentApiVersionReader(),
-        new MediaTypeApiVersionReader("version"),
-        new HeaderApiVersionReader("X-Version")
-    );
-
-    options.ReportApiVersions = true;
-});
 
 builder.Services.AddAuthentication(options =>
     {
@@ -74,30 +56,23 @@ builder.Services.AddAuthorization(options =>
     });
 });
 
+builder.Services.AddFastEndpoints()
+    .AddFluentValidation(x => x.AutomaticValidationEnabled = false);
 
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-// Customise default API behaviour
-builder.Services.Configure<ApiBehaviorOptions>(options =>
-    options.SuppressModelStateInvalidFilter = true);
+builder.Services
+    .AddSwaggerDoc(maxEndpointVersion: 1, settings: s =>
+    {
+        s.DocumentName = "Release 1.0";
+        s.Title = "Eiromplays IdentityServer API";
+        s.Version = "v1.0";
+    });
 
 var app = builder.Build();
 
 await app.Services.ApplyMigrationsAsync(app.Configuration);
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
 app.UseSecurityHeaders(app.Configuration);
-
+app.UseDefaultExceptionHandler();
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -105,10 +80,19 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
+app.UseFastEndpoints(config =>
 {
-    endpoints.MapControllers()
-        .RequireAuthorization("ApiCaller");
+    config.VersioningOptions = options =>
+    {
+        options.Prefix = "v";
+        options.SuffixedVersion = false;
+        options.DefaultVersion = 1;
+    };
 });
+if (app.Environment.IsDevelopment())
+{
+    app.UseOpenApi();
+    app.UseSwaggerUi3(s => s.ConfigureDefaults());
+}
 
 await app.RunAsync();

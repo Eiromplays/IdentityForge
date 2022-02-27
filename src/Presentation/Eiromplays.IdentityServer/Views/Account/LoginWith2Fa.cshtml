@@ -10,7 +10,7 @@
 <p>Login with two factor authentication</p>
 <div class="row">
     <div class="col-md-4">
-        <form method="post" asp-route-returnUrl="@Model?.ReturnUrl">
+        <form method="post" asp-route-returnUrl="@Model.ReturnUrl">
             <input asp-for="RememberMe" type="hidden" />
             <input asp-for="ReturnUrl" type="hidden" />
             <div class="form-group">

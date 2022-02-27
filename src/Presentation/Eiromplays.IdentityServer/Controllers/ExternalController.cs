@@ -2,12 +2,11 @@
 // See LICENSE in the project root for license information.
 
 // Original file: https://github.com/DuendeSoftware/Samples/blob/main/IdentityServer/v6/Quickstarts
-// Modified by Eirik Sjøløkken
+// Modified by Eirik SjÃ¸lÃ¸kken
 
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Services;
 using Eiromplays.IdentityServer.Application.Common.Security;
-using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 using Eiromplays.IdentityServer.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.ViewModels.Account;
@@ -19,6 +18,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Security.Claims;
 using System.Text;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
+using Eiromplays.IdentityServer.Application.Common.Interfaces;
 
 namespace Eiromplays.IdentityServer.Controllers;
 

@@ -1,7 +1,11 @@
 import Axios from 'axios';
 import { toast } from 'react-toastify';
 
-const WhitelistedUnAuthorizedUrls: any[] = ['/users', '/users/undefined', '/bff/user'];
+import { WhitelistAxiosError } from '@/types';
+
+const Whitelists: WhitelistAxiosError[] = [
+  { status: 401, urls: ['/users', '/users/undefined', '/bff/user'], ignoreAll: false },
+];
 
 export const axios = Axios.create({
   headers: {
@@ -16,17 +20,24 @@ axios.interceptors.response.use(
     return response.data;
   },
   (error) => {
+    const whitelist = Whitelists.find(
+      (whitelist: WhitelistAxiosError) => whitelist.status === error.response.status
+    );
+
     if (
-      WhitelistedUnAuthorizedUrls.includes(
-        new URL(error.request.responseURL).pathname.replace(/\/$/, '')
-      )
+      (whitelist &&
+        whitelist.urls.includes(new URL(error.request.responseURL).pathname.replace(/\/$/, ''))) ||
+      (whitelist && whitelist.ignoreAll)
     ) {
       return;
     }
 
-    const message = error.response?.data?.message || error.message;
-    toast.error(message);
-
-    return Promise.reject(error);
+    const messages = error.response?.data?.errors?.GeneralErrors ?? [];
+    if (messages.length <= 0) {
+      toast.error(error.response?.data?.message || error.message);
+      return;
+    }
+    messages.forEach((message: string) => toast.error(message));
+    console.log(error.response);
   }
 );

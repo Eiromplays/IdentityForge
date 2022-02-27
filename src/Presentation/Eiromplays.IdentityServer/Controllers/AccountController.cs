@@ -11,7 +11,6 @@ using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Application.Common.Security;
-using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
 using Eiromplays.IdentityServer.Configuration;
 using Eiromplays.IdentityServer.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
@@ -25,6 +24,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
+using Eiromplays.IdentityServer.Application.Common.Interfaces;
 
 namespace Eiromplays.IdentityServer.Controllers;
 

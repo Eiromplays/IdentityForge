@@ -19,6 +19,7 @@
     <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="6.0.4" />
     <PackageReference Include="AspNet.Security.OAuth.WordPress" Version="6.0.4" />
     <PackageReference Include="Duende.IdentityServer" Version="6.0.4" />
+    <PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="6.0.4" />
     <PackageReference Include="Duende.IdentityServer.EntityFramework" Version="6.0.4" />
     <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.0.4" />
     <PackageReference Include="FluentEmail.Core" Version="3.0.0" />
@@ -34,13 +35,24 @@
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.3" />
     <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="3.0.0" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Application\Eiromplays.IdentityServer.Application.Identity\Eiromplays.IdentityServer.Application.Identity.csproj" />
+    <Folder Include="Identity" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Application\Eiromplays.IdentityServer.Application\Eiromplays.IdentityServer.Application.csproj" />
   </ItemGroup>
 
 </Project>

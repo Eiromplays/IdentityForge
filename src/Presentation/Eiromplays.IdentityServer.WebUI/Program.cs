@@ -76,6 +76,9 @@ app.MapBffManagementEndpoints();
 app.MapRemoteBffApiEndpoint("/users", "https://localhost:7003/v1/users")
     .RequireAccessToken();
 
+app.MapRemoteBffApiEndpoint("/roles", "https://localhost:7003/v1/roles")
+    .RequireAccessToken();
+
 app.MapFallbackToFile("index.html");
 
 app.Run();

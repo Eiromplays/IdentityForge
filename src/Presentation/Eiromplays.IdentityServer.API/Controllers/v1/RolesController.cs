@@ -1,7 +1,7 @@
-﻿using Eiromplays.IdentityServer.Application.Common.Models;
+﻿using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Common.Security;
-using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
-using Eiromplays.IdentityServer.Application.Identity.DTOs.Role;
+using Eiromplays.IdentityServer.Application.DTOs.Role;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eiromplays.IdentityServer.API.Controllers.v1;

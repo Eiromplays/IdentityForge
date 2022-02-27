@@ -2,9 +2,9 @@
 
 namespace Eiromplays.IdentityServer.Application.Common.Models
 {
-    public class PaginatedList<T> 
+    public class PaginatedList<T>
     {
-        public List<T> Items { get; }
+        public List<T> Items { get; } = new();
         private int PageIndex { get; }
         private int TotalPages { get; }
         private int TotalCount { get; }
@@ -15,6 +15,11 @@ namespace Eiromplays.IdentityServer.Application.Common.Models
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
             TotalCount = count;
             Items = items;
+        }
+
+        public PaginatedList()
+        {
+            
         }
 
         public bool HasPreviousPage => PageIndex > 1;

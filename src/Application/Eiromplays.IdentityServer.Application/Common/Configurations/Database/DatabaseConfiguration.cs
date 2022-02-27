@@ -1,23 +1,25 @@
-﻿namespace Eiromplays.IdentityServer.Application.Common.Configurations.Database;
+﻿using Eiromplays.IdentityServer.Domain.Enums;
+
+namespace Eiromplays.IdentityServer.Application.Common.Configurations.Database;
 
 public class DatabaseConfiguration
 {
     public DatabaseConfiguration(){}
 
     public DatabaseConfiguration(
-        bool useInMemoryDatabase,
+        DatabaseProvider databaseProvider,
         bool applyDefaultSeeds,
         DatabaseMigrationsConfiguration databaseMigrationsConfiguration,
         ConnectionStringsConfiguration connectionStringsConfiguration)
     {
-        UseInMemoryDatabase = useInMemoryDatabase;
+        DatabaseProvider = databaseProvider;
         ApplyDefaultSeeds = applyDefaultSeeds;
         DatabaseMigrationsConfiguration = databaseMigrationsConfiguration;
         ConnectionStringsConfiguration = connectionStringsConfiguration;
     }
 
-    public bool UseInMemoryDatabase { get; set; }
-
+    public DatabaseProvider DatabaseProvider { get; set; }
+    
     public bool ApplyDefaultSeeds { get; set; }
 
     public DatabaseMigrationsConfiguration? DatabaseMigrationsConfiguration { get; set; }

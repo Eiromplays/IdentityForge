@@ -1,6 +1,9 @@
-using Eiromplays.IdentityServer.Application.Identity;
+using System.Reflection;
+using Eiromplays.IdentityServer.Application;
+using Eiromplays.IdentityServer.Application.Common.Configurations.Database;
+using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Filters;
-using Eiromplays.IdentityServer.Infrastructure.Identity;
+using Eiromplays.IdentityServer.Infrastructure;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -34,7 +37,7 @@ builder.Logging.AddSerilog(logger);
 
 builder.Services.AddApplication(builder.Configuration);
 
-builder.Services.AddInfrastructure(builder.Configuration, true);
+builder.Services.AddInfrastructure(builder.Configuration, ProjectType.IdentityServer);
 
 builder.Services.AddControllersWithViews(options =>
         options.Filters.Add<ApiExceptionFilterAttribute>())

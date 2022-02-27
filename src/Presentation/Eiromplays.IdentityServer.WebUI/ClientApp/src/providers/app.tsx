@@ -31,6 +31,18 @@ const ErrorFallback = () => {
       className="text-red-500 w-screen h-screen flex flex-col justify-center items-center"
       role="alert"
     >
+      <ToastContainer
+        position="top-right"
+        theme="dark"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <h2 className="text-lg font-semibold">Ooops, something went wrong :( </h2>
       <Button className="mt-4" onClick={() => window.location.assign(window.location.origin)}>
         Refresh

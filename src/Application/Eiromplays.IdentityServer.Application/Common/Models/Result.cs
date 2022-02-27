@@ -8,9 +8,9 @@
             Errors = errors.ToArray();
         }
 
-        private bool Succeeded { get; }
+        public bool Succeeded { get; }
 
-        private string[] Errors { get; }
+        public string[] Errors { get; }
 
         public static Result Success()
         {

@@ -1,9 +1,7 @@
-﻿using System.Security.Claims;
-using System.Text.Json;
+﻿using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Common.Security;
-using Eiromplays.IdentityServer.Application.Identity.Common.Interfaces;
-using Eiromplays.IdentityServer.Application.Identity.DTOs.User;
+using Eiromplays.IdentityServer.Application.DTOs.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eiromplays.IdentityServer.API.Controllers.v1;
@@ -16,16 +14,14 @@ namespace Eiromplays.IdentityServer.API.Controllers.v1;
 public class UsersController : ControllerBase
 {
     private readonly IIdentityService _identityService;
-    private readonly ILogger<UsersController> _logger;
 
-    public UsersController(IIdentityService identityService, ILogger<UsersController> logger)
+    public UsersController(IIdentityService identityService)
     {
         _identityService = identityService;
-        _logger = logger;
     }
     
     [HttpGet]
-    public async Task<PaginatedList<UserDto>> Get(string? search, int pageIndex = 1, int pageSize = 10)
+    public async Task<PaginatedList<UserDto>> Get(string? search, int? pageIndex, int? pageSize)
     {
         return await _identityService.GetUsersAsync(search, pageIndex, pageSize);
     }

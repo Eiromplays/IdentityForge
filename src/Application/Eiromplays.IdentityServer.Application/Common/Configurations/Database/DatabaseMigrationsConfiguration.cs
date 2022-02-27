@@ -14,7 +14,7 @@ public class DatabaseMigrationsConfiguration
 
     public string? PermissionDbMigrationsAssembly { get; set; }
 
-    public void SetMigrationsAssemblies(string commonMigrationsAssembly)
+    public void SetMigrationsAssemblies(string? commonMigrationsAssembly)
     {
         IdentityDbMigrationsAssembly = commonMigrationsAssembly;
         ConfigurationDbMigrationsAssembly = commonMigrationsAssembly;

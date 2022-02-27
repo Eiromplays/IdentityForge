@@ -11,17 +11,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{B4B5C3
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{C1CAD481-CF2F-4BEC-B8F8-B453B9A7CFFB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eiromplays.IdentityServer.Infrastructure.Identity", "src\Infrastructure\Eiromplays.IdentityServer.Identity\Eiromplays.IdentityServer.Infrastructure.Identity.csproj", "{289CCF0C-BCA2-40A5-A94A-ECAD96A60E92}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eiromplays.IdentityServer.Domain", "src\Domain\Eiromplays.IdentityServer.Domain\Eiromplays.IdentityServer.Domain.csproj", "{C54D0345-8347-4C0F-868E-3F1B7D89B8FA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eiromplays.IdentityServer.Application", "src\Application\Eiromplays.IdentityServer.Application\Eiromplays.IdentityServer.Application.csproj", "{C3A6E0A2-2D5E-4204-BF02-1FBD5D6658CB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eiromplays.IdentityServer.Infrastructure", "src\Infrastructure\Eiromplays.IdentityServer.Infrastructure\Eiromplays.IdentityServer.Infrastructure.csproj", "{32CF0F31-5475-4B00-BAFA-12C3E3174FD0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eiromplays.IdentityServer.Infrastructure.PostgreSQL", "src\Infrastructure\Eiromplays.IdentityServer.Infrastructure.PostgreSQL\Eiromplays.IdentityServer.Infrastructure.PostgreSQL.csproj", "{BF09C204-F97F-477C-ABEA-C8991C062C6B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eiromplays.IdentityServer.Application.Identity", "src\Application\Eiromplays.IdentityServer.Application.Identity\Eiromplays.IdentityServer.Application.Identity.csproj", "{D9F96E17-CE49-479E-A979-4C556CE4C7E1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eiromplays.IdentityServer", "src\Presentation\Eiromplays.IdentityServer\Eiromplays.IdentityServer.csproj", "{46365E16-DD8C-4799-96A2-026AF9223A8A}"
 EndProject
@@ -35,10 +29,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{289CCF0C-BCA2-40A5-A94A-ECAD96A60E92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{289CCF0C-BCA2-40A5-A94A-ECAD96A60E92}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{289CCF0C-BCA2-40A5-A94A-ECAD96A60E92}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{289CCF0C-BCA2-40A5-A94A-ECAD96A60E92}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C54D0345-8347-4C0F-868E-3F1B7D89B8FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C54D0345-8347-4C0F-868E-3F1B7D89B8FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C54D0345-8347-4C0F-868E-3F1B7D89B8FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -51,14 +41,6 @@ Global
 		{32CF0F31-5475-4B00-BAFA-12C3E3174FD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32CF0F31-5475-4B00-BAFA-12C3E3174FD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32CF0F31-5475-4B00-BAFA-12C3E3174FD0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BF09C204-F97F-477C-ABEA-C8991C062C6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BF09C204-F97F-477C-ABEA-C8991C062C6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BF09C204-F97F-477C-ABEA-C8991C062C6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BF09C204-F97F-477C-ABEA-C8991C062C6B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D9F96E17-CE49-479E-A979-4C556CE4C7E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D9F96E17-CE49-479E-A979-4C556CE4C7E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D9F96E17-CE49-479E-A979-4C556CE4C7E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D9F96E17-CE49-479E-A979-4C556CE4C7E1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{46365E16-DD8C-4799-96A2-026AF9223A8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{46365E16-DD8C-4799-96A2-026AF9223A8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46365E16-DD8C-4799-96A2-026AF9223A8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -76,12 +58,9 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{289CCF0C-BCA2-40A5-A94A-ECAD96A60E92} = {C1CAD481-CF2F-4BEC-B8F8-B453B9A7CFFB}
 		{C54D0345-8347-4C0F-868E-3F1B7D89B8FA} = {B4B5C395-04C2-41F1-BDE7-AD6898BF1B4F}
 		{C3A6E0A2-2D5E-4204-BF02-1FBD5D6658CB} = {DE9F4ECE-5977-4682-88C6-1FEF28EC6EF8}
 		{32CF0F31-5475-4B00-BAFA-12C3E3174FD0} = {C1CAD481-CF2F-4BEC-B8F8-B453B9A7CFFB}
-		{BF09C204-F97F-477C-ABEA-C8991C062C6B} = {C1CAD481-CF2F-4BEC-B8F8-B453B9A7CFFB}
-		{D9F96E17-CE49-479E-A979-4C556CE4C7E1} = {DE9F4ECE-5977-4682-88C6-1FEF28EC6EF8}
 		{46365E16-DD8C-4799-96A2-026AF9223A8A} = {45FB9259-0362-49CB-BC16-8D9A8562AE4B}
 		{AED3A54B-ACD2-4316-9DBA-10B5A8F50E49} = {45FB9259-0362-49CB-BC16-8D9A8562AE4B}
 		{8EC56918-830E-434F-B0BE-B24C0AEF1555} = {45FB9259-0362-49CB-BC16-8D9A8562AE4B}
