@@ -1,12 +1,9 @@
-using System.Reflection;
 using Eiromplays.IdentityServer.Application;
-using Eiromplays.IdentityServer.Application.Common.Configurations.Database;
 using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Filters;
 using Eiromplays.IdentityServer.Infrastructure;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Versioning;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,18 +41,6 @@ builder.Services.AddControllersWithViews(options =>
     .AddFluentValidation(x => x.AutomaticValidationEnabled = false);
 
 builder.Services.AddControllers();
-builder.Services.AddApiVersioning(options =>
-{
-    options.AssumeDefaultVersionWhenUnspecified = true;
-    options.DefaultApiVersion = ApiVersion.Default;
-    options.ApiVersionReader = ApiVersionReader.Combine(
-        new UrlSegmentApiVersionReader(),
-        new MediaTypeApiVersionReader("version"),
-        new HeaderApiVersionReader("X-Version")
-    );
-
-    options.ReportApiVersions = true;
-});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
