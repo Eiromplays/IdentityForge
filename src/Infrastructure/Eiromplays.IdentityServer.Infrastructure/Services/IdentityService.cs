@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using System.Security.Claims;
+using System.Text.Json;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
@@ -114,7 +115,7 @@ public class IdentityService : IIdentityService
 
     private async Task MapOriginalPasswordHashAsync(ApplicationUser user)
     {
-        var userIdentity = await _userResolver.GetUserAsync(user.Id);
+        var userIdentity = await _userManager.FindByIdAsync(user.Id);
         user.PasswordHash = userIdentity?.PasswordHash;
     }
 
@@ -155,47 +156,41 @@ public class IdentityService : IIdentityService
         return user?.DisplayName;
     }
 
-    public Task<PaginatedList<UserDto>> GetUsersAsync(string? search, int? pageIndex, int? pageSize, CancellationToken cancellationToken = default)
+    public async Task<PaginatedList<UserDto>> GetUsersAsync(string? search, int? pageIndex, int? pageSize, CancellationToken cancellationToken = default)
     {
-        return Task.Run(async () =>
-        {
-            Expression<Func<ApplicationUser, bool>> searchExpression = user => !string.IsNullOrWhiteSpace(user.Email) &&
-                                                                               !string.IsNullOrWhiteSpace(search) &&
-                                                                               (user.UserName.Contains(search)
-                                                                                   || user.Email.Contains(search));
+        Expression<Func<ApplicationUser, bool>> searchExpression = user => !string.IsNullOrWhiteSpace(user.Email) &&
+                                                                           !string.IsNullOrWhiteSpace(search) &&
+                                                                           (user.UserName.Contains(search)
+                                                                            || user.Email.Contains(search));
 
-            var users = await _userManager.Users.Where(searchExpression)
-                .ProjectTo<UserDto>(_mapper.ConfigurationProvider).PaginatedListAsync(pageIndex ?? 1, pageSize ?? 10);
+        var users = await _userManager.Users.Where(searchExpression)
+            .ProjectTo<UserDto>(_mapper.ConfigurationProvider).PaginatedListAsync(pageIndex ?? 1, pageSize ?? 10);
 
-            if (!users.Items.Any())
-                throw new NotFoundException("No Users found");
+        if (!users.Items.Any())
+            throw new NotFoundException("No Users found");
 
-            return users;
-        }, cancellationToken);
+        return users;
     }
 
-    public Task<PaginatedList<UserDto>> GetRoleUsersAsync(string? roleName, string? search,
+    public async Task<PaginatedList<UserDto>> GetRoleUsersAsync(string? roleName, string? search,
         int pageIndex = 1, int pageSize = 10, CancellationToken cancellationToken = default)
     {
-        return Task.Run(async () =>
-        {
-            Expression<Func<UserDto, bool>> searchExpression = x => x.Email != null && x.UserName != null &&
-                                                                     !string.IsNullOrWhiteSpace(x.Email) &&
-                                                                     !string.IsNullOrWhiteSpace(search) &&
-                                                                     (x.UserName.Contains(search,
-                                                                          StringComparison.OrdinalIgnoreCase) ||
-                                                                      x.Email.Contains(search,
-                                                                          StringComparison.OrdinalIgnoreCase));
+        Expression<Func<UserDto, bool>> searchExpression = x => x.Email != null && x.UserName != null &&
+                                                                !string.IsNullOrWhiteSpace(x.Email) &&
+                                                                !string.IsNullOrWhiteSpace(search) &&
+                                                                (x.UserName.Contains(search,
+                                                                     StringComparison.OrdinalIgnoreCase) ||
+                                                                 x.Email.Contains(search,
+                                                                     StringComparison.OrdinalIgnoreCase));
 
-            var usersInRole = (await _userManager.GetUsersInRoleAsync(roleName)).AsQueryable()
-                .ProjectTo<UserDto>(_mapper.ConfigurationProvider);
+        var usersInRole = (await _userManager.GetUsersInRoleAsync(roleName)).AsQueryable()
+            .ProjectTo<UserDto>(_mapper.ConfigurationProvider);
 
-            var users = await usersInRole
-                .Where(searchExpression)
-                .PaginatedListAsync(pageIndex, pageSize);
+        var users = await usersInRole
+            .Where(searchExpression)
+            .PaginatedListAsync(pageIndex, pageSize);
 
-            return users;
-        }, cancellationToken);
+        return users;
     }
 
     public async Task<PaginatedList<UserDto>> GetClaimUsersAsync(string? claimType, string? claimValue,

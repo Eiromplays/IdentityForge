@@ -38,6 +38,5 @@ axios.interceptors.response.use(
       return;
     }
     messages.forEach((message: string) => toast.error(message));
-    console.log(error.response);
   }
 );

@@ -3,6 +3,7 @@ export type UserData = {
   userName: string;
   profilePicture: string;
   email: string;
+  role: 'ADMIN' | 'USER';
 };
 
 export type UserSessionInfo = {
@@ -14,4 +15,9 @@ export type UserSessionInfo = {
 export type AuthUser = {
   data: UserData;
   sessionInfo: UserSessionInfo;
+};
+
+export type UserResponse = {
+  jwt: string;
+  user: AuthUser;
 };

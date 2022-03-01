@@ -31,6 +31,6 @@ public class Endpoint : Endpoint<Models.Request, UserDto>
             return;
         }
 
-        await SendAsync(user!, cancellation: ct);
+        await SendAsync(user, cancellation: ct);
     }
 }

@@ -23,6 +23,12 @@ public class IdentityDbContext : IdentityDbContext<ApplicationUser, ApplicationR
         _domainEventService = domainEventService;
     }
 
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.EnableSensitiveDataLogging();
+    }
+    
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
         foreach (var entry in ChangeTracker.Entries<AuditableEntity>())

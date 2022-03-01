@@ -1,4 +1,4 @@
-import { lazyImport } from '@/utils/LazyImport';
+import { lazyImport } from '@/utils/lazyImport';
 
 const { AuthRoutes } = lazyImport(() => import('@/features/auth'), 'AuthRoutes');
 

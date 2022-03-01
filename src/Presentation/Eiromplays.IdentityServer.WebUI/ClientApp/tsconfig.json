@@ -21,7 +21,9 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
+    "src",
+    "src/providers/AuthProvider.tsx",
+    "src/service-worker.js"
   ],
   "exclude": [
     "node_modules"

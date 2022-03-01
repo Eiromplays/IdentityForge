@@ -1,10 +1,9 @@
-import CircularProgress from '@mui/material/CircularProgress';
-
-import { AuthUser, getAuthUser } from '@/features/auth';
+import { Spinner } from '@/components/Elements/Spinner';
+import { AuthUser, getUser } from '@/features/auth';
 import { initReactQueryAuth } from '@/providers/AuthProvider';
 
 async function loadUser() {
-  const data = await getAuthUser();
+  const data = await getUser();
   return data;
 }
 
@@ -31,7 +30,7 @@ const authConfig = {
   LoaderComponent() {
     return (
       <div className="w-screen h-screen flex justify-center items-center">
-        <CircularProgress />
+        <Spinner />
       </div>
     );
   },

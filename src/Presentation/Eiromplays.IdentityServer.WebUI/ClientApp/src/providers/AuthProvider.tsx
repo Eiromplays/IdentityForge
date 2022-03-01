@@ -1,7 +1,6 @@
 // Original source code: https://github.com/alan2207/react-query-auth
 // Author: Alan Alickovic Modified by Eirik Sjøløkken
 
-import { CircularProgress } from '@mui/material';
 import React from 'react';
 import {
   useQuery,
@@ -12,7 +11,12 @@ import {
   RefetchOptions,
 } from 'react-query';
 
+// eslint-disable-next-line import/order
+import { Spinner } from '@/components/Elements';
+
+// eslint-disable-next-line import/order
 import { AuthUser } from '@/features/auth';
+
 // eslint-disable-next-line no-restricted-imports
 import { NotLoggedIn } from '@/features/auth/components/NotLoggedIn';
 
@@ -73,7 +77,7 @@ export function initReactQueryAuth<
     waitInitial = true,
     LoaderComponent = () => (
       <div className="w-screen h-screen flex justify-center items-center">
-        <CircularProgress />
+        <Spinner />
       </div>
     ),
     NotLoggedInComponent = () => <NotLoggedIn />,

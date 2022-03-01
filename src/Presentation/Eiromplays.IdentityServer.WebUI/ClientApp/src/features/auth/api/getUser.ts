@@ -3,7 +3,7 @@ import { Claim } from '@/types';
 
 import { AuthUser, UserSessionInfo, UserData } from '../types';
 
-export const getAuthUser = async (): Promise<AuthUser> => {
+export const getUser = async (): Promise<AuthUser> => {
   const userSessionInfo = await getUserSessionInfo();
 
   const authUser: AuthUser = {
