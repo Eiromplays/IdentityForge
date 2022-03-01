@@ -17,6 +17,8 @@ export const getUser = async (): Promise<AuthUser> => {
 export const getUserSessionInfo = async (): Promise<UserSessionInfo> => {
   const userSessionInfoClaims = (await axios.get('/bff/user')) as { type: string; value: string }[];
 
+  console.log(userSessionInfoClaims);
+
   const nameDictionary =
     userSessionInfoClaims?.find((claim: Claim) => claim.type === 'name') ??
     userSessionInfoClaims?.find((claim: Claim) => claim.type === 'sub');

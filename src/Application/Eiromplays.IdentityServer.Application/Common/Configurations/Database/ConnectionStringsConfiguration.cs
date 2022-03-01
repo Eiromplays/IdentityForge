@@ -1,6 +1,4 @@
-﻿using Microsoft.Graph;
-
-namespace Eiromplays.IdentityServer.Application.Common.Configurations.Database;
+﻿namespace Eiromplays.IdentityServer.Application.Common.Configurations.Database;
 
 [Serializable]
 public class ConnectionStringsConfiguration
@@ -12,6 +10,8 @@ public class ConnectionStringsConfiguration
     public string? PersistedGrantDbConnection { get; set; }
 
     public string? DataProtectionDbConnection { get; set; }
+    
+    public string? SessionDbConnection { get; set; }
 
     public void SetConnections(string commonConnectionString)
     {
@@ -19,5 +19,6 @@ public class ConnectionStringsConfiguration
         ConfigurationDbConnection = commonConnectionString;
         DataProtectionDbConnection = commonConnectionString;
         PersistedGrantDbConnection = commonConnectionString;
+        SessionDbConnection = commonConnectionString;
     }
 }

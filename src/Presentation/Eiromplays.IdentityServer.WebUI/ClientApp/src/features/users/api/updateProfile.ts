@@ -32,6 +32,13 @@ export const useUpdateProfile = ({ config }: UseUpdateProfileOptions = {}) => {
       });
       refetchUser();
     },
+    onError: (error) => {
+      addNotification({
+        type: 'error',
+        title: 'Error Updating User',
+        message: error.message,
+      });
+    },
     ...config,
     mutationFn: updateProfile,
   });

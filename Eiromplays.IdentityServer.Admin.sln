@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eiromplays.IdentityServer.I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eiromplays.IdentityServer.Infrastructure.SqlServer", "src\Infrastructure\Eiromplays.IdentityServer.Infrastructure.SqlServer\Eiromplays.IdentityServer.Infrastructure.SqlServer.csproj", "{24FCE9A2-4826-4FE8-8525-4AE62A34D622}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eiromplays.IdentityServer.Infrastructure.BFF", "src\Infrastructure\Eiromplays.IdentityServer.Infrastructure.BFF\Eiromplays.IdentityServer.Infrastructure.BFF.csproj", "{0349FC33-4735-4B0A-88A4-945526676A7B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{24FCE9A2-4826-4FE8-8525-4AE62A34D622}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24FCE9A2-4826-4FE8-8525-4AE62A34D622}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24FCE9A2-4826-4FE8-8525-4AE62A34D622}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0349FC33-4735-4B0A-88A4-945526676A7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0349FC33-4735-4B0A-88A4-945526676A7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0349FC33-4735-4B0A-88A4-945526676A7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0349FC33-4735-4B0A-88A4-945526676A7B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -95,6 +101,7 @@ Global
 		{DFC0EFF0-3F69-4C1F-9794-7CE3D7F2600C} = {807FB058-C41D-4C72-A0FA-195DEE989709}
 		{55981B15-84EE-45EC-9B7C-9512A4785544} = {807FB058-C41D-4C72-A0FA-195DEE989709}
 		{24FCE9A2-4826-4FE8-8525-4AE62A34D622} = {807FB058-C41D-4C72-A0FA-195DEE989709}
+		{0349FC33-4735-4B0A-88A4-945526676A7B} = {C1CAD481-CF2F-4BEC-B8F8-B453B9A7CFFB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E8BF1AF7-AD5B-4C7F-A1F6-8C6FA17ADCC6}

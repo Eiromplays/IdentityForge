@@ -104,19 +104,12 @@ public class IdentityService : IIdentityService
 
     public async Task<(Result Result, string? UserId)> UpdateUserAsync(UserDto userDto)
     {
-        var user = _mapper.Map<ApplicationUser>(userDto);
-
-        await MapOriginalPasswordHashAsync(user);
+        var user = await _userManager.FindByIdAsync(userDto.Id);
+        user = _mapper.Map(userDto, user);
 
         var identityResult = await _userManager.UpdateAsync(user);
 
         return (identityResult.ToApplicationResult(), user.Id);
-    }
-
-    private async Task MapOriginalPasswordHashAsync(ApplicationUser user)
-    {
-        var userIdentity = await _userManager.FindByIdAsync(user.Id);
-        user.PasswordHash = userIdentity?.PasswordHash;
     }
 
     public async Task<bool> UserExistsAsync(string? userId)

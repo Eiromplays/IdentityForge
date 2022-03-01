@@ -1,5 +1,5 @@
 import { Dialog, Menu, Transition } from '@headlessui/react';
-import { UserIcon, HomeIcon, MenuAlt2Icon, UsersIcon, XIcon } from '@heroicons/react/outline';
+import { HomeIcon, MenuAlt2Icon, UserIcon, UsersIcon, XIcon } from '@heroicons/react/outline';
 import clsx from 'clsx';
 import * as React from 'react';
 import { NavLink, Link } from 'react-router-dom';
@@ -60,7 +60,7 @@ type UserNavigationItem = {
 };
 
 const UserNavigation = () => {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
 
   const userNavigation = [
     { name: 'Your Profile', to: './profile' },
@@ -80,7 +80,15 @@ const UserNavigation = () => {
           <div>
             <Menu.Button className="max-w-xs  bg-gray-200 p-2 flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
               <span className="sr-only">Open user menu</span>
-              <UserIcon className="h-8 w-8 rounded-full" />
+              {user?.data.profilePicture ? (
+                <img
+                  alt="Avatar"
+                  src={user?.data.profilePicture}
+                  className="h-8 w-8 rounded-full"
+                />
+              ) : (
+                <UserIcon className="h-8 w-8 rounded-full" />
+              )}
             </Menu.Button>
           </div>
           <Transition

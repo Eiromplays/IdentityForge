@@ -1,4 +1,4 @@
-using Duende.Bff.Yarp;
+using Eiromplays.IdentityServer.Infrastructure.BFF;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,9 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddAuthorization();
-
-builder.Services.AddBff()
-    .AddRemoteApis();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddAuthentication(options =>
 {
@@ -45,6 +43,8 @@ builder.Services.AddAuthentication(options =>
 });
 
 var app = builder.Build();
+
+await app.Services.ApplyMigrationsAsync(app.Configuration);
 
 if (app.Environment.IsDevelopment())
 {
