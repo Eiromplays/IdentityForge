@@ -3,6 +3,9 @@
     "Roles": [
       {
         "Name": "Administrator"
+      },
+      {
+        "Name": "Test"
       }
     ],
     "Users": [
@@ -12,7 +15,8 @@
         "Password": "Administrator1!",
         "Email": "admin@localhost",
         "Roles": [
-          "Administrator"
+          "Administrator",
+          "Test"
         ],
         "Claims": [
           {

@@ -16,7 +16,6 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
     {
         Verbs(Http.GET);
         Routes("/roles");
-        Policies("RequireInteractiveUser");
         Version(1);
     }
 

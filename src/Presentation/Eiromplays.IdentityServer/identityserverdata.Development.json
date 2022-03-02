@@ -66,7 +66,8 @@
         "Name": "api",
         "DisplayName": "API",
         "UserClaims": [
-          "name"
+          "name",
+          "role"
         ]
       }
     ],
@@ -76,7 +77,8 @@
         "DisplayName": "API",
         "UserClaims": [
           "name",
-          "email"
+          "email",
+          "role"
         ],
         "Scopes": [
           "api"
@@ -96,7 +98,7 @@
         "RedirectUris": [
           "https://localhost:3000/signin-oidc"
         ],
-        //"FrontChannelLogoutUri": "https://localhost:3000/signout-oidc",
+        "FrontChannelLogoutUri": "https://localhost:3000/signout-oidc",
         "BackChannelLogoutUri": "https://localhost:3000/bff/backchannel",
         "PostLogoutRedirectUris": [
           "https://localhost:3000/signout-callback-oidc"
@@ -108,7 +110,8 @@
         "AllowedScopes": [
           "openid",
           "profile",
-          "api"
+          "api",
+          "roles"
         ]
       }
     ]

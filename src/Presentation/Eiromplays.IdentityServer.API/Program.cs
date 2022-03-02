@@ -54,6 +54,11 @@ builder.Services.AddAuthorization(options =>
     {
         policy.RequireClaim("sub");
     });
+    
+    options.AddPolicy("RequireAdministrator", policy =>
+    {
+        policy.RequireClaim("role", "Administrator");
+    });
 });
 
 builder.Services.AddFastEndpoints()
@@ -82,6 +87,10 @@ app.UseAuthorization();
 
 app.UseFastEndpoints(config =>
 {
+    config.GlobalEndpointOptions = (_, routeHandlerBuilder) =>
+    {
+        routeHandlerBuilder.RequireAuthorization("RequireInteractiveUser");
+    };
     config.VersioningOptions = options =>
     {
         options.Prefix = "v";

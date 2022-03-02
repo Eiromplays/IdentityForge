@@ -1,10 +1,10 @@
 using Eiromplays.IdentityServer.Infrastructure.BFF;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
 builder.Services.AddAuthorization();
 builder.Services.AddInfrastructure(builder.Configuration);
 
@@ -34,6 +34,8 @@ builder.Services.AddAuthentication(options =>
     options.Scope.Add("profile");
     options.Scope.Add("api");
     options.Scope.Add("offline_access");
+    options.Scope.Add("roles");
+    options.ClaimActions.MapJsonKey("role", "role", "role");
 
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -66,10 +68,6 @@ app.UseAuthentication();
 app.UseBff();
 
 app.UseAuthorization();
-
-app.MapControllers()
-    .RequireAuthorization()
-    .AsBffApiEndpoint();
 
 app.MapBffManagementEndpoints();
 

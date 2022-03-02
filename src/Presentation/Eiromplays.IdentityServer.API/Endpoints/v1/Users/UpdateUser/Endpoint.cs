@@ -16,7 +16,6 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
     {
         Verbs(Http.PUT);
         Routes("/users/{id}");
-        Policies("RequireInteractiveUser");
         Version(1);
     }
 

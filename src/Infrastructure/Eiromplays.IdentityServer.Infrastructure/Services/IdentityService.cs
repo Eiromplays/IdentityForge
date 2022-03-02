@@ -151,12 +151,10 @@ public class IdentityService : IIdentityService
 
     public async Task<PaginatedList<UserDto>> GetUsersAsync(string? search, int? pageIndex, int? pageSize, CancellationToken cancellationToken = default)
     {
-        Expression<Func<ApplicationUser, bool>> searchExpression = user => !string.IsNullOrWhiteSpace(user.Email) &&
-                                                                           !string.IsNullOrWhiteSpace(search) &&
-                                                                           (user.UserName.Contains(search)
-                                                                            || user.Email.Contains(search));
-
-        var users = await _userManager.Users.Where(searchExpression)
+        Expression<Func<ApplicationUser, bool>> searchExpression = user =>
+            user.Email != null && (user.UserName.Contains(search!) || user.Email.Contains(search!));
+        
+        var users = await _userManager.Users.WhereIf(!string.IsNullOrWhiteSpace(search), searchExpression)
             .ProjectTo<UserDto>(_mapper.ConfigurationProvider).PaginatedListAsync(pageIndex ?? 1, pageSize ?? 10);
 
         if (!users.Items.Any())

@@ -28,7 +28,7 @@ public class UserDto
 
     public DateTimeOffset? LockoutEnd { get; set; }
 
-    public decimal Credits { get; set; }
+    public double Credits { get; set; }
 
     public string? DiscordId { get; set; }
 }

@@ -5,9 +5,9 @@ namespace Eiromplays.IdentityServer.Application.Common.Models
     public class PaginatedList<T>
     {
         public List<T> Items { get; } = new();
-        private int PageIndex { get; }
-        private int TotalPages { get; }
-        private int TotalCount { get; }
+        public int PageIndex { get; }
+        public int TotalPages { get; }
+        public int TotalCount { get; }
 
         private PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
         {

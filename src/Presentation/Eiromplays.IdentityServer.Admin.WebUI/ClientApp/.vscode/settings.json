@@ -1,0 +1,41 @@
+{
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "files.eol": "\n",
+    "cSpell.words": [
+        "Alickovic",
+        "appbar",
+        "APPDATA",
+        "ASPNETCORE",
+        "browserslist",
+        "cacheable",
+        "CHOKIDAR",
+        "clsx",
+        "compat",
+        "craco",
+        "dompurify",
+        "Eirik",
+        "flowtype",
+        "headlessui",
+        "heroicons",
+        "identityserver",
+        "mswjs",
+        "oidc",
+        "Ooops",
+        "precached",
+        "precaching",
+        "prestart",
+        "signin",
+        "signout",
+        "Sjøløkken",
+        "spdy",
+        "tailwindcss",
+        "toastify",
+        "todos",
+        "USEPOLLING",
+        "webui",
+        "zustand"
+    ]
+}

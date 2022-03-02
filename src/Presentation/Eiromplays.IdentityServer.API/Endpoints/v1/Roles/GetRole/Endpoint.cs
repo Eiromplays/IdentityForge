@@ -17,7 +17,6 @@ public class Endpoint : Endpoint<Models.Request, RoleDto>
     {
         Verbs(Http.GET);
         Routes("/roles/{Id}");
-        Policies("RequireInteractiveUser");
         Version(1);
     }
 
