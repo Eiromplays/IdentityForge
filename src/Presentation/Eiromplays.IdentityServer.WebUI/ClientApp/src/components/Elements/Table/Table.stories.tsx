@@ -25,7 +25,7 @@ const data: User[] = [
     id: '1',
     name: 'Jane Cooper',
     title: 'Regional Paradigm Technician',
-    role: 'Admin',
+    role: 'Administrator',
     email: 'jane.cooper@example.com',
   },
   {

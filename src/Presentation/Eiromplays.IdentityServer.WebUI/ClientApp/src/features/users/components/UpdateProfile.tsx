@@ -39,12 +39,12 @@ export const UpdateProfile = () => {
       <Form<UpdateProfileDTO['data'], typeof schema>
         id="update-profile"
         onSubmit={async (values) => {
-          await updateProfileMutation.mutateAsync({ id: user?.sessionInfo.id, data: values });
+          await updateProfileMutation.mutateAsync({ id: user?.id, data: values });
         }}
         options={{
           defaultValues: {
-            username: user?.data.userName,
-            email: user?.data.email,
+            username: user?.username,
+            email: user?.email,
           },
         }}
         schema={schema}

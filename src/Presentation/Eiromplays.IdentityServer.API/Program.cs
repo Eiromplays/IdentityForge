@@ -89,7 +89,7 @@ app.UseFastEndpoints(config =>
 {
     config.GlobalEndpointOptions = (_, routeHandlerBuilder) =>
     {
-        routeHandlerBuilder.RequireAuthorization("RequireInteractiveUser");
+        routeHandlerBuilder.RequireAuthorization("RequireInteractiveUser", "RequireAdministrator");
     };
     config.VersioningOptions = options =>
     {

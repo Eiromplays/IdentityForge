@@ -18,7 +18,7 @@ const SideNavigation = () => {
   const { checkAccess } = useAuthorization();
   const navigation = [
     { name: 'Dashboard', to: '.', icon: HomeIcon },
-    checkAccess({ allowedRoles: [ROLES.ADMIN] }) && {
+    checkAccess({ allowedRoles: [ROLES.ADMINISTRATOR] }) && {
       name: 'Users',
       to: './users',
       icon: UsersIcon,
@@ -80,12 +80,8 @@ const UserNavigation = () => {
           <div>
             <Menu.Button className="max-w-xs  bg-gray-200 p-2 flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
               <span className="sr-only">Open user menu</span>
-              {user?.data.profilePicture ? (
-                <img
-                  alt="Avatar"
-                  src={user?.data.profilePicture}
-                  className="h-8 w-8 rounded-full"
-                />
+              {user?.profilePicture ? (
+                <img alt="Avatar" src={user?.profilePicture} className="h-8 w-8 rounded-full" />
               ) : (
                 <UserIcon className="h-8 w-8 rounded-full" />
               )}

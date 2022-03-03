@@ -103,7 +103,8 @@ public static class DependencyInjection
         services.AddIdentityServer(options => configurationSection.Bind(options))
             .AddConfigurationStore<IdentityServerConfigurationDbContext>()
             .AddOperationalStore<IdentityServerPersistedGrantDbContext>()
-            .AddAspNetIdentity<ApplicationUser>();
+            .AddAspNetIdentity<ApplicationUser>()
+            .AddProfileService<CustomProfileService>();
     }
 
     private static void AddExternalProviders(this IServiceCollection services, IConfiguration configuration, ProjectType projectType)

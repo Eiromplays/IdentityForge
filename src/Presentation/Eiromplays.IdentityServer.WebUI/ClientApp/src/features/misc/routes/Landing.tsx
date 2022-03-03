@@ -11,9 +11,9 @@ export const Landing = () => {
 
   const handleStart = () => {
     if (user) {
-      navigate('/app');
+      navigate('/');
     } else {
-      navigate('/auth/login');
+      navigate('/login');
     }
   };
 

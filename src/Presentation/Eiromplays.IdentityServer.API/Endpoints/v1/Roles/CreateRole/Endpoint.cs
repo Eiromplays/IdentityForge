@@ -1,7 +1,7 @@
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using FastEndpoints;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.CreateUser;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.CreateRole;
 
 public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
@@ -15,20 +15,23 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
     public override void Configure()
     {
         Verbs(Http.POST);
-        Routes("/users");
+        Routes("/roles");
         Version(1);
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        var (result, userId) = await _identityService.CreateUserAsync(req.UserDto);
+        if (req.RoleDto is null) 
+            ThrowError("RoleDto is null");
+        
+        var (result, roleId) = await _identityService.CreateRoleAsync(req.RoleDto);
         foreach (var error in result.Errors) AddError(error);
         
         ThrowIfAnyErrors();
         
-        if (userId is null)
-            ThrowError("User was not created");
+        if (roleId is null)
+            ThrowError("Role was not created");
         
-        await SendCreatedAtAsync("/users/{id}", userId, new Models.Response{UserDto = req.UserDto}, ct);
+        await SendCreatedAtAsync("/roles/{id}", roleId, new Models.Response(){RoleDto = req.RoleDto}, ct);
     }
 }

@@ -1,46 +1,30 @@
 import { axios } from '@/lib/axios';
 import { Claim } from '@/types';
 
-import { AuthUser, UserSessionInfo, UserData } from '../types';
+import { AuthUser } from '../types';
 
 export const getUser = async (): Promise<AuthUser> => {
-  const userSessionInfo = await getUserSessionInfo();
-  console.log(await getUsers());
+  const userSessionInfo = (await axios.get('/bff/user')) as { type: string; value: string }[];
 
-  const authUser: AuthUser = {
-    data: await getUserData(userSessionInfo.id),
-    sessionInfo: userSessionInfo,
-  };
-
-  return authUser;
-};
-
-export const getUserSessionInfo = async (): Promise<UserSessionInfo> => {
-  const userSessionInfoClaims = (await axios.get('/bff/user')) as { type: string; value: string }[];
+  console.log(userSessionInfo);
 
   const nameDictionary =
-    userSessionInfoClaims?.find((claim: Claim) => claim.type === 'name') ??
-    userSessionInfoClaims?.find((claim: Claim) => claim.type === 'sub');
+    userSessionInfo?.find((claim: Claim) => claim.type === 'name') ??
+    userSessionInfo?.find((claim: Claim) => claim.type === 'sub');
 
-  const userSessionInfo: UserSessionInfo = {
-    id: userSessionInfoClaims?.find((claim: Claim) => claim.type === 'sub')?.value,
-    username: nameDictionary?.value,
-    logoutUrl:
-      userSessionInfoClaims?.find((claim: Claim) => claim.type === 'bff:logout_url')?.value ??
-      '/bff/logout',
+  const user: AuthUser = {
+    id: userSessionInfo?.find((claim: Claim) => claim.type === 'sub')?.value ?? '',
+    username: nameDictionary?.value ?? '',
+    email: userSessionInfo?.find((claim: Claim) => claim.type === 'email')?.value ?? '',
+    profilePicture: userSessionInfo?.find((claim: Claim) => claim.type === 'picture')?.value ?? '',
     roles:
-      (userSessionInfoClaims
+      (userSessionInfo
         ?.filter((claim: Claim) => claim.type === 'role')
         .map((claim: Claim) => claim.value) as unknown as string[]) ?? [],
+    logoutUrl:
+      userSessionInfo?.find((claim: Claim) => claim.type === 'bff:logout_url')?.value ??
+      '/bff/logout',
   };
 
-  return userSessionInfo;
-};
-
-export const getUserData = (id: string | undefined): Promise<UserData> => {
-  return axios.get(`/users/${id}`);
-};
-
-export const getUsers = (): Promise<UserData[]> => {
-  return axios.get('/users');
+  return user;
 };

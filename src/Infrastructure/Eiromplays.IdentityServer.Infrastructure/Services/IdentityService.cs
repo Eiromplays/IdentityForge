@@ -446,7 +446,8 @@ public class IdentityService : IIdentityService
 
     public async Task<(Result Result, string? RoleId)> UpdateRoleAsync(RoleDto roleDto)
     {
-        var role = _mapper.Map<ApplicationRole>(roleDto);
+        var role = await _roleManager.FindByIdAsync(roleDto.Id);
+        role = _mapper.Map(roleDto, role);
 
         var identityResult = await _roleManager.UpdateAsync(role);
 

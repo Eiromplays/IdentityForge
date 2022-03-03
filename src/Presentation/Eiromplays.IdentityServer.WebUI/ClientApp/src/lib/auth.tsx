@@ -19,8 +19,7 @@ async function registerFn() {
 
 async function logoutFn() {
   const user = await loadUser();
-  console.log(user.sessionInfo);
-  window.location.assign(user.sessionInfo.logoutUrl);
+  window.location.assign(user.logoutUrl);
 }
 
 const authConfig = {

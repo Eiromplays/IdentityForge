@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useAuth } from './auth';
 
 export enum ROLES {
-  ADMIN = 'ADMIN',
+  ADMINISTRATOR = 'ADMINISTRATOR',
   USER = 'USER',
 }
 
@@ -21,15 +21,15 @@ export const useAuthorization = () => {
   const checkAccess = React.useCallback(
     ({ allowedRoles }: { allowedRoles: RoleTypes[] }) => {
       if (allowedRoles && allowedRoles.length > 0) {
-        return allowedRoles?.includes(user.data.role);
+        return allowedRoles?.every((role) => user.roles.includes(role));
       }
 
       return true;
     },
-    [user.data.role]
+    [user.roles]
   );
 
-  return { checkAccess, role: user.data.role };
+  return { checkAccess, role: user.roles };
 };
 
 type AuthorizationProps = {

@@ -6,11 +6,11 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.GetUser;
 
 public class Endpoint : Endpoint<Models.Request, UserDto>
 {
-    private IIdentityService IdentityService { get; }
+    private readonly IIdentityService _identityService;
     
     public Endpoint(IIdentityService identityService)
     {
-        IdentityService = identityService;
+        _identityService = identityService;
     }
 
     public override void Configure()
@@ -22,7 +22,7 @@ public class Endpoint : Endpoint<Models.Request, UserDto>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        var user = await IdentityService.FindUserByIdAsync(req.Id);
+        var user = await _identityService.FindUserByIdAsync(req.Id);
         if (user is null)
         {
             //ThrowError($"User with id {req.Id} not found");

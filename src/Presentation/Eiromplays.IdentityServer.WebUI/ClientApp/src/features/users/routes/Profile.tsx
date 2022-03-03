@@ -31,10 +31,15 @@ export const Profile = () => {
         </div>
         <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
           <dl className="sm:divide-y sm:divide-gray-200">
-            <Entry label="Id" value={user.data.id} />
-            <Entry label="Username" value={user.data.userName} />
-            <Entry label="Email Address" value={user.data.email} />
-            <Entry label="Role" value={user.data.role} />
+            <Entry label="Id" value={user.id} />
+            <Entry label="Username" value={user.username} />
+            <Entry label="Email Address" value={user.email} />
+            {user.roles.length > 0 && (
+              <Entry
+                label={user.roles.length > 1 ? 'Roles' : 'Role'}
+                value={user.roles.join(', ')}
+              />
+            )}
           </dl>
         </div>
       </div>

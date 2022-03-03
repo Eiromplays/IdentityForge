@@ -111,7 +111,8 @@
           "openid",
           "profile",
           "api",
-          "roles"
+          "roles",
+          "email"
         ]
       }
     ]
