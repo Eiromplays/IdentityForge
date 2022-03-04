@@ -27,15 +27,12 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         
         user.Email = req.Email;
         user.UserName = req.UserName;
-        
+
         var (result, userId) = await _identityService.UpdateUserAsync(user);
         foreach (var error in result.Errors) AddError(error);
         
         ThrowIfAnyErrors();
-        
-        if (string.IsNullOrWhiteSpace(userId))
-            ThrowError("User was not updated");
-        
+
         await SendCreatedAtAsync("/users/{id}", userId, new Models.Response{UserDto = user}, ct);
     }
 }

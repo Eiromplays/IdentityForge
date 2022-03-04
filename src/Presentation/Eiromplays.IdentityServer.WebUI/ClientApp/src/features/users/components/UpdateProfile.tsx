@@ -14,6 +14,7 @@ const schema = z.object({
 
 export const UpdateProfile = () => {
   const { user } = useAuth();
+  let files: FileList[];
   const updateProfileMutation = useUpdateProfile();
 
   return (
@@ -39,6 +40,8 @@ export const UpdateProfile = () => {
       <Form<UpdateProfileDTO['data'], typeof schema>
         id="update-profile"
         onSubmit={async (values) => {
+          console.log(files);
+          values.profilePicture = files[0][0];
           await updateProfileMutation.mutateAsync({ id: user?.id, data: values });
         }}
         options={{
@@ -48,6 +51,7 @@ export const UpdateProfile = () => {
           },
         }}
         schema={schema}
+        files={(file) => (files = file)}
       >
         {({ register, formState }) => (
           <>
@@ -61,6 +65,19 @@ export const UpdateProfile = () => {
               type="email"
               error={formState.errors['email']}
               registration={register('email')}
+            />
+            <InputField
+              label="Profile Picture"
+              type="file"
+              error={formState.errors['profilePicture']}
+              registration={register('profilePicture')}
+            />
+
+            <InputField
+              label="Pictures"
+              type="file"
+              multiple={true}
+              registration={register('profilePictures')}
             />
           </>
         )}

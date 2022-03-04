@@ -10,11 +10,29 @@ export type UpdateProfileDTO = {
   data: {
     username: string;
     email: string;
+    profilePicture: File;
+    profilePictures: File[];
   };
 };
 
-export const updateProfile = ({ data, id }: UpdateProfileDTO) => {
-  return axios.put(`/users/${id}`, data);
+export const updateProfile = async ({ data, id }: UpdateProfileDTO) => {
+  const formData = new FormData();
+  formData.append('ProfilePicture', data.profilePicture);
+
+  const updateUserResponse = await axios.put(`/users/${id}`, data);
+
+  if (!data.profilePicture) return updateUserResponse;
+
+  const updateProfilePictureResponse = await axios.post(`/users/${id}/picture`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      'Cache-Control': 'no-cache',
+      Pragma: 'no-cache',
+      Expires: '0',
+    },
+  });
+
+  return await Promise.all([updateProfilePictureResponse, updateUserResponse]);
 };
 
 type UseUpdateProfileOptions = {
@@ -23,6 +41,7 @@ type UseUpdateProfileOptions = {
 
 export const useUpdateProfile = ({ config }: UseUpdateProfileOptions = {}) => {
   const { refetchUser } = useAuth();
+
   return useMutation({
     onSuccess: () => {
       toast.success('User Updated');

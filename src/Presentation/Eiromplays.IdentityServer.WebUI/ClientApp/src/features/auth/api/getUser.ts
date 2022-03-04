@@ -6,8 +6,6 @@ import { AuthUser } from '../types';
 export const getUser = async (): Promise<AuthUser> => {
   const userSessionInfo = (await axios.get('/bff/user')) as { type: string; value: string }[];
 
-  console.log(userSessionInfo);
-
   const nameDictionary =
     userSessionInfo?.find((claim: Claim) => claim.type === 'name') ??
     userSessionInfo?.find((claim: Claim) => claim.type === 'sub');

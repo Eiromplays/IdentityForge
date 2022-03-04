@@ -34,6 +34,7 @@ export const Profile = () => {
             <Entry label="Id" value={user.id} />
             <Entry label="Username" value={user.username} />
             <Entry label="Email Address" value={user.email} />
+            {user.profilePicture && <Entry label={'Profile Picture'} value={user.profilePicture} />}
             {user.roles.length > 0 && (
               <Entry
                 label={user.roles.length > 1 ? 'Roles' : 'Role'}
