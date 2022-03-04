@@ -11,7 +11,6 @@ export type UpdateProfileDTO = {
     username: string;
     email: string;
     profilePicture: File;
-    profilePictures: File[];
   };
 };
 
@@ -26,9 +25,6 @@ export const updateProfile = async ({ data, id }: UpdateProfileDTO) => {
   const updateProfilePictureResponse = await axios.post(`/users/${id}/picture`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
-      'Cache-Control': 'no-cache',
-      Pragma: 'no-cache',
-      Expires: '0',
     },
   });
 

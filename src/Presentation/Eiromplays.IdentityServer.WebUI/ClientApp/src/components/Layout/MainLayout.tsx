@@ -8,6 +8,8 @@ import logo from '@/assets/logo.svg';
 import { useAuth } from '@/lib/auth';
 import { useAuthorization, ROLES } from '@/lib/authorization';
 
+import ThemeToggle from '../Theme/ThemeToggle';
+
 type SideNavigationItem = {
   name: string;
   to: string;
@@ -34,9 +36,9 @@ const SideNavigation = () => {
           to={item.to}
           className={(navData) =>
             clsx(
-              'hover:bg-gray-700 hover:text-white',
+              'hover:bg-gray-700 dark:hover:bg-black-700 hover:text-white',
               'group flex items-center px-2 py-2 text-base font-medium rounded-md'
-            ) + (navData.isActive ? 'bg-gray-900 text-white' : 'text-gray-300')
+            ) + (navData.isActive ? 'bg-gray-900 dark:bg-black-900 text-white' : 'text-gray-300')
           }
         >
           <item.icon
@@ -77,8 +79,9 @@ const UserNavigation = () => {
     <Menu as="div" className="ml-3 relative">
       {({ open }) => (
         <>
-          <div>
-            <Menu.Button className="max-w-xs  bg-gray-200 p-2 flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          <div className="flex">
+            <ThemeToggle />
+            <Menu.Button className="max-w-xs bg-gray-200 dark:bg-black-200 p-2 flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
               <span className="sr-only">Open user menu</span>
               {user?.profilePicture ? (
                 <img alt="Avatar" src={user?.profilePicture} className="h-8 w-8 rounded-full" />
@@ -99,7 +102,8 @@ const UserNavigation = () => {
           >
             <Menu.Items
               static
-              className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+              className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white dark:bg-black ring-1 
+              ring-black ring-opacity-5 focus:outline-none"
             >
               {userNavigation.map((item) => (
                 <Menu.Item key={item.name}>
@@ -108,8 +112,8 @@ const UserNavigation = () => {
                       onClick={item.onClick}
                       to={item.to}
                       className={clsx(
-                        active ? 'bg-gray-100' : '',
-                        'block px-4 py-2 text-sm text-gray-700'
+                        active ? 'bg-gray-100 dark:bg-black-100' : '',
+                        'block px-4 py-2 text-sm text-gray-700 dark:text-white-700'
                       )}
                     >
                       {item.name}

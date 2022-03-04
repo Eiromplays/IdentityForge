@@ -1,3 +1,4 @@
+using Duende.IdentityServer.Extensions;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using FastEndpoints;
 
@@ -21,6 +22,11 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
+        if (!User.IsInRole("Administrator") && !User.HasClaim("sub", req.Id))
+        {
+            await SendUnauthorizedAsync(ct);
+            return;
+        }
         var user = await _identityService.FindUserByIdAsync(req.Id);
         if (user is null)
             ThrowError("User not found");

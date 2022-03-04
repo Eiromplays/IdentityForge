@@ -23,7 +23,11 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        Console.WriteLine($"Verify user: {User.HasClaim("sub", req.Id)}");
+        if (!User.IsInRole("Administrator") && !User.HasClaim("sub", req.Id))
+        {
+            await SendUnauthorizedAsync(ct);
+            return;
+        }
         
         var user = await _identityService.FindUserByIdAsync(req.Id);
         if (user is null)

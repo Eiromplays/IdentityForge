@@ -18,6 +18,7 @@ public class Endpoint : Endpoint<Models.Request, UserDto>
         Verbs(Http.GET);
         Routes("/users/{Id}");
         Version(1);
+        Policies("RequireAdministrator");
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
@@ -25,7 +26,6 @@ public class Endpoint : Endpoint<Models.Request, UserDto>
         var user = await _identityService.FindUserByIdAsync(req.Id);
         if (user is null)
         {
-            //ThrowError($"User with id {req.Id} not found");
             await SendNotFoundAsync(ct);
             return;
         }

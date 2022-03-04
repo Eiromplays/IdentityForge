@@ -18,6 +18,7 @@ public class Endpoint : Endpoint<Models.Request, RoleDto>
         Verbs(Http.GET);
         Routes("/roles/{Id}");
         Version(1);
+        Policies("RequireAdministrator");
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)

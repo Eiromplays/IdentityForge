@@ -43,11 +43,7 @@ export const Form = <
   onChange && onChange(items, filesLists);
 
   return (
-    <form
-      className={clsx('space-y-6', className)}
-      onSubmit={methods.handleSubmit(onSubmit)}
-      id={id}
-    >
+    <form className={clsx('space-y-', className)} onSubmit={methods.handleSubmit(onSubmit)} id={id}>
       {children(methods)}
     </form>
   );

@@ -114,6 +114,35 @@
           "roles",
           "email"
         ]
+      },
+      {
+        "ClientId": "eiromplays_identity_admin_spa",
+        "ClientName": "eiromplays_identity_admin_spa",
+        "ClientUri": "https://localhost:3001",
+        "AllowedGrantTypes": [
+          "authorization_code",
+          "client_credentials"
+        ],
+        "RequireClientSecret": false,
+        "RedirectUris": [
+          "https://localhost:3001/signin-oidc"
+        ],
+        "FrontChannelLogoutUri": "https://localhost:3001/signout-oidc",
+        "BackChannelLogoutUri": "https://localhost:3001/bff/backchannel",
+        "PostLogoutRedirectUris": [
+          "https://localhost:3001/signout-callback-oidc"
+        ],
+        "AllowedCorsOrigins": [
+          "https://localhost:3001"
+        ],
+        "AllowOfflineAccess": true,
+        "AllowedScopes": [
+          "openid",
+          "profile",
+          "api",
+          "roles",
+          "email"
+        ]
       }
     ]
   }
