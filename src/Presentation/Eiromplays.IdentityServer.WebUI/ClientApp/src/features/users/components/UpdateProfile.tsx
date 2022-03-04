@@ -40,7 +40,6 @@ export const UpdateProfile = () => {
       <Form<UpdateProfileDTO['data'], typeof schema>
         id="update-profile"
         onSubmit={async (values) => {
-          console.log(files);
           values.profilePicture = files[0][0];
           await updateProfileMutation.mutateAsync({ id: user?.id, data: values });
         }}
@@ -51,7 +50,7 @@ export const UpdateProfile = () => {
           },
         }}
         schema={schema}
-        files={(file) => (files = file)}
+        onChange={(_, file) => (files = file)}
       >
         {({ register, formState }) => (
           <>

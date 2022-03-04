@@ -11,8 +11,8 @@ type FormProps<TFormValues, Schema> = {
   options?: UseFormProps<TFormValues>;
   id?: string;
   schema?: Schema;
-  onChange?: (item: [string, unknown]) => void;
-  files?: (files: FileList[]) => FileList[];
+  onChange?: (items: [string, unknown][], files: FileList[]) => void;
+  files?: FileList[];
 };
 
 // Return a array with FileList's using watch method and checking if it is a file
@@ -27,20 +27,20 @@ export const Form = <
   id,
   schema,
   onChange,
-  files,
 }: FormProps<TFormValues, Schema>) => {
   const methods = useForm<TFormValues>({ ...options, resolver: schema && zodResolver(schema) });
 
   const filesLists: FileList[] = [];
+  const items: [string, unknown][] = [];
   Object.entries(methods.watch()).forEach((item) => {
-    onChange && onChange(item);
+    items.push(item);
 
     if (item[1] instanceof FileList) {
       filesLists.push(item[1]);
     }
   });
 
-  files && files(filesLists);
+  onChange && onChange(items, filesLists);
 
   return (
     <form
