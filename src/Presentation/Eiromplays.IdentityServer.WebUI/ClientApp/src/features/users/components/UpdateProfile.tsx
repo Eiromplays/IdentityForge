@@ -3,6 +3,7 @@ import * as z from 'zod';
 
 import { Button } from '@/components/Elements';
 import { Form, FormDrawer, InputField } from '@/components/Form';
+import { ImageCropper } from '@/components/Images';
 import { useAuth } from '@/lib/auth';
 
 import { UpdateProfileDTO, useUpdateProfile } from '../api/updateProfile';
@@ -16,6 +17,7 @@ const schema = z.object({
 export const UpdateProfile = () => {
   const { user } = useAuth();
   let files: FileList[] = [];
+  let profilePicture: File;
   const { updateProfileMutation, deleteProfilePictureMutation } = useUpdateProfile();
 
   return (
@@ -47,7 +49,7 @@ export const UpdateProfile = () => {
             );
 
             if (!answer) return;
-            values.profilePicture = files[0][0];
+            values.profilePicture = profilePicture;
             await updateProfileMutation.mutateAsync({ id: user?.id, data: values });
           }}
           options={{
@@ -94,17 +96,19 @@ export const UpdateProfile = () => {
                     await deleteProfilePictureMutation.mutateAsync({ id: user?.id })
                   }
                 >
-                  <TrashIcon />
+                  <TrashIcon className="h-4 w-4 text-red-900" />
                 </Button>
               )}
               {files && files.length > 0 && files[0].length > 0 && (
                 <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt className="text-sm font-medium text-gray-500 dark:text-white">Preview:</dt>
                   <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
-                    <img
-                      className="w-52 h-52 rounded-circle"
-                      src={URL.createObjectURL(files[0][0])}
-                      alt={`Preview of ${files[0][0].name}`}
+                    <ImageCropper
+                      imgSrc={URL.createObjectURL(files[0][0])}
+                      fileName={files[0][0].name}
+                      onFileCreated={(file: File) => {
+                        profilePicture = file;
+                      }}
                     />
                   </dd>
                 </div>

@@ -76,7 +76,6 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
                 {
                     await req.ProfilePicture.CopyToAsync(fileStream, ct);
                 }
-               
                break;
             case ProfilePictureUploadType.Base64:
                 await using (var memoryStream = new MemoryStream())

@@ -6,7 +6,7 @@ public class ProfilePictureHelper
 {
     public static string GetProfilePicture(ApplicationUser user)
     {
-        if (!string.IsNullOrWhiteSpace(user.ProfilePicture)) return user.ProfilePicture;
+        if (!string.IsNullOrWhiteSpace(user.ProfilePicture)) return $"https://localhost:7003/Images/ProfilePictures/{user.ProfilePicture}";
 
         var email = user.GravatarEmail ?? user.Email;
 
