@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.Text.Json;
 using Duende.IdentityServer.AspNetIdentity;
 using Duende.IdentityServer.Models;
+using Eiromplays.IdentityServer.Infrastructure.Common.Helpers;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using IdentityModel;
 using Microsoft.AspNetCore.Identity;
@@ -33,10 +34,15 @@ public class CustomProfileService : ProfileService<ApplicationUser>
         var user = await _userManager.GetUserAsync(context.Subject);
 
         var claims = new List<Claim>();
-        
-        if (!string.IsNullOrWhiteSpace(user.ProfilePicture))
-            claims.Add(new Claim(JwtClaimTypes.Picture, user.ProfilePicture));
 
+        var profilePicture = ProfilePictureHelper.GetProfilePicture(user);
+        
+        if (!string.IsNullOrWhiteSpace(profilePicture))
+            claims.Add(new Claim(JwtClaimTypes.Picture, profilePicture));
+
+        if (!string.IsNullOrWhiteSpace(user.GravatarEmail))
+            claims.Add(new Claim("gravatarEmail", user.GravatarEmail));
+        
         context.IssuedClaims.AddRange(claims);
     }
 }

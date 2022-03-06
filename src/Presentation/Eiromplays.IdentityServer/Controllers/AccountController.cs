@@ -24,7 +24,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
+using System.Text.Json;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Microsoft.Extensions.Options;
 
 namespace Eiromplays.IdentityServer.Controllers;
 
@@ -51,7 +53,7 @@ public class AccountController : Controller
         IAuthenticationSchemeProvider schemeProvider,
         IEventService events, IFluentEmail fluentEmail,
         IAuthenticationHandlerProvider authenticationHandlerProvider,
-        AccountConfiguration accountConfiguration,
+        IOptionsMonitor<AccountConfiguration> accountConfigurationOptions,
         IUserResolver<ApplicationUser> userResolver)
     {
         _userManager = userManager;
@@ -62,7 +64,7 @@ public class AccountController : Controller
         _events = events;
         _fluentEmail = fluentEmail;
         _authenticationHandlerProvider = authenticationHandlerProvider;
-        _accountConfiguration = accountConfiguration;
+        _accountConfiguration = accountConfigurationOptions.CurrentValue;
         _userResolver = userResolver;
     }
 
@@ -217,7 +219,7 @@ public class AccountController : Controller
     {
         ViewData["ReturnUrl"] = returnUrl;
 
-        return _accountConfiguration.LoginConfiguration?.LoginPolicy is null ? View("RegisterFailure") : View();
+        return View();
     }
 
     [HttpPost]

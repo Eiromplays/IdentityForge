@@ -19,6 +19,7 @@ using System.Security.Claims;
 using System.Text;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Microsoft.Extensions.Options;
 
 namespace Eiromplays.IdentityServer.Controllers;
 
@@ -44,7 +45,7 @@ public class ExternalController : Controller
         ILogger<ExternalController> logger,
         IFluentEmail fluentEmail,
         IIdentityService identityService,
-        AccountConfiguration accountConfiguration)
+        IOptionsMonitor<AccountConfiguration> accountConfigurationOptions)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -53,7 +54,7 @@ public class ExternalController : Controller
         _logger = logger;
         _fluentEmail = fluentEmail;
         _identityService = identityService;
-        _accountConfiguration = accountConfiguration;
+        _accountConfiguration = accountConfigurationOptions.CurrentValue;
     }
 
     /// <summary>

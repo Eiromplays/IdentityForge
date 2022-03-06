@@ -18,12 +18,12 @@ public class DatabaseConfiguration
         ConnectionStringsConfiguration = connectionStringsConfiguration;
     }
 
-    public DatabaseProvider DatabaseProvider { get; set; }
+    public DatabaseProvider DatabaseProvider { get; set; } = DatabaseProvider.PostgreSql;
 
-    public bool ApplyDefaultSeeds { get; set; }
+    public bool ApplyDefaultSeeds { get; set; } = true;
 
-    public bool ApplyDatabaseMigrations { get; set; }
+    public bool ApplyDatabaseMigrations { get; set; } = true;
 
-    public ConnectionStringsConfiguration? ConnectionStringsConfiguration { get; set; }
+    public ConnectionStringsConfiguration ConnectionStringsConfiguration { get; set; } = new();
 
 }

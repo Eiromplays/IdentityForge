@@ -15,7 +15,7 @@ export type TableProps<Entry> = {
 export const Table = <Entry extends { id: string }>({ data, columns }: TableProps<Entry>) => {
   if (!data?.length) {
     return (
-      <div className="bg-white dark:bg-black text-gray-500 dark:text-white-500 h-80 flex justify-center items-center flex-col">
+      <div className="bg-white dark:bg-black text-gray-500 dark:text-white h-80 flex justify-center items-center flex-col">
         <ArchiveIcon className="h-16 w-16" />
         <h4>No Entries Found</h4>
       </div>
@@ -33,7 +33,7 @@ export const Table = <Entry extends { id: string }>({ data, columns }: TableProp
                     <th
                       key={column.title + index}
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white-500 uppercase tracking-wider"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider"
                     >
                       {column.title}
                     </th>
@@ -45,15 +45,13 @@ export const Table = <Entry extends { id: string }>({ data, columns }: TableProp
                   <tr
                     key={entry?.id || entryIndex}
                     className={
-                      entryIndex % 2 === 0
-                        ? 'bg-white dark:bg-black'
-                        : 'bg-gray-100 dark:bg-black-100'
+                      entryIndex % 2 === 0 ? 'bg-white dark:bg-black' : 'bg-gray-100 dark:bg-black'
                     }
                   >
                     {columns.map(({ Cell, field, title }, columnIndex) => (
                       <td
                         key={title + columnIndex}
-                        className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white-900"
+                        className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white"
                       >
                         {Cell ? <Cell entry={entry} /> : entry[field]}
                       </td>

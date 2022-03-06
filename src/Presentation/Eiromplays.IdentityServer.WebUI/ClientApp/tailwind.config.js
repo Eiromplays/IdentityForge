@@ -12,14 +12,15 @@ module.exports = {
       },
       colors: {
         orange: colors.orange,
+        'lighter-black': '#0a0e17',
+      },
+      borderRadius: {
+        'circle': '50%',
       }
     },
   },
   variants: {
-    extend: {
-      backgroundColor: ['dark'],
-      textColor: ['dark']
-    },
+    extend: {},
   },
   plugins: [require('@tailwindcss/typography')],
 };

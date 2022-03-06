@@ -12,6 +12,8 @@ public class Models
         public string? UserName { get; set; }
         
         public string? Email { get; set; }
+        
+        public string? GravatarEmail { get; set; }
     }
 
     public class Validator : Validator<Request>
@@ -31,6 +33,10 @@ public class Models
                 .WithMessage("Email is required")
                 .NotEmpty()
                 .WithMessage("Email cannot be empty");
+
+            RuleFor(x => x.GravatarEmail)
+                .EmailAddress()
+                .WithMessage("Gravatar Email is not valid");
         }
     }
     

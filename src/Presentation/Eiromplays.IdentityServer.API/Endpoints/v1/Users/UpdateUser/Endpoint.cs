@@ -32,6 +32,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             ThrowError("User not found");
         
         user.Email = req.Email;
+        user.GravatarEmail = req.GravatarEmail;
         user.UserName = req.UserName;
 
         var (result, userId) = await _identityService.UpdateUserAsync(user);

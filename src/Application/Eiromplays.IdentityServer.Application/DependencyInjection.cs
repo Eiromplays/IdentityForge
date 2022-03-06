@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Text.Json;
 using Eiromplays.IdentityServer.Application.Common.Behaviours;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using FluentValidation;
@@ -28,15 +29,13 @@ public static class DependencyInjection
 
     /*
         Registers the Account Configuration
+        Information:
         Profile Picture Configuration:
         Find more avatar styles here: https://avatars.dicebear.com/styles/
         You can also use a custom provider
     */
-    public static void RegisterAccountConfiguration(this IServiceCollection services, IConfiguration configuration)
+    private static void RegisterAccountConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
-        var accountConfiguration = configuration.GetSection(nameof(AccountConfiguration))
-            .Get<AccountConfiguration>();
-
-        services.AddSingleton(accountConfiguration);
+        services.Configure<AccountConfiguration>(configuration.GetSection(nameof(AccountConfiguration)));
     }
 }

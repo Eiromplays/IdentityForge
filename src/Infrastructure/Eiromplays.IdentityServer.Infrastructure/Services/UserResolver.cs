@@ -3,18 +3,19 @@ using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Domain.Constants;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Services;
 
 public class UserResolver : IUserResolver<ApplicationUser>
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly LoginPolicy? _loginPolicy;
+    private readonly LoginPolicy _loginPolicy;
 
-    public UserResolver(UserManager<ApplicationUser> userManager, AccountConfiguration accountConfiguration)
+    public UserResolver(UserManager<ApplicationUser> userManager, IOptionsMonitor<AccountConfiguration> accountConfigurationOptions)
     {
         _userManager = userManager;
-        _loginPolicy = accountConfiguration.LoginConfiguration?.LoginPolicy;
+        _loginPolicy = accountConfigurationOptions.CurrentValue.LoginConfiguration.LoginPolicy;
     }
 
     public async Task<ApplicationUser?> GetUserAsync(string? identifier)

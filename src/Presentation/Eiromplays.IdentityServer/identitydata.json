@@ -1,4 +1,9 @@
-{
+{"AllowedFileExtensions": [
+        "jpg",
+        "png",
+        "gif",
+        "jpeg"
+      ],
   "IdentityData": {
     "Roles": [
       {

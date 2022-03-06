@@ -10,8 +10,13 @@ export type UpdateProfileDTO = {
   data: {
     username: string;
     email: string;
+    gravatarEmail: string;
     profilePicture: File;
   };
+};
+
+export type DeleteProfilePictureDTO = {
+  id?: string;
 };
 
 export const updateProfile = async ({ data, id }: UpdateProfileDTO) => {
@@ -22,7 +27,7 @@ export const updateProfile = async ({ data, id }: UpdateProfileDTO) => {
 
   if (!data.profilePicture) return updateUserResponse;
 
-  const updateProfilePictureResponse = await axios.post(`/users/${id}/picture`, formData, {
+  const updateProfilePictureResponse = await axios.post(`/users/${id}/profilePicture`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -31,17 +36,21 @@ export const updateProfile = async ({ data, id }: UpdateProfileDTO) => {
   return await Promise.all([updateProfilePictureResponse, updateUserResponse]);
 };
 
+export const deleteProfilePicture = async ({ id }: DeleteProfilePictureDTO) => {
+  return await axios.delete(`/users/${id}/profilePicture`);
+};
+
 type UseUpdateProfileOptions = {
-  config?: MutationConfig<typeof updateProfile>;
+  config?: MutationConfig<typeof updateProfile | typeof deleteProfilePicture>;
 };
 
 export const useUpdateProfile = ({ config }: UseUpdateProfileOptions = {}) => {
-  const { refetchUser } = useAuth();
+  const { logout } = useAuth();
 
-  return useMutation({
+  const updateProfileMutation = useMutation({
     onSuccess: () => {
       toast.success('User Updated');
-      refetchUser();
+      logout();
     },
     onError: (error) => {
       toast.error('Failed to update user');
@@ -50,4 +59,19 @@ export const useUpdateProfile = ({ config }: UseUpdateProfileOptions = {}) => {
     ...config,
     mutationFn: updateProfile,
   });
+
+  const deleteProfilePictureMutation = useMutation({
+    onSuccess: () => {
+      toast.success('Profile picture Updated');
+      logout();
+    },
+    onError: (error) => {
+      toast.error('Failed to delete profile picture');
+      toast.error(error.response?.data);
+    },
+    ...config,
+    mutationFn: deleteProfilePicture,
+  });
+
+  return { updateProfileMutation, deleteProfilePictureMutation };
 };

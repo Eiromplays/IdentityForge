@@ -1,6 +1,5 @@
 using Eiromplays.IdentityServer.Infrastructure.BFF;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +38,7 @@ builder.Services.AddAuthentication(options =>
     
     options.ClaimActions.MapJsonKey("role", "role", "role");
     options.ClaimActions.MapJsonKey("picture", "picture", "picture");
+    options.ClaimActions.MapJsonKey("gravatarEmail", "gravatarEmail", "gravatarEmail");
 });
 
 var app = builder.Build();

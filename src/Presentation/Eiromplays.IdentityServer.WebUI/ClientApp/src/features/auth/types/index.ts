@@ -3,6 +3,7 @@ export type AuthUser = {
   username: string;
   profilePicture: string;
   email: string;
+  gravatarEmail?: string;
   roles: string[];
   logoutUrl: string;
 };

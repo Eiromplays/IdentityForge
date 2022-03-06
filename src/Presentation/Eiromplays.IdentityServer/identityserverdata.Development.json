@@ -52,6 +52,15 @@
         ]
       },
       {
+        "Name": "gravatarEmail",
+        "Enabled": true,
+        "DisplayName": "Your gravatar email address",
+        "Emphasize": true,
+        "UserClaims": [
+          "gravatarEmail"
+        ]
+      },
+      {
         "Name": "address",
         "Enabled": true,
         "DisplayName": "Your address",
@@ -141,7 +150,8 @@
           "profile",
           "api",
           "roles",
-          "email"
+          "email",
+          "gravatarEmail"
         ]
       }
     ]

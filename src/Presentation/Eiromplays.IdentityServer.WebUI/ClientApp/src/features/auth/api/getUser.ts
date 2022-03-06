@@ -14,6 +14,8 @@ export const getUser = async (): Promise<AuthUser> => {
     id: userSessionInfo?.find((claim: Claim) => claim.type === 'sub')?.value ?? '',
     username: nameDictionary?.value ?? '',
     email: userSessionInfo?.find((claim: Claim) => claim.type === 'email')?.value ?? '',
+    gravatarEmail:
+      userSessionInfo?.find((claim: Claim) => claim.type === 'gravatarEmail')?.value ?? '',
     profilePicture: userSessionInfo?.find((claim: Claim) => claim.type === 'picture')?.value ?? '',
     roles:
       (userSessionInfo

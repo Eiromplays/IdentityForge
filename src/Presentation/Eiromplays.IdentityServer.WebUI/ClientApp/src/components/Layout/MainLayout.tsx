@@ -36,9 +36,9 @@ const SideNavigation = () => {
           to={item.to}
           className={(navData) =>
             clsx(
-              'hover:bg-gray-700 dark:hover:bg-black-700 hover:text-white',
-              'group flex items-center px-2 py-2 text-base font-medium rounded-md'
-            ) + (navData.isActive ? 'bg-gray-900 dark:bg-black-900 text-white' : 'text-gray-300')
+              'hover:bg-gray-700 hover:text-white',
+              'group flex items-center px-2 py-2 font-medium rounded-md'
+            ) + (navData.isActive ? 'bg-gray-900  text-white' : 'bg-transparent text-gray-400')
           }
         >
           <item.icon
@@ -81,7 +81,10 @@ const UserNavigation = () => {
         <>
           <div className="flex">
             <ThemeToggle />
-            <Menu.Button className="max-w-xs bg-gray-200 dark:bg-black-200 p-2 flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <Menu.Button
+              className="max-w-xs bg-gray-200 dark:bg-gray-600 p-2 flex items-center text-sm rounded-full 
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
               <span className="sr-only">Open user menu</span>
               {user?.profilePicture ? (
                 <img alt="Avatar" src={user?.profilePicture} className="h-8 w-8 rounded-full" />
@@ -102,7 +105,7 @@ const UserNavigation = () => {
           >
             <Menu.Items
               static
-              className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white dark:bg-black ring-1 
+              className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white dark:bg-lighter-black ring-1 
               ring-black ring-opacity-5 focus:outline-none"
             >
               {userNavigation.map((item) => (
@@ -112,8 +115,8 @@ const UserNavigation = () => {
                       onClick={item.onClick}
                       to={item.to}
                       className={clsx(
-                        active ? 'bg-gray-100 dark:bg-black-100' : '',
-                        'block px-4 py-2 text-sm text-gray-700 dark:text-white-700'
+                        active ? 'bg-gray-100 dark:bg-gray-800' : '',
+                        'block px-4 py-2 text-sm text-gray-700 dark:text-white'
                       )}
                     >
                       {item.name}
@@ -205,11 +208,11 @@ const Sidebar = () => {
     <div className="hidden md:flex md:flex-shrink-0">
       <div className="flex flex-col w-64">
         <div className="flex flex-col h-0 flex-1">
-          <div className="flex items-center h-16 flex-shrink-0 px-4 bg-gray-900">
+          <div className="flex items-center h-16 flex-shrink-0 px-4 bg-gray-900 dark:bg-indigo-900">
             <Logo />
           </div>
           <div className="flex-1 flex flex-col overflow-y-auto">
-            <nav className="flex-1 px-2 py-4 bg-gray-800 space-y-1">
+            <nav className="flex-1 px-2 py-4 bg-gray-800 dark:bg-lighter-black space-y-1">
               <SideNavigation />
             </nav>
           </div>
@@ -236,11 +239,11 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
   return (
-    <div className="h-screen flex overflow-hidden bg-gray-100">
+    <div className="h-screen flex overflow-hidden bg-gray-100 dark:bg-gray-900">
       <MobileSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       <Sidebar />
       <div className="flex flex-col w-0 flex-1 overflow-hidden">
-        <div className="relative z-10 flex-shrink-0 flex h-16 bg-white shadow">
+        <div className="relative z-10 flex-shrink-0 flex h-16 bg-white dark:bg-gray-800 shadow">
           <button
             className="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
             onClick={() => setSidebarOpen(true)}

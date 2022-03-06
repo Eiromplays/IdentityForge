@@ -35,8 +35,10 @@ axios.interceptors.response.use(
     const messages = error.response?.data?.errors?.GeneralErrors ?? [];
     if (messages.length <= 0) {
       toast.error(error.response?.data?.message || error.message);
-      return;
+      return Promise.reject(error);
     }
     messages.forEach((message: string) => toast.error(message));
+
+    return Promise.reject(error);
   }
 );

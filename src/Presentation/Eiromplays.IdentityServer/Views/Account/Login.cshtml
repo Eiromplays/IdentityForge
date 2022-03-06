@@ -1,6 +1,7 @@
 @using Eiromplays.IdentityServer.Application.Common.Configurations.Account
+@using Microsoft.Extensions.Options
 @model Eiromplays.IdentityServer.ViewModels.Account.LoginViewModel
-@inject AccountConfiguration _accountConfiguration;
+@inject IOptionsMonitor<AccountConfiguration> _accountConfigurationOptionsMonitor;
 
 <div class="login-page">
     <div class="lead">
@@ -45,7 +46,7 @@
                             }
                             <button class="btn btn-primary" name="button" value="login">Login</button>
                             <button class="btn btn-secondary" name="button" value="cancel">Cancel</button>
-                            @if (_accountConfiguration is {RegisterConfiguration.Enabled: true })
+                            @if (_accountConfigurationOptionsMonitor.CurrentValue is {RegisterConfiguration.Enabled: true })
                             {
                                 <a class="btn btn-dark" asp-action="Register" asp-controller="Account" asp-route-returnUrl="@Model.ReturnUrl" value="register">Register</a>
                             }
