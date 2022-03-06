@@ -37,6 +37,9 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
         if (!_accountConfiguration.ProfilePictureConfiguration.Enabled)
             ThrowError("Profile pictures are currently disabled");
+        
+        if (string.IsNullOrWhiteSpace(user.ProfilePicture))
+            ThrowError("User does not have a profile picture");
 
         var profilePicturesPath = Path.Combine(Env.WebRootPath, "Images", "ProfilePictures");
         if (!Directory.Exists(profilePicturesPath))

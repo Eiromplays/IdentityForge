@@ -90,13 +90,20 @@ export const UpdateProfile = () => {
               />
               {user?.profilePicture && (
                 <Button
+                  className="mt-2"
+                  variant="inverse"
                   size="sm"
                   isLoading={deleteProfilePictureMutation.isLoading}
                   onClick={async () =>
                     await deleteProfilePictureMutation.mutateAsync({ id: user?.id })
                   }
                 >
-                  <TrashIcon className="h-4 w-4 text-red-900" />
+                  <TrashIcon
+                    className="h-4 w-4 text-red-700"
+                    onClick={async () =>
+                      await deleteProfilePictureMutation.mutateAsync({ id: user?.id })
+                    }
+                  />
                 </Button>
               )}
               {files && files.length > 0 && files[0].length > 0 && (
