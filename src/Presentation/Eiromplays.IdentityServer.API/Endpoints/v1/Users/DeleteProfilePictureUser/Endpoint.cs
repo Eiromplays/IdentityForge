@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
     public override void Configure()
     {
         Verbs(Http.DELETE);
-        Routes("/users/{id}/profilePicture");
+        Routes("/users/{id}/profile-picture");
         Version(1);
     }
 

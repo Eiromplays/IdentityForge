@@ -27,7 +27,7 @@ export const updateProfile = async ({ data, id }: UpdateProfileDTO) => {
 
   if (!data.profilePicture) return updateUserResponse;
 
-  const updateProfilePictureResponse = await axios.post(`/users/${id}/profilePicture`, formData, {
+  const updateProfilePictureResponse = await axios.post(`/users/${id}/profile-picture`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -37,7 +37,7 @@ export const updateProfile = async ({ data, id }: UpdateProfileDTO) => {
 };
 
 export const deleteProfilePicture = async ({ id }: DeleteProfilePictureDTO) => {
-  return await axios.delete(`/users/${id}/profilePicture`);
+  return await axios.delete(`/users/${id}/profile-picture`);
 };
 
 type UseUpdateProfileOptions = {

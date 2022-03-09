@@ -13,20 +13,17 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
     private readonly IIdentityService _identityService;
     private readonly AccountConfiguration _accountConfiguration;
-    private readonly HttpContext? _currentContext;
 
-    public Endpoint(IIdentityService identityService, IOptionsMonitor<AccountConfiguration> accountConfigurationOptions,
-        IHttpContextAccessor httpContextAccessor)
+    public Endpoint(IIdentityService identityService, IOptionsMonitor<AccountConfiguration> accountConfigurationOptions)
     {
         _identityService = identityService;
         _accountConfiguration = accountConfigurationOptions.CurrentValue;
-        _currentContext = httpContextAccessor.HttpContext;
     }
 
     public override void Configure()
     {
         Verbs(Http.POST);
-        Routes("/users/{id}/profilePicture");
+        Routes("/users/{id}/profile-picture");
         Version(1);
         AllowFileUploads();
     }
@@ -39,7 +36,6 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             return;
         }
         
-        Console.WriteLine($"Host: {HttpContext.Request.Host.Value}");
         var user = await _identityService.FindUserByIdAsync(req.Id);
         if (user is null)
             ThrowError("User not found");
@@ -85,11 +81,16 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
                     fileName = Convert.ToBase64String(fileBytes);
                 }
                 break;
+            case ProfilePictureUploadType.Disabled:
+                ThrowError("Profile picture upload is disabled");
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
 
         if (string.IsNullOrWhiteSpace(fileName))
             ThrowError("Failed to upload profile picture");
-        
+
         user.ProfilePicture = fileName;
         
         var (result, userId) = await _identityService.UpdateUserAsync(user);
