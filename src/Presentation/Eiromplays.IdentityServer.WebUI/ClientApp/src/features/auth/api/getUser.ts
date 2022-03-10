@@ -20,7 +20,7 @@ export const getUser = async (): Promise<AuthUser> => {
     roles:
       (userSessionInfo
         ?.filter((claim: Claim) => claim.type === 'role')
-        .map((claim: Claim) => claim.value) as unknown as string[]) ?? [],
+        .map((claim: Claim) => claim.value.toLowerCase()) as unknown as string[]) ?? [],
     logoutUrl:
       userSessionInfo?.find((claim: Claim) => claim.type === 'bff:logout_url')?.value ??
       '/bff/logout',

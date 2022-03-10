@@ -7,6 +7,7 @@ import { lazyImport } from '@/utils/lazyImport';
 
 const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
 const { Profile } = lazyImport(() => import('@/features/users'), 'Profile');
+const { PersonalData } = lazyImport(() => import('@/features/personal-data'), 'PersonalData');
 
 const App = () => {
   return (
@@ -30,6 +31,7 @@ export const protectedRoutes = [
     element: <App />,
     children: [
       { path: 'profile', element: <Profile /> },
+      { path: 'personal-data', element: <PersonalData /> },
       { path: '', element: <Dashboard /> },
       { path: '*', element: <Navigate to="." /> },
     ],
