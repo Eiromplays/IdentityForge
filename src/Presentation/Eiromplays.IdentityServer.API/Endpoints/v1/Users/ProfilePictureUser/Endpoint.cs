@@ -51,13 +51,14 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
                     : $".{Path.GetExtension(req.ProfilePicture.FileName)}"))
             ThrowError($"File extension not supported, the currently supported file types are: {string.Join(", ", _accountConfiguration.ProfilePictureConfiguration.AllowedFileExtensions)}");;
 
-        var profilePicturesPath = Path.Combine(Env.WebRootPath, "Images", "ProfilePictures");
+        var profilePicturesDirectory = Path.Combine("Images", "ProfilePictures");
+        var profilePicturesPath = Path.Combine(Env.WebRootPath, profilePicturesDirectory);
         if (!Directory.Exists(profilePicturesPath))
             Directory.CreateDirectory(profilePicturesPath);
 
         if (!string.IsNullOrWhiteSpace(user!.ProfilePicture))
         {
-            var oldFilePath = Path.Combine(profilePicturesPath, user.ProfilePicture);
+            var oldFilePath = Path.Combine(Env.WebRootPath, user.ProfilePicture);
             if (File.Exists(oldFilePath))
                 File.Delete(oldFilePath);
         }
@@ -72,15 +73,9 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
                 {
                     await req.ProfilePicture.CopyToAsync(fileStream, ct);
                 }
+
+               fileName = Path.Combine(profilePicturesDirectory, fileName);
                break;
-            case ProfilePictureUploadType.Base64:
-                await using (var memoryStream = new MemoryStream())
-                {
-                    await req.ProfilePicture.CopyToAsync(memoryStream, ct);
-                    var fileBytes = memoryStream.ToArray();
-                    fileName = Convert.ToBase64String(fileBytes);
-                }
-                break;
             case ProfilePictureUploadType.Disabled:
                 ThrowError("Profile picture upload is disabled");
                 break;

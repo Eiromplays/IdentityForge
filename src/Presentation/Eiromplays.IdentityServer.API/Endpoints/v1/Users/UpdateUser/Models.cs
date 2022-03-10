@@ -36,7 +36,8 @@ public class Models
 
             RuleFor(x => x.GravatarEmail)
                 .EmailAddress()
-                .WithMessage("Gravatar Email is not valid");
+                .WithMessage("Gravatar Email is not valid")
+                .When(x => !string.IsNullOrEmpty(x.GravatarEmail));
         }
     }
     

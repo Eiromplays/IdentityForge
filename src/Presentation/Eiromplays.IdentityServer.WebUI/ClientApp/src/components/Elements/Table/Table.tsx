@@ -15,7 +15,7 @@ export type TableProps<Entry> = {
 export const Table = <Entry extends { id: string }>({ data, columns }: TableProps<Entry>) => {
   if (!data?.length) {
     return (
-      <div className="bg-white dark:bg-black text-gray-500 dark:text-white h-80 flex justify-center items-center flex-col">
+      <div className="bg-white dark:bg-lighter-black text-gray-500 dark:text-white h-80 flex justify-center items-center flex-col">
         <ArchiveIcon className="h-16 w-16" />
         <h4>No Entries Found</h4>
       </div>

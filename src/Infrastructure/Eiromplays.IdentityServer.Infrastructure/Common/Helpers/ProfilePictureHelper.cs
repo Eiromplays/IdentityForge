@@ -1,12 +1,18 @@
+using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Common.Helpers;
 
 public class ProfilePictureHelper
 {
-    public static string GetProfilePicture(ApplicationUser user)
+    public static string GetProfilePicture(ApplicationUser user, AccountConfiguration? accountConfiguration = null)
     {
-        if (!string.IsNullOrWhiteSpace(user.ProfilePicture)) return user.ProfilePicture;
+        if (!string.IsNullOrWhiteSpace(user.ProfilePicture))
+        {
+            return !string.IsNullOrWhiteSpace(accountConfiguration?.ProfilePictureConfiguration.BaseUrl)
+                ? $"{accountConfiguration.ProfilePictureConfiguration.BaseUrl}/{user.ProfilePicture}"
+                : user.ProfilePicture;
+        }
 
         var email = user.GravatarEmail ?? user.Email;
 

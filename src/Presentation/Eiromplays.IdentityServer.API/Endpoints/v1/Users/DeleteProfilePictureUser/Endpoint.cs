@@ -41,13 +41,9 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         if (string.IsNullOrWhiteSpace(user.ProfilePicture))
             ThrowError("User does not have a profile picture");
 
-        var profilePicturesPath = Path.Combine(Env.WebRootPath, "Images", "ProfilePictures");
-        if (!Directory.Exists(profilePicturesPath))
-            Directory.CreateDirectory(profilePicturesPath);
-
         if (!string.IsNullOrWhiteSpace(user!.ProfilePicture))
         {
-            var profilePicturePath = Path.Combine(profilePicturesPath, user.ProfilePicture);
+            var profilePicturePath = Path.Combine(Env.WebRootPath, user.ProfilePicture);
             if (File.Exists(profilePicturePath))
                 File.Delete(profilePicturePath);
         }

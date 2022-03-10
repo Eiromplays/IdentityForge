@@ -20,7 +20,7 @@ export const Dialog = ({ isOpen, onClose, children, initialFocus }: DialogProps)
         <UIDialog
           as="div"
           static
-          className="fixed z-10 inset-0 overflow-y-auto"
+          className="fixed z-40 inset-0 overflow-y-auto"
           open={isOpen}
           onClose={onClose}
           initialFocus={initialFocus}

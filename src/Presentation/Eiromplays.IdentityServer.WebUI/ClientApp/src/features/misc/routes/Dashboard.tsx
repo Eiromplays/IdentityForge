@@ -1,6 +1,5 @@
 import { ContentLayout } from '@/components/Layout';
 import { useAuth } from '@/lib/auth';
-import { ROLES } from '@/lib/authorization';
 
 export const Dashboard = () => {
   const { user } = useAuth();
@@ -13,21 +12,10 @@ export const Dashboard = () => {
         Your roles : <b>{user?.roles.join(', ')}</b>
       </h3>
       <p className="font-medium">In this application you can:</p>
-      {user?.roles.includes(ROLES.USER) && (
-        <ul className="my-4 list-inside list-disc">
-          <li>Create comments in discussions</li>
-          <li>Delete own comments</li>
-        </ul>
-      )}
-      {user?.roles.includes(ROLES.ADMINISTRATOR) && (
-        <ul className="my-4 list-inside list-disc">
-          <li>Create discussions</li>
-          <li>Edit discussions</li>
-          <li>Delete discussions</li>
-          <li>Comment on discussions</li>
-          <li>Delete all comments</li>
-        </ul>
-      )}
+      <ul className="my-4 list-inside list-disc">
+        <li>Edit your profile</li>
+        <li>Upload/Delete your profile picture</li>
+      </ul>
     </ContentLayout>
   );
 };

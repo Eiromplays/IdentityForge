@@ -1,7 +1,7 @@
 import { PencilIcon, TrashIcon } from '@heroicons/react/solid';
 import * as z from 'zod';
 
-import { Button } from '@/components/Elements';
+import { Button, ConfirmationDialog } from '@/components/Elements';
 import { Form, FormDrawer, InputField } from '@/components/Form';
 import { ImageCropper } from '@/components/Images';
 import { useAuth } from '@/lib/auth';
@@ -31,24 +31,33 @@ export const UpdateProfile = () => {
         }
         title="Update Profile"
         submitButton={
-          <Button
-            form="update-profile"
-            type="submit"
-            size="sm"
-            isLoading={updateProfileMutation.isLoading}
-          >
-            Submit
-          </Button>
+          <ConfirmationDialog
+            icon="warning"
+            title="Update Profile"
+            body="Are you sure you want to update your profile? This will require you to log back in."
+            triggerButton={
+              <Button size="sm" isLoading={updateProfileMutation.isLoading}>
+                Submit
+              </Button>
+            }
+            confirmButton={
+              <Button
+                form="update-profile"
+                type="submit"
+                className="mt-2"
+                variant="warning"
+                size="sm"
+                isLoading={updateProfileMutation.isLoading}
+              >
+                Update Profile
+              </Button>
+            }
+          />
         }
       >
         <Form<UpdateProfileDTO['data'], typeof schema>
           id="update-profile"
           onSubmit={async (values) => {
-            const answer = window.confirm(
-              'Are you sure you want to update your user? This will log you out. And you will be required to log back in to update your stored information.'
-            );
-
-            if (!answer) return;
             values.profilePicture = profilePicture;
             await updateProfileMutation.mutateAsync({ id: user?.id, data: values });
           }}
@@ -89,22 +98,34 @@ export const UpdateProfile = () => {
                 registration={register('profilePicture')}
               />
               {user?.profilePicture && (
-                <Button
-                  className="mt-2"
-                  variant="inverse"
-                  size="sm"
-                  isLoading={deleteProfilePictureMutation.isLoading}
-                  onClick={async () =>
-                    await deleteProfilePictureMutation.mutateAsync({ id: user?.id })
+                <ConfirmationDialog
+                  icon="danger"
+                  title="Delete Profile Picture"
+                  body="Are you sure you want to delete your profile Picture?"
+                  triggerButton={
+                    <Button
+                      className="mt-2"
+                      variant="inverse"
+                      size="sm"
+                      isLoading={deleteProfilePictureMutation.isLoading}
+                    >
+                      <TrashIcon className="h-4 w-4 text-red-700" />
+                    </Button>
                   }
-                >
-                  <TrashIcon
-                    className="h-4 w-4 text-red-700"
-                    onClick={async () =>
-                      await deleteProfilePictureMutation.mutateAsync({ id: user?.id })
-                    }
-                  />
-                </Button>
+                  confirmButton={
+                    <Button
+                      className="mt-2"
+                      variant="danger"
+                      size="sm"
+                      isLoading={deleteProfilePictureMutation.isLoading}
+                      onClick={async () =>
+                        await deleteProfilePictureMutation.mutateAsync({ id: user?.id })
+                      }
+                    >
+                      Delete
+                    </Button>
+                  }
+                />
               )}
               {files && files.length > 0 && files[0].length > 0 && (
                 <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

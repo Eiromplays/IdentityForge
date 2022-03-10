@@ -155,7 +155,7 @@ public class IdentityService : IIdentityService
             user.Email != null && (user.UserName.Contains(search!) || user.Email.Contains(search!));
         
         var users = await _userManager.Users.WhereIf(!string.IsNullOrWhiteSpace(search), searchExpression)
-            .ProjectTo<UserDto>(_mapper.ConfigurationProvider).PaginatedListAsync(pageIndex ?? 1, pageSize ?? 10);
+            .ProjectTo<UserDto>(_mapper.ConfigurationProvider).PaginatedListAsync(pageIndex, pageSize);
 
         if (!users.Items.Any())
             throw new NotFoundException("No Users found");
@@ -164,7 +164,7 @@ public class IdentityService : IIdentityService
     }
 
     public async Task<PaginatedList<UserDto>> GetRoleUsersAsync(string? roleName, string? search,
-        int pageIndex = 1, int pageSize = 10, CancellationToken cancellationToken = default)
+        int? pageIndex, int? pageSize, CancellationToken cancellationToken = default)
     {
         Expression<Func<UserDto, bool>> searchExpression = x => x.Email != null && x.UserName != null &&
                                                                 !string.IsNullOrWhiteSpace(x.Email) &&
@@ -185,7 +185,7 @@ public class IdentityService : IIdentityService
     }
 
     public async Task<PaginatedList<UserDto>> GetClaimUsersAsync(string? claimType, string? claimValue,
-        int pageIndex = 1, int pageSize = 10)
+        int? pageIndex, int? pageSize)
     {
         var users = await _identityDbContext.Users
             .Join(_identityDbContext.UserClaims, u => u.Id,
@@ -198,8 +198,8 @@ public class IdentityService : IIdentityService
         return usersDto;
     }
 
-    public async Task<PaginatedList<UserClaimDto>> GetUserClaimsAsync(string? userId, int pageIndex = 1,
-        int pageSize = 10)
+    public async Task<PaginatedList<UserClaimDto>> GetUserClaimsAsync(string? userId, int? pageIndex,
+        int? pageSize)
     {
         var userClaims = await _identityDbContext.UserClaims.Where(x => x.UserId.Equals(userId))
             .ProjectTo<UserClaimDto>(_mapper.ConfigurationProvider)
@@ -209,7 +209,7 @@ public class IdentityService : IIdentityService
     }
 
     public async Task<PaginatedList<RoleClaimDto>> GetUserRoleClaimsAsync(string? userId,
-        string? claimSearchText, int pageIndex = 1, int pageSize = 10)
+        string? claimSearchText, int? pageIndex, int? pageSize)
     {
         Expression<Func<ApplicationRoleClaim, bool>> searchExpression = roleClaim =>
             !string.IsNullOrWhiteSpace(claimSearchText) &&
@@ -415,15 +415,15 @@ public class IdentityService : IIdentityService
             role.Name.Contains(search, StringComparison.OrdinalIgnoreCase);
 
         var roles = await _roleManager.Roles.Where(searchExpression)
-            .PaginatedListAsync(pageIndex ?? 1, pageSize ?? 10);
+            .PaginatedListAsync(pageIndex, pageSize);
 
         var rolesDto = _mapper.Map<PaginatedList<RoleDto>>(roles);
 
         return rolesDto;
     }
 
-    public async Task<PaginatedList<RoleDto>> GetUserRolesAsync(string? userId, int pageIndex = 1,
-        int pageSize = 10)
+    public async Task<PaginatedList<RoleDto>> GetUserRolesAsync(string? userId, int? pageIndex,
+        int? pageSize)
     {
         var roles = await _identityDbContext.Roles.Join(_identityDbContext.UserRoles,
             r => r.Id, ur => ur.UserId,
@@ -466,7 +466,8 @@ public class IdentityService : IIdentityService
     public async Task<PaginatedList<RoleClaimDto>> GetRoleClaimsAsync(string? roleId, int pageIndex = 1,
         int pageSize = 10)
     {
-        var roleClaims = await _identityDbContext.RoleClaims.Where(x => x.RoleId.Equals(roleId)).ProjectTo<RoleClaimDto>(_mapper.ConfigurationProvider)
+        var roleClaims = await _identityDbContext.RoleClaims.Where(x => x.RoleId.Equals(roleId))
+            .ProjectTo<RoleClaimDto>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(pageIndex, pageSize);
 
         return roleClaims;
