@@ -1,5 +1,16 @@
 import { Dialog, Menu, Transition } from '@headlessui/react';
-import { HomeIcon, MenuAlt2Icon, UserIcon, UsersIcon, XIcon } from '@heroicons/react/outline';
+import {
+  HomeIcon,
+  MenuAlt2Icon,
+  UserIcon,
+  UsersIcon,
+  XIcon,
+  CollectionIcon,
+  LockClosedIcon,
+  KeyIcon,
+  DocumentTextIcon,
+  ShieldCheckIcon,
+} from '@heroicons/react/outline';
 import clsx from 'clsx';
 import * as React from 'react';
 import { NavLink, Link } from 'react-router-dom';
@@ -20,7 +31,12 @@ const SideNavigation = () => {
   const { checkAccess } = useAuthorization();
   const navigation = [
     { name: 'Dashboard', to: '.', icon: HomeIcon },
-    { name: 'Personal Data', to: '/personal-data', icon: HomeIcon },
+    { name: 'My Profile', to: '/profile', icon: UserIcon },
+    { name: 'Personal Data', to: '/personal-data', icon: CollectionIcon },
+    { name: 'Two-factor authentication', to: '/two-factor-authentication', icon: LockClosedIcon },
+    { name: 'Change Password', to: '/change-password', icon: KeyIcon },
+    { name: 'Discovery Document', to: '/discovery-document', icon: DocumentTextIcon },
+    { name: 'Persisted Grants', to: '/persisted-grants', icon: ShieldCheckIcon },
     checkAccess({ allowedRoles: [ROLES.ADMINISTRATOR] }) && {
       name: 'Users',
       to: './users',

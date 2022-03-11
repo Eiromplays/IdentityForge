@@ -7,7 +7,7 @@ import { lazyImport } from '@/utils/lazyImport';
 
 const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
 const { Profile } = lazyImport(() => import('@/features/users'), 'Profile');
-const { PersonalData } = lazyImport(() => import('@/features/personal-data'), 'PersonalData');
+const { PersonalData } = lazyImport(() => import('@/features/users'), 'PersonalData');
 
 const App = () => {
   return (

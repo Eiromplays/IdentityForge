@@ -10,8 +10,4 @@
     <NoWarn>$(NoWarn);NU1701;NU1702;CS0436</NoWarn>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Events" />
-  </ItemGroup>
-
 </Project>

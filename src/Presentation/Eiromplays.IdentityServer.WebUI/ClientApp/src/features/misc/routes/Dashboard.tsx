@@ -14,7 +14,7 @@ export const Dashboard = () => {
       <p className="font-medium">In this application you can:</p>
       <ul className="my-4 list-inside list-disc">
         <li>Edit your profile</li>
-        <li>Upload/Delete your profile picture</li>
+        <li>Update/Delete your profile picture</li>
       </ul>
     </ContentLayout>
   );
