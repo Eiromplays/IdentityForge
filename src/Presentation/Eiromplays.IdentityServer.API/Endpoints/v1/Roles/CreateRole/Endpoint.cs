@@ -33,6 +33,6 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         if (roleId is null)
             ThrowError("Role was not created");
         
-        await SendCreatedAtAsync("/roles/{id}", roleId, new Models.Response(){RoleDto = req.RoleDto}, ct);
+        await SendCreatedAtAsync("/roles/{id}", roleId, new Models.Response {RoleDto = req.RoleDto}, cancellation: ct);
     }
 }

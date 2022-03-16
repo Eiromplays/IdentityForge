@@ -7,6 +7,8 @@ namespace Eiromplays.IdentityServer.Application.Common.Interfaces;
 public interface IIdentityService
 {
     Task<(Result Result, string? UserId)> CreateUserAsync(UserDto? userDto);
+    Task<IList<UserLoginInfoDto>> GetUserLoginsAsync(string userId);
+    Task<Dictionary<string, string>> GetUserPersonalDataAsync(string userId, bool includeLogins = true);
     Task<bool> IsInRoleAsync(string userId, string role);
     Task<bool> CanSignInAsync(string userId);
     Task<bool> AuthorizeAsync(string userId, string policyName);

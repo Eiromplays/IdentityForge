@@ -30,6 +30,6 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         if (userId is null)
             ThrowError("User was not created");
         
-        await SendCreatedAtAsync("/users/{id}", userId, new Models.Response{UserDto = req.UserDto}, ct);
+        await SendCreatedAtAsync("/users/{id}", userId, new Models.Response{UserDto = req.UserDto}, cancellation: ct);
     }
 }

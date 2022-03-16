@@ -93,6 +93,6 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         
         ThrowIfAnyErrors();
 
-        await SendCreatedAtAsync("/users/{id}", userId, new Models.Response{UserDto = user}, ct);
+        await SendCreatedAtAsync("/users/{id}", userId, new Models.Response{UserDto = user}, cancellation: ct);
     }
 }

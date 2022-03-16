@@ -1,8 +1,11 @@
 import { ContentLayout } from '@/components/Layout';
 import { useAuth } from '@/lib/auth';
 
+import { usePersonalData } from '../api/downloadPersonalData';
+
 export const PersonalData = () => {
   const { user } = useAuth();
+  const { downloadPersonalDataMutation } = usePersonalData();
 
   if (!user) return null;
 
@@ -21,7 +24,13 @@ export const PersonalData = () => {
         </div>
         <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
           <dl className="sm:divide-y sm:divide-gray-200">
-            <button>Download Personal Data</button>
+            <button
+              onClick={async () =>
+                await downloadPersonalDataMutation.mutateAsync({ userId: user.id })
+              }
+            >
+              Download Personal Data
+            </button>
             <button>Delete Account</button>
           </dl>
         </div>

@@ -36,6 +36,6 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         if (string.IsNullOrWhiteSpace(roleId))
             ThrowError("Role was not updated");
         
-        await SendCreatedAtAsync("/roles/{id}", roleId, new Models.Response{RoleDto = role}, ct);
+        await SendCreatedAtAsync("/roles/{id}", roleId, new Models.Response{RoleDto = role}, cancellation: ct);
     }
 }

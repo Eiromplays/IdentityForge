@@ -65,6 +65,34 @@ public class IdentityService : IIdentityService
         return (identityResult.ToApplicationResult(), user.Id);
     }
 
+    public async Task<IList<UserLoginInfoDto>> GetUserLoginsAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        
+        return (await _userManager.GetLoginsAsync(user))
+            .Select(l => new UserLoginInfoDto(l.LoginProvider, l.ProviderKey, l.ProviderDisplayName)).ToList();
+    }
+
+    public async Task<Dictionary<string, string>> GetUserPersonalDataAsync(string userId, bool includeLogins = true)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        var personalDataProps = typeof(ApplicationUser).GetProperties().Where(
+            prop => Attribute.IsDefined(prop, typeof(PersonalDataAttribute)));
+
+        var personalData = personalDataProps.ToDictionary(p => p.Name, p => p.GetValue(user)?.ToString() ?? "null");
+
+        var logins = await GetUserLoginsAsync(user.Id);
+        foreach (var l in logins)
+        {
+            if (string.IsNullOrWhiteSpace(l.ProviderKey)) continue;
+            
+            personalData.Add($"{l.LoginProvider} external login provider key", l.ProviderKey);
+        }
+        
+        return personalData;
+    }
+        
     public async Task<bool> IsInRoleAsync(string userId, string role)
     {
         var userDto = await FindUserByIdAsync(userId);

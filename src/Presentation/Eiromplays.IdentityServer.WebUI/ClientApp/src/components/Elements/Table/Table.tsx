@@ -1,5 +1,5 @@
-import { ArchiveIcon } from '@heroicons/react/outline';
 import * as React from 'react';
+import { HiOutlineArchive } from 'react-icons/hi';
 
 type TableColumn<Entry> = {
   title: string;
@@ -16,7 +16,7 @@ export const Table = <Entry extends { id: string }>({ data, columns }: TableProp
   if (!data?.length) {
     return (
       <div className="bg-white dark:bg-lighter-black text-gray-500 dark:text-white h-80 flex justify-center items-center flex-col">
-        <ArchiveIcon className="h-16 w-16" />
+        <HiOutlineArchive className="h-16 w-16" />
         <h4>No Entries Found</h4>
       </div>
     );

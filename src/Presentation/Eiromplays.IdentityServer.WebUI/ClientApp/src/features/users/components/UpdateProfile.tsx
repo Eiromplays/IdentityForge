@@ -1,4 +1,4 @@
-import { PencilIcon, TrashIcon } from '@heroicons/react/solid';
+import { HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi';
 import * as z from 'zod';
 
 import { Button, ConfirmationDialog } from '@/components/Elements';
@@ -25,7 +25,7 @@ export const UpdateProfile = () => {
       <FormDrawer
         isDone={updateProfileMutation.isSuccess}
         triggerButton={
-          <Button startIcon={<PencilIcon className="h-4 w-4" />} size="sm">
+          <Button startIcon={<HiOutlinePencil className="h-4 w-4" />} size="sm">
             Update Profile
           </Button>
         }
@@ -109,7 +109,7 @@ export const UpdateProfile = () => {
                       size="sm"
                       isLoading={deleteProfilePictureMutation.isLoading}
                     >
-                      <TrashIcon className="h-4 w-4 text-red-700" />
+                      <HiOutlineTrash className="h-4 w-4 text-red-700" />
                     </Button>
                   }
                   confirmButton={
@@ -128,18 +128,19 @@ export const UpdateProfile = () => {
                 />
               )}
               {files && files.length > 0 && files[0].length > 0 && (
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500 dark:text-white">Preview:</dt>
-                  <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+                <>
+                  <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                     <ImageCropper
+                      cropLabel="Crop:"
+                      previewLabel="Preview:"
                       imgSrc={URL.createObjectURL(files[0][0])}
                       fileName={files[0][0].name}
                       onFileCreated={(file: File) => {
                         profilePicture = file;
                       }}
                     />
-                  </dd>
-                </div>
+                  </div>
+                </>
               )}
             </>
           )}

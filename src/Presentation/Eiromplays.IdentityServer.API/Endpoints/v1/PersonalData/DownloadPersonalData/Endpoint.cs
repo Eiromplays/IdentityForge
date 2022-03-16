@@ -1,8 +1,10 @@
-using Duende.IdentityServer.Extensions;
+using System.Text.Json;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using FastEndpoints;
+using Microsoft.AspNetCore.Identity;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.UpdateUser;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.PersonalData.GetPersonalData;
 
 public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
@@ -15,8 +17,8 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override void Configure()
     {
-        Verbs(Http.PUT);
-        Routes("/users/{id}");
+        Verbs(Http.GET);
+        Routes("/personal-data/{Id}");
         Version(1);
     }
 
@@ -27,19 +29,14 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             await SendUnauthorizedAsync(ct);
             return;
         }
+        
         var user = await _identityService.FindUserByIdAsync(req.Id);
         if (user is null)
             ThrowError("User not found");
-        
-        user.Email = req.Email;
-        user.GravatarEmail = req.GravatarEmail;
-        user.UserName = req.UserName;
 
-        var (result, userId) = await _identityService.UpdateUserAsync(user);
-        foreach (var error in result.Errors) AddError(error);
-        
-        ThrowIfAnyErrors();
+        var personalData = await _identityService.GetUserPersonalDataAsync(user.Id);
 
-        await SendCreatedAtAsync("/users/{id}", userId, new Models.Response{UserDto = user}, cancellation: ct);
+        await SendBytesAsync(JsonSerializer.SerializeToUtf8Bytes(personalData), "PersonalData.json",
+            cancellation: ct);
     }
 }

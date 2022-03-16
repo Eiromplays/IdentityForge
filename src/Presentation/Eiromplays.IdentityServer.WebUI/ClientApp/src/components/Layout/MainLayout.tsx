@@ -1,23 +1,22 @@
 import { Dialog, Menu, Transition } from '@headlessui/react';
-import {
-  HomeIcon,
-  MenuAlt2Icon,
-  UserIcon,
-  UsersIcon,
-  XIcon,
-  CollectionIcon,
-  LockClosedIcon,
-  KeyIcon,
-  DocumentTextIcon,
-  ShieldCheckIcon,
-} from '@heroicons/react/outline';
 import clsx from 'clsx';
 import * as React from 'react';
+import {
+  HiOutlineHome,
+  HiOutlineMenuAlt2,
+  HiOutlineUser,
+  HiOutlineX,
+  HiOutlineCollection,
+  HiOutlineLockClosed,
+  HiOutlineKey,
+  HiOutlineDocumentText,
+  HiOutlineShieldCheck,
+} from 'react-icons/hi';
+import { MdOutlineDevicesOther } from 'react-icons/md';
 import { NavLink, Link } from 'react-router-dom';
 
 import logo from '@/assets/logo.svg';
 import { useAuth } from '@/lib/auth';
-import { useAuthorization, ROLES } from '@/lib/authorization';
 
 import ThemeToggle from '../Theme/ThemeToggle';
 
@@ -28,20 +27,19 @@ type SideNavigationItem = {
 };
 
 const SideNavigation = () => {
-  const { checkAccess } = useAuthorization();
   const navigation = [
-    { name: 'Dashboard', to: '.', icon: HomeIcon },
-    { name: 'My Profile', to: '/profile', icon: UserIcon },
-    { name: 'Personal Data', to: '/personal-data', icon: CollectionIcon },
-    { name: 'Two-factor authentication', to: '/two-factor-authentication', icon: LockClosedIcon },
-    { name: 'Change Password', to: '/change-password', icon: KeyIcon },
-    { name: 'Discovery Document', to: '/discovery-document', icon: DocumentTextIcon },
-    { name: 'Persisted Grants', to: '/persisted-grants', icon: ShieldCheckIcon },
-    checkAccess({ allowedRoles: [ROLES.ADMINISTRATOR] }) && {
-      name: 'Users',
-      to: './users',
-      icon: UsersIcon,
+    { name: 'Dashboard', to: '.', icon: HiOutlineHome },
+    { name: 'My Profile', to: '/profile', icon: HiOutlineUser },
+    { name: 'Personal Data', to: '/personal-data', icon: HiOutlineCollection },
+    {
+      name: 'Two-factor authentication',
+      to: '/two-factor-authentication',
+      icon: HiOutlineLockClosed,
     },
+    { name: 'Change Password', to: '/change-password', icon: HiOutlineKey },
+    { name: 'Discovery Document', to: '/discovery-document', icon: HiOutlineDocumentText },
+    { name: 'Persisted Grants', to: '/persisted-grants', icon: HiOutlineShieldCheck },
+    { name: 'User Sessions', to: '/user-sessions', icon: MdOutlineDevicesOther },
   ].filter(Boolean) as SideNavigationItem[];
 
   return (
@@ -106,7 +104,7 @@ const UserNavigation = () => {
               {user?.profilePicture ? (
                 <img alt="Avatar" src={user?.profilePicture} className="h-8 w-8 rounded-full" />
               ) : (
-                <UserIcon className="h-8 w-8 rounded-full" />
+                <HiOutlineUser className="h-8 w-8 rounded-full" />
               )}
             </Menu.Button>
           </div>
@@ -200,7 +198,7 @@ const MobileSidebar = ({ sidebarOpen, setSidebarOpen }: MobileSidebarProps) => {
                   onClick={() => setSidebarOpen(false)}
                 >
                   <span className="sr-only">Close sidebar</span>
-                  <XIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                  <HiOutlineX className="h-6 w-6 text-white" aria-hidden="true" />
                 </button>
               </div>
             </Transition.Child>
@@ -266,7 +264,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
             onClick={() => setSidebarOpen(true)}
           >
             <span className="sr-only">Open sidebar</span>
-            <MenuAlt2Icon className="h-6 w-6" aria-hidden="true" />
+            <HiOutlineMenuAlt2 className="h-6 w-6" aria-hidden="true" />
           </button>
           <div className="flex-1 px-4 flex justify-end">
             <div className="ml-4 flex items-center md:ml-6">

@@ -1,7 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { XIcon } from '@heroicons/react/outline';
 import clsx from 'clsx';
 import * as React from 'react';
+import { HiOutlineX } from 'react-icons/hi';
 import 'intersection-observer';
 
 const sizes = {
@@ -65,7 +65,7 @@ export const Drawer = ({
                             onClick={onClose}
                           >
                             <span className="sr-only">Close panel</span>
-                            <XIcon className="h-6 w-6" aria-hidden="true" />
+                            <HiOutlineX className="h-6 w-6" aria-hidden="true" />
                           </button>
                         </div>
                       </div>

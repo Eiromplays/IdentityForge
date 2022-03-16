@@ -1,5 +1,5 @@
-import { ExclamationIcon, InformationCircleIcon } from '@heroicons/react/outline';
 import * as React from 'react';
+import { HiOutlineExclamation, HiOutlineInformationCircle } from 'react-icons/hi';
 
 import { Button } from '@/components/Elements/Button';
 import { Dialog, DialogTitle } from '@/components/Elements/Dialog';
@@ -46,19 +46,19 @@ export const ConfirmationDialog = ({
           <div className="sm:flex sm:items-start">
             {icon === 'danger' && (
               <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />
+                <HiOutlineExclamation className="h-6 w-6 text-red-600" aria-hidden="true" />
               </div>
             )}
 
             {icon === 'info' && (
               <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
-                <InformationCircleIcon className="h-6 w-6 text-blue-600" aria-hidden="true" />
+                <HiOutlineInformationCircle className="h-6 w-6 text-blue-600" aria-hidden="true" />
               </div>
             )}
 
             {icon === 'warning' && (
               <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-orange-100 sm:mx-0 sm:h-10 sm:w-10">
-                <ExclamationIcon className="h-6 w-6 text-orange-600" aria-hidden="true" />
+                <HiOutlineExclamation className="h-6 w-6 text-orange-600" aria-hidden="true" />
               </div>
             )}
             <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
