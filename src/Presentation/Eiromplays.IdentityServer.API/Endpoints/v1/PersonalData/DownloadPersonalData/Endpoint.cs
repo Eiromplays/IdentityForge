@@ -18,7 +18,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
     public override void Configure()
     {
         Verbs(Http.GET);
-        Routes("/personal-data/{Id}");
+        Routes("/personal-data/{Id}/download");
         Version(1);
     }
 
