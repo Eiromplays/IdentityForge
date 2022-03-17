@@ -9,6 +9,7 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 ReactDOM.render(
   <React.StrictMode>
     <App />
+    <iframe id="bff-silent-login" title="bff-silent-login"></iframe>
   </React.StrictMode>,
   document.getElementById('root')
 );

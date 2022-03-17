@@ -38,7 +38,11 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         
         var user = await _identityService.FindUserByIdAsync(req.Id);
         if (user is null)
-            ThrowError("User not found");
+        {
+            AddError($"User with id {req.Id} not found");;
+            await SendErrorsAsync((int)HttpStatusCode.NotFound, ct);
+            return;
+        }
 
         if (!_accountConfiguration.ProfilePictureConfiguration.Enabled ||
             _accountConfiguration.ProfilePictureConfiguration.ProfilePictureUploadType ==

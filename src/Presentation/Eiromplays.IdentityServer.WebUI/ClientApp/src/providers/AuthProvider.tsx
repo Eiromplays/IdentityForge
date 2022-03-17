@@ -156,6 +156,14 @@ export function initReactQueryAuth<
     );
 
     if ((isSuccess || !waitInitial) && !isLoggedIn) {
+      (document.getElementById('bff-silent-login') as HTMLIFrameElement).src = '/bff/silent-login';
+      window.addEventListener('message', (e) => {
+        if (e.data && e.data.source === 'bff-silent-login' && e.data.isLoggedIn) {
+          // we now have a user logged in silently, so reload this window
+          window.location.reload();
+          console.log('Bff silent login');
+        }
+      });
       return <NotLoggedInComponent />;
     }
 

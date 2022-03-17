@@ -1,3 +1,4 @@
+using System.Net;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using FastEndpoints;
@@ -33,12 +34,16 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         
         var user = await _identityService.FindUserByIdAsync(req.Id);
         if (user is null)
-            ThrowError("User not found");
+        {
+            AddError($"User with id {req.Id} not found");;
+            await SendErrorsAsync((int)HttpStatusCode.NotFound, ct);
+            return;
+        }
 
         if (!_accountConfiguration.ProfilePictureConfiguration.Enabled)
             ThrowError("Profile pictures are currently disabled");
         
-        if (string.IsNullOrWhiteSpace(user!.ProfilePicture))
+        if (string.IsNullOrWhiteSpace(user.ProfilePicture))
             ThrowError("User does not have a profile picture");
 
         if (!string.IsNullOrWhiteSpace(user.ProfilePicture))

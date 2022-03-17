@@ -1,8 +1,8 @@
 ﻿using System.Linq.Expressions;
-using System.Security.Claims;
 using System.Text.Json;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Eiromplays.IdentityServer.Application.Common.Configurations.Identity;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Common.Mappings;
@@ -15,6 +15,7 @@ using Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Claim = System.Security.Claims.Claim;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Services;
 
@@ -378,18 +379,14 @@ public class IdentityService : IIdentityService
 
     public async Task<Result> DeleteUserAsync(string? userId)
     {
-        var userDto = await FindUserByIdAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId);
 
-        var user = _mapper.Map<ApplicationUser>(userDto);
-
-        return (await _userManager.DeleteAsync(user!)).ToApplicationResult();
+        return (await _userManager.DeleteAsync(user)).ToApplicationResult();
     }
 
     public async Task<Result> AddUserToRolesAsync(string? userId, IEnumerable<string> roles)
     {
-        var userDto = await FindUserByIdAsync(userId);
-
-        var user = _mapper.Map<ApplicationUser>(userDto);
+        var user = await _userManager.FindByIdAsync(userId);
 
         var identityResult = await _userManager.AddToRolesAsync(user, roles);
 
@@ -398,9 +395,7 @@ public class IdentityService : IIdentityService
 
     public async Task<Result> AddUserToRoleAsync(string? userId, string role)
     {
-        var userDto = await FindUserByIdAsync(userId);
-
-        var user = _mapper.Map<ApplicationUser>(userDto);
+        var user = await _userManager.FindByIdAsync(userId);
 
         var identityResult = await _userManager.AddToRoleAsync(user, role);
 
@@ -438,16 +433,15 @@ public class IdentityService : IIdentityService
     public async Task<PaginatedList<RoleDto>> GetRolesAsync(string? search, int? pageIndex,
         int? pageSize)
     {
+        // Fix case insensitive search .ToLower() And .ToUpper() is not recommended
         Expression<Func<ApplicationRole, bool>> searchExpression = role =>
-            !string.IsNullOrWhiteSpace(search) &&
-            role.Name.Contains(search, StringComparison.OrdinalIgnoreCase);
+            !string.IsNullOrWhiteSpace(search) && role.Name.Contains(search);
 
         var roles = await _roleManager.Roles.Where(searchExpression)
+            .ProjectTo<RoleDto>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(pageIndex, pageSize);
 
-        var rolesDto = _mapper.Map<PaginatedList<RoleDto>>(roles);
-
-        return rolesDto;
+        return roles;
     }
 
     public async Task<PaginatedList<RoleDto>> GetUserRolesAsync(string? userId, int? pageIndex,
@@ -486,6 +480,7 @@ public class IdentityService : IIdentityService
     {
         var role = _mapper.Map<ApplicationRole>(roleDto);
 
+        var test = Result<User>.Failure(new[] { "Role cannot be deleted" });
         var identityResult = await _roleManager.DeleteAsync(role);
 
         return (identityResult.ToApplicationResult(), role.Id);

@@ -17,7 +17,7 @@ type UsePersonalDataOptions = {
 };
 
 export const usePersonalData = ({ config }: UsePersonalDataOptions = {}) => {
-  const downloadPersonalDataMutation = useMutation({
+  return useMutation({
     onError: (_, __, context: any) => {
       if (context?.previousUsers) {
         queryClient.setQueryData('personal-data', context.previousUsers);
@@ -42,6 +42,4 @@ export const usePersonalData = ({ config }: UsePersonalDataOptions = {}) => {
     ...config,
     mutationFn: downloadPersonalData,
   });
-
-  return { downloadPersonalDataMutation };
 };

@@ -1,3 +1,4 @@
+using System.Net;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using FastEndpoints;
 
@@ -24,7 +25,11 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
     {
         var role = await _identityService.FindRoleByIdAsync(req.Id);
         if (role is null)
-            ThrowError("Role not found");
+        {
+            AddError($"Role with id {req.Id} not found");;
+            await SendErrorsAsync((int)HttpStatusCode.NotFound, ct);
+            return;
+        }
         
         role.Name = req.Name;
 

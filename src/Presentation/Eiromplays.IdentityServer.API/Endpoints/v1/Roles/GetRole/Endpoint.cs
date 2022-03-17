@@ -1,3 +1,4 @@
+using System.Net;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.DTOs.Role;
 using FastEndpoints;
@@ -25,8 +26,12 @@ public class Endpoint : Endpoint<Models.Request, RoleDto>
     {
         var role = await _identityService.FindRoleByIdAsync(req.Id);
         
-        if (role is null) 
-            ThrowError($"Role with id {req.Id} not found");
+        if (role is null)
+        {
+            AddError($"Role with id {req.Id} not found");;
+            await SendErrorsAsync((int)HttpStatusCode.NotFound, ct);
+            return;
+        }
 
         await SendAsync(role!, cancellation: ct);
     }

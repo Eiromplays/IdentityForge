@@ -1,11 +1,14 @@
+import { Button, ConfirmationDialog } from '@/components/Elements';
 import { ContentLayout } from '@/components/Layout';
 import { useAuth } from '@/lib/auth';
 
+import { useDeleteUser } from '../api/deleteUser';
 import { usePersonalData } from '../api/downloadPersonalData';
 
 export const PersonalData = () => {
-  const { user } = useAuth();
-  const { downloadPersonalDataMutation } = usePersonalData();
+  const { user, logout } = useAuth();
+  const downloadPersonalDataMutation = usePersonalData();
+  const deleteUserMutation = useDeleteUser();
 
   if (!user) return null;
 
@@ -24,14 +27,41 @@ export const PersonalData = () => {
         </div>
         <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
           <dl className="sm:divide-y sm:divide-gray-200">
-            <button
+            <ConfirmationDialog
+              icon="danger"
+              title="Delete Account"
+              body="Are you sure you want to delete your account? There is no way to undo this action!"
+              triggerButton={
+                <Button size="sm" variant="danger" isLoading={deleteUserMutation.isLoading}>
+                  Delete Account
+                </Button>
+              }
+              confirmButton={
+                <Button
+                  className="mt-2"
+                  variant="danger"
+                  size="sm"
+                  isLoading={deleteUserMutation.isLoading}
+                  onClick={async () => {
+                    await deleteUserMutation.mutateAsync({ userId: user?.id });
+                    logout();
+                  }}
+                >
+                  Proceed
+                </Button>
+              }
+            />
+            <Button
+              className="mt-2"
+              variant="primary"
+              size="sm"
+              isLoading={downloadPersonalDataMutation.isLoading}
               onClick={async () =>
-                await downloadPersonalDataMutation.mutateAsync({ userId: user.id })
+                await downloadPersonalDataMutation.mutateAsync({ userId: user?.id })
               }
             >
               Download Personal Data
-            </button>
-            <button>Delete Account</button>
+            </Button>
           </dl>
         </div>
       </div>

@@ -1,11 +1,10 @@
-using System.Net;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.DTOs.User;
 using FastEndpoints;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.GetUser;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.DeleteUser;
 
-public class Endpoint : Endpoint<Models.Request, UserDto>
+public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
     private readonly IIdentityService _identityService;
     
@@ -16,7 +15,7 @@ public class Endpoint : Endpoint<Models.Request, UserDto>
 
     public override void Configure()
     {
-        Verbs(Http.GET);
+        Verbs(Http.DELETE);
         Routes("/users/{Id}");
         Version(1);
         Policies("RequireAdministrator");
@@ -24,14 +23,8 @@ public class Endpoint : Endpoint<Models.Request, UserDto>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        var user = await _identityService.FindUserByIdAsync(req.Id);
-        if (user is null)
-        {
-            AddError($"User with id {req.Id} not found");;
-            await SendErrorsAsync((int)HttpStatusCode.NotFound, ct);
-            return;
-        }
+        var result = await _identityService.DeleteUserAsync(req.Id);
 
-        await SendAsync(user, cancellation: ct);
+        await SendAsync(new Models.Response{ Result = result }, cancellation: ct);
     }
 }

@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text.Json;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
@@ -32,7 +33,11 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         
         var user = await _identityService.FindUserByIdAsync(req.Id);
         if (user is null)
-            ThrowError("User not found");
+        {
+            AddError($"User with id {req.Id} not found");;
+            await SendErrorsAsync((int)HttpStatusCode.NotFound, ct);
+            return;
+        }
 
         var personalData = await _identityService.GetUserPersonalDataAsync(user.Id);
 

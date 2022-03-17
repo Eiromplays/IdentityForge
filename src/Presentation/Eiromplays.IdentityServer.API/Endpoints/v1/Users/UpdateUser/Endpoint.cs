@@ -1,3 +1,4 @@
+using System.Net;
 using Duende.IdentityServer.Extensions;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using FastEndpoints;
@@ -29,7 +30,11 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         }
         var user = await _identityService.FindUserByIdAsync(req.Id);
         if (user is null)
-            ThrowError("User not found");
+        {
+            AddError($"User with id {req.Id} not found");;
+            await SendErrorsAsync((int)HttpStatusCode.NotFound, ct);
+            return;
+        }
         
         user.Email = req.Email;
         user.GravatarEmail = req.GravatarEmail;
