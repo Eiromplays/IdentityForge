@@ -2,6 +2,7 @@
 using System.Text.Json;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Duende.Bff.EntityFramework;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Identity;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
@@ -15,6 +16,7 @@ using Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Claim = System.Security.Claims.Claim;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Services;
@@ -29,6 +31,7 @@ public class IdentityService : IIdentityService
     private readonly IAuthorizationService _authorizationService;
     private readonly IMapper _mapper;
     private readonly IUserConfirmation<ApplicationUser> _userConfirmation;
+    private readonly IServiceProvider _serviceProvider;
 
     public IdentityService(
         IdentityDbContext identityDbContext,
@@ -38,7 +41,8 @@ public class IdentityService : IIdentityService
         IMapper mapper,
         IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
         IAuthorizationService authorizationService,
-        IUserConfirmation<ApplicationUser> userConfirmation)
+        IUserConfirmation<ApplicationUser> userConfirmation,
+        IServiceProvider serviceProvider)
     {
         _identityDbContext = identityDbContext;
         _userResolver = userResolver;
@@ -48,6 +52,7 @@ public class IdentityService : IIdentityService
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
         _authorizationService = authorizationService;
         _userConfirmation = userConfirmation;
+        _serviceProvider = serviceProvider;
     }
 
     #region User Methods
@@ -131,14 +136,29 @@ public class IdentityService : IIdentityService
         return result.Succeeded;
     }
 
-    public async Task<(Result Result, string? UserId)> UpdateUserAsync(UserDto userDto)
+    public async Task<(Result Result, string? UserId)> UpdateUserAsync(UserDto userDto, bool revokeUserSessions = true)
     {
         var user = await _userManager.FindByIdAsync(userDto.Id);
         user = _mapper.Map(userDto, user);
 
         var identityResult = await _userManager.UpdateAsync(user);
 
+        if (revokeUserSessions)
+            await RevokeUserSessionsAsync(user.Id);
+        
         return (identityResult.ToApplicationResult(), user.Id);
+    }
+
+    private async Task RevokeUserSessionsAsync(string? userId)
+    {
+        var sessionDbContext = _serviceProvider.GetService<SessionDbContext>();
+
+        if (sessionDbContext is null) return;
+        
+        sessionDbContext.UserSessions.RemoveRange(await sessionDbContext.UserSessions
+            .Where(x => x.SubjectId.Equals(userId)).ToListAsync());
+
+        await sessionDbContext.SaveChangesAsync();
     }
 
     public async Task<bool> UserExistsAsync(string? userId)
@@ -403,8 +423,7 @@ public class IdentityService : IIdentityService
     }
 
     #endregion
-
-
+    
     #region Role Methods
 
     public async Task<RoleDto?> FindRoleByIdAsync(string? roleId)

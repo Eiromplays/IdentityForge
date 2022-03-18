@@ -1,5 +1,7 @@
 using Eiromplays.IdentityServer.Application.DTOs.User;
+using FastEndpoints;
 using FastEndpoints.Validation;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.UpdateUser;
 
@@ -14,6 +16,8 @@ public class Models
         public string? Email { get; set; }
         
         public string? GravatarEmail { get; set; }
+
+        [BindFrom("revokeUserSessions")] public bool RevokeUserSessions { get; set; } = true;
     }
 
     public class Validator : Validator<Request>

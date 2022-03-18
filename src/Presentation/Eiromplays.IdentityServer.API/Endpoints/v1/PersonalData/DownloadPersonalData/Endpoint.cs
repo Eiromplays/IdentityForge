@@ -1,9 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
-using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using FastEndpoints;
-using Microsoft.AspNetCore.Identity;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.PersonalData.GetPersonalData;
 

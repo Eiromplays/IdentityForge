@@ -66,7 +66,7 @@ public static class DatabaseExtensions
         DatabaseConfiguration databaseConfiguration, string? migrationsAssembly)
     {
         // Add Identity DbContext
-        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration?.IdentityDbConnection))
+        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration.IdentityDbConnection))
         {
             services.AddDbContext<IdentityDbContext>(options =>
                 options.UseNpgsql(databaseConfiguration.ConnectionStringsConfiguration.IdentityDbConnection,
@@ -74,7 +74,7 @@ public static class DatabaseExtensions
         }
 
         // Add Configuration DbContext
-        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration?.ConfigurationDbConnection))
+        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration.ConfigurationDbConnection))
         {
             services.AddConfigurationDbContext<IdentityServerConfigurationDbContext>(options =>
                 options.ConfigureDbContext = b =>
@@ -84,7 +84,7 @@ public static class DatabaseExtensions
 
         // Add PersistedGrant DbContext
         if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration
-                ?.PersistedGrantDbConnection))
+                .PersistedGrantDbConnection))
         {
             services.AddOperationalDbContext<IdentityServerPersistedGrantDbContext>(options =>
                 options.ConfigureDbContext = b =>
@@ -94,7 +94,7 @@ public static class DatabaseExtensions
 
         // Add Data Protection DbContext
         if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration
-                ?.DataProtectionDbConnection))
+                .DataProtectionDbConnection))
         {
             services.AddDbContext<IdentityServerDataProtectionDbContext>(options =>
                 options.UseNpgsql(databaseConfiguration.ConnectionStringsConfiguration.DataProtectionDbConnection,
@@ -106,7 +106,7 @@ public static class DatabaseExtensions
         DatabaseConfiguration databaseConfiguration, string? migrationsAssembly)
     {
         // Add Identity DbContext
-        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration?.IdentityDbConnection))
+        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration.IdentityDbConnection))
         {
             services.AddDbContext<IdentityDbContext>(options =>
                 options.UseSqlServer(databaseConfiguration.ConnectionStringsConfiguration.IdentityDbConnection,
@@ -114,7 +114,7 @@ public static class DatabaseExtensions
         }
 
         // Add Configuration DbContext
-        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration?.ConfigurationDbConnection))
+        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration.ConfigurationDbConnection))
         {
             services.AddConfigurationDbContext<IdentityServerConfigurationDbContext>(options =>
                 options.ConfigureDbContext = b =>
@@ -124,7 +124,7 @@ public static class DatabaseExtensions
 
         // Add PersistedGrant DbContext
         if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration
-                ?.PersistedGrantDbConnection))
+                .PersistedGrantDbConnection))
         {
             services.AddOperationalDbContext<IdentityServerPersistedGrantDbContext>(options =>
                 options.ConfigureDbContext = b =>
@@ -134,7 +134,7 @@ public static class DatabaseExtensions
 
         // Add Data Protection DbContext
         if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration
-                ?.DataProtectionDbConnection))
+                .DataProtectionDbConnection))
         {
             services.AddDbContext<IdentityServerDataProtectionDbContext>(options =>
                 options.UseSqlServer(databaseConfiguration.ConnectionStringsConfiguration.DataProtectionDbConnection,
@@ -146,7 +146,7 @@ public static class DatabaseExtensions
         DatabaseConfiguration databaseConfiguration, string? migrationsAssembly)
     {
         // Add Identity DbContext
-        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration?.IdentityDbConnection))
+        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration.IdentityDbConnection))
         {
             services.AddDbContext<IdentityDbContext>(options =>
                 options.UseMySql(databaseConfiguration.ConnectionStringsConfiguration.IdentityDbConnection,
@@ -156,7 +156,7 @@ public static class DatabaseExtensions
         }
 
         // Add Configuration DbContext
-        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration?.ConfigurationDbConnection))
+        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration.ConfigurationDbConnection))
         {
             services.AddConfigurationDbContext<IdentityServerConfigurationDbContext>(options =>
                 options.ConfigureDbContext = b =>
@@ -168,7 +168,7 @@ public static class DatabaseExtensions
 
         // Add PersistedGrant DbContext
         if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration
-                ?.PersistedGrantDbConnection))
+                .PersistedGrantDbConnection))
         {
             services.AddOperationalDbContext<IdentityServerPersistedGrantDbContext>(options =>
                 options.ConfigureDbContext = b =>
@@ -180,7 +180,7 @@ public static class DatabaseExtensions
 
         // Add Data Protection DbContext
         if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration
-                ?.DataProtectionDbConnection))
+                .DataProtectionDbConnection))
         {
             services.AddDbContext<IdentityServerDataProtectionDbContext>(options =>
                 options.UseMySql(databaseConfiguration.ConnectionStringsConfiguration.DataProtectionDbConnection,
@@ -194,7 +194,7 @@ public static class DatabaseExtensions
         DatabaseConfiguration databaseConfiguration, string? migrationsAssembly)
     {
         // Add Identity DbContext
-        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration?.IdentityDbConnection))
+        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration.IdentityDbConnection))
         {
             services.AddDbContext<IdentityDbContext>(options =>
                 options.UseSqlite(databaseConfiguration.ConnectionStringsConfiguration.IdentityDbConnection,
@@ -202,7 +202,7 @@ public static class DatabaseExtensions
         }
 
         // Add Configuration DbContext
-        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration?.ConfigurationDbConnection))
+        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration.ConfigurationDbConnection))
         {
             services.AddConfigurationDbContext<IdentityServerConfigurationDbContext>(options =>
                 options.ConfigureDbContext = b =>
@@ -212,7 +212,7 @@ public static class DatabaseExtensions
 
         // Add PersistedGrant DbContext
         if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration
-                ?.PersistedGrantDbConnection))
+                .PersistedGrantDbConnection))
         {
             services.AddOperationalDbContext<IdentityServerPersistedGrantDbContext>(options =>
                 options.ConfigureDbContext = b =>
@@ -222,7 +222,7 @@ public static class DatabaseExtensions
 
         // Add Data Protection DbContext
         if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration
-                ?.DataProtectionDbConnection))
+                .DataProtectionDbConnection))
         {
             services.AddDbContext<IdentityServerDataProtectionDbContext>(options =>
                 options.UseSqlite(databaseConfiguration.ConnectionStringsConfiguration.DataProtectionDbConnection,

@@ -49,7 +49,7 @@ public static class DatabaseExtensions
         DatabaseConfiguration databaseConfiguration, string? migrationsAssembly)
     {
         // Add Session DbContext
-        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration?.SessionDbConnection))
+        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration.SessionDbConnection))
         {
             bffBuilder.AddEntityFrameworkServerSideSessions(options =>
                 options.UseNpgsql(databaseConfiguration.ConnectionStringsConfiguration.SessionDbConnection,
@@ -61,7 +61,7 @@ public static class DatabaseExtensions
         DatabaseConfiguration databaseConfiguration, string? migrationsAssembly)
     {
         // Add Session DbContext
-        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration?.SessionDbConnection))
+        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration.SessionDbConnection))
         {
             bffBuilder.AddEntityFrameworkServerSideSessions(options =>
                 options.UseSqlServer(databaseConfiguration.ConnectionStringsConfiguration.SessionDbConnection,
@@ -73,7 +73,7 @@ public static class DatabaseExtensions
         DatabaseConfiguration databaseConfiguration, string? migrationsAssembly)
     {
         // Add Session DbContext
-        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration?.SessionDbConnection))
+        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration.SessionDbConnection))
         {
             bffBuilder.AddEntityFrameworkServerSideSessions(options =>
                 options.UseMySql(databaseConfiguration.ConnectionStringsConfiguration.SessionDbConnection,
@@ -87,7 +87,7 @@ public static class DatabaseExtensions
         DatabaseConfiguration databaseConfiguration, string? migrationsAssembly)
     {
         // Add Session DbContext
-        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration?.SessionDbConnection))
+        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration.SessionDbConnection))
         {
             bffBuilder.AddEntityFrameworkServerSideSessions(options =>
                 options.UseSqlite(databaseConfiguration.ConnectionStringsConfiguration.SessionDbConnection,

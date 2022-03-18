@@ -5,6 +5,8 @@ import { AuthUser } from '../types';
 
 export const getUser = async (): Promise<AuthUser> => {
   const userSessionInfo = (await axios.get('/bff/user')) as { type: string; value: string }[];
+  if (!userSessionInfo && silentLogin()) return getUser();
+
   if (process.env.NODE_ENV.toLowerCase() || 'development' === 'development') {
     const userDiagnostics = await axios.get('/bff/diagnostics');
     console.log(userDiagnostics);
@@ -31,4 +33,27 @@ export const getUser = async (): Promise<AuthUser> => {
   };
 
   return user;
+};
+
+export const silentLogin = (): boolean => {
+  const bffSilentLoginIframe = document.createElement('iframe');
+
+  document.body.append(bffSilentLoginIframe);
+
+  bffSilentLoginIframe.src = '/bff/silent-login';
+
+  let silentLoginSuccess = false;
+
+  window.addEventListener('message', (e) => {
+    if (e.data && e.data.source === 'bff-silent-login' && e.data.isLoggedIn) {
+      // we now have a user logged in silently, so reload this window
+
+      history.go(0);
+      silentLoginSuccess = true;
+    } else {
+      window.location.assign('/bff/login');
+    }
+  });
+
+  return silentLoginSuccess;
 };

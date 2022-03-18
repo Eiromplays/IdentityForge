@@ -1,5 +1,4 @@
 using System.Net;
-using Duende.IdentityServer.Services;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Domain.Enums;
@@ -32,7 +31,8 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
     {
         if (!User.IsInRole("Administrator") && !User.HasClaim("sub", req.Id))
         {
-            await SendUnauthorizedAsync(ct);
+            AddError($"You do not have permissions to update {req.Id}'s Profile Picture");;
+            await SendErrorsAsync((int)HttpStatusCode.Unauthorized, ct);
             return;
         }
         

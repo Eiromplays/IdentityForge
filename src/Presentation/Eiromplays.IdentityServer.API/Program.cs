@@ -5,6 +5,7 @@ using FastEndpoints;
 using FastEndpoints.Swagger;
 using FluentValidation.AspNetCore;
 using Serilog;
+using DependencyInjection = Eiromplays.IdentityServer.Infrastructure.BFF.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,7 @@ builder.Logging.AddSerilog(logger);
 builder.Services.AddApplication(builder.Configuration);
 
 builder.Services.AddInfrastructure(builder.Configuration, ProjectType.Api);
+DependencyInjection.AddInfrastructure(builder.Services, builder.Configuration);
 
 // Add services to the container.
 

@@ -12,7 +12,7 @@ public interface IIdentityService
     Task<bool> IsInRoleAsync(string userId, string role);
     Task<bool> CanSignInAsync(string userId);
     Task<bool> AuthorizeAsync(string userId, string policyName);
-    Task<(Result Result, string? UserId)> UpdateUserAsync(UserDto userDto);
+    Task<(Result Result, string? UserId)> UpdateUserAsync(UserDto userDto, bool revokeUserSessions = true);
     Task<bool> UserExistsAsync(string? userId);
     Task<UserDto?> FindUserByIdAsync(string? userId);
     Task<UserDto?> FindUserByUsernameAsync(string? username);

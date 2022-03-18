@@ -1,14 +1,16 @@
 using System.Net;
+using Duende.Bff.EntityFramework;
 using Duende.IdentityServer.Extensions;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using FastEndpoints;
+using Microsoft.EntityFrameworkCore;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.UpdateUser;
 
 public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
     private readonly IIdentityService _identityService;
-    
+
     public Endpoint(IIdentityService identityService)
     {
         _identityService = identityService;
@@ -17,7 +19,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
     public override void Configure()
     {
         Verbs(Http.PUT);
-        Routes("/users/{id}");
+        Routes("/users/{id}/{RevokeUserSessions?}");
         Version(1);
     }
 
@@ -25,13 +27,14 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
     {
         if (!User.IsInRole("Administrator") && !User.HasClaim("sub", req.Id))
         {
-            await SendUnauthorizedAsync(ct);
+            AddError($"You do not have permissions to update {req.Id}'s Profile");;
+            await SendErrorsAsync((int)HttpStatusCode.Unauthorized, ct);
             return;
         }
         var user = await _identityService.FindUserByIdAsync(req.Id);
         if (user is null)
         {
-            AddError($"User with id {req.Id} not found");;
+            AddError($"User with id {req.Id} not found");
             await SendErrorsAsync((int)HttpStatusCode.NotFound, ct);
             return;
         }
@@ -40,7 +43,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         user.GravatarEmail = req.GravatarEmail;
         user.UserName = req.UserName;
 
-        var (result, userId) = await _identityService.UpdateUserAsync(user);
+        var (result, userId) = await _identityService.UpdateUserAsync(user, req.RevokeUserSessions);
         foreach (var error in result.Errors) AddError(error);
         
         ThrowIfAnyErrors();

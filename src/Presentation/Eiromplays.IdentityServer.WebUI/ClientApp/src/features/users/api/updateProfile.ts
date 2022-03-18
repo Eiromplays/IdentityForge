@@ -20,12 +20,15 @@ export type DeleteProfilePictureDTO = {
 };
 
 export const updateProfile = async ({ data, id }: UpdateProfileDTO) => {
-  const formData = new FormData();
-  formData.append('ProfilePicture', data.profilePicture);
-
-  const updateUserResponse = await axios.put(`/users/${id}`, data);
+  const updateUserResponse = await axios.put(
+    `/users/${id}?RevokeUserSessions=${!data.profilePicture}`,
+    data
+  );
 
   if (!data.profilePicture) return updateUserResponse;
+
+  const formData = new FormData();
+  formData.append('ProfilePicture', data.profilePicture);
 
   const updateProfilePictureResponse = await axios.post(`/users/${id}/profile-picture`, formData, {
     headers: {
@@ -45,12 +48,12 @@ type UseUpdateProfileOptions = {
 };
 
 export const useUpdateProfile = ({ config }: UseUpdateProfileOptions = {}) => {
-  const { logout } = useAuth();
+  const { refetchUser } = useAuth();
 
   const updateProfileMutation = useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success('User Updated');
-      logout();
+      await refetchUser();
     },
     onError: (error) => {
       toast.error('Failed to update user');
@@ -61,9 +64,9 @@ export const useUpdateProfile = ({ config }: UseUpdateProfileOptions = {}) => {
   });
 
   const deleteProfilePictureMutation = useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success('Profile picture Updated');
-      logout();
+      await refetchUser();
     },
     onError: (error) => {
       toast.error('Failed to delete profile picture');

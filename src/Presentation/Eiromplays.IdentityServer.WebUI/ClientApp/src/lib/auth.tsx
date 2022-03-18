@@ -4,21 +4,25 @@ import { initReactQueryAuth } from '@/providers/AuthProvider';
 
 async function loadUser() {
   const data = await getUser();
+
   return data;
 }
 
 async function loginFn() {
   const user = await loadUser();
+
   return user;
 }
 
 async function registerFn() {
   const user = await loadUser();
+
   return user;
 }
 
 async function logoutFn() {
   const user = await loadUser();
+
   window.location.assign(user.logoutUrl);
 }
 
