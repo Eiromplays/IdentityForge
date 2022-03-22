@@ -15,6 +15,9 @@ while [ $# -gt 0 ]; do
     -ps|-prerequisites|--prerequisites)
       prerequisites="$2"
       ;;
+    -db|-dc|-dbcontext|--dbcontext)
+      dbcontext="$2"
+      ;;
     *)
       printf "***************************\n"
       printf "* Error: Invalid argument.*\n"
@@ -30,6 +33,7 @@ migrationProvider=${migrationProvider:-ALL}
 quickMode=${quickMode:-false}
 environment=${environment:-Development}
 prerequisites=${prerequisites:-true}
+dbcontext=${dbcontext:-ALL}
 
 appsettingsFile="appsettings.$environment.json"
 
@@ -63,6 +67,12 @@ do
         echo "Starting migrations for: $databaseProvider"
         for dbContext in "${dbContexts[@]}"
         do
+            dbContextName=${dbContext##*.}
+            echo "name: $dbContextName context: $dbcontext"
+            if [ "$dbContextName" != "$dbcontext" ] && [ "$dbcontext" != "ALL" ]; then
+                continue
+            fi
+
             if [ "$quickMode" = "false" ]; then
                 echo "Please input a migration name for $dbContext:"
                 read migrationName
@@ -70,11 +80,10 @@ do
             else
                 migrationName=Initial
             fi
-            dbContextName=${dbContext##*.}
-            migrationFolderName=${dbContextName//DbContext/}
+            migrationFolderName=${dbContextName/DbContext/}
             migrationPath="Migrations/$migrationFolderName"
             echo "Starting migration for: $dbContextName Migration name: $migrationName"
-            dotnet ef migrations add $migrationName -c $dbContext -o $migrationPath -p $PWD/../../Infrastructure/Eiromplays.IdentityServer.Infrastructure.$databaseProvider/Eiromplays.IdentityServer.Infrastructure.$databaseProvider.csproj
+            dotnet ef migrations add "$migrationName" -c $dbContext -o $migrationPath -p $PWD/../../Infrastructure/Eiromplays.IdentityServer.Infrastructure.$databaseProvider/Eiromplays.IdentityServer.Infrastructure.$databaseProvider.csproj
             echo "Migration for: $dbContextName completed and can be found at: $migrationPath"
         done
     fi

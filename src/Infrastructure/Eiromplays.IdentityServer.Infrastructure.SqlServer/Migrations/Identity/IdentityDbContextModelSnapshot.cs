@@ -17,7 +17,7 @@ namespace Eiromplays.IdentityServer.Infrastructure.SqlServer.Migrations.Identity
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.2")
+                .HasAnnotation("ProductVersion", "6.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -86,6 +86,12 @@ namespace Eiromplays.IdentityServer.Infrastructure.SqlServer.Migrations.Identity
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<double>("Credits")
                         .HasColumnType("float");
 
@@ -103,6 +109,12 @@ namespace Eiromplays.IdentityServer.Infrastructure.SqlServer.Migrations.Identity
                         .HasColumnType("bit");
 
                     b.Property<string>("GravatarEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")

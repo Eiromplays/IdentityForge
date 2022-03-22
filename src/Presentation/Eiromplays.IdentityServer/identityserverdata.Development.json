@@ -52,12 +52,12 @@
         ]
       },
       {
-        "Name": "gravatarEmail",
+        "Name": "gravatar_email",
         "Enabled": true,
         "DisplayName": "Your gravatar email address",
         "Emphasize": true,
         "UserClaims": [
-          "gravatarEmail"
+          "gravatar_email"
         ]
       },
       {
@@ -151,7 +151,7 @@
           "api",
           "roles",
           "email",
-          "gravatarEmail"
+          "gravatar_email"
         ]
       }
     ]

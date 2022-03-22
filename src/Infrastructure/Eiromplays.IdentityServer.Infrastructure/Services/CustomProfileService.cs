@@ -47,7 +47,7 @@ public class CustomProfileService : ProfileService<ApplicationUser>
             claims.Add(new Claim(JwtClaimTypes.Picture, profilePicture));
 
         if (!string.IsNullOrWhiteSpace(user.GravatarEmail))
-            claims.Add(new Claim("gravatarEmail", user.GravatarEmail));
+            claims.Add(new Claim("gravatar_email", user.GravatarEmail));
         
         context.IssuedClaims.AddRange(claims);
     }

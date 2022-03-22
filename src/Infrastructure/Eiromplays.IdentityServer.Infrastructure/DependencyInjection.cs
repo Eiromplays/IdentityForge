@@ -50,7 +50,10 @@ public static class DependencyInjection
 
         services.AddSingleton<ICurrentUserService, CurrentUserService>();
 
-        services.AddHttpContextAccessor();
+        if (projectType != ProjectType.Api)
+        {
+            services.AddHttpContextAccessor();
+        }
 
         services.AddEmailSenders(configuration);
 

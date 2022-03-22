@@ -17,7 +17,7 @@ namespace Eiromplays.IdentityServer.Infrastructure.PostgreSql.Migrations.Identit
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.2")
+                .HasAnnotation("ProductVersion", "6.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -85,6 +85,12 @@ namespace Eiromplays.IdentityServer.Infrastructure.PostgreSql.Migrations.Identit
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
                     b.Property<double>("Credits")
                         .HasColumnType("double precision");
 
@@ -102,6 +108,12 @@ namespace Eiromplays.IdentityServer.Infrastructure.PostgreSql.Migrations.Identit
                         .HasColumnType("boolean");
 
                     b.Property<string>("GravatarEmail")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastModifiedBy")
                         .HasColumnType("text");
 
                     b.Property<bool>("LockoutEnabled")

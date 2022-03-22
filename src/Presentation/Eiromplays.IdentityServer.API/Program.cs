@@ -79,11 +79,11 @@ var app = builder.Build();
 await app.Services.ApplyMigrationsAsync(app.Configuration);
 
 app.UseSecurityHeaders(app.Configuration);
-app.UseDefaultExceptionHandler();
 app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseDefaultExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 

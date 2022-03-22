@@ -16,7 +16,7 @@ namespace Eiromplays.IdentityServer.Infrastructure.MySql.Migrations.Identity
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.2")
+                .HasAnnotation("ProductVersion", "6.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Eiromplays.IdentityServer.Infrastructure.Identity.Entities.ApplicationRole", b =>
@@ -80,6 +80,12 @@ namespace Eiromplays.IdentityServer.Infrastructure.MySql.Migrations.Identity
                         .IsConcurrencyToken()
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("longtext");
+
                     b.Property<double>("Credits")
                         .HasColumnType("double");
 
@@ -97,6 +103,12 @@ namespace Eiromplays.IdentityServer.Infrastructure.MySql.Migrations.Identity
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("GravatarEmail")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("LastModifiedBy")
                         .HasColumnType("longtext");
 
                     b.Property<bool>("LockoutEnabled")

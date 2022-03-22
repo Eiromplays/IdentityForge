@@ -5,6 +5,7 @@ using Eiromplays.IdentityServer.Domain.Constants;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts;
 
@@ -25,18 +26,18 @@ public class IdentityDbContext : IdentityDbContext<ApplicationUser, ApplicationR
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
-        foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
+        foreach (var entry in ChangeTracker.Entries<IAuditableEntity>())
         {
             switch (entry.State)
             {
                 case EntityState.Added:
                     entry.Entity.CreatedBy = _currentUserService.UserId;
-                    entry.Entity.Created = _dateTime.Now;
+                    entry.Entity.Created = _dateTime.UtcNow;
                     break;
 
                 case EntityState.Modified:
                     entry.Entity.LastModifiedBy = _currentUserService.UserId;
-                    entry.Entity.LastModified = _dateTime.Now;
+                    entry.Entity.LastModified = _dateTime.UtcNow;
                     break;
             }
         }
@@ -50,6 +51,7 @@ public class IdentityDbContext : IdentityDbContext<ApplicationUser, ApplicationR
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        //AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         base.OnModelCreating(builder);
