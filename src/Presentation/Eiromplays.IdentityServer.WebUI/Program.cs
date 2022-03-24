@@ -40,6 +40,8 @@ builder.Services.AddAuthentication(options =>
     options.ClaimActions.MapJsonKey("role", "role", "role");
     options.ClaimActions.MapJsonKey("picture", "picture", "picture");
     options.ClaimActions.MapJsonKey("gravatar_email", "gravatar_email", "gravatar_email");
+    options.ClaimActions.MapJsonKey("updated_at", "updated_at", "updated_at");
+    options.ClaimActions.MapJsonKey("created_at", "created_at", "created_at");
 });
 
 var app = builder.Build();

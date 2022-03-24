@@ -2,7 +2,7 @@ using System.Net;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Domain.Enums;
-using Eiromplays.IdentityServer.Infrastructure.Extensions;
+using Eiromplays.IdentityServer.Infrastructure.Common.Extensions;
 using FastEndpoints;
 using Microsoft.Extensions.Options;
 

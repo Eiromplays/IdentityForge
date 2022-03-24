@@ -1,15 +1,14 @@
 ﻿using Eiromplays.IdentityServer.Application.Common.Models;
 using Microsoft.AspNetCore.Identity;
 
-namespace Eiromplays.IdentityServer.Infrastructure.Extensions
+namespace Eiromplays.IdentityServer.Infrastructure.Common.Extensions;
+
+public static class IdentityResultExtensions
 {
-    public static class IdentityResultExtensions
+    public static Result ToApplicationResult(this IdentityResult result)
     {
-        public static Result ToApplicationResult(this IdentityResult result)
-        {
-            return result.Succeeded
-                ? Result.Success()
-                : Result.Failure(result.Errors.Select(e => e.Description));
-        }
+        return result.Succeeded
+            ? Result.Success()
+            : Result.Failure(result.Errors.Select(e => e.Description));
     }
 }

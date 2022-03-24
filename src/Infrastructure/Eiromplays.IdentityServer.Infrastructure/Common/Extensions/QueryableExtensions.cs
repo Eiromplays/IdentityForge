@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 
-namespace Eiromplays.IdentityServer.Infrastructure.Extensions;
+namespace Eiromplays.IdentityServer.Infrastructure.Common.Extensions;
 
 public static class QueryableExtensions
 {

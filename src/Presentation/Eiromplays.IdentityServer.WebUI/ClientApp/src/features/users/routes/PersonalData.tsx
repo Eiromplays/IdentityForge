@@ -25,44 +25,40 @@ export const PersonalData = () => {
             Personal data and information.
           </p>
         </div>
-        <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
-          <dl className="sm:divide-y sm:divide-gray-200">
-            <ConfirmationDialog
-              icon="danger"
-              title="Delete Account"
-              body="Are you sure you want to delete your account? There is no way to undo this action!"
-              triggerButton={
-                <Button size="sm" variant="danger" isLoading={deleteUserMutation.isLoading}>
-                  Delete Account
-                </Button>
-              }
-              confirmButton={
-                <Button
-                  className="mt-2"
-                  variant="danger"
-                  size="sm"
-                  isLoading={deleteUserMutation.isLoading}
-                  onClick={async () => {
-                    await deleteUserMutation.mutateAsync({ userId: user?.id });
-                    logout();
-                  }}
-                >
-                  Proceed
-                </Button>
-              }
-            />
-            <Button
-              className="mt-2"
-              variant="primary"
-              size="sm"
-              isLoading={downloadPersonalDataMutation.isLoading}
-              onClick={async () =>
-                await downloadPersonalDataMutation.mutateAsync({ userId: user?.id })
-              }
-            >
-              Download Personal Data
-            </Button>
-          </dl>
+        <div className="border-t border-gray-200 flex gap-5 pt-5 pl-5 pb-5">
+          <ConfirmationDialog
+            icon="danger"
+            title="Delete Account"
+            body="Are you sure you want to delete your account? There is no way to undo this action!"
+            triggerButton={
+              <Button size="sm" variant="danger" isLoading={deleteUserMutation.isLoading}>
+                Delete Account
+              </Button>
+            }
+            confirmButton={
+              <Button
+                variant="danger"
+                size="sm"
+                isLoading={deleteUserMutation.isLoading}
+                onClick={async () => {
+                  await deleteUserMutation.mutateAsync({ userId: user?.id });
+                  logout();
+                }}
+              >
+                Proceed
+              </Button>
+            }
+          />
+          <Button
+            variant="primary"
+            size="sm"
+            isLoading={downloadPersonalDataMutation.isLoading}
+            onClick={async () =>
+              await downloadPersonalDataMutation.mutateAsync({ userId: user?.id })
+            }
+          >
+            Download Personal Data
+          </Button>
         </div>
       </div>
     </ContentLayout>

@@ -1,10 +1,11 @@
+using Duende.Bff.EntityFramework;
 using Duende.IdentityServer.EntityFramework.Storage;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Database;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Identity;
 using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
-using Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts;
-using Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts.Seeds;
+using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
+using Eiromplays.IdentityServer.Infrastructure.Persistence.Context.Seeds;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,8 +17,8 @@ namespace Eiromplays.IdentityServer.Infrastructure;
 
 public static class DatabaseExtensions
 {
-    public static void RegisterDbContexts(this IServiceCollection services,
-        DatabaseConfiguration databaseConfiguration)
+    public static void RegisterDbContexts2(this IServiceCollection services,
+        DatabaseConfiguration databaseConfiguration, BffBuilder? bffBuilder = null)
     {
         var migrationsAssembly = $"{typeof(DatabaseExtensions).Assembly.GetName().Name}.{databaseConfiguration.DatabaseProvider}";
 
@@ -43,7 +44,7 @@ public static class DatabaseExtensions
         }
     }
 
-    private static void RegisterInMemoryDbContexts(this IServiceCollection services)
+    private static void RegisterInMemoryDbContexts(this IServiceCollection services, BffBuilder? bffBuilder = null)
     {
         // Add Identity DbContext
         services.AddDbContext<IdentityDbContext>(options =>
@@ -60,10 +61,14 @@ public static class DatabaseExtensions
         // Add Data Protection DbContext
         services.AddDbContext<IdentityServerDataProtectionDbContext>(options =>
             options.UseInMemoryDatabase("EiromplaysIdentityServerDataProtectionDb"));
+            
+        // Add Session DbContext
+        bffBuilder.AddEntityFrameworkServerSideSessions(options =>
+            options.UseInMemoryDatabase("EiromplaysIdentityServerDb"));
     }
     
     private static void RegisterNpgSqlDbContexts(this IServiceCollection services,
-        DatabaseConfiguration databaseConfiguration, string? migrationsAssembly)
+        DatabaseConfiguration databaseConfiguration, string? migrationsAssembly, BffBuilder? bffBuilder = null)
     {
         // Add Identity DbContext
         if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration.IdentityDbConnection))
@@ -100,10 +105,18 @@ public static class DatabaseExtensions
                 options.UseNpgsql(databaseConfiguration.ConnectionStringsConfiguration.DataProtectionDbConnection,
                     sql => sql.MigrationsAssembly(migrationsAssembly)));
         }
+        
+        // Add Session DbContext
+        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration.SessionDbConnection))
+        {
+            bffBuilder.AddEntityFrameworkServerSideSessions(options =>
+                options.UseNpgsql(databaseConfiguration.ConnectionStringsConfiguration.SessionDbConnection,
+                    sql => sql.MigrationsAssembly(migrationsAssembly)));
+        }
     }
     
     private static void RegisterSqlServerDbContexts(this IServiceCollection services,
-        DatabaseConfiguration databaseConfiguration, string? migrationsAssembly)
+        DatabaseConfiguration databaseConfiguration, string? migrationsAssembly, BffBuilder? bffBuilder = null)
     {
         // Add Identity DbContext
         if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration.IdentityDbConnection))
@@ -140,10 +153,18 @@ public static class DatabaseExtensions
                 options.UseSqlServer(databaseConfiguration.ConnectionStringsConfiguration.DataProtectionDbConnection,
                     sql => sql.MigrationsAssembly(migrationsAssembly)));
         }
+        
+        // Add Session DbContext
+        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration.SessionDbConnection))
+        {
+            bffBuilder.AddEntityFrameworkServerSideSessions(options =>
+                options.UseSqlServer(databaseConfiguration.ConnectionStringsConfiguration.SessionDbConnection,
+                    sql => sql.MigrationsAssembly(migrationsAssembly)));
+        }
     }
     
     private static void RegisterMySqlDbContexts(this IServiceCollection services,
-        DatabaseConfiguration databaseConfiguration, string? migrationsAssembly)
+        DatabaseConfiguration databaseConfiguration, string? migrationsAssembly, BffBuilder? bffBuilder = null)
     {
         // Add Identity DbContext
         if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration.IdentityDbConnection))
@@ -188,10 +209,20 @@ public static class DatabaseExtensions
                         .DataProtectionDbConnection.GetMySqlServerVersion(),
                     sql => sql.MigrationsAssembly(migrationsAssembly)));
         }
+        
+        // Add Session DbContext
+        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration.SessionDbConnection))
+        {
+            bffBuilder.AddEntityFrameworkServerSideSessions(options =>
+                options.UseMySql(databaseConfiguration.ConnectionStringsConfiguration.SessionDbConnection,
+                    databaseConfiguration.ConnectionStringsConfiguration
+                        .IdentityDbConnection.GetMySqlServerVersion(),
+                    sql => sql.MigrationsAssembly(migrationsAssembly)));
+        }
     }
     
     private static void RegisterSqliteDbContexts(this IServiceCollection services,
-        DatabaseConfiguration databaseConfiguration, string? migrationsAssembly)
+        DatabaseConfiguration databaseConfiguration, string? migrationsAssembly, BffBuilder? bffBuilder = null)
     {
         // Add Identity DbContext
         if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration.IdentityDbConnection))
@@ -228,6 +259,14 @@ public static class DatabaseExtensions
                 options.UseSqlite(databaseConfiguration.ConnectionStringsConfiguration.DataProtectionDbConnection,
                     sql => sql.MigrationsAssembly(migrationsAssembly)));
         }
+        
+        // Add Session DbContext
+        if (!string.IsNullOrWhiteSpace(databaseConfiguration.ConnectionStringsConfiguration.SessionDbConnection))
+        {
+            bffBuilder.AddEntityFrameworkServerSideSessions(options =>
+                options.UseSqlite(databaseConfiguration.ConnectionStringsConfiguration.SessionDbConnection,
+                    sql => sql.MigrationsAssembly(migrationsAssembly)));
+        }
     }
     
     public static async Task ApplyMigrationsAsync(this IServiceProvider serviceProvider, IConfiguration configuration)
@@ -257,6 +296,9 @@ public static class DatabaseExtensions
             await using var identityServerDataProtectionDbContext =
                 services.GetRequiredService<IdentityServerDataProtectionDbContext>();
             await identityServerDataProtectionDbContext.Database.MigrateAsync();
+            
+            await using var sessionDbContext = services.GetRequiredService<SessionDbContext>();
+            await sessionDbContext.Database.MigrateAsync();
         }
         catch (Exception ex)
         {

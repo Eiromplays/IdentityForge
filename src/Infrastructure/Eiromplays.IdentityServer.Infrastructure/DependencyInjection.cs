@@ -1,5 +1,7 @@
 ﻿using System.Net;
 using System.Net.Mail;
+using Duende.Bff;
+using Duende.Bff.Yarp;
 using Duende.IdentityServer.Configuration;
 using Eiromplays.IdentityServer.Application.Common.Configurations;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Database;
@@ -9,8 +11,7 @@ using Eiromplays.IdentityServer.Domain.Constants;
 using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure.Helpers;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
-using Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts;
-using Eiromplays.IdentityServer.Infrastructure.Persistence.DbContexts.Seeds;
+using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
 using Eiromplays.IdentityServer.Infrastructure.Services;
 using FluentEmail.Graph;
 using Microsoft.AspNetCore.Builder;
@@ -33,7 +34,18 @@ public static class DependencyInjection
 
         services.RegisterIdentityDataConfiguration(configuration, projectType);
 
-        services.RegisterDbContexts(databaseConfiguration);
+        // TODO: Find a better way to do this
+        if (projectType == ProjectType.Spa)
+        {
+            var bffBuilder = services.AddBff(options => configuration.GetSection(nameof(BffOptions)).Bind(options));
+
+            bffBuilder.AddRemoteApis();
+            services.RegisterDbContexts(databaseConfiguration, bffBuilder);
+        }
+        else
+        {
+            services.RegisterDbContexts(databaseConfiguration);
+        }
 
         services.AddDataProtection();
 

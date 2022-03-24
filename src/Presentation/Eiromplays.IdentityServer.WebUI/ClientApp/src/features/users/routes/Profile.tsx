@@ -48,6 +48,10 @@ export const Profile = () => {
             <Entry label="Id" value={user.id} />
             <Entry label="Username" value={user.username} />
             <Entry label="Email Address" value={user.email} />
+            {user.updated_at && (
+              <Entry label="Last updated at" value={user.updated_at.toString()} />
+            )}
+            {user.created_at && <Entry label="Created at" value={user.created_at.toString()} />}
             {user.gravatarEmail && (
               <Entry label="Gravatar Email Address" value={user.gravatarEmail} />
             )}

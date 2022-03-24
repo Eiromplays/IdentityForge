@@ -1,4 +1,4 @@
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.PersonalData.GetPersonalData;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.PersonalData.DownloadPersonalData;
 
 public class Models
 {

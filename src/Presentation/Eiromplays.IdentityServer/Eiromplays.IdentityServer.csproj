@@ -26,10 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Infrastructure\Eiromplays.IdentityServer.Infrastructure.MySql\Eiromplays.IdentityServer.Infrastructure.MySql.csproj" />
-    <ProjectReference Include="..\..\Infrastructure\Eiromplays.IdentityServer.Infrastructure.PostgreSql\Eiromplays.IdentityServer.Infrastructure.PostgreSql.csproj" />
-    <ProjectReference Include="..\..\Infrastructure\Eiromplays.IdentityServer.Infrastructure.Sqlite\Eiromplays.IdentityServer.Infrastructure.Sqlite.csproj" />
-    <ProjectReference Include="..\..\Infrastructure\Eiromplays.IdentityServer.Infrastructure.SqlServer\Eiromplays.IdentityServer.Infrastructure.SqlServer.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Migrators.MySql\Migrators.MySql.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Migrators.PostgreSql\Migrators.PostgreSql.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Migrators.Sqlite\Migrators.Sqlite.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Migrators.SqlServer\Migrators.SqlServer.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Eiromplays.IdentityServer.Infrastructure\Eiromplays.IdentityServer.Infrastructure.csproj" />
   </ItemGroup>
 

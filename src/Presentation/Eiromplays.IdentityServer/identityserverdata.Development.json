@@ -38,7 +38,8 @@
           "birthdate",
           "zoneinfo",
           "locale",
-          "updated_at"
+          "updated_at",
+          "created_at"
         ]
       },
       {
@@ -121,7 +122,8 @@
           "profile",
           "api",
           "roles",
-          "email"
+          "email",
+          "gravatar_email"
         ]
       },
       {

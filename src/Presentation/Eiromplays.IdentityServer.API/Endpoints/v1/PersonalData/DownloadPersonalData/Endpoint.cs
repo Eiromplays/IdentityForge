@@ -1,9 +1,8 @@
-using System.Net;
 using System.Text.Json;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using FastEndpoints;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.PersonalData.GetPersonalData;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.PersonalData.DownloadPersonalData;
 
 public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
@@ -23,9 +22,10 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        if (!User.IsInRole("Administrator") && !User.HasClaim("sub", req.Id))
+        if (!User.IsInRole("Administrator") && !User.HasClaim("sub", req.Id!))
         {
-            await SendUnauthorizedAsync(ct);
+            AddError($"You do not have permissions to download {req.Id}'s personal data");
+            await SendErrorsAsync(StatusCodes.Status401Unauthorized, ct);
             return;
         }
         
@@ -33,7 +33,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         if (user is null)
         {
             AddError($"User with id {req.Id} not found");;
-            await SendErrorsAsync((int)HttpStatusCode.NotFound, ct);
+            await SendErrorsAsync(StatusCodes.Status404NotFound, ct);
             return;
         }
 

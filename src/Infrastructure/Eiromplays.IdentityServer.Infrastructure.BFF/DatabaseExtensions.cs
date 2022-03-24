@@ -121,18 +121,4 @@ public static class DatabaseExtensions
             throw;
         }
     }
-    
-    private static ServerVersion GetMySqlServerVersion(this string? connectionString)
-    {
-        try
-        {
-            return ServerVersion.AutoDetect(connectionString);
-        }
-        catch (Exception)
-        {
-            Console.WriteLine("Could not detect MySQL server version. Using latest supported version.");
-
-            return MySqlServerVersion.LatestSupportedServerVersion;
-        }
-    }
 }

@@ -23,6 +23,8 @@ import ThemeToggle from '../Theme/ThemeToggle';
 type SideNavigationItem = {
   name: string;
   to: string;
+  target?: string;
+  externalLink: boolean;
   icon: (props: React.SVGProps<SVGSVGElement>) => JSX.Element;
 };
 
@@ -37,35 +39,60 @@ const SideNavigation = () => {
       icon: HiOutlineLockClosed,
     },
     { name: 'Change Password', to: '/change-password', icon: HiOutlineKey },
-    { name: 'Discovery Document', to: '/discovery-document', icon: HiOutlineDocumentText },
+    {
+      name: 'Discovery Document',
+      to: 'https://localhost:7001/.well-known/openid-configuration',
+      target: '_blank',
+      externalLink: true,
+      icon: HiOutlineDocumentText,
+    },
     { name: 'Persisted Grants', to: '/persisted-grants', icon: HiOutlineShieldCheck },
     { name: 'User Sessions', to: '/user-sessions', icon: MdOutlineDevicesOther },
   ].filter(Boolean) as SideNavigationItem[];
 
   return (
     <>
-      {navigation.map((item, index) => (
-        <NavLink
-          end={index === 0}
-          key={item.name}
-          to={item.to}
-          className={(navData) =>
-            clsx(
-              'hover:bg-gray-700 hover:text-white',
-              'group flex items-center px-2 py-2 font-medium rounded-md'
-            ) + (navData.isActive ? 'bg-gray-900  text-white' : 'bg-transparent text-gray-400')
-          }
-        >
-          <item.icon
-            className={clsx(
-              'text-gray-400 group-hover:text-gray-300',
-              'mr-4 flex-shrink-0 h-6 w-6'
-            )}
-            aria-hidden="true"
-          />
-          {item.name}
-        </NavLink>
-      ))}
+      {navigation.map((item, index) => {
+        return item.externalLink ? (
+          <a
+            key={item.name}
+            href={item.to}
+            target={item.target}
+            className="hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 font-medium rounded-md bg-transparent text-gray-400"
+          >
+            <item.icon
+              className={clsx(
+                'text-gray-400 group-hover:text-gray-300',
+                'mr-4 flex-shrink-0 h-6 w-6'
+              )}
+              aria-hidden="true"
+            />
+            {item.name}
+          </a>
+        ) : (
+          <NavLink
+            end={index === 0}
+            key={item.name}
+            to={item.to}
+            target={item.target}
+            className={(navData) =>
+              clsx(
+                'hover:bg-gray-700 hover:text-white',
+                'group flex items-center px-2 py-2 font-medium rounded-md'
+              ) + (navData.isActive ? 'bg-gray-900  text-white' : 'bg-transparent text-gray-400')
+            }
+          >
+            <item.icon
+              className={clsx(
+                'text-gray-400 group-hover:text-gray-300',
+                'mr-4 flex-shrink-0 h-6 w-6'
+              )}
+              aria-hidden="true"
+            />
+            {item.name}
+          </NavLink>
+        );
+      })}
     </>
   );
 };

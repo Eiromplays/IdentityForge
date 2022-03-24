@@ -7,10 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Eiromplays.IdentityServer.Infrastructure.MySql\Eiromplays.IdentityServer.Infrastructure.MySql.csproj" />
-      <ProjectReference Include="..\Eiromplays.IdentityServer.Infrastructure.PostgreSql\Eiromplays.IdentityServer.Infrastructure.PostgreSql.csproj" />
-      <ProjectReference Include="..\Eiromplays.IdentityServer.Infrastructure.Sqlite\Eiromplays.IdentityServer.Infrastructure.Sqlite.csproj" />
-      <ProjectReference Include="..\Eiromplays.IdentityServer.Infrastructure.SqlServer\Eiromplays.IdentityServer.Infrastructure.SqlServer.csproj" />
+      <ProjectReference Include="..\Migrators.MySql\Migrators.MySql.csproj" />
+      <ProjectReference Include="..\Migrators.PostgreSql\Migrators.PostgreSql.csproj" />
+      <ProjectReference Include="..\Migrators.Sqlite\Migrators.Sqlite.csproj" />
+      <ProjectReference Include="..\Migrators.SqlServer\Migrators.SqlServer.csproj" />
       <ProjectReference Include="..\Eiromplays.IdentityServer.Infrastructure\Eiromplays.IdentityServer.Infrastructure.csproj" />
     </ItemGroup>
 
