@@ -12,10 +12,10 @@ public class UserResolver : IUserResolver<ApplicationUser>
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly LoginPolicy _loginPolicy;
 
-    public UserResolver(UserManager<ApplicationUser> userManager, IOptionsMonitor<AccountConfiguration> accountConfigurationOptions)
+    public UserResolver(UserManager<ApplicationUser> userManager, IOptions<AccountConfiguration> accountConfigurationOptions)
     {
         _userManager = userManager;
-        _loginPolicy = accountConfigurationOptions.CurrentValue.LoginConfiguration.LoginPolicy;
+        _loginPolicy = accountConfigurationOptions.Value.LoginConfiguration.LoginPolicy;
     }
 
     public async Task<ApplicationUser?> GetUserAsync(string? identifier)

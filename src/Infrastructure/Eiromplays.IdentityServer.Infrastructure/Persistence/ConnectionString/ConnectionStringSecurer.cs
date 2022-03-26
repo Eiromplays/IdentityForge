@@ -13,8 +13,8 @@ public class ConnectionStringSecurer : IConnectionStringSecurer
     private const string HiddenValueDefault = "*******";
     private readonly DatabaseConfiguration _databaseConfiguration;
 
-    public ConnectionStringSecurer(IOptionsMonitor<DatabaseConfiguration> databaseConfiguration) =>
-        _databaseConfiguration = databaseConfiguration.CurrentValue;
+    public ConnectionStringSecurer(IOptions<DatabaseConfiguration> databaseConfiguration) =>
+        _databaseConfiguration = databaseConfiguration.Value;
 
     public string? MakeSecure(string? connectionString, DatabaseProvider? dbProvider)
     {

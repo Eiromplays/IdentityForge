@@ -14,7 +14,7 @@ msgstr ""
 
 #. .WithMessage((_, name) => T["Brand {0} already Exists.", name]);
 #: Application\Catalog\Brands\CreateBrandRequest.cs:16
-msgctxt "FSH.WebApi.Application.Catalog.Brands.CreateBrandRequestValidator"
+msgctxt "Eiromplays.IdentityServer.Application.Catalog.Brands.CreateBrandRequestValidator"
 msgid "Brand {0} already Exists."
 msgstr "Marke {0} existiert bereits."
 

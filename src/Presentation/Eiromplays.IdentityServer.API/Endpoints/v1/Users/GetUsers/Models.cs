@@ -5,9 +5,9 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.GetUsers;
 
 public class Models
 {
-    public class Request
+    public class Request : UserListFilter
     {
-        public UserListFilter Filter { get; set; } = null!;
+        
     }
 
     public class Response

@@ -4,6 +4,7 @@ using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure;
 using Eiromplays.IdentityServer.Infrastructure.Common;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
 try
@@ -16,17 +17,29 @@ try
         config.WriteTo.Console()
             .ReadFrom.Configuration(builder.Configuration);
     });
-
-    builder.Services.AddControllers().AddFluentValidation();
+    
     builder.Services.AddInfrastructure(builder.Configuration, ProjectType.IdentityServer);
+    
     builder.Services.AddApplication();
 
-    var app = builder.Build();
+    builder.Services.AddControllersWithViews().AddFluentValidation();
 
+    builder.Services.Configure<ApiBehaviorOptions>(options =>
+        options.SuppressModelStateInvalidFilter = true);
+    
+    var app = builder.Build();
+    
     await app.Services.InitializeDatabasesAsync();
 
-    app.UseInfrastructure(builder.Configuration);
+    app.UseInfrastructure(builder.Configuration, ProjectType.IdentityServer);
+
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapDefaultControllerRoute();
+    });
+    
     app.MapEndpoints();
+    
     app.Run();
 }
 catch (Exception ex) when (!ex.GetType().Name.Equals("StopTheHostException", StringComparison.Ordinal))

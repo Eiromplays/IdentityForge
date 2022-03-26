@@ -33,7 +33,7 @@ internal static class Startup
         return services;
     }
 
-    internal static IServiceCollection AddService(this IServiceCollection services, Type serviceType, Type implementationType, ServiceLifetime lifetime) =>
+    private static IServiceCollection AddService(this IServiceCollection services, Type serviceType, Type implementationType, ServiceLifetime lifetime) =>
         lifetime switch
         {
             ServiceLifetime.Transient => services.AddTransient(serviceType, implementationType),

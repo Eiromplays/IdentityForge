@@ -2,7 +2,7 @@
 // See LICENSE in the project root for license information.
 
 // Original file: https://github.com/DuendeSoftware/Samples/blob/main/IdentityServer/v6/Quickstarts
-// Modified by Eirik Sj�l�kken
+// Modified by Eirik Sjøløkken
 
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
@@ -26,6 +26,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 using System.Text.Json;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Application.Identity.Users;
 using Microsoft.Extensions.Options;
 
 namespace Eiromplays.IdentityServer.Controllers;
@@ -53,7 +54,7 @@ public class AccountController : Controller
         IAuthenticationSchemeProvider schemeProvider,
         IEventService events, IFluentEmail fluentEmail,
         IAuthenticationHandlerProvider authenticationHandlerProvider,
-        IOptionsMonitor<AccountConfiguration> accountConfigurationOptions,
+        IOptions<AccountConfiguration> accountConfigurationOptions,
         IUserResolver<ApplicationUser> userResolver)
     {
         _userManager = userManager;
@@ -64,7 +65,7 @@ public class AccountController : Controller
         _events = events;
         _fluentEmail = fluentEmail;
         _authenticationHandlerProvider = authenticationHandlerProvider;
-        _accountConfiguration = accountConfigurationOptions.CurrentValue;
+        _accountConfiguration = accountConfigurationOptions.Value;
         _userResolver = userResolver;
     }
 
@@ -112,6 +113,7 @@ public class AccountController : Controller
         if (ModelState.IsValid)
         {
             var user = await _userResolver.GetUserAsync(model.Login);
+
             if (user is not null)
             {
                 var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberLogin, lockoutOnFailure: true);

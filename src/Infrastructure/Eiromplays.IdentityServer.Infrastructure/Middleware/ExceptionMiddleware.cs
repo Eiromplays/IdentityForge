@@ -45,7 +45,7 @@ internal class ExceptionMiddleware : IMiddleware
             
             LogContext.PushProperty("ErrorId", errorId);
             LogContext.PushProperty("StackTrace", exception.StackTrace);
-            
+
             var errorResult = new ErrorResult
             {
                 Source = exception.TargetSite?.DeclaringType?.FullName,
@@ -83,7 +83,8 @@ internal class ExceptionMiddleware : IMiddleware
                     break;
             }
 
-            Log.Error($"{errorResult.Exception} Request failed with Status Code {context.Response.StatusCode} and Error Id {errorId}.");
+            Log.Error(
+                $"{errorResult.Exception} Request failed with Status Code {context.Response.StatusCode} and Error Id {errorId}.");
             var response = context.Response;
             if (!response.HasStarted)
             {

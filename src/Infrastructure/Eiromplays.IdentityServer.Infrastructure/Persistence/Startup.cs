@@ -22,27 +22,28 @@ internal static class Startup
 
     internal static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration config)
     {
-        // TODO: there must be a cleaner way to do IOptions validation...
         var databaseConfiguration = config.GetSection(nameof(DatabaseConfiguration)).Get<DatabaseConfiguration>();
-
-        _logger.Information($"Current DB Provider : {databaseConfiguration.DatabaseProvider}");
-
+        
+        _logger.Information("Current DB Provider : {DatabaseProvider}", databaseConfiguration.DatabaseProvider);
+        
         return services
             .Configure<DatabaseConfiguration>(config.GetSection(nameof(DatabaseConfiguration)))
 
             .AddDbContext<ApplicationDbContext>(m => m.UseDatabase(databaseConfiguration.DatabaseProvider,
                 databaseConfiguration.ConnectionStringsConfiguration.ApplicationDbConnection))
-            .AddConfigurationDbContext<IdentityServerConfigurationDbContext>(m => m.ConfigureDbContext = sql => sql.UseDatabase(databaseConfiguration.DatabaseProvider,
+            .AddConfigurationDbContext<IdentityServerConfigurationDbContext>(m => m.ConfigureDbContext = options => options.UseDatabase(databaseConfiguration.DatabaseProvider,
                 databaseConfiguration.ConnectionStringsConfiguration.ConfigurationDbConnection))
-            .AddOperationalDbContext<IdentityServerPersistedGrantDbContext>(m => m.ConfigureDbContext = sql => sql.UseDatabase(databaseConfiguration.DatabaseProvider,
+            .AddOperationalDbContext<IdentityServerPersistedGrantDbContext>(m => m.ConfigureDbContext = options => options.UseDatabase(databaseConfiguration.DatabaseProvider,
                 databaseConfiguration.ConnectionStringsConfiguration.PersistedGrantDbConnection))
-            
+
             .AddTransient<IDatabaseInitializer, DatabaseInitializer>()
             .AddTransient<ApplicationDbInitializer>()
             .AddTransient<ApplicationDbSeeder>()
             
             .AddTransient<IdentityServerConfigurationDbInitializer>()
             .AddTransient<IdentityServerConfigurationDbSeeder>()
+            
+            .AddTransient<IdentityServerPersistedGrantDbInitializer>()
             
             .AddServices(typeof(ICustomSeeder), ServiceLifetime.Transient)
             .AddTransient<CustomSeederRunner>()
@@ -60,20 +61,20 @@ internal static class Startup
             case DatabaseProvider.PostgreSql:
                 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
                 return builder.UseNpgsql(connectionString, e =>
-                     e.MigrationsAssembly("Migrators.PostgreSQL"));
+                     e.MigrationsAssembly("Migrators.PostgreSql"));
 
             case DatabaseProvider.SqlServer:
                 return builder.UseSqlServer(connectionString, e =>
-                     e.MigrationsAssembly("Migrators.MSSQL"));
+                     e.MigrationsAssembly("Migrators.SqlServer"));
 
             case DatabaseProvider.MySql:
                 return builder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), e =>
-                     e.MigrationsAssembly("Migrators.MySQL")
+                     e.MigrationsAssembly("Migrators.MySql")
                       .SchemaBehavior(MySqlSchemaBehavior.Ignore));
 
             case DatabaseProvider.Sqlite:
                 return builder.UseSqlite(connectionString, e =>
-                     e.MigrationsAssembly("Migrators.SQLite"));
+                     e.MigrationsAssembly("Migrators.Sqlite"));
             
             case DatabaseProvider.InMemory:
                 return builder.UseInMemoryDatabase(connectionString);

@@ -1,6 +1,14 @@
 {
-  "DatabaseSettings": {
-    "DBProvider": "PostgreSql",
-    "ConnectionString": "Server=localhost;Database=EiromplaysIdentityServer;User Id=postgres;Password=1234;"
+  "DatabaseConfiguration": {
+    "DatabaseProvider": "PostgreSql",
+    "ApplyDefaultSeeds": false,
+    "ApplyDatabaseMigrations": true,
+    "ConnectionStringsConfiguration": {
+      "ApplicationDbConnection": "Server=localhost;Database=EiromplaysIdentityServer;User Id=postgres;Password=1234;",
+      "ConfigurationDbConnection": "Server=localhost;Database=EiromplaysIdentityServer;User Id=postgres;Password=1234;",
+      "PersistedGrantDbConnection": "Server=localhost;Database=EiromplaysIdentityServer;User Id=postgres;Password=1234;",
+      "DataProtectionDbConnection": "Server=localhost;Database=EiromplaysIdentityServer;User Id=postgres;Password=1234;",
+      "TenantDbConnection": "Server=localhost;Database=EiromplaysIdentityServer;User Id=postgres;Password=1234;"
+    }
   }
 }

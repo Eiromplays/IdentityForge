@@ -19,8 +19,8 @@ internal static class Startup
 
             // Must add identity before adding auth!
             .AddIdentity(configuration)
-            .AddIdentityServer(configuration, projectType)
-            .AddExternalProviders(configuration, projectType);
+            .AddAuthentication(configuration, projectType)
+            .AddIdentityServer(configuration, projectType);
 
         return services;
     }

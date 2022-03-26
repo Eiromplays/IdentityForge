@@ -1,56 +1,29 @@
-﻿using System.Reflection;
-using Duende.IdentityServer.EntityFramework.DbContexts;
-using Duende.IdentityServer.EntityFramework.Entities;
+﻿using Eiromplays.IdentityServer.Application.Common.Configurations.Database;
+using Eiromplays.IdentityServer.Application.Common.Events;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
-using Eiromplays.IdentityServer.Domain.Common;
+using Eiromplays.IdentityServer.Infrastructure.Multitenancy.Context;
+using Eiromplays.IdentityServer.Infrastructure.Persistence.Configuration;
+using Finbuckle.MultiTenant;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
-namespace Eiromplays.IdentityServer.Infrastructure.Persistence.Context
+namespace Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
+
+public class IdentityServerConfigurationDbContext : BaseIdentityServerConfigurationDbContext<IdentityServerConfigurationDbContext>
 {
-    public class IdentityServerConfigurationDbContext : ConfigurationDbContext<IdentityServerConfigurationDbContext>
+    public IdentityServerConfigurationDbContext(ITenantInfo currentTenant,
+        DbContextOptions<IdentityServerConfigurationDbContext> options, ICurrentUser currentUser,
+        ISerializerService serializer, IOptions<DatabaseConfiguration> databaseConfiguration,
+        IEventPublisher events, IWebHostEnvironment webHostEnvironment, ApplicationDbContext applicationDbContext)
+        : base(currentTenant, options, currentUser, serializer, databaseConfiguration, events, webHostEnvironment, applicationDbContext)
     {
-        public IdentityServerConfigurationDbContext(DbContextOptions<IdentityServerConfigurationDbContext> options) : base(options)
-        {
-            
-        }
+    }
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
 
-        public DbSet<ApiResourceProperty> ApiResourceProperties => Set<ApiResourceProperty>();
-
-        public DbSet<IdentityResourceProperty> IdentityResourceProperties => Set<IdentityResourceProperty>();
-
-        public DbSet<ApiResourceSecret> ApiSecrets => Set<ApiResourceSecret>();
-
-        public DbSet<ApiScopeClaim> ApiScopeClaims => Set<ApiScopeClaim>();
-
-        public DbSet<IdentityResourceClaim> IdentityClaims => Set<IdentityResourceClaim>();
-
-        public DbSet<ApiResourceClaim> ApiResourceClaims => Set<ApiResourceClaim>();
-
-        public DbSet<ClientGrantType> ClientGrantTypes => Set<ClientGrantType>();
-
-        public DbSet<ClientScope> ClientScopes => Set<ClientScope>();
-
-        public DbSet<ClientSecret> ClientSecrets => Set<ClientSecret>();
-
-        public DbSet<ClientPostLogoutRedirectUri> ClientPostLogoutRedirectUris => Set<ClientPostLogoutRedirectUri>();
-
-        public DbSet<ClientIdPRestriction> ClientIdPRestrictions => Set<ClientIdPRestriction>();
-
-        public DbSet<ClientRedirectUri> ClientRedirectUris => Set<ClientRedirectUri>();
-
-        public DbSet<ClientClaim> ClientClaims => Set<ClientClaim>();
-
-        public DbSet<ClientProperty> ClientProperties => Set<ClientProperty>();
-
-        public DbSet<ApiScopeProperty> ApiScopeProperties => Set<ApiScopeProperty>();
-
-        public DbSet<ApiResourceScope> ApiResourceScopes => Set<ApiResourceScope>();
-
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
-            base.OnModelCreating(builder);
-        }
+        modelBuilder.HasDefaultSchema(SchemaNames.IdentityServer);
     }
 }

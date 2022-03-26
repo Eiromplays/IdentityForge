@@ -1,4 +1,3 @@
-using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 using FastEndpoints;
 
@@ -23,7 +22,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        Response.Users = await _userService.SearchAsync(req.Filter, ct);
+        Response.Users = await _userService.SearchAsync(req, ct);
         
         await SendAsync(Response, cancellation: ct);
     }

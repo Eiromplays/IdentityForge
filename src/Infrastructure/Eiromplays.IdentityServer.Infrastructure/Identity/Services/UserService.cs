@@ -114,8 +114,8 @@ internal partial class UserService : IUserService
         return user.Adapt<UserDetailsDto>();
     }
 
-    public Task ToggleStatusAsync(ToggleUserStatusRequest request, CancellationToken cancellationToken)
+    public async Task ToggleStatusAsync(ToggleUserStatusRequest request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        
     }
 }

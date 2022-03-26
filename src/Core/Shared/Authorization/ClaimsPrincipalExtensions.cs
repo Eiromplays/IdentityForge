@@ -27,7 +27,7 @@ public static class ClaimsPrincipalExtensions
         => principal.FindFirstValue(ClaimTypes.MobilePhone);
 
     public static string? GetUserId(this ClaimsPrincipal principal)
-       => principal.FindFirstValue(ClaimTypes.NameIdentifier);
+       => principal.FindFirstValue("sub") ?? principal.FindFirstValue(ClaimTypes.NameIdentifier);
 
     public static string? GetImageUrl(this ClaimsPrincipal principal)
        => principal.FindFirstValue(EIAClaims.ImageUrl);

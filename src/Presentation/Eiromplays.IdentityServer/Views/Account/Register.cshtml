@@ -1,7 +1,7 @@
 ﻿@using Eiromplays.IdentityServer.Application.Common.Configurations.Account
 @using Eiromplays.IdentityServer.Domain.Constants
 @using Microsoft.Extensions.Options
-@inject IOptionsMonitor<AccountConfiguration> _accountConfigurationOptionsMonitor;
+@inject IOptions<AccountConfiguration> _accountConfigurationOptionsMonitor;
 @model Eiromplays.IdentityServer.ViewModels.Account.RegisterViewModel
 @{
     ViewData["Title"] = "Register";
@@ -14,7 +14,7 @@
 <form asp-controller="Account" asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
     <h4>Create a new account.</h4>
     <hr />
-    @if (_accountConfigurationOptionsMonitor.CurrentValue is {LoginConfiguration: {LoginPolicy: LoginPolicy.Username} or {LoginPolicy: LoginPolicy.All} })
+    @if (_accountConfigurationOptionsMonitor.Value is {LoginConfiguration: {LoginPolicy: LoginPolicy.Username} or {LoginPolicy: LoginPolicy.All} })
     {
         <div class="form-group">
             <label asp-for="UserName" class="col-md-2 control-label">Username</label>

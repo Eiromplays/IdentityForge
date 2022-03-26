@@ -2,7 +2,7 @@
 // See LICENSE in the project root for license information.
 
 // Original file: https://github.com/DuendeSoftware/Samples/blob/main/IdentityServer/v6/Quickstarts
-// Modified by Eirik Sjøløkken
+// Modified by Eirik SjÃ¸lÃ¸kken
 
 using Duende.IdentityServer.Configuration;
 using Duende.IdentityServer.Events;

@@ -19,19 +19,19 @@ public class CustomProfileService : ProfileService<ApplicationUser>
 
     public CustomProfileService(UserManager<ApplicationUser> userManager,
         IUserClaimsPrincipalFactory<ApplicationUser> claimsFactory,
-        IOptionsMonitor<AccountConfiguration> accountConfigurationOptions) : base(userManager, claimsFactory)
+        IOptions<AccountConfiguration> accountConfigurationOptions) : base(userManager, claimsFactory)
     {
         _userManager = userManager;
-        _accountConfiguration = accountConfigurationOptions.CurrentValue;
+        _accountConfiguration = accountConfigurationOptions.Value;
     }
 
     public CustomProfileService(UserManager<ApplicationUser> userManager,
         IUserClaimsPrincipalFactory<ApplicationUser> claimsFactory, ILogger<CustomProfileService> logger,
-        IOptionsMonitor<AccountConfiguration> accountConfigurationOptions) :
+        IOptions<AccountConfiguration> accountConfigurationOptions) :
         base(userManager, claimsFactory, logger)
     {
         _userManager = userManager;
-        _accountConfiguration = accountConfigurationOptions.CurrentValue;
+        _accountConfiguration = accountConfigurationOptions.Value;
     }
     
     public override async Task GetProfileDataAsync(ProfileDataRequestContext context)

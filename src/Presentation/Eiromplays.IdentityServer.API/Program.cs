@@ -1,108 +1,96 @@
+using Eiromplays.IdentityServer.API.Configurations;
 using Eiromplays.IdentityServer.Application;
 using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure;
 using FastEndpoints;
-using FastEndpoints.Swagger;
 using FluentValidation.AspNetCore;
 using Serilog;
-using DependencyInjection = Eiromplays.IdentityServer.Infrastructure.BFF.DependencyInjection;
+using Eiromplays.IdentityServer.Infrastructure.Common;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Remove default logging providers
-builder.Logging.ClearProviders();
-
-// Serilog configuration
-var logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .CreateLogger();
-
-// Register Serilog
-builder.Logging.AddSerilog(logger);
-
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-
-builder.Services.AddApplication(builder.Configuration);
-
-builder.Services.AddInfrastructure(builder.Configuration, ProjectType.Api);
-DependencyInjection.AddInfrastructure(builder.Services, builder.Configuration);
-
-// Add services to the container.
-
-builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultScheme = "token";
-        options.DefaultChallengeScheme = "token";
-        options.DefaultAuthenticateScheme = "token";
-    })
-    .AddJwtBearer("token", options =>
-    {
-        options.Authority = "https://localhost:7001";
-        options.Audience = "api";
-
-        options.MapInboundClaims = false;
-    });
-
-
-builder.Services.AddAuthorization(options =>
+try
 {
-    options.AddPolicy("ApiCaller", policy =>
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Host.AddConfigurations();
+    builder.Host.UseSerilog((_, config) =>
     {
-        policy.RequireClaim("scope", "api");
+        config.WriteTo.Console()
+            .ReadFrom.Configuration(builder.Configuration);
     });
 
-    options.AddPolicy("RequireInteractiveUser", policy =>
+    builder.Services.AddControllers();
+    
+    builder.Services.AddInfrastructure(builder.Configuration, ProjectType.Api);
+    
+    builder.Services.AddApplication();
+    
+    builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultScheme = "token";
+            options.DefaultChallengeScheme = "token";
+            options.DefaultAuthenticateScheme = "token";
+        })
+        .AddJwtBearer("token", options =>
+        {
+            options.Authority = "https://localhost:7001";
+            options.Audience = "api";
+
+            options.MapInboundClaims = false;
+        });
+    
+    builder.Services.AddAuthorization(options =>
     {
-        policy.RequireClaim("sub");
+        options.AddPolicy("ApiCaller", policy =>
+        {
+            policy.RequireClaim("scope", "api");
+        });
+
+        options.AddPolicy("RequireInteractiveUser", policy =>
+        {
+            policy.RequireClaim("sub");
+        });
+    
+        options.AddPolicy("RequireAdministrator", policy =>
+        {
+            policy.RequireClaim("role", "Administrator");
+        });
+    });
+
+    builder.Services.AddFastEndpoints()
+        .AddFluentValidation();
+
+    var app = builder.Build();
+
+    await app.Services.InitializeDatabasesAsync();
+
+    app.UseInfrastructure(builder.Configuration, ProjectType.Api);
+    
+    app.UseFastEndpoints(config =>
+    {
+        config.GlobalEndpointOptions = (_, routeHandlerBuilder) =>
+        {
+            routeHandlerBuilder.RequireAuthorization("RequireInteractiveUser");
+        };
+        config.VersioningOptions = options =>
+        {
+            options.Prefix = "v";
+            options.SuffixedVersion = false;
+            options.DefaultVersion = 1;
+        };
     });
     
-    options.AddPolicy("RequireAdministrator", policy =>
-    {
-        policy.RequireClaim("role", "Administrator");
-    });
-});
-
-builder.Services.AddFastEndpoints()
-    .AddFluentValidation(x => x.AutomaticValidationEnabled = false);
-
-builder.Services
-    .AddSwaggerDoc(maxEndpointVersion: 1, settings: s =>
-    {
-        s.DocumentName = "Release 1.0";
-        s.Title = "Eiromplays IdentityServer API";
-        s.Version = "v1.0";
-    });
-
-var app = builder.Build();
-
-await app.Services.ApplyMigrationsAsync(app.Configuration);
-
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseDefaultExceptionHandler();
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.UseFastEndpoints(config =>
-{
-    config.GlobalEndpointOptions = (_, routeHandlerBuilder) =>
-    {
-        routeHandlerBuilder.RequireAuthorization("RequireInteractiveUser");
-    };
-    config.VersioningOptions = options =>
-    {
-        options.Prefix = "v";
-        options.SuffixedVersion = false;
-        options.DefaultVersion = 1;
-    };
-});
-if (app.Environment.IsDevelopment())
-{
-    app.UseOpenApi();
-    app.UseSwaggerUi3(s => s.ConfigureDefaults());
+    app.MapEndpoints();
+    
+    app.Run();
 }
-
-await app.RunAsync();
+catch (Exception ex) when (!ex.GetType().Name.Equals("StopTheHostException", StringComparison.Ordinal))
+{
+    StaticLogger.EnsureInitialized();
+    Log.Fatal(ex, "Unhandled exception");
+}
+finally
+{
+    StaticLogger.EnsureInitialized();
+    Log.Information("Server Shutting down...");
+    Log.CloseAndFlush();
+}

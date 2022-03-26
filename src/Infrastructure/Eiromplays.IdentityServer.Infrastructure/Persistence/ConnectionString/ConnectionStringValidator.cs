@@ -14,9 +14,9 @@ internal class ConnectionStringValidator : IConnectionStringValidator
     private readonly DatabaseConfiguration _databaseConfiguration;
     private readonly ILogger<ConnectionStringValidator> _logger;
 
-    public ConnectionStringValidator(IOptionsMonitor<DatabaseConfiguration> databaseConfiguration, ILogger<ConnectionStringValidator> logger)
+    public ConnectionStringValidator(IOptions<DatabaseConfiguration> databaseConfiguration, ILogger<ConnectionStringValidator> logger)
     {
-        _databaseConfiguration = databaseConfiguration.CurrentValue;
+        _databaseConfiguration = databaseConfiguration.Value;
         _logger = logger;
     }
 

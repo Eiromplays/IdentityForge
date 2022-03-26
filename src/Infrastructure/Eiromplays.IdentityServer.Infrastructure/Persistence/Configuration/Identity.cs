@@ -1,6 +1,7 @@
 using Eiromplays.IdentityServer.Domain.Constants;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Finbuckle.MultiTenant.EntityFrameworkCore;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -37,7 +38,7 @@ public class ApplicationRoleClaimConfig : IEntityTypeConfiguration<ApplicationRo
             .IsMultiTenant();
 }
 
-public class IdentityUserRoleConfig : IEntityTypeConfiguration<ApplicationUserRole>
+public class ApplicationIdentityUserRoleConfig : IEntityTypeConfiguration<ApplicationUserRole>
 {
     public void Configure(EntityTypeBuilder<ApplicationUserRole> builder) =>
         builder
@@ -45,7 +46,7 @@ public class IdentityUserRoleConfig : IEntityTypeConfiguration<ApplicationUserRo
             .IsMultiTenant();
 }
 
-public class IdentityUserClaimConfig : IEntityTypeConfiguration<ApplicationUserClaim>
+public class ApplicationIdentityUserClaimConfig : IEntityTypeConfiguration<ApplicationUserClaim>
 {
     public void Configure(EntityTypeBuilder<ApplicationUserClaim> builder) =>
         builder
@@ -53,7 +54,7 @@ public class IdentityUserClaimConfig : IEntityTypeConfiguration<ApplicationUserC
             .IsMultiTenant();
 }
 
-public class IdentityUserLoginConfig : IEntityTypeConfiguration<ApplicationUserLogin>
+public class ApplicationIdentityUserLoginConfig : IEntityTypeConfiguration<ApplicationUserLogin>
 {
     public void Configure(EntityTypeBuilder<ApplicationUserLogin> builder) =>
         builder
@@ -61,10 +62,18 @@ public class IdentityUserLoginConfig : IEntityTypeConfiguration<ApplicationUserL
             .IsMultiTenant();
 }
 
-public class IdentityUserTokenConfig : IEntityTypeConfiguration<ApplicationUserToken>
+public class ApplicationIdentityUserTokenConfig : IEntityTypeConfiguration<ApplicationUserToken>
 {
     public void Configure(EntityTypeBuilder<ApplicationUserToken> builder) =>
         builder
             .ToTable(TableConsts.IdentityUserTokens, SchemaNames.Identity)
+            .IsMultiTenant();
+}
+
+public class DataProtectionKeyConfig : IEntityTypeConfiguration<DataProtectionKey>
+{
+    public void Configure(EntityTypeBuilder<DataProtectionKey> builder) =>
+        builder
+            .ToTable("DataProtectionKeys", SchemaNames.Identity)
             .IsMultiTenant();
 }

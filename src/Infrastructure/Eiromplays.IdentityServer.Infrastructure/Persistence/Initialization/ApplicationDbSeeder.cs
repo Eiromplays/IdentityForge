@@ -46,18 +46,22 @@ internal class ApplicationDbSeeder
                 await _roleManager.CreateAsync(role);
             }
 
-            // Assign permissions
-            if (roleName == EIARoles.Basic)
+            switch (roleName)
             {
-                await AssignPermissionsToRoleAsync(dbContext, EIAPermissions.Basic, role);
-            }
-            else if (roleName == EIARoles.Admin)
-            {
-                await AssignPermissionsToRoleAsync(dbContext, EIAPermissions.Admin, role);
-
-                if (_currentTenant.Id == MultitenancyConstants.Root.Id)
+                // Assign permissions
+                case EIARoles.Basic:
+                    await AssignPermissionsToRoleAsync(dbContext, EIAPermissions.Basic, role);
+                    break;
+                case EIARoles.Admin:
                 {
-                    await AssignPermissionsToRoleAsync(dbContext, EIAPermissions.Root, role);
+                    await AssignPermissionsToRoleAsync(dbContext, EIAPermissions.Admin, role);
+
+                    if (_currentTenant.Id == MultitenancyConstants.Root.Id)
+                    {
+                        await AssignPermissionsToRoleAsync(dbContext, EIAPermissions.Root, role);
+                    }
+
+                    break;
                 }
             }
         }
@@ -68,18 +72,17 @@ internal class ApplicationDbSeeder
         var currentClaims = await _roleManager.GetClaimsAsync(role);
         foreach (var permission in permissions)
         {
-            if (!currentClaims.Any(c => c.Type == EIAClaims.Permission && c.Value == permission.Name))
+            if (currentClaims.Any(c => c.Type == EIAClaims.Permission && c.Value == permission.Name)) continue;
+            
+            _logger.LogInformation("Seeding {role} Permission '{permission}' for '{tenantId}' Tenant.", role.Name, permission.Name, _currentTenant.Id);
+            dbContext.RoleClaims.Add(new ApplicationRoleClaim
             {
-                _logger.LogInformation("Seeding {role} Permission '{permission}' for '{tenantId}' Tenant.", role.Name, permission.Name, _currentTenant.Id);
-                dbContext.RoleClaims.Add(new ApplicationRoleClaim
-                {
-                    RoleId = role.Id,
-                    ClaimType = EIAClaims.Permission,
-                    ClaimValue = permission.Name,
-                    CreatedBy = "ApplicationDbSeeder"
-                });
-                await dbContext.SaveChangesAsync();
-            }
+                RoleId = role.Id,
+                ClaimType = EIAClaims.Permission,
+                ClaimValue = permission.Name,
+                CreatedBy = "ApplicationDbSeeder"
+            });
+            await dbContext.SaveChangesAsync();
         }
     }
 
@@ -102,15 +105,13 @@ internal class ApplicationDbSeeder
                 UserName = adminUserName,
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
-                NormalizedEmail = _currentTenant.AdminEmail?.ToUpperInvariant(),
+                NormalizedEmail = _currentTenant.AdminEmail.ToUpperInvariant(),
                 NormalizedUserName = adminUserName.ToUpperInvariant(),
                 IsActive = true
             };
 
             _logger.LogInformation("Seeding Default Admin User for '{tenantId}' Tenant.", _currentTenant.Id);
-            var password = new PasswordHasher<ApplicationUser>();
-            adminUser.PasswordHash = password.HashPassword(adminUser, MultitenancyConstants.DefaultPassword);
-            await _userManager.CreateAsync(adminUser);
+            await _userManager.CreateAsync(adminUser, MultitenancyConstants.DefaultPassword);
         }
 
         // Assign role to user

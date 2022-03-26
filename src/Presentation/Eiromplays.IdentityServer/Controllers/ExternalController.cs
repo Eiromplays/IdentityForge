@@ -43,7 +43,7 @@ public class ExternalController : Controller
         IEventService events,
         ILogger<ExternalController> logger,
         IFluentEmail fluentEmail,
-        IOptionsMonitor<AccountConfiguration> accountConfigurationOptions)
+        IOptions<AccountConfiguration> accountConfigurationOptions)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -51,7 +51,7 @@ public class ExternalController : Controller
         _events = events;
         _logger = logger;
         _fluentEmail = fluentEmail;
-        _accountConfiguration = accountConfigurationOptions.CurrentValue;
+        _accountConfiguration = accountConfigurationOptions.Value;
     }
 
     /// <summary>

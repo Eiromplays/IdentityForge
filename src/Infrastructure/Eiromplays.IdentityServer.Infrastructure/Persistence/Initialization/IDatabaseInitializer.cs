@@ -6,4 +6,6 @@ internal interface IDatabaseInitializer
 {
     Task InitializeDatabasesAsync(CancellationToken cancellationToken);
     Task InitializeApplicationDbForTenantAsync(EIATenantInfo tenant, CancellationToken cancellationToken);
+    Task InitializeIdentityServerConfigurationDbForTenantAsync(EIATenantInfo tenant, CancellationToken cancellationToken);
+    Task InitializeIdentityServerPersistedGrantDbForTenantAsync(EIATenantInfo tenant, CancellationToken cancellationToken);
 }

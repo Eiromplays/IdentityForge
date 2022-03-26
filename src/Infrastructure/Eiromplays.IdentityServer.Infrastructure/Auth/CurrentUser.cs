@@ -19,7 +19,7 @@ public class CurrentUser : ICurrentUser, ICurrentUserInitializer
 
     public string? GetUserEmail() =>
         IsAuthenticated()
-            ? ClaimsPrincipalExtensions.GetEmail(_user!)
+            ? _user?.GetEmail()
             : string.Empty;
 
     public bool IsAuthenticated() =>

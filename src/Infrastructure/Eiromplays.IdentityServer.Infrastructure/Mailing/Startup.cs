@@ -60,7 +60,8 @@ internal static class Startup
                     : fluentEmailServicesBuilder.AddGraphSender(emailConfiguration.GraphConfiguration).Services;
             default:
                 const string nameOfEmailProvider = nameof(emailConfiguration.EmailProvider);
-                throw new ArgumentOutOfRangeException(nameOfEmailProvider, $"EmailProvider needs to be one of these: {string.Join(", ", Enum.GetNames(typeof(EmailProvider)))}.");
+                throw new ArgumentOutOfRangeException(nameOfEmailProvider,
+                    $"EmailProvider needs to be one of these: {string.Join(", ", Enum.GetNames(typeof(EmailProvider)))}.");
         }
     }
 }

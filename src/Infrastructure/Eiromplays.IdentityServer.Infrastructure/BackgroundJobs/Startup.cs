@@ -63,11 +63,11 @@ internal static class Startup
 
         dashboardOptions.Authorization = new[]
         {
-           new HangfireCustomBasicAuthenticationFilter
-           {
+            new HangfireCustomBasicAuthenticationFilter
+            {
                 User = config.GetSection("HangfireSettings:Credentials:User").Value,
                 Pass = config.GetSection("HangfireSettings:Credentials:Password").Value
-           }
+            }
         };
 
         return app.UseHangfireDashboard(config["HangfireSettings:Route"], dashboardOptions);

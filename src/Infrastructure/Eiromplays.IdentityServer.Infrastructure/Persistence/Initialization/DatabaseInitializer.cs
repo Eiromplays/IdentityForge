@@ -16,10 +16,10 @@ internal class DatabaseInitializer : IDatabaseInitializer
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<DatabaseInitializer> _logger;
 
-    public DatabaseInitializer(TenantDbContext tenantDbContext, IOptionsMonitor<DatabaseConfiguration> databaseConfiguration, IServiceProvider serviceProvider, ILogger<DatabaseInitializer> logger)
+    public DatabaseInitializer(TenantDbContext tenantDbContext, IOptions<DatabaseConfiguration> databaseConfiguration, IServiceProvider serviceProvider, ILogger<DatabaseInitializer> logger)
     {
         _tenantDbContext = tenantDbContext;
-        _databaseConfiguration = databaseConfiguration.CurrentValue;
+        _databaseConfiguration = databaseConfiguration.Value;
         _serviceProvider = serviceProvider;
         _logger = logger;
     }
@@ -31,6 +31,8 @@ internal class DatabaseInitializer : IDatabaseInitializer
         foreach (var tenant in await _tenantDbContext.TenantInfo.ToListAsync(cancellationToken))
         {
             await InitializeApplicationDbForTenantAsync(tenant, cancellationToken);
+            await InitializeIdentityServerConfigurationDbForTenantAsync(tenant, cancellationToken);
+            await InitializeIdentityServerPersistedGrantDbForTenantAsync(tenant, cancellationToken);
         }
 
         _logger.LogInformation("For documentations and guides, visit https://www.fullstackhero.net");
@@ -51,6 +53,40 @@ internal class DatabaseInitializer : IDatabaseInitializer
 
         // Then run the initialization in the new scope
         await scope.ServiceProvider.GetRequiredService<ApplicationDbInitializer>()
+            .InitializeAsync(cancellationToken);
+    }
+    
+    public async Task InitializeIdentityServerConfigurationDbForTenantAsync(EIATenantInfo tenant, CancellationToken cancellationToken)
+    {
+        // First create a new scope
+        using var scope = _serviceProvider.CreateScope();
+
+        // Then set current tenant so the right connectionstring is used
+        _serviceProvider.GetRequiredService<IMultiTenantContextAccessor>()
+            .MultiTenantContext = new MultiTenantContext<EIATenantInfo>()
+        {
+            TenantInfo = tenant
+        };
+
+        // Then run the initialization in the new scope
+        await scope.ServiceProvider.GetRequiredService<IdentityServerConfigurationDbInitializer>()
+            .InitializeAsync(cancellationToken);
+    }
+    
+    public async Task InitializeIdentityServerPersistedGrantDbForTenantAsync(EIATenantInfo tenant, CancellationToken cancellationToken)
+    {
+        // First create a new scope
+        using var scope = _serviceProvider.CreateScope();
+
+        // Then set current tenant so the right connectionstring is used
+        _serviceProvider.GetRequiredService<IMultiTenantContextAccessor>()
+            .MultiTenantContext = new MultiTenantContext<EIATenantInfo>()
+        {
+            TenantInfo = tenant
+        };
+
+        // Then run the initialization in the new scope
+        await scope.ServiceProvider.GetRequiredService<IdentityServerPersistedGrantDbInitializer>()
             .InitializeAsync(cancellationToken);
     }
 

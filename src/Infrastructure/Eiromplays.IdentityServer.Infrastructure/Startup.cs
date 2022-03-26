@@ -28,14 +28,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Eiromplays.IdentityServer.Infrastructure;
 
-public static partial class Startup
+public static class Startup
 {
     public static IServiceCollection  AddInfrastructure(this IServiceCollection services, IConfiguration config, ProjectType projectType)
     {
         MapsterSettings.Configure();
         return services
             .RegisterAccountConfiguration(config)
-            .AddAuth(config, projectType)
             .AddBackgroundJobs(config)
             .AddCaching(config)
             .AddCorsPolicy(config)
@@ -46,8 +45,10 @@ public static partial class Startup
             .AddMediatR(Assembly.GetExecutingAssembly())
             .AddMultitenancy(config)
             .AddNotifications(config)
-            .AddOpenApiDocumentation(config)
+            .AddOpenApiDocumentation(config, projectType)
             .AddPersistence(config)
+            .AddDataProtection().Services
+            .AddAuth(config, projectType)
             .AddRequestLogging(config)
             .AddRouting(options => options.LowercaseUrls = true)
             .AddServices();
@@ -65,7 +66,7 @@ public static partial class Startup
             .InitializeDatabasesAsync(cancellationToken);
     }
 
-    public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder builder, IConfiguration config) =>
+    public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder builder, IConfiguration config, ProjectType projectType) =>
         builder
             .UseRequestLocalization()
             .UseStaticFiles()
@@ -75,12 +76,13 @@ public static partial class Startup
             .UseRouting()
             .UseCorsPolicy()
             .UseAuthentication()
+            .UseIdentityServer(projectType)
+            .UseAuthorization()
             .UseCurrentUser()
             .UseMultiTenancy()
-            .UseAuthorization()
             .UseRequestLogging(config)
             .UseHangfireDashboard(config)
-            .UseOpenApiDocumentation(config);
+            .UseOpenApiDocumentation(config, projectType);
 
     public static IEndpointRouteBuilder MapEndpoints(this IEndpointRouteBuilder builder)
     {
@@ -103,5 +105,10 @@ public static partial class Startup
     private static IServiceCollection RegisterAccountConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
         return services.Configure<AccountConfiguration>(configuration.GetSection(nameof(AccountConfiguration)));
+    }
+
+    private static IApplicationBuilder UseIdentityServer(this IApplicationBuilder builder, ProjectType projectType)
+    {
+        return projectType is ProjectType.IdentityServer ? builder.UseIdentityServer() : builder;
     }
 }

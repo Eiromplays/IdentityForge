@@ -37,7 +37,7 @@ internal static class Startup
             .Services;
     }
     
-    internal static IServiceCollection AddExternalProviders(this IServiceCollection services, IConfiguration configuration, ProjectType projectType)
+    internal static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration, ProjectType projectType)
     {
         if (projectType is not ProjectType.IdentityServer) return services;
 

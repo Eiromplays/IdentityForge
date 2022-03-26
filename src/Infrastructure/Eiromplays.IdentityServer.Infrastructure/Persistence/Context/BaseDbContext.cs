@@ -6,6 +6,7 @@ using Eiromplays.IdentityServer.Domain.Common.Contracts;
 using Eiromplays.IdentityServer.Infrastructure.Auditing;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Finbuckle.MultiTenant;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
@@ -14,7 +15,7 @@ using Microsoft.Extensions.Options;
 namespace Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
 
 public abstract class BaseDbContext : MultiTenantIdentityDbContext<ApplicationUser, ApplicationRole, string,
-        ApplicationUserClaim, ApplicationUserRole, ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>
+        ApplicationUserClaim, ApplicationUserRole, ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>, IDataProtectionKeyContext
 {
     private readonly ICurrentUser _currentUser;
     private readonly ISerializerService _serializer;
@@ -24,16 +25,15 @@ public abstract class BaseDbContext : MultiTenantIdentityDbContext<ApplicationUs
 
 
     protected BaseDbContext(ITenantInfo currentTenant, DbContextOptions options, ICurrentUser currentUser,
-        ISerializerService serializer, IOptionsMonitor<DatabaseConfiguration> databaseConfiguration,
+        ISerializerService serializer, IOptions<DatabaseConfiguration> databaseConfiguration,
         IEventPublisher events, IWebHostEnvironment webHostEnvironment) : base(currentTenant, options)
     {
         _currentUser = currentUser;
         _serializer = serializer;
-        _databaseConfiguration = databaseConfiguration.CurrentValue;
+        _databaseConfiguration = databaseConfiguration.Value;
         _events = events;
         _webHostEnvironment = webHostEnvironment;
     }
-
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -49,6 +49,8 @@ public abstract class BaseDbContext : MultiTenantIdentityDbContext<ApplicationUs
     public IDbConnection Connection => Database.GetDbConnection();
     
     public DbSet<Trail> AuditTrails => Set<Trail>();
+    
+    public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -62,8 +64,8 @@ public abstract class BaseDbContext : MultiTenantIdentityDbContext<ApplicationUs
 
         // Or uncomment the next line if you want to see them in the console
         // optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
-        
-        if (!string.IsNullOrWhiteSpace(TenantInfo.ConnectionString))
+
+        if (!string.IsNullOrWhiteSpace(TenantInfo?.ConnectionString))
         {
             optionsBuilder.UseDatabase(_databaseConfiguration.DatabaseProvider, TenantInfo.ConnectionString);
         }
@@ -151,19 +153,20 @@ public abstract class BaseDbContext : MultiTenantIdentityDbContext<ApplicationUs
                         break;
 
                     case EntityState.Modified:
-                        if (property.IsModified && entry.Entity is ISoftDelete && property.OriginalValue == null && property.CurrentValue != null)
+                        switch (property.IsModified)
                         {
-                            trailEntry.ChangedColumns.Add(propertyName);
-                            trailEntry.TrailType = TrailType.Delete;
-                            trailEntry.OldValues[propertyName] = property.OriginalValue;
-                            trailEntry.NewValues[propertyName] = property.CurrentValue;
-                        }
-                        else if (property.IsModified && property.OriginalValue?.Equals(property.CurrentValue) == false)
-                        {
-                            trailEntry.ChangedColumns.Add(propertyName);
-                            trailEntry.TrailType = TrailType.Update;
-                            trailEntry.OldValues[propertyName] = property.OriginalValue;
-                            trailEntry.NewValues[propertyName] = property.CurrentValue;
+                            case true when entry.Entity is ISoftDelete && property.OriginalValue == null && property.CurrentValue != null:
+                                trailEntry.ChangedColumns.Add(propertyName);
+                                trailEntry.TrailType = TrailType.Delete;
+                                trailEntry.OldValues[propertyName] = property.OriginalValue;
+                                trailEntry.NewValues[propertyName] = property.CurrentValue;
+                                break;
+                            case true when property.OriginalValue?.Equals(property.CurrentValue) == false:
+                                trailEntry.ChangedColumns.Add(propertyName);
+                                trailEntry.TrailType = TrailType.Update;
+                                trailEntry.OldValues[propertyName] = property.OriginalValue;
+                                trailEntry.NewValues[propertyName] = property.CurrentValue;
+                                break;
                         }
 
                         break;

@@ -2,12 +2,14 @@
 // See LICENSE in the project root for license information.
 
 // Original file: https://github.com/DuendeSoftware/Samples/blob/main/IdentityServer/v6/Quickstarts
-// Modified by Eirik Sjøløkken
+// Modified by Eirik SjÃ¸lÃ¸kken
 
 using Duende.IdentityServer.Services;
 using Eiromplays.IdentityServer.Application.Common.Security;
+using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.ViewModels.Home;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eiromplays.IdentityServer.Controllers;
@@ -19,25 +21,22 @@ public class HomeController : Controller
     private readonly IIdentityServerInteractionService _interaction;
     private readonly IWebHostEnvironment _environment;
     private readonly ILogger _logger;
+    private readonly UserManager<ApplicationUser> _userManager;
 
     public HomeController(IIdentityServerInteractionService interaction, IWebHostEnvironment environment,
-        ILogger<HomeController> logger)
+        ILogger<HomeController> logger, UserManager<ApplicationUser> userManager, IServiceProvider serviceProvider)
     {
         _interaction = interaction;
         _environment = environment;
         _logger = logger;
+        _userManager = userManager;
     }
 
+    [HttpGet]
     public IActionResult Index()
     {
-        if (_environment.IsDevelopment())
-        {
-            // only show in development
-            return View();
-        }
-
-        _logger.LogInformation("Homepage is disabled in production. Returning 404.");
-        return NotFound();
+        Console.WriteLine($"Users: {_userManager.Users.Count()}");
+        return View();
     }
 
     /// <summary>

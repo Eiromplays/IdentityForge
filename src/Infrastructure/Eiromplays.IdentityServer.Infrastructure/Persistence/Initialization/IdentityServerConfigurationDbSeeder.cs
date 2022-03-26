@@ -18,12 +18,12 @@ internal class IdentityServerConfigurationDbSeeder
     private readonly IdentityServerData _identityServerData;
 
     public IdentityServerConfigurationDbSeeder(EIATenantInfo currentTenant, CustomSeederRunner seederRunner,
-        ILogger<IdentityServerConfigurationDbSeeder> logger, IOptionsMonitor<IdentityServerData> identityServerData)
+        ILogger<IdentityServerConfigurationDbSeeder> logger, IOptions<IdentityServerData> identityServerData)
     {
         _currentTenant = currentTenant;
         _seederRunner = seederRunner;
         _logger = logger;
-        _identityServerData = identityServerData.CurrentValue;
+        _identityServerData = identityServerData.Value;
     }
 
     public async Task SeedDatabaseAsync(IdentityServerConfigurationDbContext dbContext, CancellationToken cancellationToken)

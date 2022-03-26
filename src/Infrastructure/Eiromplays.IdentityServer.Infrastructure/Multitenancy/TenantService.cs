@@ -23,13 +23,13 @@ internal class TenantService : ITenantService
         IConnectionStringSecurer csSecurer,
         IDatabaseInitializer dbInitializer,
         IStringLocalizer<TenantService> localizer,
-        IOptionsMonitor<DatabaseConfiguration> databaseConfiguration)
+        IOptions<DatabaseConfiguration> databaseConfiguration)
     {
         _tenantStore = tenantStore;
         _csSecurer = csSecurer;
         _dbInitializer = dbInitializer;
         _t = localizer;
-        _databaseConfiguration = databaseConfiguration.CurrentValue;
+        _databaseConfiguration = databaseConfiguration.Value;
     }
 
     public async Task<List<TenantDto>> GetAllAsync()
@@ -60,6 +60,8 @@ internal class TenantService : ITenantService
         try
         {
             await _dbInitializer.InitializeApplicationDbForTenantAsync(tenant, cancellationToken);
+            await _dbInitializer.InitializeIdentityServerConfigurationDbForTenantAsync(tenant, cancellationToken);
+            await _dbInitializer.InitializeIdentityServerPersistedGrantDbForTenantAsync(tenant, cancellationToken);
         }
         catch
         {

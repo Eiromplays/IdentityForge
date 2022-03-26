@@ -1,5 +1,7 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
+using FastEndpoints;
 using FastEndpoints.Validation;
+using FluentValidation;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.CreateUser;
 

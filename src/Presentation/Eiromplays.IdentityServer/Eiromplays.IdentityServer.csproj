@@ -33,4 +33,8 @@
     <ProjectReference Include="..\..\Infrastructure\Eiromplays.IdentityServer.Infrastructure\Eiromplays.IdentityServer.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Files" />
+  </ItemGroup>
+
 </Project>
