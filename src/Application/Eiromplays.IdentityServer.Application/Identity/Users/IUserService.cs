@@ -7,7 +7,7 @@ namespace Eiromplays.IdentityServer.Application.Identity.Users;
 
 public interface IUserService : ITransientService
 {
-    Task<PaginatedList<UserDetailsDto>> SearchAsync(UserListFilter filter, CancellationToken cancellationToken);
+    Task<PaginationResponse<UserDetailsDto>> SearchAsync(UserListFilter filter, CancellationToken cancellationToken);
 
     Task<bool> ExistsWithNameAsync(string name);
     Task<bool> ExistsWithEmailAsync(string email, string? exceptId = null);

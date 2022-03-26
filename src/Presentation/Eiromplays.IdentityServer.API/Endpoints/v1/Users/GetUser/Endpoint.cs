@@ -1,17 +1,15 @@
-using System.Net;
-using Eiromplays.IdentityServer.Application.Common.Interfaces;
-using Eiromplays.IdentityServer.Application.DTOs.User;
+using Eiromplays.IdentityServer.Application.Identity.Users;
 using FastEndpoints;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.GetUser;
 
-public class Endpoint : Endpoint<Models.Request, UserDto>
+public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
-    private readonly IIdentityService _identityService;
+    private readonly IUserService _userService;
     
-    public Endpoint(IIdentityService identityService)
+    public Endpoint(IUserService userService)
     {
-        _identityService = identityService;
+        _userService = userService;
     }
 
     public override void Configure()
@@ -24,14 +22,8 @@ public class Endpoint : Endpoint<Models.Request, UserDto>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        var user = await _identityService.FindUserByIdAsync(req.Id);
-        if (user is null)
-        {
-            AddError($"User with id {req.Id} not found");;
-            await SendErrorsAsync((int)HttpStatusCode.NotFound, ct);
-            return;
-        }
+        var user = await _userService.GetAsync(req.Id, ct);
 
-        await SendAsync(user, cancellation: ct);
+        await SendAsync(new Models.Response{ UserDetailsDto = user }, cancellation: ct);
     }
 }

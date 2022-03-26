@@ -1,4 +1,4 @@
-using Eiromplays.IdentityServer.Application.DTOs.Role;
+using Eiromplays.IdentityServer.Application.Identity.Roles;
 using FastEndpoints.Validation;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.CreateRole;
@@ -7,7 +7,7 @@ public class Models
 {
     public class Request
     {
-        public RoleDto? RoleDto { get; set; }
+        public CreateOrUpdateRoleRequest? RoleDto { get; set; }
     }
 
     public class Validator : Validator<Request>
@@ -24,6 +24,6 @@ public class Models
     
     public class Response
     {
-        public RoleDto? RoleDto { get; set; }
+        public string? RoleId { get; set; }
     }
 }

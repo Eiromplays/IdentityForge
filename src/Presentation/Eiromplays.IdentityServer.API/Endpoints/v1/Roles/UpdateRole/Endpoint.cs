@@ -1,16 +1,17 @@
 using System.Net;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Application.Identity.Roles;
 using FastEndpoints;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.UpdateRole;
 
 public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
-    private readonly IIdentityService _identityService;
+    private readonly IRoleService _roleService;
     
-    public Endpoint(IIdentityService identityService)
+    public Endpoint(IRoleService roleService)
     {
-        _identityService = identityService;
+        _roleService = roleService;
     }
 
     public override void Configure()
@@ -23,24 +24,8 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        var role = await _identityService.FindRoleByIdAsync(req.Id);
-        if (role is null)
-        {
-            AddError($"Role with id {req.Id} not found");;
-            await SendErrorsAsync((int)HttpStatusCode.NotFound, ct);
-            return;
-        }
-        
-        role.Name = req.Name;
+        var roleId = await _roleService.CreateOrUpdateAsync(req.RoleDto);
 
-        var (result, roleId) = await _identityService.UpdateRoleAsync(role);
-        foreach (var error in result.Errors) AddError(error);
-        
-        ThrowIfAnyErrors();
-        
-        if (string.IsNullOrWhiteSpace(roleId))
-            ThrowError("Role was not updated");
-        
-        await SendCreatedAtAsync("/roles/{id}", roleId, new Models.Response{RoleDto = role}, cancellation: ct);
+        await SendCreatedAtAsync("/roles/{id}", roleId, new Models.Response{RoleId = roleId}, cancellation: ct);
     }
 }

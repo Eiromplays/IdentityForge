@@ -1,15 +1,16 @@
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Application.Identity.Roles;
 using FastEndpoints;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.GetRoles;
 
 public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
-    private IIdentityService IdentityService { get; }
+    private readonly IRoleService _roleService;
     
-    public Endpoint(IIdentityService identityService)
+    public Endpoint(IRoleService roleService)
     {
-        IdentityService = identityService;
+        _roleService = roleService;
     }
     
     public override void Configure()
@@ -22,7 +23,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        Response.Roles = await IdentityService.GetRolesAsync(req.Search, req.PageIndex, req.PageSize);
+        Response.Roles = await _roleService.GetListAsync(ct);
         
         await SendAsync(Response, cancellation: ct);
     }

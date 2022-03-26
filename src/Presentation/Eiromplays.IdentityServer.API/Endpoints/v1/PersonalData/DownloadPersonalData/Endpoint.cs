@@ -1,16 +1,17 @@
 using System.Text.Json;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Application.Identity.Users;
 using FastEndpoints;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.PersonalData.DownloadPersonalData;
 
 public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
-    private readonly IIdentityService _identityService;
+    private readonly IUserService _userService;
     
-    public Endpoint(IIdentityService identityService)
+    public Endpoint(IUserService userService)
     {
-        _identityService = identityService;
+        _userService = userService;
     }
 
     public override void Configure()
@@ -29,17 +30,11 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             return;
         }
         
-        var user = await _identityService.FindUserByIdAsync(req.Id);
-        if (user is null)
-        {
-            AddError($"User with id {req.Id} not found");;
-            await SendErrorsAsync(StatusCodes.Status404NotFound, ct);
-            return;
-        }
+        var user = await _userService.GetAsync(req.Id, ct);
 
-        var personalData = await _identityService.GetUserPersonalDataAsync(user.Id);
+        //var personalData = await _userService.(user.Id);
 
-        await SendBytesAsync(JsonSerializer.SerializeToUtf8Bytes(personalData), "PersonalData.json",
-            cancellation: ct);
+        /*await SendBytesAsync(JsonSerializer.SerializeToUtf8Bytes(personalData), "PersonalData.json",
+            cancellation: ct);*/
     }
 }

@@ -1,89 +1,107 @@
-using Duende.Bff.EntityFramework;
-using Eiromplays.IdentityServer.Application.Common.Configurations.Database;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Domain.Enums;
-using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
+using Eiromplays.IdentityServer.Infrastructure.Auth;
+using Eiromplays.IdentityServer.Infrastructure.BackgroundJobs;
+using Eiromplays.IdentityServer.Infrastructure.Caching;
+using Eiromplays.IdentityServer.Infrastructure.Common;
+using Eiromplays.IdentityServer.Infrastructure.Cors;
+using Eiromplays.IdentityServer.Infrastructure.FileStorage;
+using Eiromplays.IdentityServer.Infrastructure.Localization;
+using Eiromplays.IdentityServer.Infrastructure.Mailing;
+using Eiromplays.IdentityServer.Infrastructure.Mapping;
+using Eiromplays.IdentityServer.Infrastructure.Middleware;
+using Eiromplays.IdentityServer.Infrastructure.Multitenancy;
+using Eiromplays.IdentityServer.Infrastructure.Notifications;
+using Eiromplays.IdentityServer.Infrastructure.OpenApi;
+using Eiromplays.IdentityServer.Infrastructure.Persistence;
+using Eiromplays.IdentityServer.Infrastructure.Persistence.Initialization;
+using Eiromplays.IdentityServer.Infrastructure.SecurityHeaders;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using Serilog;
+
+[assembly: InternalsVisibleTo("Infrastructure.Test")]
 
 namespace Eiromplays.IdentityServer.Infrastructure;
 
-internal static class Startup
+public static partial class Startup
 {
-    private static readonly ILogger _logger = Log.ForContext(typeof(Startup));
-    
-    internal static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection  AddInfrastructure(this IServiceCollection services, IConfiguration config, ProjectType projectType)
     {
-        var databaseConfiguration =
-            configuration.GetSection(nameof(DatabaseConfiguration)).Get<DatabaseConfiguration>();
-
-        var dbProvider = databaseConfiguration.DatabaseProvider;
-        
-        _logger.Information("Current DB Provider : {DBProvider}", dbProvider);
-
+        MapsterSettings.Configure();
         return services
-            .AddDbContexts(databaseConfiguration);
+            .RegisterAccountConfiguration(config)
+            .AddAuth(config, projectType)
+            .AddBackgroundJobs(config)
+            .AddCaching(config)
+            .AddCorsPolicy(config)
+            .AddExceptionMiddleware()
+            .AddHealthCheck()
+            .AddPOLocalization(config)
+            .AddMailing(config)
+            .AddMediatR(Assembly.GetExecutingAssembly())
+            .AddMultitenancy(config)
+            .AddNotifications(config)
+            .AddOpenApiDocumentation(config)
+            .AddPersistence(config)
+            .AddRequestLogging(config)
+            .AddRouting(options => options.LowercaseUrls = true)
+            .AddServices();
     }
 
-    internal static DbContextOptionsBuilder UseDatabase(this DbContextOptionsBuilder builder, DatabaseProvider dbProvider, string connectionString)
+    private static IServiceCollection AddHealthCheck(this IServiceCollection services) =>
+        services.AddHealthChecks().AddCheck<TenantHealthCheck>("Tenant").Services;
+
+    public static async Task InitializeDatabasesAsync(this IServiceProvider services, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(connectionString))
-        {
-            throw new InvalidOperationException("Connection string is empty");
-        }
-        
-        switch (dbProvider)
-        {
-            case DatabaseProvider.InMemory:
-                return builder.UseInMemoryDatabase(connectionString);
-            
-            case DatabaseProvider.PostgreSql:
-                AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-                return builder.UseNpgsql(connectionString, e =>
-                    e.MigrationsAssembly("Migrators.PostgreSQL"));
+        // Create a new scope to retrieve scoped services
+        using var scope = services.CreateScope();
 
-            case DatabaseProvider.SqlServer:
-                return builder.UseSqlServer(connectionString, e =>
-                    e.MigrationsAssembly("Migrators.SqlServer"));
-
-            case DatabaseProvider.MySql:
-                return builder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), e =>
-                    e.MigrationsAssembly("Migrators.MySQL")
-                        .SchemaBehavior(MySqlSchemaBehavior.Ignore));
-
-            case DatabaseProvider.Sqlite:
-                return builder.UseSqlite(connectionString, e =>
-                    e.MigrationsAssembly("Migrators.Sqlite"));
-            
-            default:
-                throw new InvalidOperationException($"DB Provider {dbProvider} is not supported.");
-        }
+        await scope.ServiceProvider.GetRequiredService<IDatabaseInitializer>()
+            .InitializeDatabasesAsync(cancellationToken);
     }
-    
-    internal static IServiceCollection AddDbContexts(this IServiceCollection services,
-        DatabaseConfiguration databaseConfiguration, BffBuilder? bffBuilder = null)
-    {
-        // Add Session DbContext
-        bffBuilder.AddEntityFrameworkServerSideSessions(options =>
-            options.UseDatabase(databaseConfiguration.DatabaseProvider, databaseConfiguration.ConnectionStringsConfiguration.SessionDbConnection));
 
-        return services
-            .AddDbContext<IdentityDbContext>(options => options.UseDatabase(databaseConfiguration.DatabaseProvider,
-                databaseConfiguration.ConnectionStringsConfiguration.IdentityDbConnection))
-            
-            .AddDbContext<IdentityServerConfigurationDbContext>(options =>
-                options.UseDatabase(databaseConfiguration.DatabaseProvider,
-                    databaseConfiguration.ConnectionStringsConfiguration.ConfigurationDbConnection))
-            
-            .AddDbContext<IdentityServerPersistedGrantDbContext>(options =>
-                options.UseDatabase(databaseConfiguration.DatabaseProvider,
-                    databaseConfiguration.ConnectionStringsConfiguration.PersistedGrantDbConnection))
-            
-            .AddDbContext<IdentityServerDataProtectionDbContext>(options =>
-                options.UseDatabase(databaseConfiguration.DatabaseProvider,
-                    databaseConfiguration.ConnectionStringsConfiguration.DataProtectionDbConnection));
+    public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder builder, IConfiguration config) =>
+        builder
+            .UseRequestLocalization()
+            .UseStaticFiles()
+            .UseSecurityHeaders(config)
+            .UseFileStorage()
+            .UseExceptionMiddleware()
+            .UseRouting()
+            .UseCorsPolicy()
+            .UseAuthentication()
+            .UseCurrentUser()
+            .UseMultiTenancy()
+            .UseAuthorization()
+            .UseRequestLogging(config)
+            .UseHangfireDashboard(config)
+            .UseOpenApiDocumentation(config);
+
+    public static IEndpointRouteBuilder MapEndpoints(this IEndpointRouteBuilder builder)
+    {
+        builder.MapControllers().RequireAuthorization();
+        builder.MapHealthCheck();
+        builder.MapNotifications();
+        return builder;
+    }
+
+    private static IEndpointConventionBuilder MapHealthCheck(this IEndpointRouteBuilder endpoints) =>
+        endpoints.MapHealthChecks("/api/health").RequireAuthorization();
+    
+    /*
+        Registers the Account Configuration
+        Information:
+        Profile Picture Configuration:
+        Find more avatar styles here: https://avatars.dicebear.com/styles/
+        You can also use a custom provider
+    */
+    private static IServiceCollection RegisterAccountConfiguration(this IServiceCollection services, IConfiguration configuration)
+    {
+        return services.Configure<AccountConfiguration>(configuration.GetSection(nameof(AccountConfiguration)));
     }
 }

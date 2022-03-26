@@ -1,4 +1,4 @@
-using Eiromplays.IdentityServer.Application.DTOs.Role;
+using Eiromplays.IdentityServer.Application.Identity.Roles;
 using FastEndpoints.Validation;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.UpdateRole;
@@ -7,16 +7,14 @@ public class Models
 {
     public class Request
     {
-        public string? Id { get; set; }
-        
-        public string? Name { get; set; }
+        public CreateOrUpdateRoleRequest? RoleDto { get; set; }
     }
 
     public class Validator : Validator<Request>
     {
         public Validator()
         {
-            RuleFor(x => x.Name)
+            RuleFor(x => x.RoleDto!.Name)
                 .NotNull()
                 .WithMessage("UserName is required")
                 .NotEmpty()
@@ -26,6 +24,6 @@ public class Models
     
     public class Response
     {
-        public RoleDto? RoleDto { get; set; }
+        public string? RoleId { get; set; }
     }
 }

@@ -1,5 +1,4 @@
-using Eiromplays.IdentityServer.Application.Common.Models;
-using Eiromplays.IdentityServer.Application.DTOs.Role;
+using Eiromplays.IdentityServer.Application.Identity.Roles;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.GetRoles;
 
@@ -14,6 +13,6 @@ public class Models
 
     public class Response
     {
-        public PaginatedList<RoleDto> Roles { get; set; } = new();
+        public List<RoleDto> Roles { get; set; } = new();
     }
 }

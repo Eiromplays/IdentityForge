@@ -31,7 +31,8 @@ public static class EIAResource
 
 public static class EIAPermissions
 {
-    private static readonly EIAPermission[] _all = {
+    private static readonly EIAPermission[] _all =
+    {
         new("View Dashboard", EIAAction.View, EIAResource.Dashboard),
         new("View Hangfire", EIAAction.View, EIAResource.Hangfire),
         new("View Users", EIAAction.View, EIAResource.Users),
@@ -64,7 +65,7 @@ public static class EIAPermissions
         new("View Tenants", EIAAction.View, EIAResource.Tenants, IsRoot: true),
         new("Create Tenants", EIAAction.Create, EIAResource.Tenants, IsRoot: true),
         new("Update Tenants", EIAAction.Update, EIAResource.Tenants, IsRoot: true),
-        new("Upgrade Tenant Subscription", EIAAction.UpgradeSubscription, EIAResource.Tenants, IsRoot: true)
+        new("Upgrade Tenant Subscription", EIAAction.UpgradeSubscription, EIAResource.Tenants, IsRoot: true),
     };
 
     public static IReadOnlyList<EIAPermission> All { get; } = new ReadOnlyCollection<EIAPermission>(_all);

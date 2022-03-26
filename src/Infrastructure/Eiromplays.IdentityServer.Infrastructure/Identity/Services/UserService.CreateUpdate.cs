@@ -1,11 +1,16 @@
 ﻿using System.Security.Claims;
 using Duende.IdentityServer.Extensions;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
+using Eiromplays.IdentityServer.Application.Common.Mailing;
 using Eiromplays.IdentityServer.Application.Identity.Users;
+using Eiromplays.IdentityServer.Domain.Common;
+using Eiromplays.IdentityServer.Domain.Identity;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
+using Eiromplays.IdentityServer.Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Shared.Authorization;
+using ClaimsPrincipalExtensions = Microsoft.Identity.Web.ClaimsPrincipalExtensions;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
@@ -20,7 +25,7 @@ internal partial class UserService
     /// </summary>
     public async Task<string> GetOrCreateFromPrincipalAsync(ClaimsPrincipal principal)
     {
-        string? objectId = principal.GetObjectId();
+        var objectId = ClaimsPrincipalExtensions.GetObjectId(principal);
         if (string.IsNullOrWhiteSpace(objectId))
         {
             throw new InternalServerException(_t["Invalid objectId"]);
@@ -43,6 +48,7 @@ internal partial class UserService
     {
         var email = principal.FindFirstValue(ClaimTypes.Upn);
         var username = principal.GetDisplayName();
+        
         if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(username))
         {
             throw new InternalServerException(string.Format(_t["Username or Email not valid."]));
@@ -66,7 +72,7 @@ internal partial class UserService
         IdentityResult? result;
         if (user is not null)
         {
-            user.ObjectId = principal.GetObjectId();
+            user.ObjectId = ClaimsPrincipalExtensions.GetObjectId(principal);
             result = await _userManager.UpdateAsync(user);
 
             await _events.PublishAsync(new ApplicationUserUpdatedEvent(user.Id));
@@ -75,7 +81,7 @@ internal partial class UserService
         {
             user = new ApplicationUser
             {
-                ObjectId = principal.GetObjectId(),
+                ObjectId = ClaimsPrincipalExtensions.GetObjectId(principal),
                 FirstName = principal.FindFirstValue(ClaimTypes.GivenName),
                 LastName = principal.FindFirstValue(ClaimTypes.Surname),
                 Email = email,
@@ -121,21 +127,25 @@ internal partial class UserService
 
         var messages = new List<string> { string.Format(_t["User {0} Registered."], user.UserName) };
 
-        if (_securitySettings.RequireConfirmedAccount && !string.IsNullOrEmpty(user.Email))
+        if (_signInManager.Options.SignIn.RequireConfirmedAccount && !string.IsNullOrEmpty(user.Email))
         {
             // send verification email
             var emailVerificationUri = await GetEmailVerificationUriAsync(user, origin);
-            RegisterUserEmailModel eMailModel = new RegisterUserEmailModel
+            
+            var eMailModel = new RegisterUserEmailModel
             {
                 Email = user.Email,
                 UserName = user.UserName,
                 Url = emailVerificationUri
             };
+            
             var mailRequest = new MailRequest(
                 new List<string> { user.Email },
                 _t["Confirm Registration"],
-                _templateService.GenerateEmailTemplate("email-confirmation", eMailModel));
+                "");
+            
             _jobService.Enqueue(() => _mailService.SendAsync(mailRequest, CancellationToken.None));
+            
             messages.Add(_t[$"Please check {user.Email} to verify your account!"]);
         }
 

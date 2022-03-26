@@ -12,7 +12,7 @@ namespace Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
 
 public class ApplicationDbContext : BaseDbContext, IDataProtectionKeyContext
 {
-    public ApplicationDbContext(ITenantInfo currentTenant, DbContextOptions options, ICurrentUser currentUser,
+    public ApplicationDbContext(ITenantInfo currentTenant, DbContextOptions<ApplicationDbContext> options, ICurrentUser currentUser,
         ISerializerService serializer, IOptionsMonitor<DatabaseConfiguration> databaseConfiguration,
         IEventPublisher events, IWebHostEnvironment webHostEnvironment)
         : base(currentTenant, options, currentUser, serializer, databaseConfiguration, events, webHostEnvironment)

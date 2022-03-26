@@ -1,15 +1,16 @@
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Application.Identity.Roles;
 using FastEndpoints;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.CreateRole;
 
 public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
-    private readonly IIdentityService _identityService;
+    private readonly IRoleService _roleService;
     
-    public Endpoint(IIdentityService identityService)
+    public Endpoint(IRoleService roleService)
     {
-        _identityService = identityService;
+        _roleService = roleService;
     }
 
     public override void Configure()
@@ -22,17 +23,8 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        if (req.RoleDto is null) 
-            ThrowError("RoleDto is null");
-        
-        var (result, roleId) = await _identityService.CreateRoleAsync(req.RoleDto);
-        foreach (var error in result.Errors) AddError(error);
-        
-        ThrowIfAnyErrors();
-        
-        if (roleId is null)
-            ThrowError("Role was not created");
-        
-        await SendCreatedAtAsync("/roles/{id}", roleId, new Models.Response {RoleDto = req.RoleDto}, cancellation: ct);
+        var roleId = await _roleService.CreateOrUpdateAsync(req.RoleDto);
+
+        await SendCreatedAtAsync("/roles/{id}", roleId, new Models.Response {RoleId = roleId}, cancellation: ct);
     }
 }

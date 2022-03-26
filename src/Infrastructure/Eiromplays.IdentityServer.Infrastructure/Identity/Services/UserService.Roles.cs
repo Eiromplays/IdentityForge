@@ -1,4 +1,6 @@
-﻿using Eiromplays.IdentityServer.Application.Identity.Users;
+﻿using Eiromplays.IdentityServer.Application.Common.Exceptions;
+using Eiromplays.IdentityServer.Application.Identity.Users;
+using Eiromplays.IdentityServer.Domain.Identity;
 using Microsoft.EntityFrameworkCore;
 using Shared.Authorization;
 using Shared.Multitenancy;

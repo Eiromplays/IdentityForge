@@ -1,4 +1,6 @@
-﻿using Eiromplays.IdentityServer.Application.Identity.Users.Password;
+﻿using Eiromplays.IdentityServer.Application.Common.Exceptions;
+using Eiromplays.IdentityServer.Application.Common.Mailing;
+using Eiromplays.IdentityServer.Application.Identity.Users.Password;
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
@@ -21,12 +23,14 @@ internal partial class UserService
         var code = await _userManager.GeneratePasswordResetTokenAsync(user);
         const string route = "account/reset-password";
         var endpointUri = new Uri(string.Concat($"{origin}/", route));
+        
         var passwordResetUrl = QueryHelpers.AddQueryString(endpointUri.ToString(), "Token", code);
+        
         var mailRequest = new MailRequest(
             new List<string> { request.Email },
             _t["Reset Password"],
             _t[$"Your Password Reset Token is '{code}'. You can reset your password using the {endpointUri} Endpoint."]);
-        _jobService.Enqueue(() => _fluentEmail.SendAsync(CancellationToken.None));
+        _jobService.Enqueue(() => _mailService.SendAsync(mailRequest, CancellationToken.None));
 
         return _t["Password Reset Mail has been sent to your authorized Email."];
     }

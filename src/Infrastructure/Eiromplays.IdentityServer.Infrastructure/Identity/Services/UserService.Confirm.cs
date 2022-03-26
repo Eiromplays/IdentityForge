@@ -1,5 +1,6 @@
 using System.Text;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
+using Eiromplays.IdentityServer.Infrastructure.Common;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;

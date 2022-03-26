@@ -1,17 +1,15 @@
-using System.Net;
-using Eiromplays.IdentityServer.Application.Common.Interfaces;
-using Eiromplays.IdentityServer.Application.DTOs.Role;
+using Eiromplays.IdentityServer.Application.Identity.Roles;
 using FastEndpoints;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.GetRole;
 
-public class Endpoint : Endpoint<Models.Request, RoleDto>
+public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
-    private readonly IIdentityService _identityService;
+    private readonly IRoleService _roleService;
     
-    public Endpoint(IIdentityService identityService)
+    public Endpoint(IRoleService roleService)
     {
-        _identityService = identityService;
+        _roleService = roleService;
     }
 
     public override void Configure()
@@ -24,15 +22,8 @@ public class Endpoint : Endpoint<Models.Request, RoleDto>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        var role = await _identityService.FindRoleByIdAsync(req.Id);
-        
-        if (role is null)
-        {
-            AddError($"Role with id {req.Id} not found");;
-            await SendErrorsAsync((int)HttpStatusCode.NotFound, ct);
-            return;
-        }
+        var role = await _roleService.GetByIdAsync(req.Id);
 
-        await SendAsync(role!, cancellation: ct);
+        await SendAsync(new Models.Response {RoleDto = role}, cancellation: ct);
     }
 }

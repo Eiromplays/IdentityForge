@@ -1,6 +1,10 @@
-using System.Security.Claims;
+// <copyright file="ClaimsPrincipalExtensions.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace Shared.Authorization;
+
+using System.Security.Claims;
 
 public static class ClaimsPrincipalExtensions
 {

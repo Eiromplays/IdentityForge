@@ -1,0 +1,6 @@
+{
+  "DatabaseSettings": {
+    "DBProvider": "PostgreSql",
+    "ConnectionString": "Server=localhost;Database=EiromplaysIdentityServer;User Id=postgres;Password=1234;"
+  }
+}

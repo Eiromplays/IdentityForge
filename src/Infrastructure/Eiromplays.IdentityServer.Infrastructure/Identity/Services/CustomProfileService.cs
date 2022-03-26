@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Eiromplays.IdentityServer.Infrastructure.Services;
+namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
 public class CustomProfileService : ProfileService<ApplicationUser>
 {

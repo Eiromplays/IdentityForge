@@ -1,15 +1,16 @@
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Application.Identity.Users;
 using FastEndpoints;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.GetUsers;
 
 public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
-    private readonly IIdentityService _identityService;
+    private readonly IUserService _userService;
     
-    public Endpoint(IIdentityService identityService)
+    public Endpoint(IUserService userService)
     {
-        _identityService = identityService;
+        _userService = userService;
     }
     
     public override void Configure()
@@ -22,7 +23,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        Response.Users = await _identityService.GetUsersAsync(req.Search, req.PageIndex, req.PageSize, ct);
+        Response.Users = await _userService.SearchAsync(req.Filter, ct);
         
         await SendAsync(Response, cancellation: ct);
     }

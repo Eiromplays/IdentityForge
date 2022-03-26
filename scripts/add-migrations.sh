@@ -62,6 +62,7 @@ currentApplyDefaultSeeds=$(jq -r '.DatabaseConfiguration.ApplyDefaultSeeds' $app
 
 for databaseProvider in "${databaseProviders[@]}"
 do
+    echo "$databaseProvider"
     if [ "$migrationProvider" = "ALL" ] || [ "$databaseProvider" = "$migrationProvider" ]; then
         cat <<< $(jq --arg databaseProvider "$databaseProvider" '.DatabaseConfiguration.DatabaseProvider |= $databaseProvider' $appsettingsFile) > $appsettingsFile
         echo "Starting migrations for: $databaseProvider"
@@ -83,7 +84,7 @@ do
             migrationFolderName=${dbContextName/DbContext/}
             migrationPath="Migrations/$migrationFolderName"
             echo "Starting migration for: $dbContextName Migration name: $migrationName"
-            dotnet ef migrations add "$migrationName" -c $dbContext -o $migrationPath -p $PWD/../../Infrastructure/Eiromplays.IdentityServer.Infrastructure.$databaseProvider/Eiromplays.IdentityServer.Infrastructure.$databaseProvider.csproj
+            dotnet ef migrations add "$migrationName" -c $dbContext -o $migrationPath -p $PWD/../../Infrastructure/Migrators.$databaseProvider/Migrators.$databaseProvider.csproj
             echo "Migration for: $dbContextName completed and can be found at: $migrationPath"
         done
     fi

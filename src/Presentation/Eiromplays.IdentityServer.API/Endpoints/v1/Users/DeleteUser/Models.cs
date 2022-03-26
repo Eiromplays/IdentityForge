@@ -11,6 +11,6 @@ public class Models
 
     public class Response
     {
-        public Result Result { get; set; }
+        
     }
 }

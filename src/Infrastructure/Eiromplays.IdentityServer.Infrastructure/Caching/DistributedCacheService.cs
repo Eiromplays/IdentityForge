@@ -130,7 +130,7 @@ public class DistributedCacheService : ICacheService
     private byte[] Serialize<T>(T item) =>
         Encoding.Default.GetBytes(_serializer.Serialize(item));
 
-    private T Deserialize<T>(byte[] cachedData) =>
+    private T? Deserialize<T>(byte[] cachedData) =>
         _serializer.Deserialize<T>(Encoding.Default.GetString(cachedData));
 
     private static DistributedCacheEntryOptions GetOptions(TimeSpan? slidingExpiration)

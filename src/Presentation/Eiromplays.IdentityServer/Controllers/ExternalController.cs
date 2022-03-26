@@ -34,7 +34,6 @@ public class ExternalController : Controller
     private readonly IEventService _events;
     private readonly ILogger<ExternalController> _logger;
     private readonly IFluentEmail _fluentEmail;
-    private readonly IIdentityService _identityService;
     private readonly AccountConfiguration _accountConfiguration;
 
     public ExternalController(
@@ -44,7 +43,6 @@ public class ExternalController : Controller
         IEventService events,
         ILogger<ExternalController> logger,
         IFluentEmail fluentEmail,
-        IIdentityService identityService,
         IOptionsMonitor<AccountConfiguration> accountConfigurationOptions)
     {
         _userManager = userManager;
@@ -53,7 +51,6 @@ public class ExternalController : Controller
         _events = events;
         _logger = logger;
         _fluentEmail = fluentEmail;
-        _identityService = identityService;
         _accountConfiguration = accountConfigurationOptions.CurrentValue;
     }
 
@@ -161,7 +158,7 @@ public class ExternalController : Controller
                 result = await _userManager.AddLoginAsync(user, info);
                 if (result.Succeeded)
                 {
-                    if (!await _identityService.CanSignInAsync(user.Id))
+                    if (!await _signInManager.CanSignInAsync(user))
                     {
                         if (await _userManager.IsEmailConfirmedAsync(user))
                             return RedirectToAction("RegisterConfirmation", "Account");

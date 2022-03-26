@@ -78,7 +78,6 @@ var app = builder.Build();
 
 await app.Services.ApplyMigrationsAsync(app.Configuration);
 
-app.UseSecurityHeaders(app.Configuration);
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -89,7 +88,7 @@ app.UseAuthorization();
 
 app.UseFastEndpoints(config =>
 {
-    config.GlobalEndpointOptions = (endpoint, routeHandlerBuilder) =>
+    config.GlobalEndpointOptions = (_, routeHandlerBuilder) =>
     {
         routeHandlerBuilder.RequireAuthorization("RequireInteractiveUser");
     };

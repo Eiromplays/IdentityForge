@@ -1,11 +1,15 @@
+using Ardalis.Specification.EntityFrameworkCore;
 using Eiromplays.IdentityServer.Application.Common.Caching;
 using Eiromplays.IdentityServer.Application.Common.Events;
+using Eiromplays.IdentityServer.Application.Common.FileStorage;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Application.Common.Mailing;
+using Eiromplays.IdentityServer.Application.Common.Models;
+using Eiromplays.IdentityServer.Application.Common.Specification;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
 using Finbuckle.MultiTenant;
-using FluentEmail.Core;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,14 +28,15 @@ internal partial class UserService : IUserService
     private readonly IJobService _jobService;
     private readonly IEventPublisher _events;
     private readonly ITenantInfo _currentTenant;
-    private readonly IFluentEmail _fluentEmail;
     private readonly ICacheService _cache;
     private readonly ICacheKeyService _cacheKeys;
+    private readonly IFileStorageService _fileStorage;
+    private readonly IMailService _mailService;
 
     public UserService(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager,
-        RoleManager<ApplicationRole> roleManager, ApplicationDbContext db, IStringLocalizer t, IJobService jobService,
-        IEventPublisher events, ITenantInfo currentTenant, IFluentEmail fluentEmail, ICacheService cache,
-        ICacheKeyService cacheKeys)
+        RoleManager<ApplicationRole> roleManager, ApplicationDbContext db, IStringLocalizer<UserService> t, IJobService jobService,
+        IEventPublisher events, ITenantInfo currentTenant, ICacheService cache,
+        ICacheKeyService cacheKeys, IFileStorageService fileStorage, IMailService mailService)
     {
         _signInManager = signInManager;
         _userManager = userManager;
@@ -41,11 +46,27 @@ internal partial class UserService : IUserService
         _jobService = jobService;
         _events = events;
         _currentTenant = currentTenant;
-        _fluentEmail = fluentEmail;
         _cache = cache;
         _cacheKeys = cacheKeys;
+        _fileStorage = fileStorage;
+        _mailService = mailService;
     }
     
+    public async Task<PaginationResponse<UserDetailsDto>> SearchAsync(UserListFilter filter, CancellationToken cancellationToken)
+    {
+        var spec = new EntitiesByPaginationFilterSpec<ApplicationUser>(filter);
+
+        var users = await _userManager.Users
+            .WithSpecification(spec)
+            .ProjectToType<UserDetailsDto>()
+            .ToListAsync(cancellationToken);
+        var count = await _userManager.Users
+            .CountAsync(cancellationToken);
+
+        return new PaginationResponse<UserDetailsDto>(users, count, filter.PageNumber, filter.PageSize);
+    }
+    
+
     public async Task<bool> ExistsWithNameAsync(string name)
     {
         EnsureValidTenant();
@@ -91,5 +112,10 @@ internal partial class UserService : IUserService
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
 
         return user.Adapt<UserDetailsDto>();
+    }
+
+    public Task ToggleStatusAsync(ToggleUserStatusRequest request, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -1,16 +1,16 @@
-using System.Net;
-using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Application.Identity.Users;
 using FastEndpoints;
+using Shared.Authorization;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.UpdateUser;
 
 public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
-    private readonly IIdentityService _identityService;
+    private readonly IUserService _userService;
 
-    public Endpoint(IIdentityService identityService)
+    public Endpoint(IUserService userService)
     {
-        _identityService = identityService;
+        _userService = userService;
     }
 
     public override void Configure()
@@ -22,33 +22,14 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(req.Id))
-            ThrowError("Id is required");
-        
-        if (!User.IsInRole("Administrator") && !User.HasClaim("sub", req.Id!))
+        if (!User.IsInRole("Administrator") && !(User.GetUserId() is not { } userId || string.IsNullOrEmpty(userId)))
         {
-            AddError($"You do not have permissions to update {req.Id}'s Profile");
-            await SendErrorsAsync(StatusCodes.Status401Unauthorized, ct);
-            return;
-        }
-        
-        var user = await _identityService.FindUserByIdAsync(req.Id);
-        if (user is null)
-        {
-            AddError($"User with id {req.Id} not found");
-            await SendErrorsAsync((int)HttpStatusCode.NotFound, ct);
+            await SendUnauthorizedAsync(ct);
             return;
         }
 
-        user.Email = req.Email;
-        user.GravatarEmail = req.GravatarEmail;
-        user.UserName = req.UserName;
+        await _userService.UpdateAsync(req.UpdateUserRequest, req.UpdateUserRequest.Id);
 
-        var (result, userId) = await _identityService.UpdateUserAsync(user, req.RevokeUserSessions);
-        foreach (var error in result.Errors) AddError(error);
-        
-        ThrowIfAnyErrors();
-
-        await SendCreatedAtAsync("/users/{id}", userId, new Models.Response{UserDto = user}, cancellation: ct);
+        await SendOkAsync(ct);
     }
 }

@@ -1,16 +1,15 @@
-using Eiromplays.IdentityServer.Application.Common.Interfaces;
-using Eiromplays.IdentityServer.Application.DTOs.User;
+using Eiromplays.IdentityServer.Application.Identity.Users;
 using FastEndpoints;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.DeleteUser;
 
 public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
-    private readonly IIdentityService _identityService;
+    private readonly IUserService _userService;
     
-    public Endpoint(IIdentityService identityService)
+    public Endpoint(IUserService userService)
     {
-        _identityService = identityService;
+        _userService = userService;
     }
 
     public override void Configure()
@@ -23,8 +22,8 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        var result = await _identityService.DeleteUserAsync(req.Id);
+        //var result = await _userService.Delete(req.Id);
 
-        await SendAsync(new Models.Response{ Result = result }, cancellation: ct);
+        await SendAsync(new Models.Response{  }, cancellation: ct);
     }
 }
