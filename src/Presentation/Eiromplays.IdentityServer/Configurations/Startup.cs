@@ -36,6 +36,8 @@ internal static class Startup
                 .AddJsonFile($"{configurationsDirectory}/localization.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"{configurationsDirectory}/identityserverdata.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"{configurationsDirectory}/identityserverdata.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"{configurationsDirectory}/identitydata.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"{configurationsDirectory}/identitydata.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();
         });
         return host;

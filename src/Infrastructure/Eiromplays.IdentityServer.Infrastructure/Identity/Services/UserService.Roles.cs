@@ -3,7 +3,6 @@ using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Domain.Identity;
 using Microsoft.EntityFrameworkCore;
 using Shared.Authorization;
-using Shared.Multitenancy;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
@@ -44,16 +43,7 @@ internal partial class UserService
             // Get count of users in Admin Role
             var adminCount = (await _userManager.GetUsersInRoleAsync(EIARoles.Admin)).Count;
 
-            // Check if user is not Root Tenant Admin
-            // Edge Case : there are chances for other tenants to have users with the same email as that of Root Tenant Admin. Probably can add a check while User Registration
-            if (user.Email == MultitenancyConstants.Root.EmailAddress)
-            {
-                if (_currentTenant.Id == MultitenancyConstants.Root.Id)
-                {
-                    throw new ConflictException(_t["Cannot Remove Admin Role From Root Tenant Admin."]);
-                }
-            }
-            else if (adminCount <= 2)
+            if (adminCount <= 2)
             {
                 throw new ConflictException(_t["Tenant should have at least 2 Admins."]);
             }

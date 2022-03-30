@@ -65,5 +65,5 @@ public class DataProtectionKeyConfig : IEntityTypeConfiguration<DataProtectionKe
 {
     public void Configure(EntityTypeBuilder<DataProtectionKey> builder) =>
         builder
-            .ToTable("DataProtectionKeys", SchemaNames.Identity);
+            .ToTable(TableConsts.DataProtectionKeys, SchemaNames.Identity);
 }

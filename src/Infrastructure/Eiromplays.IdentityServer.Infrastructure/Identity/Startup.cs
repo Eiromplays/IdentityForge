@@ -12,8 +12,10 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity;
 
 internal static class Startup
 {
-    internal static IServiceCollection AddIdentity(this IServiceCollection services, IConfiguration configuration)
+    internal static IServiceCollection AddIdentity(this IServiceCollection services, IConfiguration configuration, ProjectType projectType)
     {
+        if (projectType is ProjectType.Spa) return services;
+        
         return services
             .Configure<IdentityOptions>(configuration.GetSection(nameof(IdentityOptions)))
             .AddIdentity<ApplicationUser, ApplicationRole>(options =>
@@ -30,8 +32,8 @@ internal static class Startup
         var identityServerOptions = configuration.GetSection(nameof(IdentityServerOptions));
 
         return services.AddIdentityServer(options => identityServerOptions.Bind(options))
-            .AddConfigurationStore<IdentityServerConfigurationDbContext>()
-            .AddOperationalStore<IdentityServerPersistedGrantDbContext>()
+            .AddConfigurationStore<ApplicationDbContext>()
+            .AddOperationalStore<ApplicationDbContext>()
             .AddAspNetIdentity<ApplicationUser>()
             .AddProfileService<CustomProfileService>()
             .Services;

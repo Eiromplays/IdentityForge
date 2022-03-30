@@ -23,13 +23,13 @@ internal class ApplicationDbInitializer
         {
             if ((await _dbContext.Database.GetPendingMigrationsAsync(cancellationToken)).Any())
             {
-                _logger.LogInformation("Applying Migrations.");
+                _logger.LogInformation("Applying Migrations");
                 await _dbContext.Database.MigrateAsync(cancellationToken);
             }
-
+            
             if (await _dbContext.Database.CanConnectAsync(cancellationToken))
             {
-                _logger.LogInformation("Connection to Database Succeeded.");
+                _logger.LogInformation("Connection to Database Succeeded");
 
                 await _dbSeeder.SeedDatabaseAsync(_dbContext, cancellationToken);
             }

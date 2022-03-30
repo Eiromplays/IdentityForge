@@ -44,7 +44,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Infrastructure\Eiromplays.IdentityServer.Infrastructure.BFF\Eiromplays.IdentityServer.Infrastructure.BFF.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Migrators.PostgreSql\Migrators.PostgreSql.csproj" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

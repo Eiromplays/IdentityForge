@@ -1,4 +1,7 @@
 using System.Data;
+using Duende.Bff.EntityFramework;
+using Duende.IdentityServer.EntityFramework.Entities;
+using Duende.IdentityServer.EntityFramework.Interfaces;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Database;
 using Eiromplays.IdentityServer.Application.Common.Events;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
@@ -14,8 +17,9 @@ using Microsoft.Extensions.Options;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
 
-public abstract class BaseDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string,
-        ApplicationUserClaim, ApplicationUserRole, ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>, IDataProtectionKeyContext
+public class BaseDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string,
+        ApplicationUserClaim, ApplicationUserRole, ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>,
+        IDataProtectionKeyContext, IPersistedGrantDbContext, IConfigurationDbContext
 {
     private readonly ICurrentUser _currentUser;
     private readonly ISerializerService _serializer;
@@ -51,6 +55,54 @@ public abstract class BaseDbContext : IdentityDbContext<ApplicationUser, Applica
     public DbSet<Trail> AuditTrails => Set<Trail>();
     
     public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
+
+    public DbSet<PersistedGrant> PersistedGrants
+    {
+        get => Set<PersistedGrant>();
+        set { }
+    }
+
+    public DbSet<DeviceFlowCodes> DeviceFlowCodes 
+    {
+        get => Set<DeviceFlowCodes>();
+        set { }
+    }
+    public DbSet<Key> Keys
+    {
+        get => Set<Key>();
+        set { }
+    }
+
+    public DbSet<Client> Clients 
+    {
+        get => Set<Client>();
+        set { }
+    }
+    public DbSet<ClientCorsOrigin> ClientCorsOrigins 
+    {
+        get => Set<ClientCorsOrigin>();
+        set { }
+    }
+    public DbSet<IdentityResource> IdentityResources 
+    {
+        get => Set<IdentityResource>();
+        set { }
+    }
+    public DbSet<ApiResource> ApiResources
+    {
+        get => Set<ApiResource>();
+        set { }
+    }
+    public DbSet<ApiScope> ApiScopes
+    {
+        get => Set<ApiScope>();
+        set { }
+    }
+    public DbSet<IdentityProvider> IdentityProviders
+    {
+        get => Set<IdentityProvider>();
+        set { }
+    }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

@@ -6,10 +6,8 @@
 
 using Duende.IdentityServer.Services;
 using Eiromplays.IdentityServer.Application.Common.Security;
-using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.ViewModels.Home;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eiromplays.IdentityServer.Controllers;
@@ -21,21 +19,18 @@ public class HomeController : Controller
     private readonly IIdentityServerInteractionService _interaction;
     private readonly IWebHostEnvironment _environment;
     private readonly ILogger _logger;
-    private readonly UserManager<ApplicationUser> _userManager;
 
     public HomeController(IIdentityServerInteractionService interaction, IWebHostEnvironment environment,
-        ILogger<HomeController> logger, UserManager<ApplicationUser> userManager, IServiceProvider serviceProvider)
+        ILogger<HomeController> logger)
     {
         _interaction = interaction;
         _environment = environment;
         _logger = logger;
-        _userManager = userManager;
     }
 
     [HttpGet]
     public IActionResult Index()
     {
-        Console.WriteLine($"Users: {_userManager.Users.Count()}");
         return View();
     }
 

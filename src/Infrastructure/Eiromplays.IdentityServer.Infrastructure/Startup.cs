@@ -1,6 +1,9 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Duende.Bff;
+using Duende.Bff.Yarp;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
+using Eiromplays.IdentityServer.Application.Common.Configurations.Identity;
 using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure.Auth;
 using Eiromplays.IdentityServer.Infrastructure.BackgroundJobs;
@@ -29,11 +32,13 @@ namespace Eiromplays.IdentityServer.Infrastructure;
 
 public static class Startup
 {
-    public static IServiceCollection  AddInfrastructure(this IServiceCollection services, IConfiguration config, ProjectType projectType)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config, ProjectType projectType)
     {
+        if (projectType is ProjectType.Spa) return services.AddInfrastructureSpa(config, projectType);
+        
         MapsterSettings.Configure();
         return services
-            .RegisterAccountConfiguration(config)
+            .AddConfigurations(config)
             .AddBackgroundJobs(config)
             .AddCaching(config)
             .AddCorsPolicy(config)
@@ -44,7 +49,7 @@ public static class Startup
             .AddMediatR(Assembly.GetExecutingAssembly())
             .AddNotifications(config)
             .AddOpenApiDocumentation(config, projectType)
-            .AddPersistence(config)
+            .AddPersistence(config, projectType)
             .AddDataProtection().Services
             .AddAuth(config, projectType)
             .AddRequestLogging(config)
@@ -52,6 +57,18 @@ public static class Startup
             .AddServices();
     }
 
+    public static IServiceCollection AddInfrastructureSpa(this IServiceCollection services, IConfiguration config, ProjectType projectType)
+    {
+        if (projectType is not ProjectType.Spa) return services;
+
+        var bffBuilder = services.AddBff(options => config.GetSection(nameof(BffOptions)).Bind(options));
+
+        bffBuilder.AddRemoteApis();
+        bffBuilder.AddBffPersistence(config, projectType);
+
+        return services;
+    }
+    
     private static IServiceCollection AddHealthCheck(this IServiceCollection services) =>
         services.AddHealthChecks().Services;
 
@@ -64,8 +81,11 @@ public static class Startup
             .InitializeDatabasesAsync(cancellationToken);
     }
 
-    public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder builder, IConfiguration config, ProjectType projectType) =>
-        builder
+    public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder builder, IConfiguration config, ProjectType projectType)
+    {
+        if (projectType is ProjectType.Spa) return builder;
+        
+        return builder
             .UseRequestLocalization()
             .UseStaticFiles()
             .UseSecurityHeaders(config)
@@ -80,6 +100,7 @@ public static class Startup
             .UseRequestLogging(config)
             .UseHangfireDashboard(config)
             .UseOpenApiDocumentation(config, projectType);
+    }
 
     public static IEndpointRouteBuilder MapEndpoints(this IEndpointRouteBuilder builder)
     {
@@ -93,15 +114,18 @@ public static class Startup
         endpoints.MapHealthChecks("/api/health").RequireAuthorization();
     
     /*
-        Registers the Account Configuration
+        Configures custom classes for config files, so they can be retrieved from DI using IOptions<T>
         Information:
+        Account Configuration: 
         Profile Picture Configuration:
         Find more avatar styles here: https://avatars.dicebear.com/styles/
         You can also use a custom provider
     */
-    private static IServiceCollection RegisterAccountConfiguration(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
     {
-        return services.Configure<AccountConfiguration>(configuration.GetSection(nameof(AccountConfiguration)));
+        return services.Configure<AccountConfiguration>(configuration.GetSection(nameof(AccountConfiguration)))
+            .Configure<IdentityServerData>(configuration.GetSection(nameof(IdentityServerData)))
+            .Configure<IdentityData>(configuration.GetSection(nameof(IdentityData)));
     }
 
     private static IApplicationBuilder UseIdentityServer(this IApplicationBuilder builder, ProjectType projectType)

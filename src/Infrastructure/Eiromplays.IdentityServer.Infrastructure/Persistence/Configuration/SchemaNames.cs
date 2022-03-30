@@ -2,9 +2,9 @@
 
 internal static class SchemaNames
 {
-    public static string Auditing = "Auditing"; // "AUDITING";
-    public static string Catalog = "Catalog"; // "CATALOG";
-    public static string Identity = "Identity"; // "IDENTITY";
-    public static string IdentityServer = "IdentityServer"; // "IDENTITYSERVER";
-    public static string MultiTenancy = "MultiTenancy"; // "MULTITENANCY";
+    public const string Auditing = "Auditing"; // "AUDITING";
+    public const string Catalog = "Catalog"; // "CATALOG";
+    public const string Identity = "Identity"; // "IDENTITY";
+    public const string IdentityServer = "IdentityServer"; // "IDENTITYSERVER";
+    public const string Bff = "Bff"; // "BFF";
 }

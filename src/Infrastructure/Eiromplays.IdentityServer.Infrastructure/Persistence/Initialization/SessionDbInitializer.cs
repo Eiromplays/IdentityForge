@@ -1,16 +1,15 @@
-using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
+using Duende.Bff.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Persistence.Initialization;
 
-internal class IdentityServerPersistedGrantDbInitializer
+internal class SessionDbInitializer
 {
-    private readonly IdentityServerPersistedGrantDbContext _dbContext;
-    private readonly ILogger<IdentityServerPersistedGrantDbInitializer> _logger;
+    private readonly SessionDbContext _dbContext;
+    private readonly ILogger<SessionDbInitializer> _logger;
 
-    public IdentityServerPersistedGrantDbInitializer(IdentityServerPersistedGrantDbContext dbContext,
-        ILogger<IdentityServerPersistedGrantDbInitializer> logger)
+    public SessionDbInitializer(SessionDbContext dbContext, ILogger<SessionDbInitializer> logger)
     {
         _dbContext = dbContext;
         _logger = logger;
@@ -22,7 +21,7 @@ internal class IdentityServerPersistedGrantDbInitializer
         {
             if ((await _dbContext.Database.GetPendingMigrationsAsync(cancellationToken)).Any())
             {
-                _logger.LogInformation("Applying Migrations.");
+                _logger.LogInformation("Applying Migrations");
                 await _dbContext.Database.MigrateAsync(cancellationToken);
             }
         }

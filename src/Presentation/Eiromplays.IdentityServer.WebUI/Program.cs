@@ -1,12 +1,12 @@
-using System.Text.Json;
-using Eiromplays.IdentityServer.Infrastructure.BFF;
+using Eiromplays.IdentityServer.Domain.Enums;
+using Eiromplays.IdentityServer.Infrastructure;
 using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddAuthorization();
-builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddInfrastructureSpa(builder.Configuration, ProjectType.Spa);
 
 builder.Services.AddAuthentication(options =>
 {
@@ -46,7 +46,7 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
-await app.Services.ApplyMigrationsAsync(app.Configuration);
+await app.Services.InitializeDatabasesAsync();
 
 if (app.Environment.IsDevelopment())
 {
