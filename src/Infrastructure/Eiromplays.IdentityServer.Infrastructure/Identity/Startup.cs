@@ -40,7 +40,7 @@ internal static class Startup
     internal static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration, ProjectType projectType)
     {
         if (projectType is not ProjectType.IdentityServer) return services;
-
+        
         var authenticationBuilder = services.AddAuthentication();
 
         var externalProviderConfiguration = configuration.GetSection(nameof(ExternalProvidersConfiguration))

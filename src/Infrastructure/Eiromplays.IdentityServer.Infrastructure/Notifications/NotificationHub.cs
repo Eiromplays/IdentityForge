@@ -1,6 +1,4 @@
-﻿using Eiromplays.IdentityServer.Application.Common.Exceptions;
-using Eiromplays.IdentityServer.Application.Common.Interfaces;
-using Finbuckle.MultiTenant;
+﻿using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -10,23 +8,16 @@ namespace Eiromplays.IdentityServer.Infrastructure.Notifications;
 [Authorize]
 public class NotificationHub : Hub, ITransientService
 {
-    private readonly ITenantInfo? _currentTenant;
     private readonly ILogger<NotificationHub> _logger;
 
-    public NotificationHub(ITenantInfo? currentTenant, ILogger<NotificationHub> logger)
+    public NotificationHub(ILogger<NotificationHub> logger)
     {
-        _currentTenant = currentTenant;
         _logger = logger;
     }
 
     public override async Task OnConnectedAsync()
     {
-        if (_currentTenant is null)
-        {
-            throw new UnauthorizedException("Authentication Failed.");
-        }
-
-        await Groups.AddToGroupAsync(Context.ConnectionId, $"GroupTenant-{_currentTenant.Id}");
+        await Groups.AddToGroupAsync(Context.ConnectionId, $"GroupTenant");
 
         await base.OnConnectedAsync();
 
@@ -35,7 +26,7 @@ public class NotificationHub : Hub, ITransientService
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"GroupTenant-{_currentTenant!.Id}");
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"GroupTenant");
 
         await base.OnDisconnectedAsync(exception);
 

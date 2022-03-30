@@ -6,10 +6,18 @@ namespace Eiromplays.IdentityServer.Infrastructure.FileStorage;
 
 internal static class Startup
 {
-    internal static IApplicationBuilder UseFileStorage(this IApplicationBuilder app) =>
-        app.UseStaticFiles(new StaticFileOptions
+    internal static IApplicationBuilder UseFileStorage(this IApplicationBuilder app)
+    {
+        var staticFilesPath = Path.Combine(Directory.GetCurrentDirectory(), "Files");
+        if (!Directory.Exists(staticFilesPath))
         {
-            FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Files")),
+            Directory.CreateDirectory(staticFilesPath);
+        }
+        
+        return app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new PhysicalFileProvider(staticFilesPath),
             RequestPath = new PathString("/Files")
         });
+    }
 }

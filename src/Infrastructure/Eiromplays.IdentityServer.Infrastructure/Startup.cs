@@ -12,7 +12,6 @@ using Eiromplays.IdentityServer.Infrastructure.Localization;
 using Eiromplays.IdentityServer.Infrastructure.Mailing;
 using Eiromplays.IdentityServer.Infrastructure.Mapping;
 using Eiromplays.IdentityServer.Infrastructure.Middleware;
-using Eiromplays.IdentityServer.Infrastructure.Multitenancy;
 using Eiromplays.IdentityServer.Infrastructure.Notifications;
 using Eiromplays.IdentityServer.Infrastructure.OpenApi;
 using Eiromplays.IdentityServer.Infrastructure.Persistence;
@@ -43,7 +42,6 @@ public static class Startup
             .AddPOLocalization(config)
             .AddMailing(config)
             .AddMediatR(Assembly.GetExecutingAssembly())
-            .AddMultitenancy(config)
             .AddNotifications(config)
             .AddOpenApiDocumentation(config, projectType)
             .AddPersistence(config)
@@ -55,7 +53,7 @@ public static class Startup
     }
 
     private static IServiceCollection AddHealthCheck(this IServiceCollection services) =>
-        services.AddHealthChecks().AddCheck<TenantHealthCheck>("Tenant").Services;
+        services.AddHealthChecks().Services;
 
     public static async Task InitializeDatabasesAsync(this IServiceProvider services, CancellationToken cancellationToken = default)
     {
@@ -79,7 +77,6 @@ public static class Startup
             .UseIdentityServer(projectType)
             .UseAuthorization()
             .UseCurrentUser()
-            .UseMultiTenancy()
             .UseRequestLogging(config)
             .UseHangfireDashboard(config)
             .UseOpenApiDocumentation(config, projectType);

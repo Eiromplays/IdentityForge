@@ -12,15 +12,13 @@ namespace Eiromplays.IdentityServer.Infrastructure.Persistence.Initialization;
 
 internal class IdentityServerConfigurationDbSeeder
 {
-    private readonly EIATenantInfo _currentTenant;
     private readonly CustomSeederRunner _seederRunner;
     private readonly ILogger<IdentityServerConfigurationDbSeeder> _logger;
     private readonly IdentityServerData _identityServerData;
 
-    public IdentityServerConfigurationDbSeeder(EIATenantInfo currentTenant, CustomSeederRunner seederRunner,
+    public IdentityServerConfigurationDbSeeder(CustomSeederRunner seederRunner,
         ILogger<IdentityServerConfigurationDbSeeder> logger, IOptions<IdentityServerData> identityServerData)
     {
-        _currentTenant = currentTenant;
         _seederRunner = seederRunner;
         _logger = logger;
         _identityServerData = identityServerData.Value;
@@ -46,7 +44,7 @@ internal class IdentityServerConfigurationDbSeeder
                 continue;
             }
             
-            _logger.LogInformation("Seeding {Resource} Resource for '{TenantId}' Tenant", resource.Name, _currentTenant.Id);
+            _logger.LogInformation("Seeding {Resource} Resource", resource.Name);
             await dbContext.IdentityResources.AddAsync(resource.ToEntity());
         }
 

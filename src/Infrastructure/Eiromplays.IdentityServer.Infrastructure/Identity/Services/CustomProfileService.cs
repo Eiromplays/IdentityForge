@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Security.Claims;
 using Duende.IdentityServer.AspNetIdentity;
+using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Infrastructure.Common.Helpers;
@@ -37,7 +38,7 @@ public class CustomProfileService : ProfileService<ApplicationUser>
     public override async Task GetProfileDataAsync(ProfileDataRequestContext context)
     {
         await base.GetProfileDataAsync(context);
-        
+
         var user = await _userManager.GetUserAsync(context.Subject);
 
         var claims = new List<Claim>();

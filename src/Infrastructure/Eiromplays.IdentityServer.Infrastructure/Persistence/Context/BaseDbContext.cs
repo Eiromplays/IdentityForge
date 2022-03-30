@@ -5,16 +5,16 @@ using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Domain.Common.Contracts;
 using Eiromplays.IdentityServer.Infrastructure.Auditing;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
-using Finbuckle.MultiTenant;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
 
-public abstract class BaseDbContext : MultiTenantIdentityDbContext<ApplicationUser, ApplicationRole, string,
+public abstract class BaseDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string,
         ApplicationUserClaim, ApplicationUserRole, ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>, IDataProtectionKeyContext
 {
     private readonly ICurrentUser _currentUser;
@@ -24,9 +24,9 @@ public abstract class BaseDbContext : MultiTenantIdentityDbContext<ApplicationUs
     private readonly IWebHostEnvironment _webHostEnvironment;
 
 
-    protected BaseDbContext(ITenantInfo currentTenant, DbContextOptions options, ICurrentUser currentUser,
+    protected BaseDbContext(DbContextOptions options, ICurrentUser currentUser,
         ISerializerService serializer, IOptions<DatabaseConfiguration> databaseConfiguration,
-        IEventPublisher events, IWebHostEnvironment webHostEnvironment) : base(currentTenant, options)
+        IEventPublisher events, IWebHostEnvironment webHostEnvironment) : base(options)
     {
         _currentUser = currentUser;
         _serializer = serializer;
@@ -64,11 +64,6 @@ public abstract class BaseDbContext : MultiTenantIdentityDbContext<ApplicationUs
 
         // Or uncomment the next line if you want to see them in the console
         // optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
-
-        if (!string.IsNullOrWhiteSpace(TenantInfo?.ConnectionString))
-        {
-            optionsBuilder.UseDatabase(_databaseConfiguration.DatabaseProvider, TenantInfo.ConnectionString);
-        }
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())

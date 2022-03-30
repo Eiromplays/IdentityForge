@@ -9,7 +9,6 @@ using Eiromplays.IdentityServer.Application.Common.Specification;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
-using Finbuckle.MultiTenant;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +26,6 @@ internal partial class UserService : IUserService
     private readonly IStringLocalizer _t;
     private readonly IJobService _jobService;
     private readonly IEventPublisher _events;
-    private readonly ITenantInfo _currentTenant;
     private readonly ICacheService _cache;
     private readonly ICacheKeyService _cacheKeys;
     private readonly IFileStorageService _fileStorage;
@@ -35,7 +33,7 @@ internal partial class UserService : IUserService
 
     public UserService(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager,
         RoleManager<ApplicationRole> roleManager, ApplicationDbContext db, IStringLocalizer<UserService> t, IJobService jobService,
-        IEventPublisher events, ITenantInfo currentTenant, ICacheService cache,
+        IEventPublisher events, ICacheService cache,
         ICacheKeyService cacheKeys, IFileStorageService fileStorage, IMailService mailService)
     {
         _signInManager = signInManager;
@@ -45,7 +43,6 @@ internal partial class UserService : IUserService
         _t = t;
         _jobService = jobService;
         _events = events;
-        _currentTenant = currentTenant;
         _cache = cache;
         _cacheKeys = cacheKeys;
         _fileStorage = fileStorage;
@@ -69,28 +66,17 @@ internal partial class UserService : IUserService
 
     public async Task<bool> ExistsWithNameAsync(string name)
     {
-        EnsureValidTenant();
         return await _userManager.FindByNameAsync(name) is not null;
     }
 
     public async Task<bool> ExistsWithEmailAsync(string email, string? exceptId = null)
     {
-        EnsureValidTenant();
         return await _userManager.FindByEmailAsync(email.Normalize()) is { } user && user.Id != exceptId;
     }
 
     public async Task<bool> ExistsWithPhoneNumberAsync(string phoneNumber, string? exceptId = null)
     {
-        EnsureValidTenant();
         return await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber) is { } user && user.Id != exceptId;
-    }
-
-    private void EnsureValidTenant()
-    {
-        if (string.IsNullOrWhiteSpace(_currentTenant.Id))
-        {
-            throw new UnauthorizedException(_t["Invalid Tenant."]);
-        }
     }
 
     public async Task<List<UserDetailsDto>> GetListAsync(CancellationToken cancellationToken) =>

@@ -1,11 +1,9 @@
 ﻿using Eiromplays.IdentityServer.Infrastructure.Common;
-using Finbuckle.MultiTenant;
 using Hangfire.Client;
 using Hangfire.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Authorization;
-using Shared.Multitenancy;
 
 namespace Eiromplays.IdentityServer.Infrastructure.BackgroundJobs;
 
@@ -27,9 +25,6 @@ public class EIAJobFilter : IClientFilter
 
         var httpContext = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
         _ = httpContext ?? throw new InvalidOperationException("Can't create a TenantJob without HttpContext.");
-
-        var tenantInfo = scope.ServiceProvider.GetRequiredService<ITenantInfo>();
-        context.SetJobParameter(MultitenancyConstants.TenantIdName, tenantInfo);
 
         var userId = httpContext.User.GetUserId();
         context.SetJobParameter(QueryStringKeys.UserId, userId);

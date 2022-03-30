@@ -4,7 +4,7 @@ namespace Eiromplays.IdentityServer.Application.Common.Caching;
 
 public static class CacheKeyServiceExtensions
 {
-    public static string GetCacheKey<TEntity>(this ICacheKeyService cacheKeyService, object id, bool includeTenantId = true)
+    public static string GetCacheKey<TEntity>(this ICacheKeyService cacheKeyService, object id)
     where TEntity : IEntity =>
-        cacheKeyService.GetCacheKey(typeof(TEntity).Name, id, includeTenantId);
+        cacheKeyService.GetCacheKey(typeof(TEntity).Name, id);
 }

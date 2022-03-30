@@ -1,11 +1,8 @@
 ﻿using Eiromplays.IdentityServer.Infrastructure.Auth;
 using Eiromplays.IdentityServer.Infrastructure.Common;
-using Eiromplays.IdentityServer.Infrastructure.Multitenancy;
-using Finbuckle.MultiTenant;
 using Hangfire;
 using Hangfire.Server;
 using Microsoft.Extensions.DependencyInjection;
-using Shared.Multitenancy;
 
 namespace Eiromplays.IdentityServer.Infrastructure.BackgroundJobs;
 
@@ -34,16 +31,6 @@ public class EIAJobActivator : JobActivator
 
         private void ReceiveParameters()
         {
-            var tenantInfo = _context.GetJobParameter<EIATenantInfo>(MultitenancyConstants.TenantIdName);
-            if (tenantInfo is not null)
-            {
-                _scope.ServiceProvider.GetRequiredService<IMultiTenantContextAccessor>()
-                    .MultiTenantContext = new MultiTenantContext<EIATenantInfo>
-                    {
-                        TenantInfo = tenantInfo
-                    };
-            }
-
             var userId = _context.GetJobParameter<string>(QueryStringKeys.UserId);
             if (!string.IsNullOrEmpty(userId))
             {

@@ -1,13 +1,12 @@
 using System.Data;
+using Duende.IdentityServer.EntityFramework.DbContexts;
 using Duende.IdentityServer.EntityFramework.Interfaces;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Database;
 using Eiromplays.IdentityServer.Application.Common.Events;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Domain.Common.Contracts;
 using Eiromplays.IdentityServer.Infrastructure.Auditing;
-using Eiromplays.IdentityServer.Infrastructure.Persistence;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
-using Finbuckle.MultiTenant;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
@@ -15,8 +14,8 @@ using Microsoft.Extensions.Options;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Multitenancy.Context;
 
-public class BaseIdentityServerPersistedGrantDbContext<TContext> : MultiTenantIdentityServerPersistedGrantDbContext<TContext>
-    where TContext : DbContext, IPersistedGrantDbContext
+public class BaseIdentityServerConfigurationDbContext<TContext> : ConfigurationDbContext<TContext>
+    where TContext : DbContext, IConfigurationDbContext
 {
     private readonly ICurrentUser _currentUser;
     private readonly ISerializerService _serializer;
@@ -25,10 +24,9 @@ public class BaseIdentityServerPersistedGrantDbContext<TContext> : MultiTenantId
     private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly ApplicationDbContext _context;
 
-
-    protected BaseIdentityServerPersistedGrantDbContext(ITenantInfo currentTenant, DbContextOptions<TContext> options, ICurrentUser currentUser,
+    protected BaseIdentityServerConfigurationDbContext(DbContextOptions<TContext> options, ICurrentUser currentUser,
         ISerializerService serializer, IOptions<DatabaseConfiguration> databaseConfiguration,
-        IEventPublisher events, IWebHostEnvironment webHostEnvironment, ApplicationDbContext context) : base(currentTenant, options)
+        IEventPublisher events, IWebHostEnvironment webHostEnvironment, ApplicationDbContext context) : base(options)
     {
         _currentUser = currentUser;
         _serializer = serializer;
@@ -37,6 +35,7 @@ public class BaseIdentityServerPersistedGrantDbContext<TContext> : MultiTenantId
         _webHostEnvironment = webHostEnvironment;
         _context = context;
     }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -61,11 +60,6 @@ public class BaseIdentityServerPersistedGrantDbContext<TContext> : MultiTenantId
 
         // Or uncomment the next line if you want to see them in the console
         // optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
-
-        if (!string.IsNullOrWhiteSpace(TenantInfo?.ConnectionString))
-        {
-            optionsBuilder.UseDatabase(_databaseConfiguration.DatabaseProvider, TenantInfo.ConnectionString);
-        }
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())

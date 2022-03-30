@@ -1,4 +1,3 @@
-using System.Linq;
 using Eiromplays.IdentityServer.Application.Common.Events;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
@@ -6,13 +5,11 @@ using Eiromplays.IdentityServer.Application.Identity.Roles;
 using Eiromplays.IdentityServer.Domain.Identity;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
-using Finbuckle.MultiTenant;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Shared.Authorization;
-using Shared.Multitenancy;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
@@ -23,7 +20,6 @@ internal class RoleService : IRoleService
     private readonly ApplicationDbContext _db;
     private readonly IStringLocalizer _t;
     private readonly ICurrentUser _currentUser;
-    private readonly ITenantInfo _currentTenant;
     private readonly IEventPublisher _events;
 
     public RoleService(
@@ -32,7 +28,6 @@ internal class RoleService : IRoleService
         ApplicationDbContext db,
         IStringLocalizer<RoleService> localizer,
         ICurrentUser currentUser,
-        ITenantInfo currentTenant,
         IEventPublisher events)
     {
         _roleManager = roleManager;
@@ -40,7 +35,6 @@ internal class RoleService : IRoleService
         _db = db;
         _t = localizer;
         _currentUser = currentUser;
-        _currentTenant = currentTenant;
         _events = events;
     }
 
@@ -125,12 +119,6 @@ internal class RoleService : IRoleService
         if (role.Name == EIARoles.Admin)
         {
             throw new ConflictException(_t["Not allowed to modify Permissions for this Role."]);
-        }
-
-        if (_currentTenant.Id != MultitenancyConstants.Root.Id)
-        {
-            // Remove Root Permissions if the Role is not created for Root Tenant.
-            request.Permissions.RemoveAll(u => u.StartsWith("Permissions.Root."));
         }
 
         var currentClaims = await _roleManager.GetClaimsAsync(role);
