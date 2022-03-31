@@ -1,5 +1,3 @@
-using Eiromplays.IdentityServer.Domain.Common.Contracts;
-
 namespace Eiromplays.IdentityServer.Domain.Common.Events;
 
 public static class EntityCreatedEvent

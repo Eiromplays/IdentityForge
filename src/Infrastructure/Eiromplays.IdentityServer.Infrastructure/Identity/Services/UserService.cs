@@ -1,19 +1,21 @@
 using Ardalis.Specification.EntityFrameworkCore;
 using Eiromplays.IdentityServer.Application.Common.Caching;
 using Eiromplays.IdentityServer.Application.Common.Events;
+using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.FileStorage;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Common.Mailing;
 using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Common.Specification;
 using Eiromplays.IdentityServer.Application.Identity.Users;
+using Eiromplays.IdentityServer.Domain.Identity;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using SendGrid.Helpers.Errors.Model;
+using Shared.Authorization;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
@@ -102,6 +104,20 @@ internal partial class UserService : IUserService
 
     public async Task ToggleStatusAsync(ToggleUserStatusRequest request, CancellationToken cancellationToken)
     {
-        
+        var user = await _userManager.Users.Where(u => u.Id == request.UserId).FirstOrDefaultAsync(cancellationToken);
+
+        _ = user ?? throw new NotFoundException(_t["User Not Found."]);
+
+        var isAdmin = await _userManager.IsInRoleAsync(user, EIARoles.Administrator);
+        if (isAdmin)
+        {
+            throw new ConflictException(_t["Administrators Profile's Status cannot be toggled"]);
+        }
+
+        user.IsActive = request.ActivateUser;
+
+        await _userManager.UpdateAsync(user);
+
+        await _events.PublishAsync(new ApplicationUserUpdatedEvent(user.Id));
     }
 }

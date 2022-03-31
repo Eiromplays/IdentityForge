@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FastEndpoints" Version="4.0.0-beta6" />
-    <PackageReference Include="FastEndpoints.Swagger" Version="4.0.0-beta6" />
+    <PackageReference Include="FastEndpoints" Version="4.0.0" />
+    <PackageReference Include="FastEndpoints.Swagger" Version="4.0.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="10.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
@@ -35,7 +35,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Infrastructure\Eiromplays.IdentityServer.Infrastructure.BFF\Eiromplays.IdentityServer.Infrastructure.BFF.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Eiromplays.IdentityServer.Infrastructure\Eiromplays.IdentityServer.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Migrators.PostgreSql\Migrators.PostgreSql.csproj" />
   </ItemGroup>

@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Eiromplays.IdentityServer.Domain.Common.Contracts;
+using Microsoft.AspNetCore.Identity;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 
-public class ApplicationUser : IdentityUser
+public class ApplicationUser : IdentityUser, IAuditableEntity
 {
     [PersonalData]
     public string? FirstName { get; set; }
@@ -29,11 +30,17 @@ public class ApplicationUser : IdentityUser
     [PersonalData]
     public string? DiscordId { get; set; }
     
-    public DateTime Created { get; init; }
-    public string? CreatedBy { get; init; }
+    public DateTime CreatedOn { get; set;  }
+    public string? CreatedBy { get; set; }
 
-    public DateTime? LastModified { get; init; }
-    public string? LastModifiedBy { get; init; }
-    
+    public string? LastModifiedBy { get; set; }
+    public DateTime? LastModifiedOn { get; set; }
+
     public string? ObjectId { get; set; }
+
+    public ApplicationUser()
+    {
+        CreatedOn = DateTime.UtcNow;
+        LastModifiedOn = DateTime.UtcNow;
+    }
 }

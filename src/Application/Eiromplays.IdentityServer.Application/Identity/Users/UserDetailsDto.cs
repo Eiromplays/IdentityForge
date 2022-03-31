@@ -11,6 +11,8 @@ public class UserDetailsDto
     public string? LastName { get; set; }
 
     public string? Email { get; set; }
+    
+    public string? GravatarEmail { get; set; }
 
     public bool IsActive { get; set; } = true;
 
@@ -19,4 +21,8 @@ public class UserDetailsDto
     public string? PhoneNumber { get; set; }
 
     public string? ProfilePicture { get; set; }
+    
+    public double Credits { get; set; }
+    
+    public string? DiscordId { get; set; }
 }

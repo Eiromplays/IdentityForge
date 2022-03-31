@@ -1,15 +1,16 @@
-using System.Collections.ObjectModel;
-
 namespace Shared.Authorization;
 
+using System.Collections.ObjectModel;
+
+// ReSharper disable once InconsistentNaming
 public static class EIARoles
 {
-    public const string Admin = nameof(Admin);
+    public const string Administrator = nameof(Administrator);
     public const string Basic = nameof(Basic);
 
     public static IReadOnlyList<string> DefaultRoles { get; } = new ReadOnlyCollection<string>(new[]
     {
-        Admin,
+        Administrator,
         Basic
     });
 

@@ -1,7 +1,6 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
-using FastEndpoints;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.GetUser;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.UpdateUserRoles;
 
 public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
@@ -14,16 +13,20 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override void Configure()
     {
-        Verbs(Http.GET);
+        Verbs(Http.POST);
         Routes("/users/{Id}");
+        Summary(s =>
+        {
+            s.Summary = "Update a user's assigned roles.";
+        });
         Version(1);
         Policies("RequireAdministrator");
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        var user = await _userService.GetAsync(req.Id, ct);
+        var response = await _userService.AssignRolesAsync(req.Id, req, ct);
 
-        await SendAsync(new Models.Response{ UserDetailsDto = user }, cancellation: ct);
+        await SendAsync(new Models.Response{ Message = response }, cancellation: ct);
     }
 }

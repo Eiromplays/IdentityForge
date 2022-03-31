@@ -71,7 +71,7 @@ internal class ApplicationDbSeeder
                 case EIARoles.Basic:
                     await AssignPermissionsToRoleAsync(dbContext, EIAPermissions.Basic, role);
                     break;
-                case EIARoles.Admin:
+                case EIARoles.Administrator:
                 {
                     await AssignPermissionsToRoleAsync(dbContext, EIAPermissions.Admin, role);
                     

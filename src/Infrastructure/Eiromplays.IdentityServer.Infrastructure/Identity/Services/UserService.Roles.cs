@@ -37,11 +37,11 @@ internal partial class UserService
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
 
         // Check if the user is an admin for which the admin role is getting disabled
-        if (await _userManager.IsInRoleAsync(user, EIARoles.Admin)
-            && request.UserRoles.Any(a => !a.Enabled && a.RoleName == EIARoles.Admin))
+        if (await _userManager.IsInRoleAsync(user, EIARoles.Administrator)
+            && request.UserRoles.Any(a => !a.Enabled && a.RoleName == EIARoles.Administrator))
         {
             // Get count of users in Admin Role
-            var adminCount = (await _userManager.GetUsersInRoleAsync(EIARoles.Admin)).Count;
+            var adminCount = (await _userManager.GetUsersInRoleAsync(EIARoles.Administrator)).Count;
 
             if (adminCount <= 2)
             {

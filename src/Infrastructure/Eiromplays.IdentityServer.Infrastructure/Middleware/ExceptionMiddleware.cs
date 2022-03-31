@@ -55,9 +55,10 @@ internal class ExceptionMiddleware : IMiddleware
             };
             
             errorResult.Messages.Add(exception.Message);
-            if (exception is not CustomException && exception.InnerException != null)
+            
+            if (exception is not CustomException && exception.InnerException is not null)
             {
-                while (exception.InnerException != null)
+                while (exception.InnerException is not null)
                 {
                     exception = exception.InnerException;
                 }
@@ -84,12 +85,16 @@ internal class ExceptionMiddleware : IMiddleware
             }
 
             Log.Error(
-                $"{errorResult.Exception} Request failed with Status Code {context.Response.StatusCode} and Error Id {errorId}.");
+                "{Exception} Request failed with Status Code {StatusCode} and Error Id {ErrorId}",
+                errorResult.Exception, context.Response.StatusCode, errorId);
+            
             var response = context.Response;
+            
             if (!response.HasStarted)
             {
                 response.ContentType = "application/json";
                 response.StatusCode = errorResult.StatusCode;
+                
                 await response.WriteAsync(_jsonSerializer.Serialize(errorResult));
             }
             else

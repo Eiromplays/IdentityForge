@@ -1,5 +1,4 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
-using FastEndpoints;
 using Shared.Authorization;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.UpdateUser;
@@ -16,19 +15,19 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
     public override void Configure()
     {
         Verbs(Http.PUT);
-        Routes("/users/{id}/{RevokeUserSessions?}");
+        Routes("/users/{id}");
         Version(1);
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        if (!User.IsInRole("Administrator") && !(User.GetUserId() is not { } userId || string.IsNullOrEmpty(userId)))
+        if (!User.IsInRole("Administrator") && (User.GetUserId() is not { } userId || string.IsNullOrEmpty(userId)))
         {
             await SendUnauthorizedAsync(ct);
             return;
         }
 
-        await _userService.UpdateAsync(req.UpdateUserRequest, req.UpdateUserRequest.Id);
+        await _userService.UpdateAsync(req.UpdateUserRequest, req.Id);
 
         await SendOkAsync(ct);
     }

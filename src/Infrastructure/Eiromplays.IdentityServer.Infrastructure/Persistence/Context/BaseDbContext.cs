@@ -1,5 +1,4 @@
 using System.Data;
-using Duende.Bff.EntityFramework;
 using Duende.IdentityServer.EntityFramework.Entities;
 using Duende.IdentityServer.EntityFramework.Interfaces;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Database;
@@ -56,53 +55,23 @@ public class BaseDbContext : IdentityDbContext<ApplicationUser, ApplicationRole,
     
     public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
 
-    public DbSet<PersistedGrant> PersistedGrants
-    {
-        get => Set<PersistedGrant>();
-        set { }
-    }
+    public DbSet<PersistedGrant> PersistedGrants { get; set; } = null!;
 
-    public DbSet<DeviceFlowCodes> DeviceFlowCodes 
-    {
-        get => Set<DeviceFlowCodes>();
-        set { }
-    }
-    public DbSet<Key> Keys
-    {
-        get => Set<Key>();
-        set { }
-    }
+    public DbSet<DeviceFlowCodes> DeviceFlowCodes { get; set; } = null!;
 
-    public DbSet<Client> Clients 
-    {
-        get => Set<Client>();
-        set { }
-    }
-    public DbSet<ClientCorsOrigin> ClientCorsOrigins 
-    {
-        get => Set<ClientCorsOrigin>();
-        set { }
-    }
-    public DbSet<IdentityResource> IdentityResources 
-    {
-        get => Set<IdentityResource>();
-        set { }
-    }
-    public DbSet<ApiResource> ApiResources
-    {
-        get => Set<ApiResource>();
-        set { }
-    }
-    public DbSet<ApiScope> ApiScopes
-    {
-        get => Set<ApiScope>();
-        set { }
-    }
-    public DbSet<IdentityProvider> IdentityProviders
-    {
-        get => Set<IdentityProvider>();
-        set { }
-    }
+    public DbSet<Key> Keys { get; set; } = null!;
+
+    public DbSet<Client> Clients { get; set; } = null!;
+
+    public DbSet<ClientCorsOrigin> ClientCorsOrigins { get; set; } = null!;
+
+    public DbSet<IdentityResource> IdentityResources { get; set; } = null!;
+
+    public DbSet<ApiResource> ApiResources { get; set; } = null!;
+
+    public DbSet<ApiScope> ApiScopes  { get; set; } = null!;
+
+    public DbSet<IdentityProvider> IdentityProviders  { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

@@ -1,6 +1,7 @@
 using Eiromplays.IdentityServer.Application.Common.Configurations.Database;
 using Eiromplays.IdentityServer.Application.Common.Events;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Domain.Catalog;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,9 @@ public class ApplicationDbContext : BaseDbContext
     {
     }
 
+    public DbSet<Product> Products => Set<Product>();
+    public DbSet<Brand> Brands => Set<Brand>();
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

@@ -1,6 +1,6 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.GetUser;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.GetUserById;
 
 public class Models
 {

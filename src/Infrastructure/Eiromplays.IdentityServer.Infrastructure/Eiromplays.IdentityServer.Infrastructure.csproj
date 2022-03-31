@@ -19,6 +19,7 @@
     <PackageReference Include="AspNet.Security.OAuth.Reddit" Version="6.0.4" />
     <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="6.0.4" />
     <PackageReference Include="AspNet.Security.OAuth.WordPress" Version="6.0.4" />
+    <PackageReference Include="ClosedXML" Version="0.95.4" />
     <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="Duende.BFF" Version="1.2.0-preview.1" />
     <PackageReference Include="Duende.BFF.EntityFramework" Version="1.2.0-preview.1" />
@@ -76,6 +77,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Application\Eiromplays.IdentityServer.Application\Eiromplays.IdentityServer.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Catalog\*.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

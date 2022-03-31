@@ -12,7 +12,8 @@ public class Models
         
         public UpdateUserRequest UpdateUserRequest { get; set; } = null!;
 
-        [BindFrom("revokeUserSessions")] public bool RevokeUserSessions { get; set; } = true;
+        [QueryParam] 
+        public bool RevokeUserSessions { get; set; } = true;
     }
 
     public class Validator : Validator<Request>

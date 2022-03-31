@@ -51,10 +51,10 @@ public class CustomProfileService : ProfileService<ApplicationUser>
         if (!string.IsNullOrWhiteSpace(user.GravatarEmail))
             claims.Add(new Claim("gravatar_email", user.GravatarEmail));
 
-        if (user.LastModified is not null)
-            claims.Add(new Claim("updated_at", user.LastModified.Value.ToString(CultureInfo.InvariantCulture)));
+        if (user.LastModifiedOn is not null)
+            claims.Add(new Claim("updated_at", user.LastModifiedOn.Value.ToString(CultureInfo.InvariantCulture)));
         
-        claims.Add(new Claim("created_at", user.Created.ToString(CultureInfo.InvariantCulture)));
+        claims.Add(new Claim("created_at", user.CreatedOn.ToString(CultureInfo.InvariantCulture)));
         
         context.IssuedClaims.AddRange(claims);
     }

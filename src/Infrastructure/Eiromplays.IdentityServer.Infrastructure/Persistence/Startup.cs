@@ -1,3 +1,4 @@
+using Duende.Bff;
 using Duende.Bff.EntityFramework;
 using Duende.IdentityServer.EntityFramework.Storage;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Database;
@@ -64,9 +65,10 @@ internal static class Startup
         
         Logger.Information("Current DB Provider : {DatabaseProvider}", databaseConfiguration.DatabaseProvider);
 
-        bffBuilder.AddEntityFrameworkServerSideSessions(options => options.UseDatabase(databaseConfiguration.DatabaseProvider,
+        bffBuilder.AddEntityFrameworkServerSideSessions(options => options.UseDatabase(
+            databaseConfiguration.DatabaseProvider,
             databaseConfiguration.ConnectionStringsConfiguration.SessionDbConnection));
-        
+
         bffBuilder.Services
             .Configure<DatabaseConfiguration>(configuration.GetSection(nameof(DatabaseConfiguration)))
             .AddTransient<IDatabaseInitializer, DatabaseInitializer>()
@@ -84,8 +86,7 @@ internal static class Startup
         {
             case DatabaseProvider.PostgreSql:
                 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-                return builder.UseNpgsql(connectionString, e =>
-                     e.MigrationsAssembly("Migrators.PostgreSql"));
+                return builder.UseNpgsql(connectionString, e => e.MigrationsAssembly("Migrators.PostgreSql"));
 
             case DatabaseProvider.SqlServer:
                 return builder.UseSqlServer(connectionString, e =>
