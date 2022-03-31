@@ -1,8 +1,6 @@
-using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Identity.Roles;
-using FastEndpoints;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.GetRoles;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.GetRoleById;
 
 public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
@@ -12,13 +10,13 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
     {
         _roleService = roleService;
     }
-    
+
     public override void Configure()
     {
-        Get("/roles");
+        Get("/roles/{Id}");
         Summary(s =>
         {
-            s.Summary = "Get a list of all roles.";
+            s.Summary = "Get role details.";
         });
         Version(1);
         Policies("RequireAdministrator");
@@ -26,8 +24,8 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        Response.Roles = await _roleService.GetListAsync(ct);
-        
+        Response.RoleDto = await _roleService.GetByIdAsync(req.Id);
+
         await SendAsync(Response, cancellation: ct);
     }
 }

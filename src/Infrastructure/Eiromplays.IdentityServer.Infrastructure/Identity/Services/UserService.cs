@@ -59,6 +59,7 @@ internal partial class UserService : IUserService
             .WithSpecification(spec)
             .ProjectToType<UserDetailsDto>()
             .ToListAsync(cancellationToken);
+        
         var count = await _userManager.Users
             .CountAsync(cancellationToken);
 

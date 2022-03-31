@@ -14,7 +14,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
     public override void Configure()
     {
         Verbs(Http.POST);
-        Routes("/users/{Id}");
+        Routes("/users/{Id}/roles");
         Summary(s =>
         {
             s.Summary = "Update a user's assigned roles.";
@@ -25,8 +25,8 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        var response = await _userService.AssignRolesAsync(req.Id, req, ct);
+        Response.Message = await _userService.AssignRolesAsync(req.Id, req, ct);
 
-        await SendAsync(new Models.Response{ Message = response }, cancellation: ct);
+        await SendAsync(Response, cancellation: ct);
     }
 }

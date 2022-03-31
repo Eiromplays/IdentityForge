@@ -1,7 +1,6 @@
 using Eiromplays.IdentityServer.Application.Identity.Roles;
-using FastEndpoints;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.GetRole;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.GetRoleByIdWithPermissions;
 
 public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
@@ -14,16 +13,19 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override void Configure()
     {
-        Verbs(Http.GET);
-        Routes("/roles/{Id}");
+        Get("/roles/{Id}/permissions");
+        Summary(s =>
+        {
+            s.Summary = "Get role details with its permissions.";
+        });
         Version(1);
         Policies("RequireAdministrator");
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        var role = await _roleService.GetByIdAsync(req.Id);
+        Response.RoleDto = await _roleService.GetByIdWithPermissionsAsync(req.Id, ct);
 
-        await SendAsync(new Models.Response {RoleDto = role}, cancellation: ct);
+        await SendAsync(Response, cancellation: ct);
     }
 }

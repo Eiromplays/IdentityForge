@@ -20,7 +20,7 @@ internal partial class UserService
         return verificationUri;
     }
 
-    public async Task<string> ConfirmEmailAsync(string userId, string code, string tenant, CancellationToken cancellationToken)
+    public async Task<string> ConfirmEmailAsync(string userId, string code, CancellationToken cancellationToken)
     {
         var user = await _userManager.Users
             .Where(u => u.Id == userId && !u.EmailConfirmed)
@@ -32,7 +32,7 @@ internal partial class UserService
         var result = await _userManager.ConfirmEmailAsync(user, code);
 
         return result.Succeeded
-            ? string.Format(_t["Account Confirmed for E-Mail {0}. You can now use the /api/tokens endpoint to generate JWT."], user.Email)
+            ? string.Format(_t["Account Confirmed for E-Mail {0}."], user.Email)
             : throw new InternalServerException(string.Format(_t["An error occurred while confirming {0}"], user.Email));
     }
 
@@ -46,8 +46,8 @@ internal partial class UserService
 
         return result.Succeeded
             ? user.EmailConfirmed
-                ? string.Format(_t["Account Confirmed for Phone Number {0}. You can now use the /api/tokens endpoint to generate JWT."], user.PhoneNumber)
-                : string.Format(_t["Account Confirmed for Phone Number {0}. You should confirm your E-mail before using the /api/tokens endpoint to generate JWT."], user.PhoneNumber)
+                ? string.Format(_t["Account Confirmed for Phone Number {0}."], user.PhoneNumber)
+                : string.Format(_t["Account Confirmed for Phone Number {0}. You should confirm your E-mail before continuing."], user.PhoneNumber)
             : throw new InternalServerException(string.Format(_t["An error occurred while confirming {0}"], user.PhoneNumber));
     }
 }

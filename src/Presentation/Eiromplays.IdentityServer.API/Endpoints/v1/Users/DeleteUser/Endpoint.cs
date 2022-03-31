@@ -24,6 +24,6 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
     {
         //var result = await _userService.Delete(req.Id);
 
-        await SendAsync(new Models.Response{  }, cancellation: ct);
+        await SendAsync(Response, cancellation: ct);
     }
 }

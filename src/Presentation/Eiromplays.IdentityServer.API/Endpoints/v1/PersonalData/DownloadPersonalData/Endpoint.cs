@@ -8,7 +8,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.PersonalData.DownloadPerson
 public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
     private readonly IUserService _userService;
-    
+
     public Endpoint(IUserService userService)
     {
         _userService = userService;

@@ -1,6 +1,6 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.GetUserRoles;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.ResetPassword;
 
 public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
@@ -13,19 +13,19 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override void Configure()
     {
-        Verbs(Http.GET);
-        Routes("/users/{Id}/roles");
+        Verbs(Http.POST);
+        Routes("/users/forgot-password");
         Summary(s =>
         {
-            s.Summary = "Get a user's roles.";
+            s.Summary = "Request a password reset email for a user.";
         });
         Version(1);
-        Policies("RequireAdministrator");
+        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        Response.UserRoles = await _userService.GetRolesAsync(req.Id, ct);
+        Response.Message = await _userService.ForgotPasswordAsync(req.ForgotPasswordRequest, BaseURL);
 
         await SendAsync(Response, cancellation: ct);
     }

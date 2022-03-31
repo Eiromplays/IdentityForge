@@ -11,6 +11,6 @@ public class Models
     
     public class Response
     {
-        public UserDetailsDto? UserDetailsDto { get; set; }
+        public UserDetailsDto? UserDetails { get; set; }
     }
 }

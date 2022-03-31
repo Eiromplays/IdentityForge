@@ -1,6 +1,6 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.GetUserRoles;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.ConfirmEmail;
 
 public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
@@ -14,18 +14,18 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
     public override void Configure()
     {
         Verbs(Http.GET);
-        Routes("/users/{Id}/roles");
+        Routes("/users/confirm-email");
         Summary(s =>
         {
-            s.Summary = "Get a user's roles.";
+            s.Summary = "Confirm email address for a user.";
         });
         Version(1);
-        Policies("RequireAdministrator");
+        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        Response.UserRoles = await _userService.GetRolesAsync(req.Id, ct);
+        Response.Message = await _userService.ConfirmEmailAsync(req.UserId, req.Code, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

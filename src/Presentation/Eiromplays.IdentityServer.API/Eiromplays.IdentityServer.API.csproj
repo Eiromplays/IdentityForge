@@ -40,9 +40,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Endpoints\v1\Brands" />
     <Folder Include="Files" />
     <Folder Include="wwwroot" />
-    <Folder Include="wwwroot\Images\ProfilePictures" />
   </ItemGroup>
 
   <ItemGroup>

@@ -11,6 +11,6 @@ public class Models
     
     public class Response
     {
-        public List<UserRoleDto>? UserRolesDto { get; set; }
+        public List<UserRoleDto>? UserRoles { get; set; }
     }
 }

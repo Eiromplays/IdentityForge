@@ -1,6 +1,6 @@
 using Eiromplays.IdentityServer.Application.Identity.Roles;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.GetRole;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.GetRoleById;
 
 public class Models
 {
