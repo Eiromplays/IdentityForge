@@ -1,6 +1,5 @@
 using Eiromplays.IdentityServer.Application.Dashboard;
 using MediatR;
-using Shared.Authorization;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Dashboard.GetStats;
 
@@ -15,23 +14,19 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override void Configure()
     {
-        Verbs(Http.GET);
-        Routes("/dashboard/stats");
+        Get("/dashboard/stats");
         Summary(s =>
         {
             s.Summary = "Get statistics for the dashboard.";
         });
         Version(1);
-        Permissions(EIAAction.View, EIAResource.Dashboard);
+        Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.Dashboard));
     }
 
     public override async Task<Models.Response> HandleAsync(Models.Request request, CancellationToken cancellationToken)
     {
-        var response = await _mediator.Send(new GetStatsRequest(), cancellationToken);
-        
-        return new Models.Response
-        {
-            Stats = response
-        };
+        Response.Stats = await _mediator.Send(new GetStatsRequest(), cancellationToken);
+
+        return Response;
     }
 }

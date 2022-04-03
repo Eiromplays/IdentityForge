@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             s.Summary = "Delete a role.";
         });
         Version(1);
-        Policies("RequireAdministrator");
+        Policies(EIAPermission.NameFor(EIAAction.Delete, EIAResource.Roles));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)

@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             s.Summary = "Get role details.";
         });
         Version(1);
-        Policies("RequireAdministrator");
+        Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.Roles));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)

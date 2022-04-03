@@ -22,7 +22,7 @@ public interface IUserService : ITransientService
     Task<List<UserRoleDto>> GetRolesAsync(string userId, CancellationToken cancellationToken);
     Task<string> AssignRolesAsync(string userId, UserRolesRequest request, CancellationToken cancellationToken);
 
-    Task<List<string>> GetPermissionsAsync(string userId, CancellationToken cancellationToken);
+    Task<List<string>> GetPermissionsAsync(string userId, CancellationToken cancellationToken, bool includeUserClaims = true);
     Task<bool> HasPermissionAsync(string userId, string permission, CancellationToken cancellationToken = default);
     Task InvalidatePermissionCacheAsync(string userId, CancellationToken cancellationToken);
 

@@ -13,14 +13,13 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override void Configure()
     {
-        Verbs(Http.GET);
-        Routes("/users/{Id}");
+        Get("/users/{Id}");
         Summary(s =>
         {
             s.Summary = "Get a user's details";
         });
         Version(1);
-        Policies("RequireAdministrator");
+        Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.Users));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)

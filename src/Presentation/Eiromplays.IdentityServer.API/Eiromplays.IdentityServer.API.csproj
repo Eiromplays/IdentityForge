@@ -40,7 +40,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Endpoints\v1\Brands" />
     <Folder Include="Files" />
     <Folder Include="wwwroot" />
   </ItemGroup>

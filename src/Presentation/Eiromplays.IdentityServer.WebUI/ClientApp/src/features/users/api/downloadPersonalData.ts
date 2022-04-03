@@ -9,7 +9,7 @@ export type DownloadPersonalDataDTO = {
 };
 
 export const downloadPersonalData = ({ userId }: DownloadPersonalDataDTO): Promise<any> => {
-  return axios.get(`/user-personal-data/${userId}/download`);
+  return axios.get(`/users/${userId}/download-personal-data`);
 };
 
 type UsePersonalDataOptions = {

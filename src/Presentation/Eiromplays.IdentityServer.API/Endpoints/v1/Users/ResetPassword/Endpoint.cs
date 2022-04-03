@@ -13,8 +13,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override void Configure()
     {
-        Verbs(Http.POST);
-        Routes("/users/forgot-password");
+        Post("/users/forgot-password");
         Summary(s =>
         {
             s.Summary = "Request a password reset email for a user.";

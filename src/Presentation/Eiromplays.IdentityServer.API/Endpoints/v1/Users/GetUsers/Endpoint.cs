@@ -1,9 +1,10 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
 using FastEndpoints;
+using Shared.Authorization;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.GetUsers;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : EndpointWithoutRequest<Models.Response>
 {
     private readonly IUserService _userService;
     
@@ -14,15 +15,18 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
     
     public override void Configure()
     {
-        Verbs(Http.GET);
-        Routes("/users");
+        Get("/users");
         Version(1);
-        Policies("RequireAdministrator");
+        Summary(s =>
+        {
+            s.Summary = "Get list of all users.";
+        });
+        Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.Users));
     }
 
-    public override async Task HandleAsync(Models.Request req, CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken ct)
     {
-        Response.Users = await _userService.SearchAsync(req, ct);
+        Response.Users = await _userService.GetListAsync(ct);
         
         await SendAsync(Response, cancellation: ct);
     }

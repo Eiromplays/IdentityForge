@@ -13,14 +13,13 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override void Configure()
     {
-        Verbs(Http.POST);
-        Routes("/users/{Id}/roles");
+        Post("/users/{Id}/roles");
         Summary(s =>
         {
             s.Summary = "Update a user's assigned roles.";
         });
         Version(1);
-        Policies("RequireAdministrator");
+        Policies(EIAPermission.NameFor(EIAAction.Update, EIAResource.UserRoles));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)

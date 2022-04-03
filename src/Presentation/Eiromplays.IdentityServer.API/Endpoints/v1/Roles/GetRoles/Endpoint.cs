@@ -1,6 +1,4 @@
-using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Identity.Roles;
-using FastEndpoints;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.GetRoles;
 
@@ -21,7 +19,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             s.Summary = "Get a list of all roles.";
         });
         Version(1);
-        Policies("RequireAdministrator");
+        Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.Roles));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)

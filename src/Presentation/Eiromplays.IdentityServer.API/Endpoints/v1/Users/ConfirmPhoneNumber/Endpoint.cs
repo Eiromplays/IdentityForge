@@ -13,8 +13,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override void Configure()
     {
-        Verbs(Http.GET);
-        Routes("/users/confirm-phone-number");
+        Get("/users/confirm-phone-number");
         Summary(s =>
         {
             s.Summary = "Confirm phone number for a user.";

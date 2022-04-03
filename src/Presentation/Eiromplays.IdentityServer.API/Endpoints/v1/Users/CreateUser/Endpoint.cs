@@ -1,7 +1,4 @@
-using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Identity.Users;
-using Eiromplays.IdentityServer.Infrastructure.Common.Extensions;
-using FastEndpoints;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.CreateUser;
 
@@ -16,10 +13,13 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override void Configure()
     {
-        Verbs(Http.POST);
-        Routes("/users");
+        Post("/users");
+        Summary(s =>
+        {
+            s.Summary = "Creates a new user.";
+        });
         Version(1);
-        Policies("RequireAdministrator");
+        Policies(EIAPermission.NameFor(EIAAction.Create, EIAResource.Users));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)

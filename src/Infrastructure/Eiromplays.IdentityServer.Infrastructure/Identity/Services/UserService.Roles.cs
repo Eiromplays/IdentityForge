@@ -13,7 +13,11 @@ internal partial class UserService
         var userRoles = new List<UserRoleDto>();
 
         var user = await _userManager.FindByIdAsync(userId);
+        
+        _ = user ?? throw new NotFoundException(_t["User Not Found."]);
+        
         var roles = await _roleManager.Roles.AsNoTracking().ToListAsync(cancellationToken);
+        
         foreach (var role in roles)
         {
             userRoles.Add(new UserRoleDto

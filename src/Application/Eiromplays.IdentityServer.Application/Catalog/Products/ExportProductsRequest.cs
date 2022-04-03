@@ -28,7 +28,7 @@ public class ExportProductsRequestHandler : IRequestHandler<ExportProductsReques
     }
 }
 
-public class ExportProductsWithBrandsSpecification : EntitiesByBaseFilterSpec<Product, ProductExportDto>
+public sealed class ExportProductsWithBrandsSpecification : EntitiesByBaseFilterSpec<Product, ProductExportDto>
 {
     public ExportProductsWithBrandsSpecification(ExportProductsRequest request)
         : base(request) =>

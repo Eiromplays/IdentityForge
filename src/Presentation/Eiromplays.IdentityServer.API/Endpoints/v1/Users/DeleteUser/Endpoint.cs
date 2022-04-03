@@ -1,5 +1,4 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
-using FastEndpoints;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.DeleteUser;
 
@@ -14,10 +13,13 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override void Configure()
     {
-        Verbs(Http.DELETE);
-        Routes("/users/{Id}");
+        Delete("/users/{Id}");
+        Summary(s =>
+        {
+            s.Summary = "Delete a user.";
+        });
         Version(1);
-        Policies("RequireAdministrator");
+        Policies(EIAPermission.NameFor(EIAAction.Delete, EIAResource.Users));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)

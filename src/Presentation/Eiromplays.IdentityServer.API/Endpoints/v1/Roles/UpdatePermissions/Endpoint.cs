@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             s.Summary = "Update a role's permissions.";
         });
         Version(1);
-        Policies("RequireAdministrator");
+        Policies(EIAPermission.NameFor(EIAAction.Update, EIAResource.RoleClaims));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)

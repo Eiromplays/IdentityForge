@@ -7,14 +7,16 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
 internal partial class UserService
 {
-    public async Task<List<string>> GetPermissionsAsync(string userId, CancellationToken cancellationToken)
+    public async Task<List<string>> GetPermissionsAsync(string userId, CancellationToken cancellationToken, bool includeUserClaims = true)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
 
         var userRoles = await _userManager.GetRolesAsync(user);
+        
         var permissions = new List<string>();
+        
         foreach (var role in await _roleManager.Roles
             .Where(r => userRoles.Contains(r.Name))
             .ToListAsync(cancellationToken))
@@ -24,6 +26,12 @@ internal partial class UserService
                 .Select(rc => rc.ClaimValue)
                 .ToListAsync(cancellationToken));
         }
+        
+        if (includeUserClaims)
+            permissions.AddRange(await _db.UserClaims
+                .Where(rc => rc.UserId == user.Id && rc.ClaimType == EIAClaims.Permission)
+                .Select(rc => rc.ClaimValue)
+                .ToListAsync(cancellationToken));
 
         return permissions.Distinct().ToList();
     }
