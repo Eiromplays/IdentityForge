@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.DownloadPersonalData;
@@ -26,9 +27,9 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
     {
         var user = await _userService.GetAsync(req.Id, ct);
 
-        //var personalData = await _userService.(user.Id);
+        var personalData = await _userService.GetPersonalDataAsync(user.Id);
 
-        /*await SendBytesAsync(JsonSerializer.SerializeToUtf8Bytes(personalData), "PersonalData.json",
-            cancellation: ct);*/
+        await SendBytesAsync(JsonSerializer.SerializeToUtf8Bytes(personalData, new JsonSerializerOptions{WriteIndented = true}), "PersonalData.json",
+            cancellation: ct);
     }
 }

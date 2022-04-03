@@ -38,4 +38,8 @@ public interface IUserService : ITransientService
     Task<string> ForgotPasswordAsync(ForgotPasswordRequest request, string origin);
     Task<string> ResetPasswordAsync(ResetPasswordRequest request);
     Task ChangePasswordAsync(ChangePasswordRequest request, string userId);
+
+    Task<List<UserLoginInfoDto>> GetLoginsAsync(string userId);
+    
+    Task<Dictionary<string, string>> GetPersonalDataAsync(string userId, bool includeLogins = true);
 }
