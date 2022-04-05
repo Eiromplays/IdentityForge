@@ -1,5 +1,4 @@
 using MediatR;
-using Shared.Authorization;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Products.CreateProduct;
 

@@ -66,7 +66,6 @@ internal partial class UserService : IUserService
         return new PaginationResponse<UserDetailsDto>(users, count, filter.PageNumber, filter.PageSize);
     }
     
-
     public async Task<bool> ExistsWithNameAsync(string name)
     {
         return await _userManager.FindByNameAsync(name) is not null;

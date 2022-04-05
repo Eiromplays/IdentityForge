@@ -50,7 +50,7 @@ internal class ApplicationDbSeeder
     {
         foreach (var dataRole in _identityData.Roles)
         {
-            if (await _roleManager.Roles.SingleOrDefaultAsync(r => r.Name == dataRole.Name)
+            if (await _roleManager.Roles.AsNoTracking().SingleOrDefaultAsync(r => r.Name == dataRole.Name)
                 is not { } role)
             {
                 // Create the role
@@ -105,7 +105,7 @@ internal class ApplicationDbSeeder
     {
         foreach (var dataUser in _identityData.Users)
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(u =>
+            var user = await _userManager.Users.AsNoTracking().FirstOrDefaultAsync(u =>
                 u.Email == dataUser.Email && u.UserName == dataUser.UserName);
             
             if (user is not null) continue;
@@ -133,7 +133,7 @@ internal class ApplicationDbSeeder
     {
         foreach (var resource in _identityServerData.IdentityResources)
         {
-            var exits = await dbContext.IdentityResources.AnyAsync(a => a.Name == resource.Name);
+            var exits = await dbContext.IdentityResources.AsNoTracking().AnyAsync(a => a.Name == resource.Name);
 
             if (exits)
             {
@@ -168,7 +168,7 @@ internal class ApplicationDbSeeder
     {
         foreach (var resource in _identityServerData.ApiResources)
         {
-            var exits = await dbContext.ApiResources.AnyAsync(a => a.Name == resource.Name);
+            var exits = await dbContext.ApiResources.AsNoTracking().AnyAsync(a => a.Name == resource.Name);
 
             if (exits)
             {
@@ -190,7 +190,7 @@ internal class ApplicationDbSeeder
     {
         foreach (var client in _identityServerData.Clients)
         {
-            var exits = await dbContext.Clients.AnyAsync(a => a.ClientId == client.ClientId);
+            var exits = await dbContext.Clients.AsNoTracking().AnyAsync(a => a.ClientId == client.ClientId);
 
             if (exits)
             {

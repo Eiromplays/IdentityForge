@@ -1,6 +1,6 @@
-using System.Collections.ObjectModel;
-
 namespace Shared.Authorization;
+
+using System.Collections.ObjectModel;
 
 public static class EIAAction
 {
@@ -17,7 +17,6 @@ public static class EIAAction
 
 public static class EIAResource
 {
-    public const string Tenants = nameof(Tenants);
     public const string Dashboard = nameof(Dashboard);
     public const string Hangfire = nameof(Hangfire);
     public const string Users = nameof(Users);
@@ -26,6 +25,7 @@ public static class EIAResource
     public const string RoleClaims = nameof(RoleClaims);
     public const string Products = nameof(Products);
     public const string Brands = nameof(Brands);
+    public const string PersistedGrants = nameof(PersistedGrants);
 }
 
 
@@ -62,10 +62,12 @@ public static class EIAPermissions
         new("Delete Brands", EIAAction.Delete, EIAResource.Brands),
         new("Generate Brands", EIAAction.Generate, EIAResource.Brands),
         new("Clean Brands", EIAAction.Clean, EIAResource.Brands),
-        new("View Tenants", EIAAction.View, EIAResource.Tenants, IsRoot: true),
-        new("Create Tenants", EIAAction.Create, EIAResource.Tenants, IsRoot: true),
-        new("Update Tenants", EIAAction.Update, EIAResource.Tenants, IsRoot: true),
-        new("Upgrade Tenant Subscription", EIAAction.UpgradeSubscription, EIAResource.Tenants, IsRoot: true),
+        new("View Persisted Grants", EIAAction.View, EIAResource.PersistedGrants),
+        new("Search Persisted Grants", EIAAction.Search, EIAResource.PersistedGrants),
+        new("Create Persisted Grants", EIAAction.Create, EIAResource.PersistedGrants),
+        new("Update Persisted Grants", EIAAction.Update, EIAResource.PersistedGrants),
+        new("Delete Persisted Grants", EIAAction.Delete, EIAResource.PersistedGrants),
+        new("Export Persisted Grants", EIAAction.Export, EIAResource.PersistedGrants),
     };
 
     public static IReadOnlyList<EIAPermission> All { get; } = new ReadOnlyCollection<EIAPermission>(_all);

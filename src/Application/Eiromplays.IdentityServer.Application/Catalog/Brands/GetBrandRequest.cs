@@ -7,7 +7,7 @@ public class GetBrandRequest : IRequest<BrandDto>
     public GetBrandRequest(Guid id) => Id = id;
 }
 
-public class BrandByIdSpec : Specification<Brand, BrandDto>, ISingleResultSpecification
+public sealed class BrandByIdSpec : Specification<Brand, BrandDto>, ISingleResultSpecification
 {
     public BrandByIdSpec(Guid id) =>
         Query.Where(p => p.Id == id);

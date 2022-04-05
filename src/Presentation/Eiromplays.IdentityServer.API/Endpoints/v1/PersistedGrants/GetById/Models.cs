@@ -1,6 +1,6 @@
 using Eiromplays.IdentityServer.API.Grants;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Grants.GetGrant;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.PersistedGrants.GetById;
 
 public class Models
 {

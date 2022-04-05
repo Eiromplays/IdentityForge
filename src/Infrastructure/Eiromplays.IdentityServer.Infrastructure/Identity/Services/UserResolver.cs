@@ -5,7 +5,7 @@ using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 
-namespace Eiromplays.IdentityServer.Infrastructure.Services;
+namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
 public class UserResolver : IUserResolver<ApplicationUser>
 {
