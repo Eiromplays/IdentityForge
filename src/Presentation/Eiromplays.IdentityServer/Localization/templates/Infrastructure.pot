@@ -1,78 +1,78 @@
-#: Infrastructure\Identity\RoleService.cs:61
+#: Infrastructure\Identity\Services\RoleService.cs:61
 #. : throw new NotFoundException(_t["Role Not Found"]);
-#: Infrastructure\Identity\RoleService.cs:97
+#: Infrastructure\Identity\Services\RoleService.cs:97
 #. _ = role ?? throw new NotFoundException(_t["Role Not Found"]);
-#: Infrastructure\Identity\RoleService.cs:123
+#: Infrastructure\Identity\Services\RoleService.cs:123
 #. _ = role ?? throw new NotFoundException(_t["Role Not Found"]);
-#: Infrastructure\Identity\RoleService.cs:172
+#: Infrastructure\Identity\Services\RoleService.cs:172
 #. _ = role ?? throw new NotFoundException(_t["Role Not Found"]);
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.RoleService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.RoleService"
 msgid "Role Not Found"
 msgstr ""
 
-#: Infrastructure\Identity\RoleService.cs:85
+#: Infrastructure\Identity\Services\RoleService.cs:85
 #. throw new InternalServerException(_t["Register role failed"], result.GetErrors(_t));
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.RoleService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.RoleService"
 msgid "Register role failed"
 msgstr ""
 
-#: Infrastructure\Identity\RoleService.cs:90
+#: Infrastructure\Identity\Services\RoleService.cs:90
 #. return string.Format(_t["Role {0} Created."], request.Name);
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.RoleService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.RoleService"
 msgid "Role {0} Created."
 msgstr ""
 
-#: Infrastructure\Identity\RoleService.cs:101
+#: Infrastructure\Identity\Services\RoleService.cs:101
 #. throw new ConflictException(string.Format(_t["Not allowed to modify {0} Role."], role.Name));
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.RoleService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.RoleService"
 msgid "Not allowed to modify {0} Role."
 msgstr ""
 
-#: Infrastructure\Identity\RoleService.cs:111
+#: Infrastructure\Identity\Services\RoleService.cs:111
 #. throw new InternalServerException(_t["Update role failed"], result.GetErrors(_t));
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.RoleService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.RoleService"
 msgid "Update role failed"
 msgstr ""
 
-#: Infrastructure\Identity\RoleService.cs:116
+#: Infrastructure\Identity\Services\RoleService.cs:116
 #. return string.Format(_t["Role {0} Updated."], role.Name);
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.RoleService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.RoleService"
 msgid "Role {0} Updated."
 msgstr ""
 
-#: Infrastructure\Identity\RoleService.cs:126
+#: Infrastructure\Identity\Services\RoleService.cs:126
 #. throw new ConflictException(_t["Not allowed to modify Permissions for this Role."]);
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.RoleService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.RoleService"
 msgid "Not allowed to modify Permissions for this Role."
 msgstr ""
 
-#: Infrastructure\Identity\RoleService.cs:143
+#: Infrastructure\Identity\Services\RoleService.cs:143
 #. throw new InternalServerException(_t["Update permissions failed."], removeResult.GetErrors(_t));
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.RoleService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.RoleService"
 msgid "Update permissions failed."
 msgstr ""
 
-#: Infrastructure\Identity\RoleService.cs:165
+#: Infrastructure\Identity\Services\RoleService.cs:165
 #. return _t["Permissions Updated."];
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.RoleService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.RoleService"
 msgid "Permissions Updated."
 msgstr ""
 
-#: Infrastructure\Identity\RoleService.cs:176
+#: Infrastructure\Identity\Services\RoleService.cs:176
 #. throw new ConflictException(string.Format(_t["Not allowed to delete {0} Role."], role.Name));
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.RoleService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.RoleService"
 msgid "Not allowed to delete {0} Role."
 msgstr ""
 
-#: Infrastructure\Identity\RoleService.cs:181
+#: Infrastructure\Identity\Services\RoleService.cs:181
 #. throw new ConflictException(string.Format(_t["Not allowed to delete {0} Role as it is being used."], role.Name));
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.RoleService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.RoleService"
 msgid "Not allowed to delete {0} Role as it is being used."
 msgstr ""
 
-#: Infrastructure\Identity\RoleService.cs:188
+#: Infrastructure\Identity\Services\RoleService.cs:188
 #. return string.Format(_t["Role {0} Deleted."], role.Name);
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.RoleService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.RoleService"
 msgid "Role {0} Deleted."
 msgstr ""
 
@@ -120,171 +120,171 @@ msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.TokenService"
 msgid "Invalid Token."
 msgstr ""
 
-#: Infrastructure\Identity\UserService.Confirm.cs:34
+#: Infrastructure\Identity\Services\UserService.Confirm.cs:34
 #. _ = user ?? throw new InternalServerException(_t["An error occurred while confirming E-Mail."]);
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "An error occurred while confirming E-Mail."
 msgstr ""
 
-#: Infrastructure\Identity\UserService.Confirm.cs:40
+#: Infrastructure\Identity\Services\UserService.Confirm.cs:40
 #. ? string.Format(_t["Account Confirmed for E-Mail {0}. You can now use the /api/tokens endpoint to generate JWT."], user.Email)
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "Account Confirmed for E-Mail {0}. You can now use the /api/tokens endpoint to generate JWT."
 msgstr ""
 
-#: Infrastructure\Identity\UserService.Confirm.cs:41
+#: Infrastructure\Identity\Services\UserService.Confirm.cs:41
 #. : throw new InternalServerException(string.Format(_t["An error occurred while confirming {0}"], user.Email));
-#: Infrastructure\Identity\UserService.Confirm.cs:58
+#: Infrastructure\Identity\Services\UserService.Confirm.cs:58
 #. : throw new InternalServerException(string.Format(_t["An error occurred while confirming {0}"], user.PhoneNumber));
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "An error occurred while confirming {0}"
 msgstr ""
 
-#: Infrastructure\Identity\UserService.Confirm.cs:50
+#: Infrastructure\Identity\Services\UserService.Confirm.cs:50
 #. _ = user ?? throw new InternalServerException(_t["An error occurred while confirming Mobile Phone."]);
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "An error occurred while confirming Mobile Phone."
 msgstr ""
 
-#: Infrastructure\Identity\UserService.Confirm.cs:56
+#: Infrastructure\Identity\Services\UserService.Confirm.cs:56
 #. ? string.Format(_t["Account Confirmed for Phone Number {0}. You can now use the /api/tokens endpoint to generate JWT."], user.PhoneNumber)
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "Account Confirmed for Phone Number {0}. You can now use the /api/tokens endpoint to generate JWT."
 msgstr ""
 
-#: Infrastructure\Identity\UserService.Confirm.cs:57
+#: Infrastructure\Identity\Services\UserService.Confirm.cs:57
 #. : string.Format(_t["Account Confirmed for Phone Number {0}. You should confirm your E-mail before using the /api/tokens endpoint to generate JWT."], user.PhoneNumber)
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "Account Confirmed for Phone Number {0}. You should confirm your E-mail before using the /api/tokens endpoint to generate JWT."
 msgstr ""
 
-#: Infrastructure\Identity\UserService.CreateUpdate.cs:28
+#: Infrastructure\Identity\Services\UserService.CreateUpdate.cs:28
 #. throw new InternalServerException(_t["Invalid objectId"]);
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "Invalid objectId"
 msgstr ""
 
-#: Infrastructure\Identity\UserService.CreateUpdate.cs:50
+#: Infrastructure\Identity\Services\UserService.CreateUpdate.cs:50
 #. throw new InternalServerException(string.Format(_t["Username or Email not valid."]));
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "Username or Email not valid."
 msgstr ""
 
-#: Infrastructure\Identity\UserService.CreateUpdate.cs:56
+#: Infrastructure\Identity\Services\UserService.CreateUpdate.cs:56
 #. throw new InternalServerException(string.Format(_t["Username {0} is already taken."], username));
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "Username {0} is already taken."
 msgstr ""
 
-#: Infrastructure\Identity\UserService.CreateUpdate.cs:64
+#: Infrastructure\Identity\Services\UserService.CreateUpdate.cs:64
 #. throw new InternalServerException(string.Format(_t["Email {0} is already taken."], email));
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "Email {0} is already taken."
 msgstr ""
 
-#: Infrastructure\Identity\UserService.CreateUpdate.cs:98
+#: Infrastructure\Identity\Services\UserService.CreateUpdate.cs:98
 #. throw new InternalServerException(_t["Validation Errors Occurred."], result.GetErrors(_t));
-#: Infrastructure\Identity\UserService.CreateUpdate.cs:119
+#: Infrastructure\Identity\Services\UserService.CreateUpdate.cs:119
 #. throw new InternalServerException(_t["Validation Errors Occurred."], result.GetErrors(_t));
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "Validation Errors Occurred."
 msgstr ""
 
-#: Infrastructure\Identity\UserService.CreateUpdate.cs:124
+#: Infrastructure\Identity\Services\UserService.CreateUpdate.cs:124
 #. var messages = new List<string> { string.Format(_t["User {0} Registered."], user.UserName) };
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "User {0} Registered."
 msgstr ""
 
-#: Infrastructure\Identity\UserService.CreateUpdate.cs:138
+#: Infrastructure\Identity\Services\UserService.CreateUpdate.cs:138
 #. _t["Confirm Registration"],
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "Confirm Registration"
 msgstr ""
 
-#: Infrastructure\Identity\UserService.CreateUpdate.cs:153
+#: Infrastructure\Identity\Services\UserService.CreateUpdate.cs:153
 #. _ = user ?? throw new NotFoundException(_t["User Not Found."]);
-#: Infrastructure\Identity\UserService.cs:132
+#: Infrastructure\Identity\Services\UserService.cs:132
 #. _ = user ?? throw new NotFoundException(_t["User Not Found."]);
-#: Infrastructure\Identity\UserService.cs:141
+#: Infrastructure\Identity\Services\UserService.cs:141
 #. _ = user ?? throw new NotFoundException(_t["User Not Found."]);
-#: Infrastructure\Identity\UserService.Password.cs:54
+#: Infrastructure\Identity\Services\UserService.Password.cs:54
 #. _ = user ?? throw new NotFoundException(_t["User Not Found."]);
-#: Infrastructure\Identity\UserService.Permissions.cs:14
+#: Infrastructure\Identity\Services\UserService.Permissions.cs:14
 #. _ = user ?? throw new NotFoundException(_t["User Not Found."]);
-#: Infrastructure\Identity\UserService.Roles.cs:38
+#: Infrastructure\Identity\Services\UserService.Roles.cs:38
 #. _ = user ?? throw new NotFoundException(_t["User Not Found."]);
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "User Not Found."
 msgstr ""
 
-#: Infrastructure\Identity\UserService.CreateUpdate.cs:183
+#: Infrastructure\Identity\Services\UserService.CreateUpdate.cs:183
 #. throw new InternalServerException(_t["Update profile failed"], result.GetErrors(_t));
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "Update profile failed"
 msgstr ""
 
-#: Infrastructure\Identity\UserService.cs:112
+#: Infrastructure\Identity\Services\UserService.cs:112
 #. throw new UnauthorizedException(_t["Invalid Tenant."]);
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "Invalid Tenant."
 msgstr ""
 
-#: Infrastructure\Identity\UserService.cs:146
+#: Infrastructure\Identity\Services\UserService.cs:146
 #. throw new ConflictException(_t["Administrators Profile's Status cannot be toggled"]);
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "Administrators Profile's Status cannot be toggled"
 msgstr ""
 
-#: Infrastructure\Identity\UserService.Password.cs:18
+#: Infrastructure\Identity\Services\UserService.Password.cs:18
 #. throw new InternalServerException(_t["An Error has occurred!"]);
-#: Infrastructure\Identity\UserService.Password.cs:41
+#: Infrastructure\Identity\Services\UserService.Password.cs:41
 #. _ = user ?? throw new InternalServerException(_t["An Error has occurred!"]);
-#: Infrastructure\Identity\UserService.Password.cs:47
+#: Infrastructure\Identity\Services\UserService.Password.cs:47
 #. : throw new InternalServerException(_t["An Error has occurred!"]);
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "An Error has occurred!"
 msgstr ""
 
-#: Infrastructure\Identity\UserService.Password.cs:29
+#: Infrastructure\Identity\Services\UserService.Password.cs:29
 #. _t["Reset Password"],
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "Reset Password"
 msgstr ""
 
-#: Infrastructure\Identity\UserService.Password.cs:33
+#: Infrastructure\Identity\Services\UserService.Password.cs:33
 #. return _t["Password Reset Mail has been sent to your authorized Email."];
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "Password Reset Mail has been sent to your authorized Email."
 msgstr ""
 
-#: Infrastructure\Identity\UserService.Password.cs:46
+#: Infrastructure\Identity\Services\UserService.Password.cs:46
 #. ? _t["Password Reset Successful!"]
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "Password Reset Successful!"
 msgstr ""
 
-#: Infrastructure\Identity\UserService.Password.cs:60
+#: Infrastructure\Identity\Services\UserService.Password.cs:60
 #. throw new InternalServerException(_t["Change password failed"], result.GetErrors(_t));
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "Change password failed"
 msgstr ""
 
-#: Infrastructure\Identity\UserService.Roles.cs:53
+#: Infrastructure\Identity\Services\UserService.Roles.cs:53
 #. throw new ConflictException(_t["Cannot Remove Admin Role From Root Tenant Admin."]);
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "Cannot Remove Admin Role From Root Tenant Admin."
 msgstr ""
 
-#: Infrastructure\Identity\UserService.Roles.cs:58
+#: Infrastructure\Identity\Services\UserService.Roles.cs:58
 #. throw new ConflictException(_t["Tenant should have at least 2 Admins."]);
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "Tenant should have at least 2 Admins."
 msgstr ""
 
-#: Infrastructure\Identity\UserService.Roles.cs:83
+#: Infrastructure\Identity\Services\UserService.Roles.cs:83
 #. return _t["User Roles Updated Successfully."];
-msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "User Roles Updated Successfully."
 msgstr ""
 

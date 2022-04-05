@@ -2,5 +2,16 @@
 
 public interface IPersistedGrantService : ITransientService
 {
-    Task<List<PersistedGrantDto>> GetListAsync(CancellationToken cancellationToken);
+    Task<PaginationResponse<PersistedGrantDto>> SearchAsync(PersistedGrantListFilter filter,
+        CancellationToken cancellationToken = default);
+    
+    Task<List<PersistedGrantDto>> GetListAsync(CancellationToken cancellationToken = default);
+
+    Task<PersistedGrantDto> GetAsync(string key, CancellationToken cancellationToken = default);
+
+    Task<List<PersistedGrantDto>> GetUserPersistedGrantsAsync(string subjectId, CancellationToken cancellationToken = default);
+
+    Task<string> DeleteAsync(string key, CancellationToken cancellationToken = default);
+
+    Task<string> DeleteUserPersistedGrantsAsync(string subjectId, CancellationToken cancellationToken = default);
 }

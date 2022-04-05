@@ -115,7 +115,9 @@ internal class RoleService : IRoleService
     public async Task<string> UpdatePermissionsAsync(UpdateRolePermissionsRequest request, CancellationToken cancellationToken)
     {
         var role = await _roleManager.FindByIdAsync(request.RoleId);
+        
         _ = role ?? throw new NotFoundException(_t["Role Not Found"]);
+        
         if (role.Name == EIARoles.Administrator)
         {
             throw new ConflictException(_t["Not allowed to modify Permissions for this Role."]);
@@ -142,7 +144,7 @@ internal class RoleService : IRoleService
                 RoleId = role.Id,
                 ClaimType = EIAClaims.Permission,
                 ClaimValue = permission,
-                CreatedBy = _currentUser.GetUserId().ToString()
+                CreatedBy = _currentUser.GetUserId()
             });
             await _db.SaveChangesAsync(cancellationToken);
         }

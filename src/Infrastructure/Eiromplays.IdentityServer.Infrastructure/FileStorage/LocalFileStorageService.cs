@@ -9,7 +9,7 @@ namespace Eiromplays.IdentityServer.Infrastructure.FileStorage;
 public class LocalFileStorageService : IFileStorageService
 {
     public async Task<string> UploadAsync<T>(FileUploadRequest? request, FileType supportedFileType, CancellationToken cancellationToken = default)
-    where T : class
+        where T : class
     {
         if (request?.Data == null)
         {
@@ -18,15 +18,18 @@ public class LocalFileStorageService : IFileStorageService
 
         if (!supportedFileType.GetDescriptionList().Contains(request.Extension.ToLower()))
             throw new InvalidOperationException("File Format Not Supported.");
+        
         if (request.Name is null)
             throw new InvalidOperationException("Name is required.");
 
         var base64Data = Regex.Match(request.Data, "data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
 
         var streamData = new MemoryStream(Convert.FromBase64String(base64Data));
+        
         if (streamData.Length > 0)
         {
             var folder = typeof(T).Name;
+            
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 folder = folder.Replace(@"\", "/");
@@ -37,6 +40,7 @@ public class LocalFileStorageService : IFileStorageService
                 FileType.Image => Path.Combine("Files", "Images", folder),
                 _ => Path.Combine("Files", "Others", folder),
             };
+            
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
             Directory.CreateDirectory(pathToSave);
 
@@ -44,8 +48,10 @@ public class LocalFileStorageService : IFileStorageService
             fileName = RemoveSpecialCharacters(fileName);
             fileName = fileName.ReplaceWhitespace("-");
             fileName += request.Extension.Trim();
+            
             var fullPath = Path.Combine(pathToSave, fileName);
             var dbPath = Path.Combine(folderName, fileName);
+            
             if (File.Exists(dbPath))
             {
                 dbPath = NextAvailableFilename(dbPath);
@@ -53,7 +59,9 @@ public class LocalFileStorageService : IFileStorageService
             }
 
             await using var stream = new FileStream(fullPath, FileMode.Create);
+            
             await streamData.CopyToAsync(stream, cancellationToken);
+            
             return dbPath.Replace("\\", "/");
         }
         else
@@ -62,7 +70,7 @@ public class LocalFileStorageService : IFileStorageService
         }
     }
 
-    public static string RemoveSpecialCharacters(string str)
+    private static string RemoveSpecialCharacters(string str)
     {
         return Regex.Replace(str, "[^a-zA-Z0-9_.]+", string.Empty, RegexOptions.Compiled);
     }

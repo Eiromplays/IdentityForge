@@ -345,3 +345,19 @@ msgstr "Tenant is already Deactivated."
 msgctxt "Eiromplays.IdentityServer.Infrastructure.Multitenancy.TenantService"
 msgid "{0} {1} Not Found."
 msgstr "{0} {1} Not Found."
+
+#. _ = user ?? throw new NotFoundException(_t["Persisted Grant Not Found."]);
+#. _ = user ?? throw new NotFoundException(_t["Persisted Grant Not Found."]);
+#. _ = user ?? throw new NotFoundException(_t["Persisted Grant Not Found."]);
+#. _ = user ?? throw new NotFoundException(_t["Persisted Grant Not Found."]);
+#. _ = user ?? throw new NotFoundException(_t["Persisted Grant Not Found."]);
+#. _ = user ?? throw new NotFoundException(_t["Persisted Grant Not Found."]);
+#: Infrastructure\Identity\UserService.CreateUpdate.cs:153
+#: Infrastructure\Identity\UserService.cs:132
+#: Infrastructure\Identity\UserService.cs:141
+#: Infrastructure\Identity\UserService.Password.cs:54
+#: Infrastructure\Identity\UserService.Permissions.cs:14
+#: Infrastructure\Identity\UserService.Roles.cs:38
+msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.PersistedGrantService"
+msgid "Persisted Grant Not Found."
+msgstr "Persisted Grant Not Found."

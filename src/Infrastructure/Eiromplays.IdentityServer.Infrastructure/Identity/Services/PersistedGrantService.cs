@@ -1,21 +1,25 @@
 ﻿using Ardalis.Specification.EntityFrameworkCore;
 using Duende.IdentityServer.EntityFramework.Entities;
+using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Common.Specification;
 using Eiromplays.IdentityServer.Application.Identity.PersistedGrants;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
 internal partial class PersistedGrantService : IPersistedGrantService
 {
     private readonly ApplicationDbContext _db;
+    private readonly IStringLocalizer _t;
 
-    public PersistedGrantService(ApplicationDbContext db)
+    public PersistedGrantService(ApplicationDbContext db, IStringLocalizer<PersistedGrantService> t)
     {
         _db = db;
+        _t = t;
     }
     
     public async Task<PaginationResponse<PersistedGrantDto>> SearchAsync(PersistedGrantListFilter filter, CancellationToken cancellationToken)
@@ -38,4 +42,55 @@ internal partial class PersistedGrantService : IPersistedGrantService
             .AsNoTracking()
             .ToListAsync(cancellationToken))
         .Adapt<List<PersistedGrantDto>>();
+    
+    public async Task<PersistedGrantDto> GetAsync(string key, CancellationToken cancellationToken)
+    {
+        var persistedGrant = await _db.PersistedGrants
+            .AsNoTracking()
+            .Where(u => u.Key == key)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        _ = persistedGrant ?? throw new NotFoundException(_t["Persisted Grant Not Found."]);
+
+        return persistedGrant.Adapt<PersistedGrantDto>();
+    }
+    
+    public async Task<List<PersistedGrantDto>> GetUserPersistedGrantsAsync(string subjectId, CancellationToken cancellationToken) =>
+        (await _db.PersistedGrants
+            .AsNoTracking()
+            .Where(u => u.SubjectId == subjectId)
+            .ToListAsync(cancellationToken)).Adapt<List<PersistedGrantDto>>();
+
+    public async Task<string> DeleteAsync(string key, CancellationToken cancellationToken)
+    {
+        var persistedGrant = await _db.PersistedGrants
+            .AsNoTracking()
+            .Where(u => u.Key == key)
+            .FirstOrDefaultAsync(cancellationToken);
+        
+        _ = persistedGrant ?? throw new NotFoundException(_t["Persisted Grant Not Found."]);
+
+        _db.PersistedGrants.Remove(persistedGrant);
+
+        await _db.SaveChangesAsync(cancellationToken);
+        
+        return string.Format(_t["Persisted Grant {0} Deleted."], persistedGrant.Key);
+    }
+    
+    public async Task<string> DeleteUserPersistedGrantsAsync(string subjectId, CancellationToken cancellationToken)
+    {
+        var persistedGrants = await _db.PersistedGrants
+            .AsNoTracking()
+            .Where(u => u.SubjectId == subjectId)
+            .ToListAsync(cancellationToken);
+        
+        if (!persistedGrants.Any()) 
+            throw new NotFoundException(_t["Persisted Grant Not Found."]);
+        
+        _db.PersistedGrants.RemoveRange(persistedGrants);
+
+        await _db.SaveChangesAsync(cancellationToken);
+        
+        return string.Format(_t["Persisted Grant {0} User Deleted."], subjectId);
+    }
 }
