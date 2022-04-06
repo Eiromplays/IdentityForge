@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
@@ -57,12 +56,18 @@ public class BaseDbContext : IdentityDbContext<ApplicationUser, ApplicationRole,
     public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
 
     public DbSet<PersistedGrant> PersistedGrants { get; set; } = null!;
+    
 
     public DbSet<DeviceFlowCodes> DeviceFlowCodes { get; set; } = null!;
+    
 
     public DbSet<Key> Keys { get; set; } = null!;
+    
+
+    public DbSet<ServerSideSession> ServerSideSessions { get; set; } = null!;
 
     public DbSet<Client> Clients { get; set; } = null!;
+    
 
     public DbSet<ClientCorsOrigin> ClientCorsOrigins { get; set; } = null!;
 

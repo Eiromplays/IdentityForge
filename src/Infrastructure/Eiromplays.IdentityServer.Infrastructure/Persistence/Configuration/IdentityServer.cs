@@ -182,3 +182,10 @@ public class IdentityServerKeysConfig : IEntityTypeConfiguration<Key>
         builder
             .ToTable(TableConsts.IdentityServerKeys, SchemaNames.IdentityServer);
 }
+
+public class IdentityServerServerSideSessionConfig : IEntityTypeConfiguration<ServerSideSession>
+{
+    public void Configure(EntityTypeBuilder<ServerSideSession> builder) =>
+        builder
+            .ToTable(TableConsts.IdentityServerServerSideSessions, SchemaNames.IdentityServer);
+}

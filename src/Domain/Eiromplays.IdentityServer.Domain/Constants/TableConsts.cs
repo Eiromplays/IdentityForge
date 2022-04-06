@@ -38,6 +38,7 @@ public static class TableConsts
     public const string IdentityServerIdentityResourceProperties = "IdentityResourceProperties";
     public const string IdentityServerClientProperties = "ClientProperties";
     public const string IdentityServerClientRedirectUris = "ClientRedirectUris";
+    public const string IdentityServerServerSideSessions = "ServerSideSessions";
     
     public const string BffUserSessions = "UserSessions";
 }

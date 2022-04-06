@@ -158,6 +158,7 @@ namespace Migrators.PostgreSql.Migrations.Application
                     DeviceCodeLifetime = table.Column<int>(type: "integer", nullable: false),
                     CibaLifetime = table.Column<int>(type: "integer", nullable: true),
                     PollingInterval = table.Column<int>(type: "integer", nullable: true),
+                    CoordinateLifetimeWithUserSession = table.Column<bool>(type: "boolean", nullable: true),
                     Created = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     Updated = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     LastAccessed = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -273,6 +274,7 @@ namespace Migrators.PostgreSql.Migrations.Application
                 columns: table => new
                 {
                     Key = table.Column<string>(type: "text", nullable: false),
+                    Id = table.Column<long>(type: "bigint", nullable: false),
                     Type = table.Column<string>(type: "text", nullable: true),
                     SubjectId = table.Column<string>(type: "text", nullable: true),
                     SessionId = table.Column<string>(type: "text", nullable: true),
@@ -306,6 +308,28 @@ namespace Migrators.PostgreSql.Migrations.Application
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ServerSideSessions",
+                schema: "IdentityServer",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Key = table.Column<string>(type: "text", nullable: true),
+                    Scheme = table.Column<string>(type: "text", nullable: true),
+                    SubjectId = table.Column<string>(type: "text", nullable: true),
+                    SessionId = table.Column<string>(type: "text", nullable: true),
+                    DisplayName = table.Column<string>(type: "text", nullable: true),
+                    Created = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Renewed = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Expires = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    Data = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ServerSideSessions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -1137,6 +1161,10 @@ namespace Migrators.PostgreSql.Migrations.Application
             migrationBuilder.DropTable(
                 name: "RoleClaims",
                 schema: "Identity");
+
+            migrationBuilder.DropTable(
+                name: "ServerSideSessions",
+                schema: "IdentityServer");
 
             migrationBuilder.DropTable(
                 name: "UserClaims",

@@ -1,9 +1,11 @@
+using System.Text.Json;
 using Duende.IdentityServer.Configuration;
 using Eiromplays.IdentityServer.Application.Common.Configurations;
 using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration; 
 using Microsoft.Extensions.DependencyInjection;
@@ -33,9 +35,15 @@ internal static class Startup
 
         return services.AddIdentityServer(options => identityServerOptions.Bind(options))
             .AddConfigurationStore<ApplicationDbContext>()
-            .AddOperationalStore<ApplicationDbContext>()
+            .AddOperationalStore<ApplicationDbContext>(options =>
+            {
+                // this enables automatic token cleanup. this is optional.
+                options.EnableTokenCleanup = true;
+                options.TokenCleanupInterval = 3600; // interval in seconds (default is 3600)
+            })
             .AddAspNetIdentity<ApplicationUser>()
             .AddProfileService<CustomProfileService>()
+            .AddServerSideSessions()
             .Services;
     }
     
@@ -47,7 +55,7 @@ internal static class Startup
 
         var externalProviderConfiguration = configuration.GetSection(nameof(ExternalProvidersConfiguration))
             .Get<ExternalProvidersConfiguration>();
-
+        
         if (externalProviderConfiguration.UseGoogleProvider &&
             !string.IsNullOrWhiteSpace(externalProviderConfiguration.GoogleClientId) &&
             !string.IsNullOrWhiteSpace(externalProviderConfiguration.GoogleClientSecret))

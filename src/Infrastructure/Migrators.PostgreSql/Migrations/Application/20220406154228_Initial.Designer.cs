@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Migrators.PostgreSql.Migrations.Application
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220331091947_Initial")]
+    [Migration("20220406154228_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -325,6 +325,9 @@ namespace Migrators.PostgreSql.Migrations.Application
 
                     b.Property<int?>("ConsentLifetime")
                         .HasColumnType("integer");
+
+                    b.Property<bool?>("CoordinateLifetimeWithUserSession")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp without time zone");
@@ -832,6 +835,9 @@ namespace Migrators.PostgreSql.Migrations.Application
                     b.Property<DateTime?>("Expiration")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("SessionId")
                         .HasColumnType("text");
 
@@ -844,6 +850,46 @@ namespace Migrators.PostgreSql.Migrations.Application
                     b.HasKey("Key");
 
                     b.ToTable("PersistedGrants", "IdentityServer");
+                });
+
+            modelBuilder.Entity("Duende.IdentityServer.EntityFramework.Entities.ServerSideSession", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Data")
+                        .HasColumnType("text");
+
+                    b.Property<string>("DisplayName")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("Expires")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Key")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Renewed")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Scheme")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SessionId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SubjectId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ServerSideSessions", "IdentityServer");
                 });
 
             modelBuilder.Entity("Eiromplays.IdentityServer.Domain.Catalog.Brand", b =>
