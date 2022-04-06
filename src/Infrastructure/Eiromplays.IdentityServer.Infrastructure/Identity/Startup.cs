@@ -1,11 +1,9 @@
-using System.Text.Json;
 using Duende.IdentityServer.Configuration;
 using Eiromplays.IdentityServer.Application.Common.Configurations;
 using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
-using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration; 
 using Microsoft.Extensions.DependencyInjection;
@@ -53,6 +51,7 @@ internal static class Startup
         
         var authenticationBuilder = services.AddAuthentication();
 
+        // TODO: Find a better way to register external providers
         var externalProviderConfiguration = configuration.GetSection(nameof(ExternalProvidersConfiguration))
             .Get<ExternalProvidersConfiguration>();
         
