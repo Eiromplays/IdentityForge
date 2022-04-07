@@ -3,7 +3,7 @@ using Eiromplays.IdentityServer.Application.Identity.Users;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.DownloadPersonalData;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : Endpoint<Models.Request>
 {
     private readonly IUserService _userService;
 

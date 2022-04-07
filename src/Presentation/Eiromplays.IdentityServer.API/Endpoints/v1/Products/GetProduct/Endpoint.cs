@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Products.GetProduct;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : Endpoint<Models.Request, ProductDetailsDto>
 {
     private readonly ISender _mediator;
     
@@ -23,10 +23,10 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.Products));
     }
 
-    public override async Task<Models.Response> HandleAsync(Models.Request request, CancellationToken ct)
+    public override async Task HandleAsync(Models.Request request, CancellationToken ct)
     {
-        Response.ProductDetails = await _mediator.Send(new GetProductRequest(request.Id), ct);
+        Response = await _mediator.Send(new GetProductRequest(request.Id), ct);
 
-        return Response;
+        await SendAsync(Response, cancellation: ct);
     }
 }

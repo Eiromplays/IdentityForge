@@ -8,9 +8,4 @@ public class Models
     {
         public CreateBrandRequest CreateBrandRequest { get; set; }
     }
-
-    public class Response
-    {
-        public Guid Id { get; set; }
-    }
 }

@@ -1,8 +1,9 @@
+using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Identity.PersistedGrants;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.PersistedGrants.Search;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : Endpoint<Models.Request, PaginationResponse<PersistedGrantDto>>
 {
     private readonly IPersistedGrantService _persistedGrantService;
     
@@ -22,10 +23,10 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         Policies(EIAPermission.NameFor(EIAAction.Search, EIAResource.PersistedGrants));
     }
 
-    public override async Task<Models.Response> HandleAsync(Models.Request request, CancellationToken ct)
+    public override async Task HandleAsync(Models.Request request, CancellationToken ct)
     {
-        Response.PersistedGrants = await _persistedGrantService.SearchAsync(request.PersistedGrantListFilter, ct);
+        Response = await _persistedGrantService.SearchAsync(request.PersistedGrantListFilter, ct);
 
-        return Response;
+        await SendAsync(Response, cancellation: ct);
     }
 }

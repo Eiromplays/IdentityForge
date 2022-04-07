@@ -11,7 +11,7 @@ export const Landing = () => {
 
   const handleStart = () => {
     if (user) {
-      navigate('/');
+      navigate('/app');
     } else {
       navigate('/login');
     }
@@ -26,7 +26,7 @@ export const Landing = () => {
             <span className="block">Eiromplays IdentityServer</span>
           </h2>
           <img src={logo} alt="react" />
-          <p>Showcasing Best Practices For Building React Applications</p>
+          <p>User Management</p>
           <div className="mt-8 flex justify-center">
             <div className="inline-flex rounded-md shadow">
               <Button
@@ -53,7 +53,7 @@ export const Landing = () => {
             </div>
             <div className="ml-3 inline-flex">
               <a
-                href="https://github.com/alan2207/bulletproof-react"
+                href="https://github.com/Eiromplays/IdentityServer.Admin"
                 target="_blank"
                 rel="noreferrer"
               >

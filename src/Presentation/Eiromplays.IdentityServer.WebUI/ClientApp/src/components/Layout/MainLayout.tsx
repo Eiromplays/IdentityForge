@@ -31,14 +31,14 @@ type SideNavigationItem = {
 const SideNavigation = () => {
   const navigation = [
     { name: 'Dashboard', to: '.', icon: HiOutlineHome },
-    { name: 'My Profile', to: '/profile', icon: HiOutlineUser },
-    { name: 'Personal Data', to: '/personal-data', icon: HiOutlineCollection },
+    { name: 'My Profile', to: './profile', icon: HiOutlineUser },
+    { name: 'Personal Data', to: './personal-data', icon: HiOutlineCollection },
     {
       name: 'Two-factor authentication',
       to: '/two-factor-authentication',
       icon: HiOutlineLockClosed,
     },
-    { name: 'Change Password', to: '/change-password', icon: HiOutlineKey },
+    { name: 'Change Password', to: './change-password', icon: HiOutlineKey },
     {
       name: 'Discovery Document',
       to: 'https://localhost:7001/.well-known/openid-configuration',
@@ -46,8 +46,8 @@ const SideNavigation = () => {
       externalLink: true,
       icon: HiOutlineDocumentText,
     },
-    { name: 'Persisted Grants', to: '/persisted-grants', icon: HiOutlineShieldCheck },
-    { name: 'User Sessions', to: '/user-sessions', icon: MdOutlineDevicesOther },
+    { name: 'Persisted Grants', to: './persisted-grants', icon: HiOutlineShieldCheck },
+    { name: 'User Sessions', to: './user-sessions', icon: MdOutlineDevicesOther },
   ].filter(Boolean) as SideNavigationItem[];
 
   return (

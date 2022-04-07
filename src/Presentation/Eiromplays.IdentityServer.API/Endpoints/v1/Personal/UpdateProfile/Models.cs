@@ -8,9 +8,4 @@ public class Models
     {
         public UpdateUserRequest UpdateUserRequest { get; set; }
     }
-    
-    public class Response
-    {
-        
-    }
 }

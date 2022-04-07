@@ -9,9 +9,4 @@ public class Models
         public Guid Id { get; set; }
         public UpdateBrandRequest UpdateBrandRequest { get; set; }
     }
-
-    public class Response
-    {
-        public Guid Id { get; set; }
-    }
 }

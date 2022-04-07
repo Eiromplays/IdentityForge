@@ -1,5 +1,4 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
-using Shared.Authorization;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Personal.ChangePassword;
 

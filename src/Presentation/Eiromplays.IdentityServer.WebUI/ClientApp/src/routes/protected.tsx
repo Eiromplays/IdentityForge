@@ -8,6 +8,7 @@ import { lazyImport } from '@/utils/lazyImport';
 const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
 const { Profile } = lazyImport(() => import('@/features/users'), 'Profile');
 const { PersonalData } = lazyImport(() => import('@/features/users'), 'PersonalData');
+const { PersistedGrants } = lazyImport(() => import('@/features/users'), 'PersistedGrants');
 
 const App = () => {
   return (
@@ -27,11 +28,12 @@ const App = () => {
 
 export const protectedRoutes = [
   {
-    path: '/',
+    path: '/app',
     element: <App />,
     children: [
       { path: 'profile', element: <Profile /> },
       { path: 'personal-data', element: <PersonalData /> },
+      { path: 'persisted-grants', element: <PersistedGrants /> },
       { path: '', element: <Dashboard /> },
       { path: '*', element: <Navigate to="." /> },
     ],

@@ -1,10 +1,8 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
-using FastEndpoints;
-using Shared.Authorization;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.GetUsers;
 
-public class Endpoint : EndpointWithoutRequest<Models.Response>
+public class Endpoint : EndpointWithoutRequest<List<UserDetailsDto>>
 {
     private readonly IUserService _userService;
     
@@ -26,7 +24,7 @@ public class Endpoint : EndpointWithoutRequest<Models.Response>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        Response.Users = await _userService.GetListAsync(ct);
+        Response = await _userService.GetListAsync(ct);
         
         await SendAsync(Response, cancellation: ct);
     }

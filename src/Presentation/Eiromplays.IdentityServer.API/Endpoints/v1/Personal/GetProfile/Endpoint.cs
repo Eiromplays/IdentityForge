@@ -2,7 +2,7 @@ using Eiromplays.IdentityServer.Application.Identity.Users;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Personal.GetProfile;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : EndpointWithoutRequest<UserDetailsDto>
 {
     private readonly IUserService _userService;
     
@@ -21,7 +21,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         Version(1);
     }
 
-    public override async Task HandleAsync(Models.Request req, CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken ct)
     {
         if (User.GetUserId() is not { } userId || string.IsNullOrEmpty(userId))
         {
@@ -29,7 +29,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             return;
         }
 
-        Response.UserDetails = await _userService.GetAsync(userId, ct);
+        Response = await _userService.GetAsync(userId, ct);
         
         await SendOkAsync(Response, cancellation: ct);
     }

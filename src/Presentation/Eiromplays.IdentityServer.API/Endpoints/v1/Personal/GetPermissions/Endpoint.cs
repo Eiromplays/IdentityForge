@@ -1,10 +1,8 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
-using Eiromplays.IdentityServer.Infrastructure.Auth.Permissions;
-using Shared.Authorization;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Personal.GetPermissions;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : EndpointWithoutRequest<List<string>>
 {
     private readonly IUserService _userService;
     
@@ -23,7 +21,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         Version(1);
     }
 
-    public override async Task HandleAsync(Models.Request req, CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken ct)
     {
         if (User.GetUserId() is not { } userId || string.IsNullOrEmpty(userId))
         {
@@ -31,7 +29,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             return;
         }
 
-        Response.Permissions = await _userService.GetPermissionsAsync(userId, ct);
+        Response = await _userService.GetPermissionsAsync(userId, ct);
         
         await SendOkAsync(Response, cancellation: ct);
     }

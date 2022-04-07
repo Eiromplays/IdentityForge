@@ -2,7 +2,7 @@ using MediatR;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Products.Export;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : Endpoint<Models.Request>
 {
     private readonly ISender _mediator;
     

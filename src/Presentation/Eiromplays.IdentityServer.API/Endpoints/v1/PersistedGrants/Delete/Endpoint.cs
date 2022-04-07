@@ -22,10 +22,10 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         Policies(EIAPermission.NameFor(EIAAction.Delete, EIAResource.PersistedGrants));
     }
 
-    public override async Task<Models.Response> HandleAsync(Models.Request req, CancellationToken ct)
+    public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
         Response.Message = await _persistedGrantService.DeleteAsync(req.Key, ct);
 
-        return Response;
+        await SendAsync(Response, cancellation: ct);
     }
 }

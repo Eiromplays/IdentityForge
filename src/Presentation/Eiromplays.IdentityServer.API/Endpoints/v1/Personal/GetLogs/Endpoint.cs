@@ -1,10 +1,9 @@
 using Eiromplays.IdentityServer.Application.Auditing;
 using MediatR;
-using Shared.Authorization;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Personal.GetLogs;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : EndpointWithoutRequest<List<AuditDto>>
 {
     private readonly ISender _mediatr;
     
@@ -23,15 +22,9 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         Version(1);
     }
 
-    public override async Task HandleAsync(Models.Request req, CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken ct)
     {
-        if (User.GetUserId() is not { } userId || string.IsNullOrEmpty(userId))
-        {
-            await SendUnauthorizedAsync(ct);
-            return;
-        }
-
-        Response.Logs = await _mediatr.Send(new GetMyAuditLogsRequest(), ct);
+        Response = await _mediatr.Send(new GetMyAuditLogsRequest(), ct);
         
         await SendAsync(Response, cancellation: ct);
     }

@@ -23,10 +23,10 @@ public class Endpoint : EndpointWithoutRequest<Models.Response>
         Policies(EIAPermission.NameFor(EIAAction.Clean, EIAResource.Brands));
     }
 
-    public override async Task<Models.Response> HandleAsync(CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken ct)
     {
         Response.Message = await _mediator.Send(new DeleteRandomBrandRequest(), ct);
 
-        return Response;
+        await SendAsync(Response, cancellation: ct);
     }
 }

@@ -8,9 +8,4 @@ public class Models
     {
         public string? Id { get; set; }
     }
-    
-    public class Response
-    {
-        
-    }
 }

@@ -2,7 +2,7 @@ using Eiromplays.IdentityServer.Application.Identity.PersistedGrants;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.PersistedGrants.GetPersistedGrant;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : Endpoint<Models.Request, PersistedGrantDto>
 {
     private readonly IPersistedGrantService _persistedGrantService;
 
@@ -24,7 +24,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        Response.PersistedGrant = await _persistedGrantService.GetAsync(req.Key, ct);
+        Response = await _persistedGrantService.GetAsync(req.Key, ct);
         
         await SendOkAsync(Response, cancellation: ct);
     }

@@ -2,7 +2,7 @@ using MediatR;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Products.UpdateProduct;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : Endpoint<Models.Request, Guid>
 {
     private readonly ISender _mediator;
     
@@ -30,7 +30,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             await SendErrorsAsync(cancellation: ct);
         }
         
-        Response.Id = await _mediator.Send(request.UpdateProductRequest, ct);
+        Response = await _mediator.Send(request.UpdateProductRequest, ct);
 
         await SendOkAsync(Response, cancellation: ct);
     }

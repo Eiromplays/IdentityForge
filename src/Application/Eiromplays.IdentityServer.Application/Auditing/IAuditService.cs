@@ -1,5 +1,3 @@
-using Eiromplays.IdentityServer.Application.Common.Interfaces;
-
 namespace Eiromplays.IdentityServer.Application.Auditing;
 
 public interface IAuditService : ITransientService

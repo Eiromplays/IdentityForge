@@ -23,10 +23,10 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.Dashboard));
     }
 
-    public override async Task<Models.Response> HandleAsync(Models.Request request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(Models.Request request, CancellationToken cancellationToken)
     {
         Response.Stats = await _mediator.Send(new GetStatsRequest(), cancellationToken);
 
-        return Response;
+        await SendAsync(Response, cancellation: cancellationToken);
     }
 }

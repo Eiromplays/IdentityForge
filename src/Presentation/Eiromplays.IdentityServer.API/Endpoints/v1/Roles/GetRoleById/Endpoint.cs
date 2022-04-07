@@ -2,7 +2,7 @@ using Eiromplays.IdentityServer.Application.Identity.Roles;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.GetRoleById;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : Endpoint<Models.Request, RoleDto>
 {
     private readonly IRoleService _roleService;
     
@@ -24,7 +24,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        Response.RoleDto = await _roleService.GetByIdAsync(req.Id);
+        Response = await _roleService.GetByIdAsync(req.Id);
 
         await SendAsync(Response, cancellation: ct);
     }

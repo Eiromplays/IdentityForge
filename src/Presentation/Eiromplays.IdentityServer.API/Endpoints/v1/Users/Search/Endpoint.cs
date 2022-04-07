@@ -1,8 +1,9 @@
+using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.Search;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : Endpoint<Models.Request, PaginationResponse<UserDetailsDto>>
 {
     private readonly IUserService _userService;
     
@@ -22,10 +23,10 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         Policies(EIAPermission.NameFor(EIAAction.Search, EIAResource.Users));
     }
     
-    public override async Task<Models.Response> HandleAsync(Models.Request request, CancellationToken ct)
+    public override async Task HandleAsync(Models.Request request, CancellationToken ct)
     {
-        Response.Users = await _userService.SearchAsync(request.UserListFilter, ct);
+        Response = await _userService.SearchAsync(request.UserListFilter, ct);
 
-        return Response;
+        await SendAsync(Response, cancellation: ct);
     }
 }

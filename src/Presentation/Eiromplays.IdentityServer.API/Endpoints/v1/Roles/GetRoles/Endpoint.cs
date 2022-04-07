@@ -2,7 +2,7 @@ using Eiromplays.IdentityServer.Application.Identity.Roles;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.GetRoles;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : EndpointWithoutRequest<List<RoleDto>>
 {
     private readonly IRoleService _roleService;
     
@@ -22,9 +22,9 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.Roles));
     }
 
-    public override async Task HandleAsync(Models.Request req, CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken ct)
     {
-        Response.Roles = await _roleService.GetListAsync(ct);
+        Response = await _roleService.GetListAsync(ct);
         
         await SendAsync(Response, cancellation: ct);
     }

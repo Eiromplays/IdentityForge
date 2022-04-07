@@ -9,9 +9,4 @@ public class Models
     {
         public PersistedGrantListFilter PersistedGrantListFilter { get; set; }
     }
-
-    public class Response
-    {
-        public PaginationResponse<PersistedGrantDto> PersistedGrants { get; set; }
-    }
 }

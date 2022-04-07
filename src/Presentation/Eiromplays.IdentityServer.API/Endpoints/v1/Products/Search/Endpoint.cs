@@ -1,8 +1,10 @@
+using Eiromplays.IdentityServer.Application.Catalog.Products;
+using Eiromplays.IdentityServer.Application.Common.Models;
 using MediatR;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Products.Search;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : Endpoint<Models.Request, PaginationResponse<ProductDto>>
 {
     private readonly ISender _mediator;
     
@@ -22,10 +24,10 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         Policies(EIAPermission.NameFor(EIAAction.Search, EIAResource.Products));
     }
 
-    public override async Task<Models.Response> HandleAsync(Models.Request request, CancellationToken ct)
+    public override async Task HandleAsync(Models.Request request, CancellationToken ct)
     {
-        Response.Products = await _mediator.Send(request.SearchProductsRequest, ct);
+        Response = await _mediator.Send(request.SearchProductsRequest, ct);
 
-        return Response;
+        await SendAsync(Response, cancellation: ct);
     }
 }

@@ -22,10 +22,10 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         Policies(EIAPermission.NameFor(EIAAction.Generate, EIAResource.Brands));
     }
 
-    public override async Task<Models.Response> HandleAsync(Models.Request request, CancellationToken ct)
+    public override async Task HandleAsync(Models.Request request, CancellationToken ct)
     {
         Response.Message = await _mediator.Send(request.GenerateRandomBrandRequest, ct);
 
-        return Response;
+        await SendAsync(Response, cancellation: ct);
     }
 }

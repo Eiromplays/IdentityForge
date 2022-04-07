@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Brands.DeleteBrand;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : Endpoint<Models.Request, Guid>
 {
     private readonly ISender _mediator;
     
@@ -23,10 +23,10 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         Policies(EIAPermission.NameFor(EIAAction.Delete, EIAResource.Brands));
     }
 
-    public override async Task<Models.Response> HandleAsync(Models.Request request, CancellationToken ct)
+    public override async Task HandleAsync(Models.Request request, CancellationToken ct)
     {
-        Response.Id = await _mediator.Send(new DeleteBrandRequest(request.Id), ct);
+        Response = await _mediator.Send(new DeleteBrandRequest(request.Id), ct);
 
-        return Response;
+        await SendAsync(Response, cancellation: ct);
     }
 }
