@@ -25,10 +25,11 @@ export interface AuthProviderConfig<User = unknown, Error = unknown> {
   loadUser: (data: any) => Promise<User>;
   loginFn: (data: any) => Promise<User>;
   registerFn: (data: any) => Promise<User>;
-  logoutFn: () => Promise<any>;
+  logoutFn: (data: any) => Promise<any>;
   waitInitial?: boolean;
   LoaderComponent?: () => JSX.Element;
   NotLoggedInComponent?: () => JSX.Element;
+  NotLoggedInEnabled?: false;
   ErrorComponent?: ({ error }: { error: Error | null }) => JSX.Element;
 }
 
@@ -81,6 +82,7 @@ export function initReactQueryAuth<
       </div>
     ),
     NotLoggedInComponent = () => <NotLoggedIn />,
+    NotLoggedInEnabled = false,
     ErrorComponent = (error: any) => (
       <div style={{ color: 'tomato' }}>{JSON.stringify(error, null, 2)}</div>
     ),
@@ -155,11 +157,15 @@ export function initReactQueryAuth<
       ]
     );
 
-    if ((isSuccess || !waitInitial) && !isLoggedIn) {
+    if ((isSuccess || !waitInitial) && !isLoggedIn && NotLoggedInEnabled) {
       return <NotLoggedInComponent />;
     }
 
     if ((isSuccess || !waitInitial) && isLoggedIn) {
+      return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    }
+
+    if (isSuccess || !waitInitial) {
       return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
     }
 

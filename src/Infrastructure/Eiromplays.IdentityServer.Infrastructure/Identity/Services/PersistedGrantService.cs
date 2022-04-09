@@ -1,5 +1,8 @@
-﻿using Ardalis.Specification.EntityFrameworkCore;
-using Duende.IdentityServer.EntityFramework.Entities;
+﻿using System.Text.Json;
+using Ardalis.Specification.EntityFrameworkCore;
+using Duende.IdentityServer;
+using Duende.IdentityServer.EntityFramework.Mappers;
+using Duende.IdentityServer.Models;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Common.Specification;
@@ -8,6 +11,8 @@ using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
+using PersistedGrant = Duende.IdentityServer.EntityFramework.Entities.PersistedGrant;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
@@ -15,11 +20,13 @@ internal partial class PersistedGrantService : IPersistedGrantService
 {
     private readonly ApplicationDbContext _db;
     private readonly IStringLocalizer _t;
+    private readonly ILogger _logger;
 
-    public PersistedGrantService(ApplicationDbContext db, IStringLocalizer<PersistedGrantService> t)
+    public PersistedGrantService(ApplicationDbContext db, IStringLocalizer<PersistedGrantService> t, ILogger<PersistedGrantService> logger)
     {
         _db = db;
         _t = t;
+        _logger = logger;
     }
     
     public async Task<PaginationResponse<PersistedGrantDto>> SearchAsync(PersistedGrantListFilter filter, CancellationToken cancellationToken)

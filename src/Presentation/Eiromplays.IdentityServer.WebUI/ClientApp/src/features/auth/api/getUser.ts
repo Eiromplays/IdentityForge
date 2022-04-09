@@ -3,7 +3,7 @@ import { Claim } from '@/types';
 
 import { AuthUser } from '../types';
 
-export const getUser = async (): Promise<AuthUser> => {
+export const getUser = async (): Promise<AuthUser | null> => {
   const userSessionInfo = (await axios.get('/bff/user')) as { type: string; value: string }[];
   if (!userSessionInfo) silentLogin();
 
@@ -38,7 +38,9 @@ export const getUser = async (): Promise<AuthUser> => {
     ),
   };
 
-  return user;
+  if (user.id) return user;
+
+  return null;
 };
 
 export const silentLogin = () => {
@@ -53,7 +55,7 @@ export const silentLogin = () => {
 
       window.location.reload();
     } else {
-      window.location.assign('/bff/login');
+      //window.location.assign('/bff/login');
     }
   });
 };

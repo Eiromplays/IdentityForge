@@ -1,14 +1,24 @@
 import { Spinner } from '@/components/Elements/Spinner';
-import { AuthUser, getUser } from '@/features/auth';
+import {
+  AuthUser,
+  getUser,
+  LoginCredentialsDTO,
+  loginWithEmailAndPassword,
+  LogoutDTO,
+  logoutUser,
+} from '@/features/auth';
 import { initReactQueryAuth } from '@/providers/AuthProvider';
 
-async function loadUser() {
+async function loadUser(): Promise<AuthUser> {
   const data = await getUser();
 
-  return data;
+  return data as AuthUser;
 }
 
-async function loginFn() {
+async function loginFn(data: LoginCredentialsDTO) {
+  const response = await loginWithEmailAndPassword(data);
+  if (!response) throw new Error('Login failed');
+
   const user = await loadUser();
 
   return user;
@@ -20,10 +30,8 @@ async function registerFn() {
   return user;
 }
 
-async function logoutFn() {
-  const user = await loadUser();
-
-  window.location.assign(user.logoutUrl);
+async function logoutFn({ logoutId }: LogoutDTO) {
+  await logoutUser({ logoutId });
 }
 
 const authConfig = {
@@ -40,10 +48,6 @@ const authConfig = {
   },
 };
 
-type LoginCredentials = {
-  test: string;
-};
-
 type RegisterCredentials = {
   test: string;
 };
@@ -51,6 +55,6 @@ type RegisterCredentials = {
 export const { AuthProvider, useAuth } = initReactQueryAuth<
   AuthUser | null,
   unknown,
-  LoginCredentials,
+  LoginCredentialsDTO,
   RegisterCredentials
 >(authConfig);

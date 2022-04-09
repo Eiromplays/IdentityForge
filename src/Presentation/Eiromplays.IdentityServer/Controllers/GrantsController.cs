@@ -4,6 +4,7 @@
 // Original file: https://github.com/DuendeSoftware/Samples/blob/main/IdentityServer/v6/Quickstarts
 // Modified by Eirik Sjøløkken
 
+using System.Text.Json;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Services;
@@ -63,7 +64,7 @@ public class GrantsController : Controller
     private async Task<GrantsViewModel> BuildViewModelAsync()
     {
         var grants = await _interaction.GetAllUserGrantsAsync();
-
+        
         var list = new List<GrantViewModel>();
         foreach(var grant in grants)
         {

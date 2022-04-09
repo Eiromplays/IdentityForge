@@ -1,6 +1,8 @@
 import { useRoutes } from 'react-router-dom';
 
-import { Landing } from '@/features/misc';
+// eslint-disable-next-line no-restricted-imports
+import { Logout } from '@/features/auth/routes/Logout';
+import { Landing, NotFound } from '@/features/misc';
 import { useAuth } from '@/lib/auth';
 
 import { protectedRoutes } from './protected';
@@ -9,7 +11,11 @@ import { publicRoutes } from './public';
 export const AppRoutes = () => {
   const auth = useAuth();
 
-  const commonRoutes = [{ path: '/', element: <Landing /> }];
+  const commonRoutes = [
+    { path: '/', element: <Landing /> },
+    { path: '*', element: <NotFound /> },
+    { path: '/auth/logout', element: <Logout /> },
+  ];
 
   const routes = auth.user ? protectedRoutes : publicRoutes;
 

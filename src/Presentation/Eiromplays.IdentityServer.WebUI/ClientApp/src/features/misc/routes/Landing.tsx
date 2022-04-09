@@ -13,7 +13,7 @@ export const Landing = () => {
     if (user) {
       navigate('/app');
     } else {
-      navigate('/login');
+      navigate('/auth/login');
     }
   };
 

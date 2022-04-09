@@ -1,6 +1,3 @@
-using Eiromplays.IdentityServer.Application.Common.Interfaces;
-using MediatR;
-
 namespace Eiromplays.IdentityServer.Application.Auditing;
 
 public class GetMyAuditLogsRequest : IRequest<List<AuditDto>>

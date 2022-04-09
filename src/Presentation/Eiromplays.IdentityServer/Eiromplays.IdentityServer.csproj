@@ -37,4 +37,9 @@
     <Folder Include="Files" />
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\js\js\signin-redirect.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\js\js\signout-redirect.js" />
+  </ItemGroup>
+
 </Project>

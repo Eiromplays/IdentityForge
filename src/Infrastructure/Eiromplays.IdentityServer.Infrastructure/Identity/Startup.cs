@@ -4,6 +4,7 @@ using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration; 
 using Microsoft.Extensions.DependencyInjection;
@@ -22,7 +23,26 @@ internal static class Startup
                 configuration.GetSection(nameof(IdentityOptions)).Bind(options))
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders()
-            .Services;
+            .Services
+                
+            // This is required to redirect the user to the correct page for login
+            .ConfigureApplicationCookie(options =>
+            {
+                options.Events = new CookieAuthenticationEvents
+                {
+                    OnRedirectToLogin = x =>
+                    {
+                        x.Response.Redirect("https://localhost:3000/auth/login");
+                        return Task.CompletedTask;
+                    },
+                    OnRedirectToLogout = x =>
+                    {
+                        x.Response.Redirect("https://localhost:3000/auth/logout");
+                        return Task.CompletedTask;
+                    }
+                };
+
+            });
     }
 
     internal static IServiceCollection AddIdentityServer(this IServiceCollection services, IConfiguration configuration, ProjectType projectType)
