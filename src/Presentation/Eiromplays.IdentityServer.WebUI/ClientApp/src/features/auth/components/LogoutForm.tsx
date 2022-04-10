@@ -2,85 +2,75 @@ import { Button, Spinner } from '@/components/Elements';
 import { Form } from '@/components/Form';
 import { useAuth } from '@/lib/auth';
 
-import { LogoutDTO, logoutUser, useLogout } from '../api/logout';
+import { logoutUser, useLogout } from '../api/logout';
+import { LoggedOutViewModel } from '../types';
 
 type LoginFormProps = {
   onSuccess: () => void;
 };
 
 export const LogoutForm = ({ onSuccess }: LoginFormProps) => {
-  const idx = location.href.toLowerCase().indexOf('?logoutid=');
-  if (idx > 0) {
-    // eslint-disable-next-line no-var
-    var logoutId = location.href.substring(idx + 10);
-  }
   const { isLoggingOut } = useAuth();
-  const getLogout = useLogout();
+  const logoutQuery = useLogout();
 
   return (
-    <div>
-      {getLogout.isLoading && <Spinner />}
-      <Form<LogoutDTO>
+    <div className="flex justify-center items-center">
+      {logoutQuery.isLoading && <Spinner />}
+      <Form
         onSubmit={async () => {
-          console.log(getLogout.data);
-          const response = await logoutUser({ logoutId: logoutId });
-          console.log(response);
+          await logoutUser();
           onSuccess();
         }}
       >
         {() => (
           <>
             <div>
-              <Button isLoading={isLoggingOut} type="submit" className="w-full">
-                Logout2
-              </Button>
+              {logoutQuery.isSuccess && logoutQuery.data.logoutViewModel?.showLogoutPrompt && (
+                <>
+                  <h1>Are you sure you want to logout of your account?</h1>
+                  <Button isLoading={isLoggingOut} type="submit" className="w-full">
+                    Yes
+                  </Button>
+                  <Button variant="danger" className="w-full">
+                    No
+                  </Button>
+                </>
+              )}
+              {logoutQuery.isSuccess &&
+                !logoutQuery.data.logoutViewModel?.showLogoutPrompt &&
+                logoutIframe(logoutQuery.data.loggedOutViewModel)}
+              {logoutQuery.isSuccess && !logoutQuery.data.logoutViewModel?.showLogoutPrompt && (
+                <div className="text-center">
+                  <h1 className="text-1xl">
+                    You have been successfully logged out of your account!
+                  </h1>{' '}
+                  <br />
+                  <p>
+                    Click{' '}
+                    <a
+                      className="underline"
+                      href={logoutQuery.data.loggedOutViewModel?.postLogoutRedirectUri}
+                    >
+                      here
+                    </a>{' '}
+                    to return to the application.
+                  </p>
+                </div>
+              )}
             </div>
           </>
         )}
       </Form>
-      <Button
-        isLoading={getLogout.isLoading}
-        onClick={async () => {
-          await getLogout.mutateAsync({ logoutId: logoutId });
-        }}
-      >
-        Logout
-      </Button>
-      {getLogout.isSuccess && !getLogout.data.prompt && showLoggedOut(getLogout.data)}
-      <div className="mt-2 flex items-center justify-end">
-        <div className="logged-out-page hidden" id="loggedOut">
-          <h1>
-            Logout
-            <small>You are now logged out</small>
-          </h1>
-
-          <div id="postLogoutLink" className="hidden">
-            Click <a>here</a> to return to the application.
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
 
-function showLoggedOut(data: any) {
-  document.querySelector('#prompt')?.classList.add('hidden');
-  document.querySelector('#loggedOut')?.classList.remove('hidden');
+function logoutIframe(data: LoggedOutViewModel) {
+  if (!data || !data.signOutIFrameUrl) return;
 
-  if (data.iframeUrl) {
-    const logoutIframe = document.createElement('iframe');
-    document.body.append(logoutIframe);
+  const logoutIframe = document.createElement('iframe');
+  logoutIframe.classList.add('hidden');
+  document.body.append(logoutIframe);
 
-    logoutIframe.src = data.iframeUrl;
-
-    window.addEventListener('message', (e) => {
-      console.log(e);
-    });
-  }
-
-  if (data.postLogoutRedirectUri) {
-    document.querySelector('#postLogoutLink')?.classList.remove('hidden');
-    (document.querySelector('#postLogoutLink a') as HTMLLinkElement).href =
-      data.postLogoutRedirectUri;
-  }
+  logoutIframe.src = data.signOutIFrameUrl;
 }

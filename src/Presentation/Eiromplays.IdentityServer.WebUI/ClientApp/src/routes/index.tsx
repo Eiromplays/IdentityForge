@@ -1,7 +1,6 @@
 import { useRoutes } from 'react-router-dom';
 
-// eslint-disable-next-line no-restricted-imports
-import { Logout } from '@/features/auth/routes/Logout';
+import { Logout } from '@/features/auth';
 import { Landing, NotFound } from '@/features/misc';
 import { useAuth } from '@/lib/auth';
 

@@ -4,7 +4,6 @@ import {
   getUser,
   LoginCredentialsDTO,
   loginWithEmailAndPassword,
-  LogoutDTO,
   logoutUser,
 } from '@/features/auth';
 import { initReactQueryAuth } from '@/providers/AuthProvider';
@@ -30,8 +29,8 @@ async function registerFn() {
   return user;
 }
 
-async function logoutFn({ logoutId }: LogoutDTO) {
-  await logoutUser({ logoutId });
+async function logoutFn() {
+  await logoutUser();
 }
 
 const authConfig = {

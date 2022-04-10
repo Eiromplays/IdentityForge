@@ -4,7 +4,8 @@ import { Claim } from '@/types';
 import { AuthUser } from '../types';
 
 export const getUser = async (): Promise<AuthUser | null> => {
-  const userSessionInfo = (await axios.get('/bff/user')) as { type: string; value: string }[];
+  const userSessionInfo = (await axios.get('/bff/user')) as Claim[];
+
   if (!userSessionInfo) silentLogin();
 
   if (process.env.NODE_ENV.toLowerCase() || 'development' === 'development') {
@@ -44,6 +45,14 @@ export const getUser = async (): Promise<AuthUser | null> => {
 };
 
 export const silentLogin = () => {
+  const useSilentLogin = process.env.REACT_APP_USE_SILENT_LOGIN;
+
+  // TODO: Find a better solution for this, both the useSilentLogin and the url checking
+  if (useSilentLogin?.toLowerCase() === 'false' || window.location.href.includes('logout')) {
+    console.log('SILENT LOGIN DISABLED');
+    return;
+  }
+
   const bffSilentLoginIframe = document.createElement('iframe');
   document.body.append(bffSilentLoginIframe);
 
@@ -54,8 +63,6 @@ export const silentLogin = () => {
       // we now have a user logged in silently, so reload this window
 
       window.location.reload();
-    } else {
-      //window.location.assign('/bff/login');
     }
   });
 };

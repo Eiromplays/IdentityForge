@@ -4,7 +4,7 @@ import { LogoutForm } from '../components/LogoutForm';
 export const Logout = () => {
   return (
     <Layout title="Log out of your account">
-      <LogoutForm onSuccess={() => {}} />
+      <LogoutForm onSuccess={() => window.location.assign('/')} />
     </Layout>
   );
 };

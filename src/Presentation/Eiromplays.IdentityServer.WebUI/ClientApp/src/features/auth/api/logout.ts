@@ -1,39 +1,56 @@
-import { useMutation } from 'react-query';
-import { toast } from 'react-toastify';
+import { useQuery } from 'react-query';
 
 import { axios } from '@/lib/axios';
-import { MutationConfig } from '@/lib/react-query';
+import { ExtractFnReturnType, QueryConfig } from '@/lib/react-query';
+
+import { LogoutResponse } from '../types';
 
 export type LogoutDTO = {
-  logoutId?: string;
+  logoutId: string;
 };
 
-export const getLogoutInfo = ({ logoutId }: LogoutDTO): Promise<any> => {
+export const getLogoutInfo = (): Promise<LogoutResponse> => {
+  const logoutId = getLogoutId();
+
   return axios.get(`https://localhost:7001/spa/Logout?logoutId=${logoutId}`, {
     withCredentials: true,
   });
 };
 
-export const logoutUser = ({ logoutId }: LogoutDTO): Promise<any> => {
-  return axios.post(`https://localhost:7001/spa/Logout?logoutId=${logoutId}`, {
+export const logoutUser = (): Promise<LogoutResponse> => {
+  const logoutId = getLogoutId();
+
+  const logoutDto: LogoutDTO = {
+    logoutId: logoutId,
+  };
+
+  return axios.post(`https://localhost:7001/spa/Logout`, logoutDto, {
     withCredentials: true,
   });
 };
 
+const getLogoutId = (): string => {
+  // TODO: I need to refactor this, one day :)
+
+  let logoutId = '';
+  const idx = location.href.toLowerCase().indexOf('?logoutid=');
+  if (idx > 0) {
+    logoutId = location.href.substring(idx + 10);
+  }
+
+  return logoutId;
+};
+
+type QueryFnType = typeof getLogoutInfo;
+
 type UseLogoutOptions = {
-  config?: MutationConfig<typeof getLogoutInfo>;
+  config?: QueryConfig<QueryFnType>;
 };
 
 export const useLogout = ({ config }: UseLogoutOptions = {}) => {
-  return useMutation({
-    onSuccess: async () => {
-      toast.success('Successfully logged out');
-    },
-    onError: (error) => {
-      toast.error('Failed to update user');
-      toast.error(error.response?.data);
-    },
+  return useQuery<ExtractFnReturnType<QueryFnType>>({
     ...config,
-    mutationFn: getLogoutInfo,
+    queryKey: ['logoutInfo'],
+    queryFn: () => getLogoutInfo(),
   });
 };

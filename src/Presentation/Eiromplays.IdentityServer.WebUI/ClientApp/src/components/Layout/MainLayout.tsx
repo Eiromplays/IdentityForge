@@ -110,7 +110,7 @@ const UserNavigation = () => {
     { name: 'Your Profile', to: './profile' },
     {
       name: 'Sign out',
-      to: '',
+      to: user?.logoutUrl,
       onClick: () => {
         if (user?.logoutUrl) window.location.assign(user.logoutUrl);
       },
@@ -268,7 +268,7 @@ const Logo = () => {
   return (
     <Link className="flex items-center text-white" to=".">
       <img className="h-8 w-auto" src={logo} alt="Workflow" />
-      <span className="text-xl text-white font-semibold">Bulletproof React</span>
+      <span className="text-xl text-white font-semibold">Eiromplays IdentityServer</span>
     </Link>
   );
 };
