@@ -31,6 +31,6 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
         await _userService.ChangePasswordAsync(req.ChangePasswordRequest, userId);
         
-        await SendOkAsync(cancellation: ct);
+        await SendNoContentAsync(cancellation: ct);
     }
 }

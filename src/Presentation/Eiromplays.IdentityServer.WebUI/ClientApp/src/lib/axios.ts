@@ -3,9 +3,7 @@ import { toast } from 'react-toastify';
 
 import { WhitelistAxiosError } from '@/types';
 
-const Whitelists: WhitelistAxiosError[] = [
-  { status: 401, urls: ['/users', '/users/undefined', '/bff/user'], ignoreAll: false },
-];
+const Whitelists: WhitelistAxiosError[] = [{ status: 401, urls: ['/bff/user'], ignoreAll: false }];
 
 export const axios = Axios.create({
   headers: {
@@ -32,7 +30,9 @@ axios.interceptors.response.use(
       return;
     }
 
-    const messages = error.response?.data?.errors?.GeneralErrors ?? [];
+    const messages =
+      error.response?.data?.errors?.GeneralErrors ?? error.response?.data?.messages ?? [];
+
     if (messages.length <= 0) {
       toast.error(error.response?.data?.message || error.message);
       return Promise.reject(error);

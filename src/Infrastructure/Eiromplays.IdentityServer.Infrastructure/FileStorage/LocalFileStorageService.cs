@@ -11,7 +11,7 @@ public class LocalFileStorageService : IFileStorageService
     public async Task<string> UploadAsync<T>(FileUploadRequest? request, FileType supportedFileType, CancellationToken cancellationToken = default)
         where T : class
     {
-        if (request?.Data == null)
+        if (request?.Data is null)
         {
             return string.Empty;
         }
@@ -118,6 +118,7 @@ public class LocalFileStorageService : IFileStorageService
         while (max != min + 1)
         {
             var pivot = (max + min) / 2;
+            
             if (File.Exists(string.Format(pattern, pivot)))
             {
                 min = pivot;

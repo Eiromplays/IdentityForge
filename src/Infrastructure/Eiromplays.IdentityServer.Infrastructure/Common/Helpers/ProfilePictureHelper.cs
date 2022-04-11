@@ -10,7 +10,7 @@ public class ProfilePictureHelper
         if (!string.IsNullOrWhiteSpace(user.ProfilePicture))
         {
             return !string.IsNullOrWhiteSpace(accountConfiguration?.ProfilePictureConfiguration.BaseUrl)
-                ? $"{accountConfiguration.ProfilePictureConfiguration.BaseUrl}/{user.ProfilePicture}"
+                ? $"{accountConfiguration.ProfilePictureConfiguration.BaseUrl}{user.ProfilePicture}"
                 : user.ProfilePicture;
         }
 

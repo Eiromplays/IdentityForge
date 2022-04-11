@@ -1,4 +1,5 @@
 using Ardalis.Specification.EntityFrameworkCore;
+using Duende.Bff.EntityFramework;
 using Eiromplays.IdentityServer.Application.Common.Caching;
 using Eiromplays.IdentityServer.Application.Common.Events;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
@@ -32,11 +33,13 @@ internal partial class UserService : IUserService
     private readonly ICacheKeyService _cacheKeys;
     private readonly IFileStorageService _fileStorage;
     private readonly IMailService _mailService;
+    private readonly SessionDbContext _sessionDbContext;
 
     public UserService(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager,
         RoleManager<ApplicationRole> roleManager, ApplicationDbContext db, IStringLocalizer<UserService> t, IJobService jobService,
         IEventPublisher events, ICacheService cache,
-        ICacheKeyService cacheKeys, IFileStorageService fileStorage, IMailService mailService)
+        ICacheKeyService cacheKeys, IFileStorageService fileStorage, IMailService mailService,
+        SessionDbContext sessionDbContext)
     {
         _signInManager = signInManager;
         _userManager = userManager;
@@ -49,6 +52,7 @@ internal partial class UserService : IUserService
         _cacheKeys = cacheKeys;
         _fileStorage = fileStorage;
         _mailService = mailService;
+        _sessionDbContext = sessionDbContext;
     }
     
     public async Task<PaginationResponse<UserDetailsDto>> SearchAsync(UserListFilter filter, CancellationToken cancellationToken)

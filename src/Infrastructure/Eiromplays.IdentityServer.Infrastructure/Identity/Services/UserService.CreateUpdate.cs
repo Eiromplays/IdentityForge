@@ -154,7 +154,8 @@ internal partial class UserService
         return string.Join(Environment.NewLine, messages);
     }
 
-    public async Task UpdateAsync(UpdateUserRequest request, string userId)
+    // TODO: Add support for changing email
+    public async Task UpdateAsync(UpdateUserRequest request, string userId, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
@@ -163,7 +164,8 @@ internal partial class UserService
         var currentImage = user.ProfilePicture ?? string.Empty;
         if (request.Image != null || request.DeleteCurrentImage)
         {
-            user.ProfilePicture = await _fileStorage.UploadAsync<ApplicationUser>(request.Image, FileType.Image);
+            user.ProfilePicture =
+                await _fileStorage.UploadAsync<ApplicationUser>(request.Image, FileType.Image, cancellationToken);
             if (request.DeleteCurrentImage && !string.IsNullOrEmpty(currentImage))
             {
                 var root = Directory.GetCurrentDirectory();
@@ -171,6 +173,8 @@ internal partial class UserService
             }
         }
         
+        user.FirstName = request.FirstName;
+        user.LastName = request.LastName;
         user.PhoneNumber = request.PhoneNumber;
         var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
         if (request.PhoneNumber != phoneNumber)
@@ -180,13 +184,13 @@ internal partial class UserService
 
         var result = await _userManager.UpdateAsync(user);
 
-        await _signInManager.RefreshSignInAsync(user);
-
         await _events.PublishAsync(new ApplicationUserUpdatedEvent(user.Id));
 
         if (!result.Succeeded)
         {
             throw new InternalServerException(_t["Update profile failed"], result.GetErrors(_t));
         }
+
+        await RemoveSessionsAsync(userId, cancellationToken);
     }
 }

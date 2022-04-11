@@ -1,4 +1,4 @@
-import { HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi';
+import { HiOutlinePencil } from 'react-icons/hi';
 import * as z from 'zod';
 
 import { Button, ConfirmationDialog } from '@/components/Elements';
@@ -12,14 +12,16 @@ const schema = z.object({
   username: z.string().min(1, 'Required'),
   email: z.string().min(1, 'Required'),
   gravatarEmail: z.string(),
+  deleteCurrentImage: z.boolean(),
 });
 
 export const UpdateProfile = () => {
   const { user } = useAuth();
   let files: FileList[] = [];
   let profilePicture: File;
-  const { updateProfileMutation, deleteProfilePictureMutation } = useUpdateProfile();
+  const { updateProfileMutation } = useUpdateProfile();
 
+  console.log(user?.profilePicture);
   return (
     <>
       <FormDrawer
@@ -58,14 +60,15 @@ export const UpdateProfile = () => {
         <Form<UpdateProfileDTO['data'], typeof schema>
           id="update-profile"
           onSubmit={async (values) => {
-            values.profilePicture = profilePicture;
-            await updateProfileMutation.mutateAsync({ id: user?.id, data: values });
+            values.image = profilePicture;
+            await updateProfileMutation.mutateAsync({ data: values });
           }}
           options={{
             defaultValues: {
               username: user?.username,
               email: user?.email,
               gravatarEmail: user?.gravatarEmail,
+              deleteCurrentImage: false,
             },
           }}
           schema={schema}
@@ -94,37 +97,15 @@ export const UpdateProfile = () => {
                 label="Profile Picture"
                 type="file"
                 accept={'image/*'}
-                error={formState.errors['profilePicture']}
-                registration={register('profilePicture')}
+                error={formState.errors['image']}
+                registration={register('image')}
               />
               {user?.profilePicture && (
-                <ConfirmationDialog
-                  icon="danger"
-                  title="Delete Profile Picture"
-                  body="Are you sure you want to delete your profile Picture?"
-                  triggerButton={
-                    <Button
-                      className="mt-2"
-                      variant="inverse"
-                      size="sm"
-                      isLoading={deleteProfilePictureMutation.isLoading}
-                    >
-                      <HiOutlineTrash className="h-4 w-4 text-red-700" />
-                    </Button>
-                  }
-                  confirmButton={
-                    <Button
-                      className="mt-2"
-                      variant="danger"
-                      size="sm"
-                      isLoading={deleteProfilePictureMutation.isLoading}
-                      onClick={async () =>
-                        await deleteProfilePictureMutation.mutateAsync({ id: user?.id })
-                      }
-                    >
-                      Delete
-                    </Button>
-                  }
+                <InputField
+                  label="Delete profile picture"
+                  type="checkbox"
+                  error={formState.errors['deleteCurrentImage']}
+                  registration={register('deleteCurrentImage')}
                 />
               )}
               {files && files.length > 0 && files[0].length > 0 && (

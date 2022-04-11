@@ -30,7 +30,7 @@ public interface IUserService : ITransientService
 
     Task<string> GetOrCreateFromPrincipalAsync(ClaimsPrincipal principal);
     Task<string> CreateAsync(CreateUserRequest request, string origin);
-    Task UpdateAsync(UpdateUserRequest request, string userId);
+    Task UpdateAsync(UpdateUserRequest request, string userId, CancellationToken cancellationToken = default);
 
     Task<string> ConfirmEmailAsync(string userId, string code, CancellationToken cancellationToken);
     Task<string> ConfirmPhoneNumberAsync(string userId, string code);
@@ -42,4 +42,6 @@ public interface IUserService : ITransientService
     Task<List<UserLoginInfoDto>> GetLoginsAsync(string userId);
     
     Task<Dictionary<string, string>> GetPersonalDataAsync(string userId, bool includeLogins = true);
+
+    Task<bool> RemoveSessionsAsync(string userId, CancellationToken cancellationToken = default);
 }

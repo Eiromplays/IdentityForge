@@ -6,45 +6,41 @@ import { axios } from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
 
 export type UpdateProfileDTO = {
-  id?: string;
   data: {
     username: string;
     email: string;
     gravatarEmail: string;
-    profilePicture: File;
+    image: any;
+    deleteCurrentImage?: boolean;
   };
 };
 
-export type DeleteProfilePictureDTO = {
-  id?: string;
-};
-
-export const updateProfile = async ({ data, id }: UpdateProfileDTO) => {
-  const updateUserResponse = await axios.put(
-    `/users/${id}?RevokeUserSessions=${!data.profilePicture}`,
-    data
-  );
-
-  if (!data.profilePicture) return updateUserResponse;
-
-  const formData = new FormData();
-  formData.append('ProfilePicture', data.profilePicture);
-
-  const updateProfilePictureResponse = await axios.post(`/users/${id}/profile-picture`, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
+const toBase64 = (file: File) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
   });
 
-  return await Promise.all([updateProfilePictureResponse, updateUserResponse]);
-};
+export const updateProfile = async ({ data }: UpdateProfileDTO) => {
+  if (data.image instanceof File) {
+    const fileExtension = `.${data.image.name.slice(
+      ((data.image.name.lastIndexOf('.') - 1) >>> 0) + 2
+    )}`;
+    data.image = {
+      data: await toBase64(data.image),
+      extension: fileExtension,
+      name: data.image.name.replace(fileExtension, ''),
+    };
+    data.deleteCurrentImage = data.image ? true : data.deleteCurrentImage;
+  }
 
-export const deleteProfilePicture = async ({ id }: DeleteProfilePictureDTO) => {
-  return await axios.delete(`/users/${id}/profile-picture`);
+  return axios.put(`/personal/profile`, { UpdateUserRequest: data });
 };
 
 type UseUpdateProfileOptions = {
-  config?: MutationConfig<typeof updateProfile | typeof deleteProfilePicture>;
+  config?: MutationConfig<typeof updateProfile>;
 };
 
 export const useUpdateProfile = ({ config }: UseUpdateProfileOptions = {}) => {
@@ -63,18 +59,5 @@ export const useUpdateProfile = ({ config }: UseUpdateProfileOptions = {}) => {
     mutationFn: updateProfile,
   });
 
-  const deleteProfilePictureMutation = useMutation({
-    onSuccess: async () => {
-      toast.success('Profile picture Updated');
-      await refetchUser();
-    },
-    onError: (error) => {
-      toast.error('Failed to delete profile picture');
-      toast.error(error.response?.data);
-    },
-    ...config,
-    mutationFn: deleteProfilePicture,
-  });
-
-  return { updateProfileMutation, deleteProfilePictureMutation };
+  return { updateProfileMutation };
 };
