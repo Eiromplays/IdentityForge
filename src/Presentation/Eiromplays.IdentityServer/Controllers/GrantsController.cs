@@ -4,7 +4,6 @@
 // Original file: https://github.com/DuendeSoftware/Samples/blob/main/IdentityServer/v6/Quickstarts
 // Modified by Eirik Sjøløkken
 
-using System.Text.Json;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Services;
@@ -20,7 +19,6 @@ namespace Eiromplays.IdentityServer.Controllers;
 /// </summary>
 [SecurityHeaders]
 [Microsoft.AspNetCore.Authorization.Authorize]
-[ApiVersion("1.0")]
 public class GrantsController : Controller
 {
     private readonly IIdentityServerInteractionService _interaction;
@@ -42,29 +40,39 @@ public class GrantsController : Controller
     /// <summary>
     /// Show list of grants
     /// </summary>
+    [HttpGet("grants/{clientId}")]
+    public async Task<IActionResult> GetGrant(string clientId)
+    {
+        var grants = await BuildViewModelAsync();
+
+        return Ok(grants.Grants.FirstOrDefault(x => x.ClientId == clientId));
+    }
+    
+    /// <summary>
+    /// Get grant for a given clientId
+    /// </summary>
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        return View("Index", await BuildViewModelAsync());
+        return Ok(await BuildViewModelAsync());
     }
 
     /// <summary>
     /// Handle postback to revoke a client
     /// </summary>
-    [HttpPost]
-    [ValidateAntiForgeryToken]
+    [HttpDelete]
     public async Task<IActionResult> Revoke(string clientId)
     {
         await _interaction.RevokeUserConsentAsync(clientId);
         await _events.RaiseAsync(new GrantsRevokedEvent(User.GetSubjectId(), clientId));
 
-        return RedirectToAction("Index");
+        return NoContent();
     }
 
     private async Task<GrantsViewModel> BuildViewModelAsync()
     {
         var grants = await _interaction.GetAllUserGrantsAsync();
-        
+
         var list = new List<GrantViewModel>();
         foreach(var grant in grants)
         {
@@ -74,7 +82,7 @@ public class GrantsController : Controller
 
             var resources = await _resources.FindResourcesByScopeAsync(grant.Scopes);
 
-            var item = new GrantViewModel()
+            var item = new GrantViewModel
             {
                 ClientId = client.ClientId,
                 ClientName = client.ClientName ?? client.ClientId,

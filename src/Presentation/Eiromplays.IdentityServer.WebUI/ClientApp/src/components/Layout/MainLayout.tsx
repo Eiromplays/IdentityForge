@@ -46,7 +46,7 @@ const SideNavigation = () => {
       externalLink: true,
       icon: HiOutlineDocumentText,
     },
-    { name: 'Persisted Grants', to: './persisted-grants', icon: HiOutlineShieldCheck },
+    { name: 'Persisted Grants', to: './grants', icon: HiOutlineShieldCheck },
     { name: 'User Sessions', to: './user-sessions', icon: MdOutlineDevicesOther },
   ].filter(Boolean) as SideNavigationItem[];
 

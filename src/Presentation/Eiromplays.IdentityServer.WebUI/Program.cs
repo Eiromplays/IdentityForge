@@ -79,12 +79,6 @@ app.MapRemoteBffApiEndpoint("/users", "https://localhost:7003/v1/users")
 app.MapRemoteBffApiEndpoint("/roles", "https://localhost:7003/v1/roles")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/user-personal-data", "https://localhost:7003/v1/personal-data")
-    .RequireAccessToken();
-
-app.MapRemoteBffApiEndpoint("/persisted-grants", "https://localhost:7003/v1/persisted-grants")
-    .RequireAccessToken();
-
 app.MapRemoteBffApiEndpoint("/personal", "https://localhost:7003/v1/personal")
     .RequireAccessToken();
 

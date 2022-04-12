@@ -5,10 +5,10 @@ import { Spinner } from '@/components/Elements';
 import { MainLayout } from '@/components/Layout';
 import { lazyImport } from '@/utils/lazyImport';
 
+const { GrantsRoutes } = lazyImport(() => import('@/features/grants'), 'GrantsRoutes');
 const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
 const { Profile } = lazyImport(() => import('@/features/users'), 'Profile');
 const { PersonalData } = lazyImport(() => import('@/features/users'), 'PersonalData');
-const { PersistedGrants } = lazyImport(() => import('@/features/users'), 'PersistedGrants');
 
 const App = () => {
   return (
@@ -31,9 +31,9 @@ export const protectedRoutes = [
     path: '/app',
     element: <App />,
     children: [
+      { path: 'grants/*', element: <GrantsRoutes /> },
       { path: 'profile', element: <Profile /> },
       { path: 'personal-data', element: <PersonalData /> },
-      { path: 'persisted-grants', element: <PersistedGrants /> },
       { path: '', element: <Dashboard /> },
       { path: '*', element: <Navigate to="." /> },
     ],
