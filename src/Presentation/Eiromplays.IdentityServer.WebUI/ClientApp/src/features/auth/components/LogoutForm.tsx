@@ -19,6 +19,7 @@ export const LogoutForm = ({ onSuccess }: LoginFormProps) => {
       <Form
         onSubmit={async () => {
           await logoutUser();
+
           onSuccess();
         }}
       >

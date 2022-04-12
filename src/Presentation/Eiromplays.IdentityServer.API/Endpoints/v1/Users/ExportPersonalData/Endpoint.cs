@@ -1,7 +1,6 @@
-using System.Text.Json;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.DownloadPersonalData;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.ExportPersonalData;
 
 public class Endpoint : Endpoint<Models.Request>
 {
@@ -14,10 +13,10 @@ public class Endpoint : Endpoint<Models.Request>
 
     public override void Configure()
     {
-        Get("/users/{Id}/download-personal-data");
+        Get("/users/{Id}/export-personal-data");
         Summary(s =>
         {
-            s.Summary = "Get personal data for user.";
+            s.Summary = "Export data for user.";
         });
         Version(1);
         Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.Users));
@@ -25,11 +24,9 @@ public class Endpoint : Endpoint<Models.Request>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        var user = await _userService.GetAsync(req.Id, ct);
+        var result = await _userService.ExportPersonalDataAsync(req.Id);
 
-        var personalData = await _userService.GetPersonalDataAsync(user.Id);
-
-        await SendBytesAsync(JsonSerializer.SerializeToUtf8Bytes(personalData, new JsonSerializerOptions{WriteIndented = true}), "PersonalData.json",
+        await SendStreamAsync(result, "PersonalData.csv", result.Length, contentType: "application/octet-stream",
             cancellation: ct);
     }
 }

@@ -3,12 +3,16 @@ import { toast } from 'react-toastify';
 
 import { WhitelistAxiosError } from '@/types';
 
-const Whitelists: WhitelistAxiosError[] = [{ status: 401, urls: ['/bff/user'], ignoreAll: false }];
+const Whitelists: WhitelistAxiosError[] = [
+  { status: 401, urls: ['/bff/user'], ignoreAll: false },
+  { status: 400, urls: ['/spa/Login'] },
+];
 
 export const axios = Axios.create({
   headers: {
     'X-CSRF': '1',
   },
+  withCredentials: true,
 });
 
 axios.defaults.timeout = 30_000; // If you want to increase this, do it for a specific call, not the global app API.
@@ -27,6 +31,7 @@ axios.interceptors.response.use(
         whitelist.urls.includes(new URL(error.request.responseURL).pathname.replace(/\/$/, ''))) ||
       (whitelist && whitelist.ignoreAll)
     ) {
+      if (error?.response?.data) return error?.response?.data;
       return;
     }
 

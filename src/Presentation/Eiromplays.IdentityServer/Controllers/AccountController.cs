@@ -4,29 +4,22 @@
 // Original file: https://github.com/DuendeSoftware/Samples/blob/main/IdentityServer/v6/Quickstarts
 // Modified by Eirik Sjøløkken
 
-using Duende.IdentityServer.Events;
-using Duende.IdentityServer.Extensions;
-using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Application.Common.Security;
-using Eiromplays.IdentityServer.Configuration;
 using Eiromplays.IdentityServer.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Validators.Account;
 using Eiromplays.IdentityServer.ViewModels.Account;
 using FluentEmail.Core;
-using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
-using System.Text.Json;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
-using Eiromplays.IdentityServer.Application.Identity.Users;
 using Microsoft.Extensions.Options;
 
 namespace Eiromplays.IdentityServer.Controllers;

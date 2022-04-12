@@ -42,6 +42,8 @@ builder.Services.AddAuthentication(options =>
     options.ClaimActions.MapJsonKey("gravatar_email", "gravatar_email", "gravatar_email");
     options.ClaimActions.MapJsonKey("updated_at", "updated_at", "updated_at");
     options.ClaimActions.MapJsonKey("created_at", "created_at", "created_at");
+    options.ClaimActions.MapJsonKey("given_name", "given_name", "given_name");
+    options.ClaimActions.MapJsonKey("family_name", "family_name", "family_name");
 });
 
 var app = builder.Build();
@@ -55,7 +57,7 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    // The default HSTS0+ value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

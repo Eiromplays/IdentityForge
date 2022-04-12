@@ -26,7 +26,7 @@ export const Landing = () => {
             <span className="block">Eiromplays IdentityServer</span>
           </h2>
           <img src={logo} alt="react" />
-          <p>User Management</p>
+          <p>User Portal</p>
           <div className="mt-8 flex justify-center">
             <div className="inline-flex rounded-md shadow">
               <Button

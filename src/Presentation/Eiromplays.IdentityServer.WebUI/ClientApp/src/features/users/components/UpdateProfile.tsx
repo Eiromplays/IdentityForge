@@ -10,6 +10,8 @@ import { UpdateProfileDTO, useUpdateProfile } from '../api/updateProfile';
 
 const schema = z.object({
   username: z.string().min(1, 'Required'),
+  firstName: z.string().min(1, 'Required'),
+  lastName: z.string().min(1, 'Required'),
   email: z.string().min(1, 'Required'),
   gravatarEmail: z.string(),
   deleteCurrentImage: z.boolean(),
@@ -66,6 +68,8 @@ export const UpdateProfile = () => {
           options={{
             defaultValues: {
               username: user?.username,
+              firstName: user?.firstName,
+              lastName: user?.lastName,
               email: user?.email,
               gravatarEmail: user?.gravatarEmail,
               deleteCurrentImage: false,
@@ -80,6 +84,16 @@ export const UpdateProfile = () => {
                 label="Username"
                 error={formState.errors['username']}
                 registration={register('username')}
+              />
+              <InputField
+                label="First Name"
+                error={formState.errors['firstName']}
+                registration={register('firstName')}
+              />
+              <InputField
+                label="Last Name"
+                error={formState.errors['lastName']}
+                registration={register('lastName')}
               />
               <InputField
                 label="Email Address"

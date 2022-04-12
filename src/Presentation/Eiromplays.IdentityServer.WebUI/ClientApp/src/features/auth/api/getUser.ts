@@ -6,7 +6,9 @@ import { AuthUser } from '../types';
 export const getUser = async (): Promise<AuthUser | null> => {
   const userSessionInfo = (await axios.get('/bff/user')) as Claim[];
 
-  if (!userSessionInfo) silentLogin();
+  if (!userSessionInfo) {
+    silentLogin();
+  }
 
   if (process.env.NODE_ENV.toLowerCase() || 'development' === 'development') {
     const userDiagnostics = await axios.get('/bff/diagnostics');
@@ -20,6 +22,8 @@ export const getUser = async (): Promise<AuthUser | null> => {
   const user: AuthUser = {
     id: userSessionInfo?.find((claim: Claim) => claim.type === 'sub')?.value ?? '',
     username: nameDictionary?.value ?? '',
+    firstName: userSessionInfo?.find((claim: Claim) => claim.type === 'given_name')?.value ?? '',
+    lastName: userSessionInfo?.find((claim: Claim) => claim.type === 'family_name')?.value ?? '',
     email: userSessionInfo?.find((claim: Claim) => claim.type === 'email')?.value ?? '',
     gravatarEmail:
       userSessionInfo?.find((claim: Claim) => claim.type === 'gravatar_email')?.value ?? '',
@@ -47,22 +51,25 @@ export const getUser = async (): Promise<AuthUser | null> => {
 export const silentLogin = () => {
   const useSilentLogin = process.env.REACT_APP_USE_SILENT_LOGIN;
 
-  // TODO: Find a better solution for this, both the useSilentLogin and the url checking
-  if (useSilentLogin?.toLowerCase() === 'false' || window.location.href.includes('logout')) {
-    console.log('SILENT LOGIN DISABLED');
+  // TODO: Find a better solution for useSilentLogin, and ignoring of specific urls
+  if (
+    useSilentLogin?.toLowerCase() === 'false' ||
+    window.location.href.toLowerCase().includes('logout') ||
+    window.location.href.toLowerCase().includes('?disable-silent-login')
+  )
     return;
-  }
 
   const bffSilentLoginIframe = document.createElement('iframe');
   document.body.append(bffSilentLoginIframe);
 
   bffSilentLoginIframe.src = '/bff/silent-login';
-
   window.addEventListener('message', (e) => {
     if (e.data && e.data.source === 'bff-silent-login' && e.data.isLoggedIn) {
       // we now have a user logged in silently, so reload this window
 
       window.location.reload();
+    } else if (e.data && e.data.source === 'bff-silent-login' && !e.data.isLoggedIn) {
+      window.location.href = window.location.href + '?disable-silent-login';
     }
   });
 };

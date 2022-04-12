@@ -12,9 +12,7 @@ export type LogoutDTO = {
 export const getLogoutInfo = (): Promise<LogoutResponse> => {
   const logoutId = getLogoutId();
 
-  return axios.get(`https://localhost:7001/spa/Logout?logoutId=${logoutId}`, {
-    withCredentials: true,
-  });
+  return axios.get(`https://localhost:7001/spa/Logout?logoutId=${logoutId}`);
 };
 
 export const logoutUser = (): Promise<LogoutResponse> => {
@@ -24,9 +22,7 @@ export const logoutUser = (): Promise<LogoutResponse> => {
     logoutId: logoutId,
   };
 
-  return axios.post(`https://localhost:7001/spa/Logout`, logoutDto, {
-    withCredentials: true,
-  });
+  return axios.post(`https://localhost:7001/spa/Logout`, logoutDto);
 };
 
 const getLogoutId = (): string => {

@@ -34,12 +34,13 @@ internal partial class UserService : IUserService
     private readonly IFileStorageService _fileStorage;
     private readonly IMailService _mailService;
     private readonly SessionDbContext _sessionDbContext;
+    private readonly IExcelWriter _excelWriter;
 
     public UserService(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager,
         RoleManager<ApplicationRole> roleManager, ApplicationDbContext db, IStringLocalizer<UserService> t, IJobService jobService,
         IEventPublisher events, ICacheService cache,
         ICacheKeyService cacheKeys, IFileStorageService fileStorage, IMailService mailService,
-        SessionDbContext sessionDbContext)
+        SessionDbContext sessionDbContext, IExcelWriter excelWriter)
     {
         _signInManager = signInManager;
         _userManager = userManager;
@@ -53,6 +54,7 @@ internal partial class UserService : IUserService
         _fileStorage = fileStorage;
         _mailService = mailService;
         _sessionDbContext = sessionDbContext;
+        _excelWriter = excelWriter;
     }
     
     public async Task<PaginationResponse<UserDetailsDto>> SearchAsync(UserListFilter filter, CancellationToken cancellationToken)

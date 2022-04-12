@@ -1,6 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json;
-using Duende.IdentityServer;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
@@ -14,6 +12,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace Eiromplays.IdentityServer.Controllers
 {
@@ -41,6 +40,9 @@ namespace Eiromplays.IdentityServer.Controllers
     public class LoginConsentResponse
     {
         public string? Error { get; set; }
+        
+        public SignInResult? SignInResult { get; set; }
+        
         public string? ValidReturnUrl { get; set; }
     }
 
@@ -98,9 +100,27 @@ namespace Eiromplays.IdentityServer.Controllers
                 if (user is not null)
                 {
                     var loginResult = await _signInManager.PasswordSignInAsync(user, model.Password, model.Remember, lockoutOnFailure: true);
-
+                    
                     if (!loginResult.Succeeded)
                     {
+                        response.SignInResult = loginResult;
+                        if (loginResult.RequiresTwoFactor)
+                        {
+                            return RedirectToAction(nameof(LoginWith2Fa), new { model.ReturnUrl, RememberMe = model.Remember });
+                        }
+
+                        if (loginResult.IsLockedOut)
+                        {
+                            // TODO: should probably send an email to the user
+                            Console.WriteLine($"Cookies {Request.Cookies.Count}");
+                            foreach (var keyValuePair in Request.Cookies)
+                            {
+                                Console.WriteLine($"Cookie: {keyValuePair.Key} = {keyValuePair.Value}");
+                            }
+
+                            return BadRequest(response);
+                        }
+                        
                         response.Error = "Invalid username or password";
                         return new BadRequestObjectResult(response);
                     }
@@ -116,6 +136,57 @@ namespace Eiromplays.IdentityServer.Controllers
 
             response.Error = "invalid username or password";
             return new BadRequestObjectResult(response);
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> LoginWith2Fa(bool rememberMe, string? returnUrl = null)
+        {
+            // Ensure the user has gone through the username & password screen first
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+
+            if (user is null)
+            {
+                throw new InvalidOperationException("Unable to get user");
+            }
+
+            var model = new LoginWith2FaViewModel
+            {
+                ReturnUrl = returnUrl,
+                RememberMe = rememberMe
+            };
+
+            return Ok(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoginWith2Fa(LoginWith2FaViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(model);
+            }
+
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (user is null)
+                throw new InvalidOperationException("Unable to get user");
+
+            var authenticatorCode = model.TwoFactorCode?.Replace(" ", string.Empty).Replace("-", string.Empty);
+
+            var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, model.RememberMe, model.RememberMachine);
+
+            if (result.Succeeded)
+            {
+                return LocalRedirect(string.IsNullOrEmpty(model.ReturnUrl) ? "~/" : model.ReturnUrl);
+            }
+
+            if (result.IsLockedOut)
+            {
+                return BadRequest("Lockout");
+            }
+
+            ModelState.AddModelError(string.Empty, "Invalid authentication code");
+
+            return BadRequest(model);
         }
 
         [HttpPost("consent")]

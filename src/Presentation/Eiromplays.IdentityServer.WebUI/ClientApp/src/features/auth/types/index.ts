@@ -1,6 +1,8 @@
 export type AuthUser = {
   id: string;
   username: string;
+  firstName: string;
+  lastName: string;
   profilePicture: string;
   email: string;
   gravatarEmail?: string;
@@ -12,7 +14,15 @@ export type AuthUser = {
 
 export type LoginConsentResponse = {
   error: string;
+  signInResult: SignInResult;
   validReturnUrl: string;
+};
+
+export type SignInResult = {
+  succeeded: boolean;
+  isLockedOut: boolean;
+  isNotAllowed: boolean;
+  RequiresTwoFactor: boolean;
 };
 
 // TODO: possibly find a better way to handle logout data

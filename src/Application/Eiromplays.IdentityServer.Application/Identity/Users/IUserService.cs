@@ -40,8 +40,10 @@ public interface IUserService : ITransientService
     Task ChangePasswordAsync(ChangePasswordRequest request, string userId);
 
     Task<List<UserLoginInfoDto>> GetLoginsAsync(string userId);
-    
-    Task<Dictionary<string, string>> GetPersonalDataAsync(string userId, bool includeLogins = true);
+
+    Task<Stream> ExportPersonalDataAsync(string userId, bool includeLogins = true);
 
     Task<bool> RemoveSessionsAsync(string userId, CancellationToken cancellationToken = default);
+    Task DeleteAsync(string userId, CancellationToken cancellationToken = default);
+
 }

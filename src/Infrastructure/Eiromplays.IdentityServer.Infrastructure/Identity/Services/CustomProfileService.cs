@@ -45,6 +45,12 @@ public class CustomProfileService : ProfileService<ApplicationUser>
 
         var profilePicture = ProfilePictureHelper.GetProfilePicture(user, _accountConfiguration);
         
+        if (!string.IsNullOrEmpty(user.FirstName))
+            claims.Add(new Claim(JwtClaimTypes.GivenName, user.FirstName));
+        
+        if (!string.IsNullOrEmpty(user.LastName))
+            claims.Add(new Claim(JwtClaimTypes.FamilyName, user.LastName));
+        
         if (!string.IsNullOrWhiteSpace(profilePicture))
             claims.Add(new Claim(JwtClaimTypes.Picture, profilePicture));
 

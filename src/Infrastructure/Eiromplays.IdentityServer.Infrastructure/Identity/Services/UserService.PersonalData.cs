@@ -6,7 +6,7 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
 internal partial class UserService
 {
-    public async Task<Dictionary<string, string>> GetPersonalDataAsync(string userId, bool includeLogins = true)
+    public async Task<Stream> ExportPersonalDataAsync(string userId, bool includeLogins = true)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
@@ -21,7 +21,7 @@ internal partial class UserService
         
         foreach (var l in logins.Where(l => !string.IsNullOrWhiteSpace(l.ProviderKey)))
             personalData.Add($"{l.LoginProvider} external login provider key", l.ProviderKey!);
-        
-        return personalData;
+
+        return _excelWriter.WriteToStream(personalData.ToList());
     }
 }

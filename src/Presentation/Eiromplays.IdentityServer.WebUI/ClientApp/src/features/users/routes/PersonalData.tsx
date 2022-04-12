@@ -3,10 +3,10 @@ import { ContentLayout } from '@/components/Layout';
 import { useAuth } from '@/lib/auth';
 
 import { useDeleteUser } from '../api/deleteUser';
-import { usePersonalData } from '../api/downloadPersonalData';
+import { usePersonalData } from '../api/exportPersonalData';
 
 export const PersonalData = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const downloadPersonalDataMutation = usePersonalData();
   const deleteUserMutation = useDeleteUser();
 
@@ -41,8 +41,8 @@ export const PersonalData = () => {
                 size="sm"
                 isLoading={deleteUserMutation.isLoading}
                 onClick={async () => {
-                  await deleteUserMutation.mutateAsync({ userId: user?.id });
-                  logout();
+                  await deleteUserMutation.mutateAsync(undefined);
+                  if (user?.logoutUrl) window.location.assign(user.logoutUrl);
                 }}
               >
                 Proceed
@@ -53,9 +53,7 @@ export const PersonalData = () => {
             variant="primary"
             size="sm"
             isLoading={downloadPersonalDataMutation.isLoading}
-            onClick={async () =>
-              await downloadPersonalDataMutation.mutateAsync({ userId: user?.id })
-            }
+            onClick={async () => await downloadPersonalDataMutation.mutateAsync(undefined)}
           >
             Download Personal Data
           </Button>

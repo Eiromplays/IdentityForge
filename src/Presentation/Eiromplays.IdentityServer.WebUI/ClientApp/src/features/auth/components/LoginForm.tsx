@@ -36,15 +36,15 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
 
           values.returnUrl = returnUrl;
           const response = await login(values);
-          console.log(response);
-          onSuccess();
+
+          if (response) onSuccess();
         }}
         schema={schema}
       >
         {({ register, formState }) => (
           <>
             <InputField
-              label="Email Address"
+              label="Login / Email, Username, Phone Number or User ID"
               error={formState.errors['login']}
               registration={register('login')}
             />

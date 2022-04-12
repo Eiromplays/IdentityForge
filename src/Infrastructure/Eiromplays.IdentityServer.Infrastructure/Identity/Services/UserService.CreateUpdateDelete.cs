@@ -21,7 +21,7 @@ internal partial class UserService
     /// The local user is retrieved using the objectidentifier claim present in the ClaimsPrincipal.
     /// If no such claim is found, an InternalServerException is thrown.
     /// If no user is found with that ObjectId, a new one is created and populated with the values from the ClaimsPrincipal.
-    /// If a role claim is present in the principal, and the user is not yet in that roll, then the user is added to that role.
+    /// If a role claim is present in the principal, and the user is not yet in that role, then the user is added to that role.
     /// </summary>
     public async Task<string> GetOrCreateFromPrincipalAsync(ClaimsPrincipal principal)
     {
@@ -123,7 +123,8 @@ internal partial class UserService
             throw new InternalServerException(_t["Validation Errors Occurred."], result.GetErrors(_t));
         }
 
-        await _userManager.AddToRoleAsync(user, EIARoles.Basic);
+        if (await _roleManager.RoleExistsAsync(EIARoles.Basic))
+            await _userManager.AddToRoleAsync(user, EIARoles.Basic);
 
         var messages = new List<string> { string.Format(_t["User {0} Registered."], user.UserName) };
 
@@ -192,5 +193,29 @@ internal partial class UserService
         }
 
         await RemoveSessionsAsync(userId, cancellationToken);
+    }
+
+    public async Task DeleteAsync(string userId, CancellationToken cancellationToken)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        _ = user ?? throw new NotFoundException(_t["User Not Found."]);
+        
+        var isAdmin = await _userManager.IsInRoleAsync(user, EIARoles.Administrator);
+        if (isAdmin)
+        {
+            throw new ConflictException(_t["Administrators Profile's cannot be deleted"]);
+        }
+        
+        var result = await _userManager.DeleteAsync(user);
+
+        if (!result.Succeeded)
+        {
+            throw new InternalServerException(_t["Delete user failed"], result.GetErrors(_t));
+        }
+        
+        await _signInManager.SignOutAsync();
+        
+        await _events.PublishAsync(new ApplicationUserDeletedEvent(user.Id));
     }
 }

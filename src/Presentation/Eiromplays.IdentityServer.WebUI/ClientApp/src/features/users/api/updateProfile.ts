@@ -8,6 +8,8 @@ import { MutationConfig } from '@/lib/react-query';
 export type UpdateProfileDTO = {
   data: {
     username: string;
+    firstName: string;
+    lastName: string;
     email: string;
     gravatarEmail: string;
     image: any;

@@ -47,6 +47,8 @@ export const Profile = () => {
           <dl className="sm:divide-y sm:divide-gray-200">
             <Entry label="Id" value={user.id} />
             <Entry label="Username" value={user.username} />
+            <Entry label="First Name" value={user.firstName} />
+            <Entry label="Last Name" value={user.lastName} />
             <Entry label="Email Address" value={user.email} />
             {user.updated_at && (
               <Entry label="Last updated at" value={user.updated_at.toString()} />

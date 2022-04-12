@@ -16,7 +16,23 @@ async function loadUser(): Promise<AuthUser> {
 
 async function loginFn(data: LoginCredentialsDTO) {
   const response = await loginWithEmailAndPassword(data);
-  if (!response) throw new Error('Login failed');
+
+  // TODO: Check if I can handle this, and signInResult better
+  if (response?.validReturnUrl) window.location.href = response.validReturnUrl;
+
+  if (response?.signInResult?.isLockedOut) {
+    window.location.assign('/auth/lockout');
+    return null;
+  }
+  if (response?.signInResult?.RequiresTwoFactor) {
+    window.location.assign('/auth/login-two-factor');
+    return null;
+  }
+
+  if (response?.signInResult?.isNotAllowed) {
+    window.location.assign('/auth/not-allowed');
+    return null;
+  }
 
   const user = await loadUser();
 
