@@ -12,8 +12,7 @@ export const getUser = async (): Promise<AuthUser | null> => {
   if (!isAuthenticated) return null;
 
   const userSessionInfo = (await axios.get('/bff/user')) as Claim[];
-
-  console.log(userSessionInfo, isAuthenticated);
+  console.log(userSessionInfo);
 
   if (!userSessionInfo && isAuthenticated) {
     silentLogin();
@@ -25,6 +24,7 @@ export const getUser = async (): Promise<AuthUser | null> => {
 
   const user: AuthUser = {
     id: userSessionInfo?.find((claim: Claim) => claim.type === 'sub')?.value ?? '',
+    sessionId: userSessionInfo?.find((claim: Claim) => claim.type === 'sid')?.value ?? '',
     username: nameDictionary?.value ?? '',
     firstName: userSessionInfo?.find((claim: Claim) => claim.type === 'given_name')?.value ?? '',
     lastName: userSessionInfo?.find((claim: Claim) => claim.type === 'family_name')?.value ?? '',

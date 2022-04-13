@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Common.Models;
+using Eiromplays.IdentityServer.Application.Identity.Sessions;
 using Eiromplays.IdentityServer.Application.Identity.Users.Password;
 
 namespace Eiromplays.IdentityServer.Application.Identity.Users;
@@ -44,6 +45,12 @@ public interface IUserService : ITransientService
     Task<Stream> ExportPersonalDataAsync(string userId, bool includeLogins = true);
 
     Task<bool> RemoveSessionsAsync(string userId, CancellationToken cancellationToken = default);
+
+    Task<List<UserSessionDto>> GetUserSessionsAsync(string userId, CancellationToken cancellationToken = default);
+    Task<UserSessionDto> GetUserSessionAsync(string key, CancellationToken cancellationToken = default);
+    Task<string> DeleteUserSessionAsync(string key, CancellationToken cancellationToken = default);
+    
+    
     Task DeleteAsync(string userId, CancellationToken cancellationToken = default);
 
 }

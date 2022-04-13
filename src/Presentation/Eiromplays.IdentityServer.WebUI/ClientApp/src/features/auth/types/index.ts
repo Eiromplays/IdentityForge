@@ -1,5 +1,6 @@
 export type AuthUser = {
   id: string;
+  sessionId: string;
   username: string;
   firstName: string;
   lastName: string;

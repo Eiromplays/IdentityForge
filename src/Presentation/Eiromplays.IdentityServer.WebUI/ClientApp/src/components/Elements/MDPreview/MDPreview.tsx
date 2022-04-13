@@ -10,7 +10,7 @@ export type MDPreviewProps = {
 export const MDPreview = ({ value = '' }: MDPreviewProps) => {
   return (
     <div
-      className="p-2 w-full prose prose-indigo"
+      className="p-2 w-full prose prose-indigo dark:text-white"
       dangerouslySetInnerHTML={{
         __html: DOMPurify.sanitize(marked(value)),
       }}

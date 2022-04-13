@@ -39,6 +39,8 @@ const SideNavigation = () => {
       icon: HiOutlineLockClosed,
     },
     { name: 'Change Password', to: './change-password', icon: HiOutlineKey },
+    { name: 'Persisted Grants', to: './grants', icon: HiOutlineShieldCheck },
+    { name: 'User Sessions', to: './user-sessions', icon: MdOutlineDevicesOther },
     {
       name: 'Discovery Document',
       to: 'https://localhost:7001/.well-known/openid-configuration',
@@ -46,8 +48,6 @@ const SideNavigation = () => {
       externalLink: true,
       icon: HiOutlineDocumentText,
     },
-    { name: 'Persisted Grants', to: './grants', icon: HiOutlineShieldCheck },
-    { name: 'User Sessions', to: './user-sessions', icon: MdOutlineDevicesOther },
   ].filter(Boolean) as SideNavigationItem[];
 
   return (

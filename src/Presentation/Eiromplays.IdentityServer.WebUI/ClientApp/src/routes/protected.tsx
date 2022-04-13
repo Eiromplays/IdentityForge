@@ -6,6 +6,10 @@ import { MainLayout } from '@/components/Layout';
 import { lazyImport } from '@/utils/lazyImport';
 
 const { GrantsRoutes } = lazyImport(() => import('@/features/grants'), 'GrantsRoutes');
+const { UserSessionsRoutes } = lazyImport(
+  () => import('@/features/user-sessions'),
+  'UserSessionsRoutes'
+);
 const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
 const { Profile } = lazyImport(() => import('@/features/users'), 'Profile');
 const { PersonalData } = lazyImport(() => import('@/features/users'), 'PersonalData');
@@ -32,6 +36,7 @@ export const protectedRoutes = [
     element: <App />,
     children: [
       { path: 'grants/*', element: <GrantsRoutes /> },
+      { path: 'user-sessions/*', element: <UserSessionsRoutes /> },
       { path: 'profile', element: <Profile /> },
       { path: 'personal-data', element: <PersonalData /> },
       { path: '', element: <Dashboard /> },
