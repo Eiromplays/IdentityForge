@@ -1,18 +1,22 @@
 import { axios } from '@/lib/axios';
 import { Claim } from '@/types';
+import { formatDate } from '@/utils/format';
 
 import { AuthUser } from '../types';
 
 export const getUser = async (): Promise<AuthUser | null> => {
+  const isAuthenticated = (await axios.get(
+    'https://localhost:7001/account/isAuthenticated'
+  )) as boolean;
+
+  if (!isAuthenticated) return null;
+
   const userSessionInfo = (await axios.get('/bff/user')) as Claim[];
 
-  if (!userSessionInfo) {
-    silentLogin();
-  }
+  console.log(userSessionInfo, isAuthenticated);
 
-  if (process.env.NODE_ENV.toLowerCase() || 'development' === 'development') {
-    const userDiagnostics = await axios.get('/bff/diagnostics');
-    console.log(userDiagnostics);
+  if (!userSessionInfo && isAuthenticated) {
+    silentLogin();
   }
 
   const nameDictionary =
@@ -35,11 +39,11 @@ export const getUser = async (): Promise<AuthUser | null> => {
     logoutUrl:
       userSessionInfo?.find((claim: Claim) => claim.type === 'bff:logout_url')?.value ??
       '/bff/logout',
-    updated_at: new Date(
-      userSessionInfo?.find((claim: Claim) => claim.type === 'updated_at')?.value ?? ''
+    updated_at: formatDate(
+      (userSessionInfo?.find((claim: Claim) => claim.type === 'updated_at')?.value ?? 0) as number
     ),
-    created_at: new Date(
-      userSessionInfo?.find((claim: Claim) => claim.type === 'created_at')?.value ?? ''
+    created_at: formatDate(
+      (userSessionInfo?.find((claim: Claim) => claim.type === 'created_at')?.value ?? 0) as number
     ),
   };
 
@@ -51,13 +55,8 @@ export const getUser = async (): Promise<AuthUser | null> => {
 export const silentLogin = () => {
   const useSilentLogin = process.env.REACT_APP_USE_SILENT_LOGIN;
 
-  // TODO: Find a better solution for useSilentLogin, and ignoring of specific urls
-  if (
-    useSilentLogin?.toLowerCase() === 'false' ||
-    window.location.href.toLowerCase().includes('logout') ||
-    window.location.href.toLowerCase().includes('?disable-silent-login')
-  )
-    return;
+  // TODO: Find a better solution for useSilentLogin
+  if (useSilentLogin?.toLowerCase() === 'false') return;
 
   const bffSilentLoginIframe = document.createElement('iframe');
   document.body.append(bffSilentLoginIframe);
@@ -68,8 +67,6 @@ export const silentLogin = () => {
       // we now have a user logged in silently, so reload this window
 
       window.location.reload();
-    } else if (e.data && e.data.source === 'bff-silent-login' && !e.data.isLoggedIn) {
-      window.location.href = window.location.href + '?disable-silent-login';
     }
   });
 };

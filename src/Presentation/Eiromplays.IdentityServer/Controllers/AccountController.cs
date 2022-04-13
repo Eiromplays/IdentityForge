@@ -61,6 +61,13 @@ public class AccountController : Controller
         _accountConfiguration = accountConfigurationOptions.Value;
         _userResolver = userResolver;
     }
+
+    [HttpGet]
+    [Microsoft.AspNetCore.Authorization.Authorize]
+    public IActionResult IsAuthenticated()
+    {
+        return Ok(User.Identity?.IsAuthenticated);
+    }
     
 
     [HttpGet]

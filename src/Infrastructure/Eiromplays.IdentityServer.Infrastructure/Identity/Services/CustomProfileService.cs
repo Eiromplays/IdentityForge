@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Security.Claims;
+using System.Text.Json;
 using Duende.IdentityServer.AspNetIdentity;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
@@ -61,7 +62,7 @@ public class CustomProfileService : ProfileService<ApplicationUser>
             claims.Add(new Claim("updated_at", user.LastModifiedOn.Value.ToString(CultureInfo.InvariantCulture)));
         
         claims.Add(new Claim("created_at", user.CreatedOn.ToString(CultureInfo.InvariantCulture)));
-        
+
         context.IssuedClaims.AddRange(claims);
     }
 }

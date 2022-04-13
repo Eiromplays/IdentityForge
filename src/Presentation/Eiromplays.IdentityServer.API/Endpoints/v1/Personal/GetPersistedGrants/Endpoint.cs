@@ -30,7 +30,7 @@ public class Endpoint : EndpointWithoutRequest<List<PersistedGrantDto>>
             return;
         }
 
-        Response = await _userService.GetPersistedGrantsAsync(userId, ct);
+        //Response = await _userService.Getp(userId, ct);
         
         await SendOkAsync(Response, cancellation: ct);
     }
