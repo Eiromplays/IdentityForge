@@ -11,8 +11,10 @@ export const getUser = async (): Promise<AuthUser | null> => {
 
   if (!isAuthenticated) return null;
 
+  const userDiagnosis = await axios.get('/bff/diagnostics');
+  if (userDiagnosis) console.log(userDiagnosis);
+
   const userSessionInfo = (await axios.get('/bff/user')) as Claim[];
-  console.log(userSessionInfo);
 
   if (!userSessionInfo && isAuthenticated) {
     silentLogin();

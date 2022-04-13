@@ -21,6 +21,7 @@ export const Table = <Entry extends { id: string }>({ data, columns }: TableProp
       </div>
     );
   }
+
   return (
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

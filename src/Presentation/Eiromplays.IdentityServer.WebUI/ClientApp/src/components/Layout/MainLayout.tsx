@@ -12,7 +12,7 @@ import {
   HiOutlineDocumentText,
   HiOutlineShieldCheck,
 } from 'react-icons/hi';
-import { MdOutlineDevicesOther } from 'react-icons/md';
+import { MdOutlineDevicesOther, MdOutlineHistory } from 'react-icons/md';
 import { NavLink, Link } from 'react-router-dom';
 
 import logo from '@/assets/logo.svg';
@@ -41,6 +41,7 @@ const SideNavigation = () => {
     { name: 'Change Password', to: './change-password', icon: HiOutlineKey },
     { name: 'Persisted Grants', to: './grants', icon: HiOutlineShieldCheck },
     { name: 'User Sessions', to: './user-sessions', icon: MdOutlineDevicesOther },
+    { name: 'Logs', to: './logs', icon: MdOutlineHistory },
     {
       name: 'Discovery Document',
       to: 'https://localhost:7001/.well-known/openid-configuration',

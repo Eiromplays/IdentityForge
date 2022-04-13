@@ -10,6 +10,7 @@ const { UserSessionsRoutes } = lazyImport(
   () => import('@/features/user-sessions'),
   'UserSessionsRoutes'
 );
+const { LogsRoutes } = lazyImport(() => import('@/features/logs'), 'LogsRoutes');
 const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
 const { Profile } = lazyImport(() => import('@/features/users'), 'Profile');
 const { PersonalData } = lazyImport(() => import('@/features/users'), 'PersonalData');
@@ -37,6 +38,7 @@ export const protectedRoutes = [
     children: [
       { path: 'grants/*', element: <GrantsRoutes /> },
       { path: 'user-sessions/*', element: <UserSessionsRoutes /> },
+      { path: 'logs/*', element: <LogsRoutes /> },
       { path: 'profile', element: <Profile /> },
       { path: 'personal-data', element: <PersonalData /> },
       { path: '', element: <Dashboard /> },
