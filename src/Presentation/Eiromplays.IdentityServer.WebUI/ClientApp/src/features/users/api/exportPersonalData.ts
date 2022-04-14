@@ -14,11 +14,11 @@ export const exportPersonalData = (): Promise<any> => {
   });
 };
 
-type UsePersonalDataOptions = {
+type UseExportPersonalDataOptions = {
   config?: MutationConfig<typeof exportPersonalData>;
 };
 
-export const usePersonalData = ({ config }: UsePersonalDataOptions = {}) => {
+export const useExportPersonalData = ({ config }: UseExportPersonalDataOptions = {}) => {
   return useMutation({
     onSuccess: (data) => {
       // Probably not the best way to download files using javascript, but it works :)

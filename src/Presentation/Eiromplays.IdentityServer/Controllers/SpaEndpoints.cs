@@ -3,6 +3,7 @@ using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
+using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Configuration;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
@@ -24,7 +25,8 @@ namespace Eiromplays.IdentityServer.Controllers
         [Required]
         [MaxLength(100)]
         public string? Password { get; set; }
-        public bool Remember { get; set; }
+
+        public bool RememberMe { get; set; }
         [MaxLength(2000)]
         public string? ReturnUrl { get; set; }
     }
@@ -99,24 +101,19 @@ namespace Eiromplays.IdentityServer.Controllers
 
                 if (user is not null)
                 {
-                    var loginResult = await _signInManager.PasswordSignInAsync(user, model.Password, model.Remember, lockoutOnFailure: true);
+                    var loginResult = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: true);
                     
                     if (!loginResult.Succeeded)
                     {
                         response.SignInResult = loginResult;
                         if (loginResult.RequiresTwoFactor)
                         {
-                            return RedirectToAction(nameof(LoginWith2Fa), new { model.ReturnUrl, RememberMe = model.Remember });
+                            return RedirectToAction(nameof(LoginWith2Fa), new { model.ReturnUrl, RememberMe = model.RememberMe });
                         }
 
                         if (loginResult.IsLockedOut)
                         {
                             // TODO: should probably send an email to the user
-                            Console.WriteLine($"Cookies {Request.Cookies.Count}");
-                            foreach (var keyValuePair in Request.Cookies)
-                            {
-                                Console.WriteLine($"Cookie: {keyValuePair.Key} = {keyValuePair.Value}");
-                            }
 
                             return BadRequest(response);
                         }
@@ -138,7 +135,7 @@ namespace Eiromplays.IdentityServer.Controllers
             return new BadRequestObjectResult(response);
         }
         
-        [HttpGet]
+        [HttpGet("loginWith2fa")]
         public async Task<IActionResult> LoginWith2Fa(bool rememberMe, string? returnUrl = null)
         {
             // Ensure the user has gone through the username & password screen first
@@ -158,35 +155,43 @@ namespace Eiromplays.IdentityServer.Controllers
             return Ok(model);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> LoginWith2Fa(LoginWith2FaViewModel model)
+        [HttpPost("loginWith2fa")]
+        public async Task<IActionResult> LoginWith2Fa([FromBody] LoginWith2FaViewModel model)
         {
+            var response = new LoginConsentResponse();
+            
             if (!ModelState.IsValid)
             {
-                return BadRequest(model);
+                var errors = ModelState.Values.Where(e => e.Errors.Count > 0)
+                    .SelectMany(e => e.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+                
+                throw new BadRequestException("", errors);
             }
 
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             if (user is null)
                 throw new InvalidOperationException("Unable to get user");
-
+            
             var authenticatorCode = model.TwoFactorCode?.Replace(" ", string.Empty).Replace("-", string.Empty);
 
-            var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, model.RememberMe, model.RememberMachine);
+            var result =
+                await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, model.RememberMe, model.RememberMachine);
 
             if (result.Succeeded)
             {
-                return LocalRedirect(string.IsNullOrEmpty(model.ReturnUrl) ? "~/" : model.ReturnUrl);
+                var url = model.ReturnUrl != null ? Uri.UnescapeDataString(model.ReturnUrl) : null;
+
+                var authzContext = await _interaction.GetAuthorizationContextAsync(url);
+                response.ValidReturnUrl = authzContext != null ? url : _serverUrls.BaseUrl;
+
+                return Ok(response);
             }
 
-            if (result.IsLockedOut)
-            {
-                return BadRequest("Lockout");
-            }
+            response.Error = "Invalid authentication code";
 
-            ModelState.AddModelError(string.Empty, "Invalid authentication code");
-
-            return BadRequest(model);
+            return BadRequest(response);
         }
 
         [HttpPost("consent")]

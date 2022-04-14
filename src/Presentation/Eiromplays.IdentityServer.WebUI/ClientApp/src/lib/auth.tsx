@@ -3,8 +3,10 @@ import {
   AuthUser,
   getUser,
   LoginCredentialsDTO,
+  Login2faCredentialsDto,
   loginWithEmailAndPassword,
   logoutUser,
+  loginWith2fa,
 } from '@/features/auth';
 import { initReactQueryAuth } from '@/providers/AuthProvider';
 
@@ -16,7 +18,6 @@ async function loadUser(): Promise<AuthUser> {
 
 async function loginFn(data: LoginCredentialsDTO) {
   const response = await loginWithEmailAndPassword(data);
-
   // TODO: Check if I can handle this, and signInResult better
   if (response?.validReturnUrl) window.location.href = response.validReturnUrl;
 
@@ -24,8 +25,16 @@ async function loginFn(data: LoginCredentialsDTO) {
     window.location.assign('/auth/lockout');
     return null;
   }
-  if (response?.signInResult?.RequiresTwoFactor) {
-    window.location.assign('/auth/login-two-factor');
+
+  const login2faViewModel = response as unknown as Login2faCredentialsDto;
+  console.log(login2faViewModel);
+  if (
+    login2faViewModel?.rememberMe !== undefined &&
+    login2faViewModel?.rememberMachine !== undefined
+  ) {
+    window.location.assign(
+      `/auth/login2fa/${login2faViewModel.rememberMe}/${login2faViewModel?.returnUrl ?? ''}`
+    );
     return null;
   }
 
@@ -33,6 +42,15 @@ async function loginFn(data: LoginCredentialsDTO) {
     window.location.assign('/auth/not-allowed');
     return null;
   }
+
+  const user = await loadUser();
+
+  return user;
+}
+
+async function login2faFn(data: Login2faCredentialsDto) {
+  const response = await loginWith2fa(data);
+  console.log(response);
 
   const user = await loadUser();
 
@@ -52,6 +70,7 @@ async function logoutFn() {
 const authConfig = {
   loadUser,
   loginFn,
+  login2faFn,
   registerFn,
   logoutFn,
   LoaderComponent() {
@@ -71,5 +90,6 @@ export const { AuthProvider, useAuth } = initReactQueryAuth<
   AuthUser | null,
   unknown,
   LoginCredentialsDTO,
+  Login2faCredentialsDto,
   RegisterCredentials
 >(authConfig);

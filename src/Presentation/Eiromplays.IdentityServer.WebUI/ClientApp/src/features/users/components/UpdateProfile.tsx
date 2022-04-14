@@ -23,7 +23,6 @@ export const UpdateProfile = () => {
   let profilePicture: File;
   const { updateProfileMutation } = useUpdateProfile();
 
-  console.log(user?.profilePicture);
   return (
     <>
       <FormDrawer

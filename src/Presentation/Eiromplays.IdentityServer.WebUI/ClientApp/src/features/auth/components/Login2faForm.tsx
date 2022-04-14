@@ -6,38 +6,33 @@ import { Form, InputField } from '@/components/Form';
 import { useAuth } from '@/lib/auth';
 
 const schema = z.object({
-  login: z.string().min(1, 'Required'),
-  password: z.string().min(1, 'Required'),
-  rememberMe: z.boolean(),
+  twoFactorCode: z.string().max(7, 'Required').min(6, 'Required'),
+  rememberMachine: z.boolean(),
 });
 
 type LoginValues = {
-  login: string;
-  password: string;
+  twoFactorCode: string;
+  rememberMachine: boolean;
   returnUrl?: string;
-  rememberMe?: boolean;
+  rememberMe: boolean;
 };
 
 type LoginFormProps = {
+  returnUrl?: string;
+  rememberMe: boolean;
   onSuccess: () => void;
 };
 
-export const LoginForm = ({ onSuccess }: LoginFormProps) => {
-  const { login, isLoggingIn } = useAuth();
+export const Login2faForm = ({ rememberMe, returnUrl, onSuccess }: LoginFormProps) => {
+  const { login2fa, isLoggingIn } = useAuth();
 
   return (
     <div>
       <Form<LoginValues, typeof schema>
         onSubmit={async (values) => {
-          //TODO: Find a better way to get the returnUrl
-          let returnUrl = '';
-          const idx = location.href.toLowerCase().indexOf('?returnurl=');
-          if (idx > 0) {
-            returnUrl = location.href.substring(idx + 11);
-          }
-
           values.returnUrl = returnUrl;
-          const response = await login(values);
+          values.rememberMe = rememberMe;
+          const response = await login2fa(values);
 
           if (response) onSuccess();
         }}
@@ -46,21 +41,15 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
         {({ register, formState }) => (
           <>
             <InputField
-              label="Login / Email, Username, Phone Number or User ID"
-              error={formState.errors['login']}
-              registration={register('login')}
-            />
-            <InputField
-              type="password"
-              label="Password"
-              error={formState.errors['password']}
-              registration={register('password')}
+              label="Two-factor code"
+              error={formState.errors['twoFactorCode']}
+              registration={register('twoFactorCode')}
             />
             <InputField
               type="checkbox"
-              label="Remember me"
-              error={formState.errors['rememberMe']}
-              registration={register('rememberMe')}
+              label="Remember"
+              error={formState.errors['rememberMachine']}
+              registration={register('rememberMachine')}
             />
             <div>
               <Button isLoading={isLoggingIn} type="submit" className="w-full">

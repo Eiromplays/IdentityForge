@@ -19,13 +19,17 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
+using System.Text.Encodings.Web;
+using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.ViewModels;
 using Microsoft.Extensions.Options;
 
 namespace Eiromplays.IdentityServer.Controllers;
 
 [SecurityHeaders]
-[AllowAnonymous]
+[Microsoft.AspNetCore.Authorization.Authorize]
+[Route("[controller]/[action]")]
 public class AccountController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -38,6 +42,9 @@ public class AccountController : Controller
     private readonly IAuthenticationHandlerProvider _authenticationHandlerProvider;
     private readonly AccountConfiguration _accountConfiguration;
     private readonly IUserResolver<ApplicationUser> _userResolver;
+    private readonly UrlEncoder _urlEncoder;
+    
+    private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
 
     public AccountController(
         UserManager<ApplicationUser> userManager,
@@ -48,7 +55,8 @@ public class AccountController : Controller
         IEventService events, IFluentEmail fluentEmail,
         IAuthenticationHandlerProvider authenticationHandlerProvider,
         IOptions<AccountConfiguration> accountConfigurationOptions,
-        IUserResolver<ApplicationUser> userResolver)
+        IUserResolver<ApplicationUser> userResolver,
+        UrlEncoder urlEncoder)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -60,68 +68,14 @@ public class AccountController : Controller
         _authenticationHandlerProvider = authenticationHandlerProvider;
         _accountConfiguration = accountConfigurationOptions.Value;
         _userResolver = userResolver;
+        _urlEncoder = urlEncoder;
     }
 
     [HttpGet]
-    [Microsoft.AspNetCore.Authorization.Authorize]
+    [AllowAnonymous]
     public IActionResult IsAuthenticated()
     {
         return Ok(User.Identity?.IsAuthenticated);
-    }
-    
-
-    [HttpGet]
-    [AllowAnonymous]
-    public async Task<IActionResult> LoginWith2Fa(bool rememberMe, string? returnUrl = null)
-    {
-        // Ensure the user has gone through the username & password screen first
-        var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-
-        if (user is null)
-        {
-            throw new InvalidOperationException("Unable to get user");
-        }
-
-        var model = new LoginWith2FaViewModel
-        {
-            ReturnUrl = returnUrl,
-            RememberMe = rememberMe
-        };
-
-        return View(model);
-    }
-
-    [HttpPost]
-    [AllowAnonymous]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> LoginWith2Fa(LoginWith2FaViewModel model)
-    {
-        if (!ModelState.IsValid)
-        {
-            return View(model);
-        }
-
-        var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-        if (user is null)
-            throw new InvalidOperationException("Unable to get user");
-
-        var authenticatorCode = model.TwoFactorCode?.Replace(" ", string.Empty).Replace("-", string.Empty);
-
-        var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, model.RememberMe, model.RememberMachine);
-
-        if (result.Succeeded)
-        {
-            return LocalRedirect(string.IsNullOrEmpty(model.ReturnUrl) ? "~/" : model.ReturnUrl);
-        }
-
-        if (result.IsLockedOut)
-        {
-            return View("Lockout");
-        }
-
-        ModelState.AddModelError(string.Empty, "Invalid authentication code");
-
-        return View(model);
     }
 
     [HttpGet]
@@ -200,26 +154,63 @@ public class AccountController : Controller
         return View(model);
     }
 
-
     [HttpGet]
-    [AllowAnonymous]
-    public async Task<IActionResult> ConfirmEmail(string? userId, string? code)
+    public async Task<IActionResult> EnableAuthenticator()
     {
-        if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(code))
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
         {
-            return View("Error");
+            throw new NotFoundException("User not found");
         }
 
-        var user = await _userManager.FindByIdAsync(userId);
-        if (user is null)
+        var model = new EnableAuthenticatorViewModel();
+        await LoadSharedKeyAndQrCodeUriAsync(user, model);
+
+        return Ok(model);
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> EnableAuthenticator([FromBody] EnableAuthenticatorViewModel model)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
         {
-            return View("Error");
+            throw new NotFoundException("User not found");
         }
 
-        code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values.Where(e => e.Errors.Count > 0)
+                .SelectMany(e => e.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
+                
+            throw new BadRequestException("", errors);
+        }
 
-        var result = await _userManager.ConfirmEmailAsync(user, code);
-        return View(result.Succeeded ? "ConfirmEmail" : "Error");
+        var verificationCode = model.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
+
+        var is2FaTokenValid = await _userManager.VerifyTwoFactorTokenAsync(
+            user, _userManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode);
+
+        if (!is2FaTokenValid)
+        {
+            await LoadSharedKeyAndQrCodeUriAsync(user, model);
+            throw new InternalServerException("Invalid verification code");
+        }
+
+        await _userManager.SetTwoFactorEnabledAsync(user, true);
+        var userId = await _userManager.GetUserIdAsync(user);
+
+        if (await _userManager.CountRecoveryCodesAsync(user) != 0)
+            return Ok(userId);
+        
+        var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
+        //TempData[RecoveryCodesKey] = recoveryCodes.ToArray();
+
+        //return RedirectToAction(nameof(ShowRecoveryCodes));
+        return Ok(recoveryCodes.ToList());
+
     }
 
     [HttpGet]
@@ -302,5 +293,28 @@ public class AccountController : Controller
     public IActionResult RegisterConfirmation()
     {
         return View();
+    }
+    
+    private async Task LoadSharedKeyAndQrCodeUriAsync(ApplicationUser user, EnableAuthenticatorViewModel model)
+    {
+        var sharedKey = await _userManager.GetAuthenticatorKeyAsync(user);
+        if (string.IsNullOrEmpty(sharedKey))
+        {
+            await _userManager.ResetAuthenticatorKeyAsync(user);
+            sharedKey = await _userManager.GetAuthenticatorKeyAsync(user);
+        }
+
+        model.SharedKey = sharedKey;
+        if (user.Email != null) 
+            model.AuthenticatorUri = GenerateQrCodeUri(user.Email, sharedKey);
+    }
+    
+    private string GenerateQrCodeUri(string email, string unformattedKey)
+    {
+        return string.Format(
+            AuthenticatorUriFormat,
+            _urlEncoder.Encode("Eiromplays.IdentityServer.Admin"),
+            _urlEncoder.Encode(email),
+            unformattedKey);
     }
 }

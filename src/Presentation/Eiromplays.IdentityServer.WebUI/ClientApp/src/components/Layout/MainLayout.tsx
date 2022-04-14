@@ -35,11 +35,11 @@ const SideNavigation = () => {
     { name: 'Personal Data', to: './personal-data', icon: HiOutlineCollection },
     {
       name: 'Two-factor authentication',
-      to: '/two-factor-authentication',
+      to: './two-factor-authentication',
       icon: HiOutlineLockClosed,
     },
     { name: 'Change Password', to: './change-password', icon: HiOutlineKey },
-    { name: 'Persisted Grants', to: './grants', icon: HiOutlineShieldCheck },
+    { name: 'Grants', to: './grants', icon: HiOutlineShieldCheck },
     { name: 'User Sessions', to: './user-sessions', icon: MdOutlineDevicesOther },
     { name: 'Logs', to: './logs', icon: MdOutlineHistory },
     {
@@ -80,7 +80,7 @@ const SideNavigation = () => {
               clsx(
                 'hover:bg-gray-700 hover:text-white',
                 'group flex items-center px-2 py-2 font-medium rounded-md'
-              ) + (navData.isActive ? 'bg-gray-900  text-white' : 'bg-transparent text-gray-400')
+              ) + (navData.isActive ? 'bg-gray-900 text-white' : 'bg-transparent text-gray-400')
             }
           >
             <item.icon

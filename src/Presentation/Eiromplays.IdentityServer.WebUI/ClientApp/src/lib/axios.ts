@@ -5,7 +5,7 @@ import { WhitelistAxiosError } from '@/types';
 
 const Whitelists: WhitelistAxiosError[] = [
   { status: 401, urls: ['/bff/user'], ignoreAll: false },
-  { status: 400, urls: ['/spa/Login'] },
+  { status: 400, urls: ['/spa/login'] },
 ];
 
 export const axios = Axios.create({
@@ -27,14 +27,15 @@ axios.interceptors.response.use(
     );
 
     const shouldWhitelist = whitelists.some(
-      (whitelist: WhitelistAxiosError) =>
-        whitelist.urls.includes(
-          new URL(error.request.responseURL).pathname.replace(/\/$/, '').toLowerCase()
+      (whitelist) =>
+        whitelist.urls.some(
+          (url) =>
+            url.toLowerCase() ===
+            new URL(error.request.responseURL).pathname.replace(/\/$/, '').toLowerCase()
         ) || whitelist.ignoreAll
     );
 
     if (shouldWhitelist) {
-      //if (error?.response?.data) return error?.response?.data;
       return;
     }
 
