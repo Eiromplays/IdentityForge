@@ -22,8 +22,10 @@ using System.Text;
 using System.Text.Encodings.Web;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.ViewModels;
 using Microsoft.Extensions.Options;
+using Shared.Authorization;
 
 namespace Eiromplays.IdentityServer.Controllers;
 
@@ -43,6 +45,7 @@ public class AccountController : Controller
     private readonly AccountConfiguration _accountConfiguration;
     private readonly IUserResolver<ApplicationUser> _userResolver;
     private readonly UrlEncoder _urlEncoder;
+    private readonly IUserService _userService;
     
     private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
 
@@ -56,7 +59,7 @@ public class AccountController : Controller
         IAuthenticationHandlerProvider authenticationHandlerProvider,
         IOptions<AccountConfiguration> accountConfigurationOptions,
         IUserResolver<ApplicationUser> userResolver,
-        UrlEncoder urlEncoder)
+        UrlEncoder urlEncoder, IUserService userService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -69,6 +72,7 @@ public class AccountController : Controller
         _accountConfiguration = accountConfigurationOptions.Value;
         _userResolver = userResolver;
         _urlEncoder = urlEncoder;
+        _userService = userService;
     }
 
     [HttpGet]
@@ -199,18 +203,25 @@ public class AccountController : Controller
             throw new InternalServerException("Invalid verification code");
         }
 
-        await _userManager.SetTwoFactorEnabledAsync(user, true);
-        var userId = await _userManager.GetUserIdAsync(user);
+        await _userManager.SetTwoFactorEnabledAsync(user, true); var userId = await _userManager.GetUserIdAsync(user);
 
         if (await _userManager.CountRecoveryCodesAsync(user) != 0)
-            return Ok(userId);
+            return NoContent();
         
         var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
-        //TempData[RecoveryCodesKey] = recoveryCodes.ToArray();
-
-        //return RedirectToAction(nameof(ShowRecoveryCodes));
+        
         return Ok(recoveryCodes.ToList());
+    }
 
+    [HttpPost]
+    public async Task<IActionResult> DisableAuthenticator()
+    {
+        var userId = User.GetUserId();
+
+        if (string.IsNullOrWhiteSpace(userId))
+            return Unauthorized();
+
+        return Ok(await _userService.DisableTwoFactorAsync(userId));
     }
 
     [HttpGet]

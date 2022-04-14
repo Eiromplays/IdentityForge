@@ -19,8 +19,6 @@ const { TwoFactorAuthentication } = lazyImport(
   'TwoFactorAuthentication'
 );
 
-const { EnableAuthenticator } = lazyImport(() => import('@/features/users'), 'EnableAuthenticator');
-
 const App = () => {
   return (
     <MainLayout>
@@ -48,7 +46,6 @@ export const protectedRoutes = [
       { path: 'profile', element: <Profile /> },
       { path: 'personal-data', element: <PersonalData /> },
       { path: 'two-factor-authentication', element: <TwoFactorAuthentication /> },
-      { path: 'two-factor-authentication/enable', element: <EnableAuthenticator /> },
       { path: '', element: <Dashboard /> },
       { path: '*', element: <Navigate to="." /> },
     ],

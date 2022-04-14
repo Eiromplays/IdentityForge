@@ -1,14 +1,22 @@
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 import { Button } from '@/components/Elements';
 import { ContentLayout } from '@/components/Layout';
 import { useAuth } from '@/lib/auth';
 
+import { useRemoveAuthenticator } from '../api/removeAuthenticator';
+import { AddAuthenticator } from '../components/AddAuthenticator';
+import { ShowRecoveryCodes } from '../components/ShowRecoveryCodes';
+
 export const TwoFactorAuthentication = () => {
+  const [addAuthenticator, setAddAuthenticator] = useState(false);
+  const [recoveryCodes, setRecoveryCodes] = useState([]);
   const { user } = useAuth();
-  const navigate = useNavigate();
+  const removeAuthenticatorMutation = useRemoveAuthenticator();
 
   if (!user) return null;
+
+  console.log(recoveryCodes, addAuthenticator);
 
   return (
     <ContentLayout title="Two-factor Authentication (2FA)">
@@ -24,9 +32,30 @@ export const TwoFactorAuthentication = () => {
           </p>
         </div>
         <div className="border-t border-gray-200 flex gap-5 pt-5 pl-5 pb-5">
-          <Button onClick={() => navigate('./enable')} variant="primary" size="sm">
-            Add Authenticator app
+          {recoveryCodes.length > 0 && <ShowRecoveryCodes codes={recoveryCodes} />}
+          {!addAuthenticator && recoveryCodes?.length <= 0 && (
+            <Button onClick={() => setAddAuthenticator(true)} variant="primary" size="sm">
+              Add Authenticator
+            </Button>
+          )}
+          <Button
+            onClick={async () => await removeAuthenticatorMutation.mutateAsync(undefined)}
+            isLoading={removeAuthenticatorMutation.isLoading}
+            variant="danger"
+            size="sm"
+          >
+            Remove Authenticator
           </Button>
+          {addAuthenticator && recoveryCodes?.length <= 0 && (
+            <AddAuthenticator
+              onSuccess={(data) => {
+                if (data?.length > 0) {
+                  setRecoveryCodes(data);
+                  setAddAuthenticator(false);
+                }
+              }}
+            />
+          )}
         </div>
       </div>
     </ContentLayout>

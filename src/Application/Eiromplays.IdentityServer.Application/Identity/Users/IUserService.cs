@@ -53,4 +53,6 @@ public interface IUserService : ITransientService
     
     Task DeleteAsync(string userId, CancellationToken cancellationToken = default);
 
+    Task<string> DisableTwoFactorAsync(string userId);
+
 }
