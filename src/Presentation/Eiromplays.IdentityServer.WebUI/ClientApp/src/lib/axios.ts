@@ -36,11 +36,16 @@ axios.interceptors.response.use(
     );
 
     if (shouldWhitelist) {
+      if (error?.response?.data) return error.response.data;
       return;
     }
 
     const messages =
       error.response?.data?.errors?.GeneralErrors ?? error.response?.data?.messages ?? [];
+
+    if (error.response?.data?.error) {
+      messages.push(error.response?.data?.error);
+    }
 
     if (messages.length <= 0) {
       toast.error(error.response?.data?.message || error.message);

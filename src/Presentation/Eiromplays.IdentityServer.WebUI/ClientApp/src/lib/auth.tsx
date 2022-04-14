@@ -18,6 +18,7 @@ async function loadUser(): Promise<AuthUser> {
 
 async function loginFn(data: LoginCredentialsDTO) {
   const response = await loginWithEmailAndPassword(data);
+
   // TODO: Check if I can handle this, and signInResult better
   if (response?.validReturnUrl) window.location.href = response.validReturnUrl;
 
@@ -27,7 +28,6 @@ async function loginFn(data: LoginCredentialsDTO) {
   }
 
   const login2faViewModel = response as unknown as Login2faCredentialsDto;
-  console.log(login2faViewModel);
   if (
     login2faViewModel?.rememberMe !== undefined &&
     login2faViewModel?.rememberMachine !== undefined
