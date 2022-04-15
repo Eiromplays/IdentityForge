@@ -1,22 +1,27 @@
-import { useState } from 'react';
-
-import { Button } from '@/components/Elements';
+import { Spinner } from '@/components/Elements';
 import { ContentLayout } from '@/components/Layout';
 import { useAuth } from '@/lib/auth';
 
-import { useRemoveAuthenticator } from '../api/removeAuthenticator';
+import { useTwoFactorAuthentication } from '../api/getTwoFactorAuthentication';
 import { AddAuthenticator } from '../components/AddAuthenticator';
-import { ShowRecoveryCodes } from '../components/ShowRecoveryCodes';
+import { DisableAuthenticator } from '../components/DisableAuthenticator';
+import { ForgetTwoFactorClient } from '../components/ForgetTwoFactorClient';
+import { GenerateRecoveryCodes } from '../components/GenerateRecoveryCodes';
+import { ResetAuthenticator } from '../components/ResetAuthenticator';
 
 export const TwoFactorAuthentication = () => {
-  const [addAuthenticator, setAddAuthenticator] = useState(false);
-  const [recoveryCodes, setRecoveryCodes] = useState([]);
   const { user } = useAuth();
-  const removeAuthenticatorMutation = useRemoveAuthenticator();
+  const twoFactorAuthenticationQuery = useTwoFactorAuthentication();
 
-  if (!user) return null;
+  if (twoFactorAuthenticationQuery.isLoading) {
+    return (
+      <div className="w-full h-48 flex justify-center items-center">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
 
-  console.log(recoveryCodes, addAuthenticator);
+  if (!twoFactorAuthenticationQuery.data || !user) return null;
 
   return (
     <ContentLayout title="Two-factor Authentication (2FA)">
@@ -24,38 +29,31 @@ export const TwoFactorAuthentication = () => {
         <div className="px-4 py-5 sm:px-6">
           <div className="flex justify-between">
             <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
-              User security
+              Two-Factor Authentication settings
             </h3>
           </div>
-          <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-white">
-            Secure your account with a extra layer of security.
-          </p>
         </div>
-        <div className="border-t border-gray-200 flex gap-5 pt-5 pl-5 pb-5">
-          {recoveryCodes.length > 0 && <ShowRecoveryCodes codes={recoveryCodes} />}
-          {!addAuthenticator && recoveryCodes?.length <= 0 && (
-            <Button onClick={() => setAddAuthenticator(true)} variant="primary" size="sm">
-              Add Authenticator
-            </Button>
+        <div className="border-t border-gray-200 flex flex-wrap flex-column gap-5 pt-5 pl-5 pb-5">
+          {twoFactorAuthenticationQuery.data.isMachineRemembered && <ForgetTwoFactorClient />}
+          {twoFactorAuthenticationQuery.data.hasAuthenticator && (
+            <>
+              <DisableAuthenticator />
+              <GenerateRecoveryCodes />
+            </>
           )}
-          <Button
-            onClick={async () => await removeAuthenticatorMutation.mutateAsync(undefined)}
-            isLoading={removeAuthenticatorMutation.isLoading}
-            variant="danger"
-            size="sm"
-          >
-            Remove Authenticator
-          </Button>
-          {addAuthenticator && recoveryCodes?.length <= 0 && (
-            <AddAuthenticator
-              onSuccess={(data) => {
-                if (data?.length > 0) {
-                  setRecoveryCodes(data);
-                  setAddAuthenticator(false);
-                }
-              }}
-            />
-          )}
+        </div>
+      </div>
+      <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg mt-5">
+        <div className="px-4 py-5 sm:px-6">
+          <div className="flex justify-between">
+            <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
+              Authenticator app
+            </h3>
+          </div>
+        </div>
+        <div className="border-t border-gray-200 flex flex-wrap flex-column gap-5 pt-5 pl-5 pb-5">
+          {twoFactorAuthenticationQuery.data.hasAuthenticator && <ResetAuthenticator />}
+          <AddAuthenticator />
         </div>
       </div>
     </ContentLayout>

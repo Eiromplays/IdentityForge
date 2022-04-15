@@ -4,20 +4,20 @@ import { toast } from 'react-toastify';
 import { axios } from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
 
-export const removeAuthenticator = () => {
+export const disableAuthenticator = () => {
   return axios.post(`https://localhost:7001/account/DisableAuthenticator`);
 };
 
-type UseRemoveAuthenticatorOptions = {
-  config?: MutationConfig<typeof removeAuthenticator>;
+type UseDisableAuthenticatorOptions = {
+  config?: MutationConfig<typeof disableAuthenticator>;
 };
 
-export const useRemoveAuthenticator = ({ config }: UseRemoveAuthenticatorOptions = {}) => {
+export const useDisableAuthenticator = ({ config }: UseDisableAuthenticatorOptions = {}) => {
   return useMutation({
     onSuccess: () => {
-      toast.success('Authenticator removed successfully');
+      toast.success('Authenticator disabled successfully');
     },
     ...config,
-    mutationFn: removeAuthenticator,
+    mutationFn: disableAuthenticator,
   });
 };

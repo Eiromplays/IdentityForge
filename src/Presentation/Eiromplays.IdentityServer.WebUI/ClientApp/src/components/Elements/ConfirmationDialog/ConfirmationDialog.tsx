@@ -13,6 +13,7 @@ export type ConfirmationDialogProps = {
   cancelButtonText?: string;
   icon?: 'danger' | 'info' | 'warning';
   isDone?: boolean;
+  showCancelButton?: boolean;
 };
 
 export const ConfirmationDialog = ({
@@ -23,6 +24,7 @@ export const ConfirmationDialog = ({
   cancelButtonText = 'Cancel',
   icon = 'danger',
   isDone = false,
+  showCancelButton = true,
 }: ConfirmationDialogProps) => {
   const { close, open, isOpen } = useDisclosure();
 
@@ -76,15 +78,17 @@ export const ConfirmationDialog = ({
             </div>
           </div>
           <div className="mt-4 flex space-x-2 justify-end">
-            <Button
-              type="button"
-              variant="inverse"
-              className="w-full inline-flex justify-center rounded-md border focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
-              onClick={close}
-              ref={cancelButtonRef}
-            >
-              {cancelButtonText}
-            </Button>
+            {showCancelButton && (
+              <Button
+                type="button"
+                variant="inverse"
+                className="w-full inline-flex justify-center rounded-md border focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm max-h-4"
+                onClick={close}
+                ref={cancelButtonRef}
+              >
+                {cancelButtonText}
+              </Button>
+            )}
             {confirmButton}
           </div>
         </div>

@@ -159,6 +159,40 @@ public class AccountController : Controller
     }
 
     [HttpGet]
+    public async Task<IActionResult> TwoFactorAuthentication()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            throw new NotFoundException("User not found");
+        }
+
+        var model = new TwoFactorAuthenticationViewModel
+        {
+            HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user) is not null,
+            Is2FaEnabled = user.TwoFactorEnabled,
+            RecoveryCodesLeft = await _userManager.CountRecoveryCodesAsync(user),
+            IsMachineRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user)
+        };
+
+        return Ok(model);
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> ForgetTwoFactorClient()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            throw new NotFoundException("User not found");
+        }
+
+        await _signInManager.ForgetTwoFactorClientAsync();
+
+        return NoContent();
+    }
+    
+    [HttpGet]
     public async Task<IActionResult> EnableAuthenticator()
     {
         var user = await _userManager.GetUserAsync(User);
@@ -222,6 +256,40 @@ public class AccountController : Controller
             return Unauthorized();
 
         return Ok(await _userService.DisableTwoFactorAsync(userId));
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> ResetAuthenticator()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            throw new NotFoundException("User not found");
+        }
+
+        await _userManager.SetTwoFactorEnabledAsync(user, false);
+        await _userManager.ResetAuthenticatorKeyAsync(user);
+
+        return NoContent();
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> GenerateRecoveryCodes()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            throw new NotFoundException("User not found");
+        }
+
+        if (!user.TwoFactorEnabled)
+        {
+            throw new BadRequestException("Two factor authentication is not enabled");
+        }
+
+        var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
+
+        return Ok(recoveryCodes.ToList());
     }
 
     [HttpGet]

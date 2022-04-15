@@ -6,7 +6,7 @@ import { MutationConfig } from '@/lib/react-query';
 
 import { EnableAuthenticatorViewModel } from '../types';
 
-export const addAuthenticator = (data: EnableAuthenticatorViewModel): Promise<any> => {
+export const addAuthenticator = (data: EnableAuthenticatorViewModel): Promise<string[]> => {
   return axios.post(`https://localhost:7001/account/EnableAuthenticator`, data);
 };
 
