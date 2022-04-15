@@ -9,8 +9,7 @@ public class ExternalLoginConfirmationViewModel
 {
     [Required]
     public string? UserName { get; set; }
-
-    [Required]
+    
     public string? DisplayName { get; set; }
 
     [Required]

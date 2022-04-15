@@ -26,6 +26,20 @@ export type SignInResult = {
   RequiresTwoFactor: boolean;
 };
 
+export type LoginViewModel = {
+  allowRememberLogin: boolean;
+  enableLocalLogin: boolean;
+  externalProviders: ExternalProvider[];
+  visibleExternalProviders: ExternalProvider[];
+  isExternalLoginOnly: boolean;
+  externalLoginScheme?: string;
+};
+
+export type ExternalProvider = {
+  displayName: string;
+  authenticationScheme: string;
+};
+
 // TODO: possibly find a better way to handle logout data
 export type LoggedOutViewModel = {
   postLogoutRedirectUri: string;

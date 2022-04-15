@@ -124,9 +124,7 @@ public class ExternalController : Controller
         return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email, UserName = userName, DisplayName = userName });
     }
 
-    [HttpPost]
-    [AllowAnonymous]
-    [ValidateAntiForgeryToken]
+    [HttpPost("ExternalLoginConfirmation")]
     public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string? returnUrl = null)
     {
         returnUrl ??= Url.Content("~/");
@@ -140,6 +138,8 @@ public class ExternalController : Controller
 
         if (ModelState.IsValid)
         {
+            model.DisplayName ??= model.UserName;
+            
             var user = new ApplicationUser
             {
                 UserName = model.UserName,

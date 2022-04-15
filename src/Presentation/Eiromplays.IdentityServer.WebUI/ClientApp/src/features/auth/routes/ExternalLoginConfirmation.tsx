@@ -1,17 +1,22 @@
+import { useParams } from 'react-router-dom';
+
 import { Spinner } from '@/components/Elements';
 
 import { useLogin } from '../api/getLogin';
-import { ExternalLoginProviders } from '../components/ExternalLoginProviders';
+import { ExternalLoginConfirmationForm } from '../components/ExternalLoginConfirmationForm';
 import { Layout } from '../components/Layout';
-import { LoginForm } from '../components/LoginForm';
 
-export const Login = () => {
+export const ExternalLoginConfirmation = () => {
+  const { email, userName, loginProvider } = useParams();
+
   //TODO: Find a better way to get the returnUrl
   let returnUrl = '';
   const idx = location.href.toLowerCase().indexOf('?returnurl=');
   if (idx > 0) {
     returnUrl = location.href.substring(idx + 11);
   }
+
+  console.log('ExternalLoginConfirmation', { email, userName, returnUrl, loginProvider });
 
   const loginQuery = useLogin({ returnUrl });
 
@@ -26,9 +31,8 @@ export const Login = () => {
   if (!loginQuery.data) return null;
 
   return (
-    <Layout title="Log in to your account">
-      <LoginForm onSuccess={() => window.location.assign('/bff/login')} />
-      <ExternalLoginProviders externalProviders={loginQuery.data.visibleExternalProviders} />
+    <Layout title={`Associate your ${loginProvider} with account.`}>
+      <ExternalLoginConfirmationForm email={email} userName={userName} returnUrl={returnUrl} />
     </Layout>
   );
 };

@@ -1,8 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using Duende.IdentityServer;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
+using Duende.IdentityServer.Stores;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Configuration;
@@ -58,10 +61,15 @@ namespace Eiromplays.IdentityServer.Controllers
         private readonly IUserResolver<ApplicationUser> _userResolver;
         private readonly IAuthenticationHandlerProvider _authenticationHandlerProvider;
         private readonly IEventService _events;
+        private readonly IClientStore _clientStore;
+        private readonly IAuthenticationSchemeProvider _schemeProvider;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public SpaEndpoints(IIdentityServerInteractionService interaction, IServerUrls serverUrls,
             SignInManager<ApplicationUser> signInManager, IUserResolver<ApplicationUser> userResolver,
-            IAuthenticationHandlerProvider authenticationHandlerProvider, IEventService eventService)
+            IAuthenticationHandlerProvider authenticationHandlerProvider, IEventService eventService,
+            IClientStore clientStore, IAuthenticationSchemeProvider schemeProvider,
+            UserManager<ApplicationUser> userManager)
         {
             _interaction = interaction;
             _serverUrls = serverUrls;
@@ -69,6 +77,9 @@ namespace Eiromplays.IdentityServer.Controllers
             _userResolver = userResolver;
             _authenticationHandlerProvider = authenticationHandlerProvider;
             _events = eventService;
+            _clientStore = clientStore;
+            _schemeProvider = schemeProvider;
+            _userManager = userManager;
         }
 
         [HttpGet("context")]
@@ -90,6 +101,21 @@ namespace Eiromplays.IdentityServer.Controllers
             return BadRequest();
         }
 
+        [HttpGet("login")]
+        public async Task<IActionResult> Login(string returnUrl)
+        {
+            // build a model so we know what to show on the login page
+            var vm = await BuildLoginViewModelAsync(returnUrl);
+
+            if (vm.EnableLocalLogin == false && vm.ExternalProviders.Count() == 1)
+            {
+                // only one option for logging in
+                return ExternalLogin(vm.ExternalProviders.First().AuthenticationScheme, returnUrl);
+            }
+
+            return Ok(vm);
+        }
+        
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest model)
         {
@@ -193,56 +219,97 @@ namespace Eiromplays.IdentityServer.Controllers
 
             return BadRequest(response);
         }
-
-        [HttpPost("consent")]
-        public async Task<IActionResult> Consent([FromBody] ConsentRequest model)
+        
+        [HttpGet("ExternalLoginCallback")]
+        public async Task<IActionResult> ExternalLoginCallback(string? returnUrl = null, string? remoteError = null)
         {
+            if (remoteError != null)
+                throw new BadRequestException("Error from external provider", new List<string> { remoteError });
+            
             var response = new LoginConsentResponse();
-
-            if (ModelState.IsValid)
+            
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
             {
-                if (model.ReturnUrl != null)
-                {
-                    var url = Uri.UnescapeDataString(model.ReturnUrl);
-
-                    var authzContext = await _interaction.GetAuthorizationContextAsync(url);
-                    if (authzContext != null)
-                    {
-                        response.ValidReturnUrl = url;
-
-                        if (model.Deny)
-                        {
-                            await _interaction.DenyAuthorizationAsync(authzContext, AuthorizationError.AccessDenied);
-                        }
-                        else
-                        {
-                            await _interaction.GrantConsentAsync(authzContext,
-                                new ConsentResponse
-                                {
-                                    RememberConsent = model.Remember,
-                                    ScopesValuesConsented = authzContext.ValidatedResources.RawScopeValues
-                                });
-                        }
-                    
-                        return Ok(response);
-                    }
-                }
+                return RedirectToAction(nameof(Login));
             }
 
-            response.Error = "error";
-            return new BadRequestObjectResult(response);
-        }
+            // Sign in the user with this external login provider if the user already has a login.
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+            if (result.Succeeded)
+            {
+                response.ValidReturnUrl = returnUrl;
+                return Ok(response);
+            }
+            response.SignInResult = result;
+            if (result.RequiresTwoFactor)
+            {
+                return BadRequest(response);
+            }
 
-        [HttpGet("error")]
-        public async Task<IActionResult> Error(string errorId)
+            if (result.IsLockedOut)
+            {
+                // TODO: should probably send an email to the user
+
+                return BadRequest(response);
+            }
+
+            // If the user does not have an account, then ask the user to create an account.
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            var userName = info.Principal.Identity?.Name;
+
+            return Redirect(
+                $"https://localhost:3000/auth/external-login-confirmation/{email}/{userName}/{info.LoginProvider}?returnUrl={returnUrl}");
+        }
+        
+        [HttpPost("ExternalLogin")]
+        [HttpGet("ExternalLogin")]
+        public IActionResult ExternalLogin(string? provider, string? returnUrl = null)
         {
-            var errorInfo = await _interaction.GetErrorContextAsync(errorId);
-            return Ok(new { 
-                errorInfo.Error,
-                errorInfo.ErrorDescription
-            });
-        }
+            if (string.IsNullOrWhiteSpace(provider))
+                throw new BadRequestException("Provider is required");
+            
+            // Request a redirect to the external login provider.
+            var redirectUrl = Url.Action("ExternalLoginCallback", new { ReturnUrl = returnUrl });
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
 
+            return Challenge(properties, provider);
+        }
+        
+        [HttpPost("ExternalLoginConfirmation")]
+        public async Task<IActionResult> ExternalLoginConfirmation([FromBody]ExternalLoginConfirmationViewModel model, string? returnUrl = null)
+        {
+            returnUrl ??= Url.Content("~/");
+
+            // Get the information about the user from the external login provider
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+            {
+                return BadRequest("ExternalLoginFailure");
+            }
+
+            if (!ModelState.IsValid) return BadRequest(model);
+            
+            var user = new ApplicationUser
+            {
+                UserName = model.UserName,
+                DisplayName = model.DisplayName ?? model.UserName,
+                Email = model.Email
+            };
+
+            var result = await _userManager.CreateAsync(user);
+            if (!result.Succeeded) throw new BadRequestException("Unable to create user", result.Errors.Select(x => x.Description).ToList());
+                
+            result = await _userManager.AddLoginAsync(user, info);
+                
+            if (!result.Succeeded) throw new BadRequestException("Unable to add login", result.Errors.Select(x => x.Description).ToList());
+                
+            await _signInManager.SignInAsync(user, isPersistent: false);
+
+            return Ok(returnUrl);
+
+        }
+        
         [HttpGet("logout")]
         public async Task<IActionResult> Logout(string logoutId)
         {
@@ -284,6 +351,129 @@ namespace Eiromplays.IdentityServer.Controllers
             // this triggers a redirect to the external provider for sign-out
             return SignOut(new AuthenticationProperties { RedirectUri = url }, vm.ExternalAuthenticationScheme!);
         }
+
+        [HttpPost("consent")]
+        public async Task<IActionResult> Consent([FromBody] ConsentRequest model)
+        {
+            var response = new LoginConsentResponse();
+
+            if (ModelState.IsValid)
+            {
+                if (model.ReturnUrl != null)
+                {
+                    var url = Uri.UnescapeDataString(model.ReturnUrl);
+
+                    var authzContext = await _interaction.GetAuthorizationContextAsync(url);
+                    if (authzContext != null)
+                    {
+                        response.ValidReturnUrl = url;
+
+                        if (model.Deny)
+                        {
+                            await _interaction.DenyAuthorizationAsync(authzContext, AuthorizationError.AccessDenied);
+                        }
+                        else
+                        {
+                            await _interaction.GrantConsentAsync(authzContext,
+                                new ConsentResponse
+                                {
+                                    RememberConsent = model.Remember,
+                                    ScopesValuesConsented = authzContext.ValidatedResources.RawScopeValues
+                                });
+                        }
+                    
+                        return Ok(response);
+                    }
+                }
+            }
+
+            response.Error = "error";
+            return new BadRequestObjectResult(response);
+        }
+        
+        [HttpGet("error")]
+        public async Task<IActionResult> Error(string errorId)
+        {
+            var errorInfo = await _interaction.GetErrorContextAsync(errorId);
+            return Ok(new { 
+                errorInfo.Error,
+                errorInfo.ErrorDescription
+            });
+        }
+
+        // HELPER METHODS
+        private async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
+        {
+            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+            if (context?.IdP != null && await _schemeProvider.GetSchemeAsync(context.IdP) != null)
+            {
+                var local = context.IdP == IdentityServerConstants.LocalIdentityProvider;
+
+                // this is meant to short circuit the UI and only trigger the one external IdP
+                var vm = new LoginViewModel
+                {
+                    EnableLocalLogin = local,
+                    ReturnUrl = returnUrl,
+                    Login = context.LoginHint,
+                };
+
+                if (!local)
+                {
+                    vm.ExternalProviders = new[] { new ExternalProvider { AuthenticationScheme = context.IdP } };
+                }
+
+                return vm;
+            }
+
+            var schemes = await _schemeProvider.GetAllSchemesAsync();
+
+            var providers = schemes
+                .Where(x => x.DisplayName != null)
+                .Select(x => new ExternalProvider
+                {
+                    DisplayName = x.DisplayName ?? x.Name,
+                    AuthenticationScheme = x.Name
+                }).ToList();
+
+            var allowLocal = true;
+            if (context?.Client.ClientId == null)
+                return new LoginViewModel
+                {
+                    AllowRememberLogin = AccountOptions.AllowRememberLogin,
+                    EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
+                    ReturnUrl = returnUrl,
+                    Login = context?.LoginHint,
+                    ExternalProviders = providers.ToArray()
+                };
+            
+            var client = await _clientStore.FindEnabledClientByIdAsync(context.Client.ClientId);
+            if (client == null)
+                return new LoginViewModel
+                {
+                    AllowRememberLogin = AccountOptions.AllowRememberLogin,
+                    EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
+                    ReturnUrl = returnUrl,
+                    Login = context.LoginHint,
+                    ExternalProviders = providers.ToArray()
+                };
+            
+            allowLocal = client.EnableLocalLogin;
+
+            if (client.IdentityProviderRestrictions != null && client.IdentityProviderRestrictions.Any())
+            {
+                providers = providers.Where(provider => client.IdentityProviderRestrictions.Contains(provider.AuthenticationScheme)).ToList();
+            }
+
+            return new LoginViewModel
+            {
+                AllowRememberLogin = AccountOptions.AllowRememberLogin,
+                EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
+                ReturnUrl = returnUrl,
+                Login = context.LoginHint,
+                ExternalProviders = providers.ToArray()
+            };
+        }
+        
         
         private async Task<LogoutViewModel> BuildLogoutViewModelAsync(string logoutId)
         {
