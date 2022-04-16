@@ -14,6 +14,7 @@ using Eiromplays.IdentityServer.ViewModels.Account;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
@@ -229,17 +230,17 @@ namespace Eiromplays.IdentityServer.Controllers
             var response = new LoginConsentResponse();
             
             var info = await _signInManager.GetExternalLoginInfoAsync();
-            if (info == null)
+            if (info is null)
             {
-                return RedirectToAction(nameof(Login));
+                return Redirect("https://localhost:3000/auth/login");
             }
 
             // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: true);
             if (result.Succeeded)
             {
-                response.ValidReturnUrl = returnUrl;
-                return Ok(response);
+                var url = returnUrl != null ? Uri.UnescapeDataString(returnUrl) : null;
+                return Redirect(url ?? Request.GetDisplayUrl());
             }
             response.SignInResult = result;
             if (result.RequiresTwoFactor)
@@ -257,7 +258,7 @@ namespace Eiromplays.IdentityServer.Controllers
             // If the user does not have an account, then ask the user to create an account.
             var email = info.Principal.FindFirstValue(ClaimTypes.Email);
             var userName = info.Principal.Identity?.Name;
-
+            
             return Redirect(
                 $"https://localhost:3000/auth/external-login-confirmation/{email}/{userName}/{info.LoginProvider}?returnUrl={returnUrl}");
         }

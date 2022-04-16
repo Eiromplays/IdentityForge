@@ -196,7 +196,7 @@ public class AccountController : Controller
     public async Task<IActionResult> EnableAuthenticator()
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user == null)
+        if (user is null)
         {
             throw new NotFoundException("User not found");
         }
