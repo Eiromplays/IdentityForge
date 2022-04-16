@@ -1,3 +1,5 @@
+import { toast } from 'react-toastify';
+
 import { Spinner } from '@/components/Elements/Spinner';
 import {
   AuthUser,
@@ -61,7 +63,8 @@ async function login2faFn(data: Login2faCredentialsDto) {
 
 async function registerFn(data: RegisterCredentialsDTO) {
   const response = await registerWithEmailAndPassword(data);
-  console.log(response);
+
+  if (response.message) toast.success(response.message);
 
   const user = await loadUser();
 

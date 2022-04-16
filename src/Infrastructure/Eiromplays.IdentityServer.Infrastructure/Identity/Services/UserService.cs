@@ -1,6 +1,7 @@
 using Ardalis.Specification.EntityFrameworkCore;
 using Duende.Bff.EntityFramework;
 using Eiromplays.IdentityServer.Application.Common.Caching;
+using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Application.Common.Events;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.FileStorage;
@@ -16,6 +17,7 @@ using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 using Shared.Authorization;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
@@ -35,12 +37,13 @@ internal partial class UserService : IUserService
     private readonly IMailService _mailService;
     private readonly SessionDbContext _sessionDbContext;
     private readonly IExcelWriter _excelWriter;
+    private readonly AccountConfiguration _accountConfiguration;
 
     public UserService(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager,
         RoleManager<ApplicationRole> roleManager, ApplicationDbContext db, IStringLocalizer<UserService> t, IJobService jobService,
         IEventPublisher events, ICacheService cache,
         ICacheKeyService cacheKeys, IFileStorageService fileStorage, IMailService mailService,
-        SessionDbContext sessionDbContext, IExcelWriter excelWriter)
+        SessionDbContext sessionDbContext, IExcelWriter excelWriter, IOptions<AccountConfiguration> accountConfiguration)
     {
         _signInManager = signInManager;
         _userManager = userManager;
@@ -55,6 +58,7 @@ internal partial class UserService : IUserService
         _mailService = mailService;
         _sessionDbContext = sessionDbContext;
         _excelWriter = excelWriter;
+        _accountConfiguration = accountConfiguration.Value;
     }
     
     public async Task<PaginationResponse<UserDetailsDto>> SearchAsync(UserListFilter filter, CancellationToken cancellationToken)

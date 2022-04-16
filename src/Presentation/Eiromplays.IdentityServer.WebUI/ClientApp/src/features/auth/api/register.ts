@@ -6,8 +6,15 @@ export type RegisterCredentialsDTO = {
   userName: string;
   email: string;
   password: string;
+  confirmPassword: string;
 };
 
-export const registerWithEmailAndPassword = (data: RegisterCredentialsDTO): Promise<any> => {
-  return axios.post('https://localhost:7001/spa/register', data);
+export type RegisterResponse = {
+  message: string;
+};
+
+export const registerWithEmailAndPassword = (
+  data: RegisterCredentialsDTO
+): Promise<RegisterResponse> => {
+  return axios.post('/users/self-register', data);
 };

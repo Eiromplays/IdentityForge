@@ -107,15 +107,21 @@ internal partial class UserService
 
     public async Task<string> CreateAsync(CreateUserRequest request, string origin)
     {
+        if (_accountConfiguration.RegisterConfiguration is { Enabled: false }) throw new InternalServerException(_t["Registration is disabled."]);
+        
         var user = new ApplicationUser
         {
             Email = request.Email,
             FirstName = request.FirstName,
             LastName = request.LastName,
             UserName = request.UserName,
+            DisplayName = request.UserName,
             PhoneNumber = request.PhoneNumber,
             IsActive = true
         };
+        
+        if (_accountConfiguration.ProfilePictureConfiguration is { Enabled: true, AutoGenerate: true })
+            user.ProfilePicture = $"{_accountConfiguration.ProfilePictureConfiguration.DefaultUrl}{user.UserName}.svg";
 
         var result = await _userManager.CreateAsync(user, request.Password);
         if (!result.Succeeded)
