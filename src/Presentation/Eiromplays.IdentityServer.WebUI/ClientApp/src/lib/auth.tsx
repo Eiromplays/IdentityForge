@@ -2,11 +2,13 @@ import { Spinner } from '@/components/Elements/Spinner';
 import {
   AuthUser,
   getUser,
+  RegisterCredentialsDTO,
   LoginCredentialsDTO,
   Login2faCredentialsDto,
   loginWithEmailAndPassword,
   logoutUser,
   loginWith2fa,
+  registerWithEmailAndPassword,
 } from '@/features/auth';
 import { initReactQueryAuth } from '@/providers/AuthProvider';
 
@@ -57,7 +59,10 @@ async function login2faFn(data: Login2faCredentialsDto) {
   return user;
 }
 
-async function registerFn() {
+async function registerFn(data: RegisterCredentialsDTO) {
+  const response = await registerWithEmailAndPassword(data);
+  console.log(response);
+
   const user = await loadUser();
 
   return user;
@@ -82,14 +87,10 @@ const authConfig = {
   },
 };
 
-type RegisterCredentials = {
-  test: string;
-};
-
 export const { AuthProvider, useAuth } = initReactQueryAuth<
   AuthUser | null,
   unknown,
   LoginCredentialsDTO,
   Login2faCredentialsDto,
-  RegisterCredentials
+  RegisterCredentialsDTO
 >(authConfig);

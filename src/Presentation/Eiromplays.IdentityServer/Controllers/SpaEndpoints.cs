@@ -1,22 +1,28 @@
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using System.Text;
 using Duende.IdentityServer;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
+using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Configuration;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
+using Eiromplays.IdentityServer.Validators.Account;
 using Eiromplays.IdentityServer.ViewModels.Account;
+using FluentEmail.Core;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Options;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace Eiromplays.IdentityServer.Controllers
@@ -65,12 +71,15 @@ namespace Eiromplays.IdentityServer.Controllers
         private readonly IClientStore _clientStore;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly AccountConfiguration _accountConfiguration;
+        private readonly IFluentEmail _fluentEmail;
 
         public SpaEndpoints(IIdentityServerInteractionService interaction, IServerUrls serverUrls,
             SignInManager<ApplicationUser> signInManager, IUserResolver<ApplicationUser> userResolver,
             IAuthenticationHandlerProvider authenticationHandlerProvider, IEventService eventService,
             IClientStore clientStore, IAuthenticationSchemeProvider schemeProvider,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager, IOptions<AccountConfiguration> accountConfiguration,
+            IFluentEmail fluentEmail)
         {
             _interaction = interaction;
             _serverUrls = serverUrls;
@@ -81,6 +90,8 @@ namespace Eiromplays.IdentityServer.Controllers
             _clientStore = clientStore;
             _schemeProvider = schemeProvider;
             _userManager = userManager;
+            _fluentEmail = fluentEmail;
+            _accountConfiguration = accountConfiguration.Value;
         }
 
         [HttpGet("context")]
@@ -102,6 +113,68 @@ namespace Eiromplays.IdentityServer.Controllers
             return BadRequest();
         }
 
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterViewModel model, string? returnUrl = null)
+        {
+            if (_accountConfiguration.RegisterConfiguration is { Enabled: false }) return BadRequest("RegisterFailure");
+
+            returnUrl ??= Url.Content("~/");
+
+            model.DisplayName ??= model.UserName;
+            
+            var validator = new RegisterValidator(_accountConfiguration);
+
+            var validationResult = await validator.ValidateAsync(model);
+
+            if (!validationResult.IsValid) return BadRequest(model);
+
+            var user = new ApplicationUser
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                UserName = model.UserName ?? model.Email,
+                DisplayName = model.DisplayName ?? model.UserName ?? model.Email,
+                Email = model.Email
+            };
+
+            if (_accountConfiguration.ProfilePictureConfiguration is { Enabled: true, AutoGenerate: true })
+                user.ProfilePicture = $"{_accountConfiguration.ProfilePictureConfiguration.DefaultUrl}{user.UserName}.svg";
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+            
+            if (!result.Succeeded) throw new BadRequestException("", result.Errors.Select(e => e.Description).ToList());
+            
+            if (await _userManager.IsEmailConfirmedAsync(user))
+                return RedirectToAction("RegisterConfirmation", "Account");
+
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var verificationUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code },
+                HttpContext.Request.Scheme);
+
+            var confirmEmailViewModel = new ConfirmEmailViewModel
+                { Username = user.UserName, VerificationUrl = verificationUrl };
+
+            var sendEmailResponse = await _fluentEmail
+                .To(user.Email)
+                .Subject("Email Confirmation")
+                .UsingTemplateFromFile($"{Directory.GetCurrentDirectory()}/Views/Shared/Templates/Email/ConfirmEmail.cshtml", confirmEmailViewModel)
+                .SendAsync();
+
+            if (_signInManager.Options.SignIn.RequireConfirmedAccount && sendEmailResponse.Successful)
+            {
+                return NoContent();
+            }
+
+            if (!sendEmailResponse.Successful)
+            {
+                throw new InternalServerException("", sendEmailResponse.ErrorMessages.ToList());
+            }
+
+            await _signInManager.SignInAsync(user, isPersistent: false);
+            return LocalRedirect(returnUrl);
+        }
+        
         [HttpGet("login")]
         public async Task<IActionResult> Login(string returnUrl)
         {

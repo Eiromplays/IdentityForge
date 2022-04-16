@@ -9,9 +9,9 @@ public class ProfilePictureHelper
     {
         if (!string.IsNullOrWhiteSpace(user.ProfilePicture))
         {
-            return !string.IsNullOrWhiteSpace(accountConfiguration?.ProfilePictureConfiguration.BaseUrl)
-                ? $"{accountConfiguration.ProfilePictureConfiguration.BaseUrl}{user.ProfilePicture}"
-                : user.ProfilePicture;
+            return user.ProfilePicture.StartsWith(accountConfiguration?.ProfilePictureConfiguration.DefaultUrl ?? "")
+                ? user.ProfilePicture
+                : $"{accountConfiguration?.ProfilePictureConfiguration.BaseUrl}{user.ProfilePicture}";
         }
 
         var email = user.GravatarEmail ?? user.Email;
