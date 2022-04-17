@@ -19,24 +19,32 @@ public class MailService : IMailService
     {
         try
         {
-            var email = _fluentEmail.Subject(request.Subject).ReplyTo(request.ReplyTo)
-                .SetFrom(request.From, request.DisplayName);
+            if (!string.IsNullOrWhiteSpace(request.Subject))
+                _fluentEmail.Subject(request.Subject);
+                
+            if (!string.IsNullOrWhiteSpace(request.From))
+                _fluentEmail.SetFrom(request.From, request.DisplayName);
+            
+            if (!string.IsNullOrWhiteSpace(request.ReplyTo))
+                _fluentEmail.ReplyTo(request.ReplyTo);
             
             // To
             foreach (var to in request.To)
-                email.To(to);
+                _fluentEmail.To(to);
 
             // Bcc
             foreach (var address in request.Bcc.Where(bccValue => !string.IsNullOrWhiteSpace(bccValue)))
-                email.BCC(address.Trim());
+                _fluentEmail.BCC(address.Trim());
 
             // Cc
             foreach (var address in request.Cc.Where(ccValue => !string.IsNullOrWhiteSpace(ccValue)))
-                email.CC(address.Trim());
+                _fluentEmail.CC(address.Trim());
 
             // Headers
             foreach (var header in request.Headers)
-                email.Header(header.Key, header.Value);
+                _fluentEmail.Header(header.Key, header.Value);
+
+            _fluentEmail.Body(request.Body, true);
 
             //TODO: Implement file attachments
             // Create the file attachments for this e-mail message

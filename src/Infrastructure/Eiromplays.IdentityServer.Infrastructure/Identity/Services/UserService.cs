@@ -38,12 +38,14 @@ internal partial class UserService : IUserService
     private readonly SessionDbContext _sessionDbContext;
     private readonly IExcelWriter _excelWriter;
     private readonly AccountConfiguration _accountConfiguration;
+    private readonly IEmailTemplateService _templateService;
 
     public UserService(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager,
         RoleManager<ApplicationRole> roleManager, ApplicationDbContext db, IStringLocalizer<UserService> t, IJobService jobService,
         IEventPublisher events, ICacheService cache,
         ICacheKeyService cacheKeys, IFileStorageService fileStorage, IMailService mailService,
-        SessionDbContext sessionDbContext, IExcelWriter excelWriter, IOptions<AccountConfiguration> accountConfiguration)
+        SessionDbContext sessionDbContext, IExcelWriter excelWriter,
+        IOptions<AccountConfiguration> accountConfiguration, IEmailTemplateService templateService)
     {
         _signInManager = signInManager;
         _userManager = userManager;
@@ -58,6 +60,7 @@ internal partial class UserService : IUserService
         _mailService = mailService;
         _sessionDbContext = sessionDbContext;
         _excelWriter = excelWriter;
+        _templateService = templateService;
         _accountConfiguration = accountConfiguration.Value;
     }
     

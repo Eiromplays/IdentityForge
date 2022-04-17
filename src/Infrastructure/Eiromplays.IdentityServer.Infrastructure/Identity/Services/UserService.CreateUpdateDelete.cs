@@ -149,7 +149,7 @@ internal partial class UserService
             var mailRequest = new MailRequest(
                 new List<string> { user.Email },
                 _t["Confirm Registration"],
-                "");
+                _templateService.GenerateEmailTemplate("email-confirmation", emailModel));
             
             _jobService.Enqueue(() => _mailService.SendAsync(mailRequest, CancellationToken.None));
             
