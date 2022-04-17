@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import { ExternalLoginConfirmation } from './ExternalLoginConfirmation';
 import { Login } from './Login';
 import { Login2fa } from './Login2fa';
+import { NotAllowed } from './NotAllowed';
 import { Register } from './Register';
 
 export const AuthRoutes = () => {
@@ -16,6 +17,7 @@ export const AuthRoutes = () => {
         path="external-login-confirmation/:email/:userName/:loginProvider"
         element={<ExternalLoginConfirmation />}
       />
+      <Route path="not-allowed" element={<NotAllowed />} />
     </Routes>
   );
 };

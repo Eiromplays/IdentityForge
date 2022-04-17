@@ -18,6 +18,7 @@ const { TwoFactorAuthentication } = lazyImport(
   () => import('@/features/users'),
   'TwoFactorAuthentication'
 );
+const { ChangePassword } = lazyImport(() => import('@/features/users'), 'ChangePassword');
 
 const App = () => {
   return (
@@ -46,6 +47,7 @@ export const protectedRoutes = [
       { path: 'profile', element: <Profile /> },
       { path: 'personal-data', element: <PersonalData /> },
       { path: 'two-factor-authentication', element: <TwoFactorAuthentication /> },
+      { path: 'change-password', element: <ChangePassword /> },
       { path: '', element: <Dashboard /> },
       { path: '*', element: <Navigate to="." /> },
     ],

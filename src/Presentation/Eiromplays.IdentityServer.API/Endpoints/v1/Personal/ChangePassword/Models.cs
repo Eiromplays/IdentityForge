@@ -4,9 +4,9 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Personal.ChangePassword;
 
 public class Models
 {
-    public class Request
+    public class Request : ChangePasswordRequest
     {
-        public ChangePasswordRequest ChangePasswordRequest { get; set; }
+        
     }
     
     public class Response

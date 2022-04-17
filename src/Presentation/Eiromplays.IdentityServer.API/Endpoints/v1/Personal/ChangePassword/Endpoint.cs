@@ -29,7 +29,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             return;
         }
 
-        await _userService.ChangePasswordAsync(req.ChangePasswordRequest, userId);
+        await _userService.ChangePasswordAsync(req, userId);
         
         await SendNoContentAsync(cancellation: ct);
     }
