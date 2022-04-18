@@ -1,4 +1,4 @@
-﻿namespace Eiromplays.IdentityServer.Application.Common.Configurations;
+﻿namespace Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 
 public class ExternalProvidersConfiguration
 {

@@ -13,10 +13,14 @@ internal partial class UserService
     {
         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-        const string route = "api/users/confirm-email/";
-        var endpointUri = new Uri(string.Concat($"{origin}/", route));
+        
+        const string route = "v1/users/confirm-email/";
+
+        var endpointUri = new Uri(string.Concat(origin, route));
         var verificationUri = QueryHelpers.AddQueryString(endpointUri.ToString(), QueryStringKeys.UserId, user.Id);
         verificationUri = QueryHelpers.AddQueryString(verificationUri, QueryStringKeys.Code, code);
+        verificationUri = QueryHelpers.AddQueryString(verificationUri, QueryStringKeys.ReturnUrl, new Uri(string.Concat(_spaConfiguration.BaseUrl, "auth/confirmed-email")).ToString());
+        
         return verificationUri;
     }
 

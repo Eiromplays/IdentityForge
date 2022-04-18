@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 
+import { ConfirmedEmail } from './ConfirmedEmail';
 import { ExternalLoginConfirmation } from './ExternalLoginConfirmation';
 import { Login } from './Login';
 import { Login2fa } from './Login2fa';
@@ -18,6 +19,7 @@ export const AuthRoutes = () => {
         element={<ExternalLoginConfirmation />}
       />
       <Route path="not-allowed" element={<NotAllowed />} />
+      <Route path="confirmed-email" element={<ConfirmedEmail />} />
     </Routes>
   );
 };

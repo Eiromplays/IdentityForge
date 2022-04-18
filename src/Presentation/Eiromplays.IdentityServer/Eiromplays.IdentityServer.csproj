@@ -42,4 +42,10 @@
     <_ContentIncludedByDefault Remove="wwwroot\js\js\signout-redirect.js" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Configurations\spa.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

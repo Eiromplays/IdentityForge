@@ -26,6 +26,12 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
     {
         Response.Message = await _userService.ConfirmEmailAsync(req.UserId, req.Code, ct);
 
+        if (!string.IsNullOrWhiteSpace(req.ReturnUrl))
+        {
+            await SendRedirectAsync(req.ReturnUrl, true, ct);
+            return;
+        }
+
         await SendAsync(Response, cancellation: ct);
     }
 }

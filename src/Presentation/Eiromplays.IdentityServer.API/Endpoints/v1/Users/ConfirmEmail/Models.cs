@@ -1,5 +1,3 @@
-using Eiromplays.IdentityServer.Application.Identity.Users;
-
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.ConfirmEmail;
 
 public class Models
@@ -11,6 +9,9 @@ public class Models
         
         [QueryParam]
         public string? Code { get; set; }
+        
+        [QueryParam]
+        public string? ReturnUrl { get; set; }
     }
     
     public class Response

@@ -1,5 +1,6 @@
 using Duende.IdentityServer.Configuration;
 using Eiromplays.IdentityServer.Application.Common.Configurations;
+using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Services;

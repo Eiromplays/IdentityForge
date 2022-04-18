@@ -1,6 +1,7 @@
 using Ardalis.Specification.EntityFrameworkCore;
 using Duende.Bff.EntityFramework;
 using Eiromplays.IdentityServer.Application.Common.Caching;
+using Eiromplays.IdentityServer.Application.Common.Configurations;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Application.Common.Events;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
@@ -39,13 +40,15 @@ internal partial class UserService : IUserService
     private readonly IExcelWriter _excelWriter;
     private readonly AccountConfiguration _accountConfiguration;
     private readonly IEmailTemplateService _templateService;
+    private readonly SpaConfiguration _spaConfiguration;
 
     public UserService(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager,
         RoleManager<ApplicationRole> roleManager, ApplicationDbContext db, IStringLocalizer<UserService> t, IJobService jobService,
         IEventPublisher events, ICacheService cache,
         ICacheKeyService cacheKeys, IFileStorageService fileStorage, IMailService mailService,
         SessionDbContext sessionDbContext, IExcelWriter excelWriter,
-        IOptions<AccountConfiguration> accountConfiguration, IEmailTemplateService templateService)
+        IOptions<AccountConfiguration> accountConfiguration, IEmailTemplateService templateService,
+        IOptions<SpaConfiguration> spaConfiguration)
     {
         _signInManager = signInManager;
         _userManager = userManager;
@@ -61,6 +64,7 @@ internal partial class UserService : IUserService
         _sessionDbContext = sessionDbContext;
         _excelWriter = excelWriter;
         _templateService = templateService;
+        _spaConfiguration = spaConfiguration.Value;
         _accountConfiguration = accountConfiguration.Value;
     }
     
