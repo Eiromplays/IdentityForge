@@ -19,12 +19,17 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             s.Summary = "Delete a user session.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Delete, EIAResource.Users));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        Response.Message = await _userService.DeleteUserSessionAsync(req.Key, ct);
+        if (User.GetUserId() is not { } userId || string.IsNullOrEmpty(userId))
+        {
+            await SendUnauthorizedAsync(ct);
+            return;
+        }
+        
+        Response.Message = await _userService.DeleteUserSessionAsync(req.Key, userId, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

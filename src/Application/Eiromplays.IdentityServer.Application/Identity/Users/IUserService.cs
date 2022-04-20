@@ -47,8 +47,8 @@ public interface IUserService : ITransientService
     Task<bool> RemoveSessionsAsync(string userId, CancellationToken cancellationToken = default);
 
     Task<List<UserSessionDto>> GetUserSessionsAsync(string userId, CancellationToken cancellationToken = default);
-    Task<UserSessionDto> GetUserSessionAsync(string key, CancellationToken cancellationToken = default);
-    Task<string> DeleteUserSessionAsync(string key, CancellationToken cancellationToken = default);
+    Task<UserSessionDto> GetUserSessionAsync(string key, string? userId = default, CancellationToken cancellationToken = default);
+    Task<string> DeleteUserSessionAsync(string key, string? userId = default,  CancellationToken cancellationToken = default);
     
     
     Task DeleteAsync(string userId, CancellationToken cancellationToken = default);

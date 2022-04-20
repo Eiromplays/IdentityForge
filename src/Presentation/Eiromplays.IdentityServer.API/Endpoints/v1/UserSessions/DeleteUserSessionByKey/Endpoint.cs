@@ -20,12 +20,17 @@ public class Endpoint : Endpoint<Models.Request, UserSessionDto>
             s.Summary = "Get a user session.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.Users));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        Response = await _userService.GetUserSessionAsync(req.Key, ct);
+        if (User.GetUserId() is not { } userId || string.IsNullOrEmpty(userId))
+        {
+            await SendUnauthorizedAsync(ct);
+            return;
+        }
+        
+        Response = await _userService.GetUserSessionAsync(req.Key, userId, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

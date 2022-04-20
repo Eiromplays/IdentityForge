@@ -25,7 +25,7 @@ internal partial class UserService
         return userSessions;
     }
 
-    public async Task<UserSessionDto> GetUserSessionAsync(string key, CancellationToken cancellationToken)
+    public async Task<UserSessionDto> GetUserSessionAsync(string key, string? userId, CancellationToken cancellationToken)
     {
         var userSession =
             (await _sessionDbContext.UserSessions.Where(x => x.Key == key).FirstOrDefaultAsync(cancellationToken))
@@ -33,14 +33,20 @@ internal partial class UserService
 
         _ = userSession ?? throw new NotFoundException(_t["User Session Not Found."]);
         
+        if (!string.IsNullOrWhiteSpace(userId) && !userSession.SubjectId.Equals(userId))
+            throw new UnauthorizedException(_t["No Access to User Session."]);
+        
         return userSession;
     }
     
-    public async Task<string> DeleteUserSessionAsync(string key, CancellationToken cancellationToken)
+    public async Task<string> DeleteUserSessionAsync(string key, string? userId, CancellationToken cancellationToken)
     {
         var userSession = await _sessionDbContext.UserSessions.Where(x => x.Key == key).FirstOrDefaultAsync(cancellationToken);
 
         _ = userSession ?? throw new NotFoundException(_t["User Session Not Found."]);
+        
+        if (!string.IsNullOrWhiteSpace(userId) && !userSession.SubjectId.Equals(userId))
+            throw new UnauthorizedException(_t["No Access to User Session."]);
         
         _sessionDbContext.UserSessions.Remove(userSession);
 
