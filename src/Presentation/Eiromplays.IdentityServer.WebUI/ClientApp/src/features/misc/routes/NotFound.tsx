@@ -1,6 +1,6 @@
 // Not found, original code: https://codepen.io/Navedkhan012/pen/vrWQMY
 
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/Elements';
 
@@ -48,6 +48,20 @@ export const NotFound = () => {
               >
                 Back to safe ground.
               </Button>
+            </div>
+          </div>
+          <div className="mt-2 flex items-center justify-center gap-5 text-xs">
+            <div>
+              <p>Don&apos;t have an account?</p>
+              <Link to="auth/register" className="font-medium text-blue-600 hover:text-blue-500">
+                Register
+              </Link>
+            </div>
+            <div>
+              <p>Already have an account?</p>
+              <Link to="/bff/login" className="font-medium text-blue-600 hover:text-blue-500">
+                Login
+              </Link>
             </div>
           </div>
         </div>
