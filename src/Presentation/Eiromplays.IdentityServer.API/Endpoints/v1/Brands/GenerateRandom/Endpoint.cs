@@ -24,7 +24,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override async Task HandleAsync(Models.Request request, CancellationToken ct)
     {
-        Response.Message = await _mediator.Send(request.GenerateRandomBrandRequest, ct);
+        Response.Message = await _mediator.Send(request.Data, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

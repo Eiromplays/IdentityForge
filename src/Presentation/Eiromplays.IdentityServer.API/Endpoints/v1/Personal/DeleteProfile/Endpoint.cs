@@ -29,7 +29,7 @@ public class Endpoint : EndpointWithoutRequest
             return;
         }
         
-        await _userService.DeleteAsync(userId, ct);
+        await _userService.DeleteAsync(userId);
 
         await SendNoContentAsync(cancellation: ct);
     }

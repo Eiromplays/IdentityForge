@@ -6,6 +6,6 @@ public class Models
 {
     public class Request
     {
-        public SearchProductsRequest SearchProductsRequest { get; set; }
+        public SearchProductsRequest Data { get; set; } = default!;
     }
 }

@@ -13,3 +13,7 @@ export type WhitelistAxiosError = {
   urls: string[];
   ignoreAll?: boolean;
 };
+
+export type MessageResponse = {
+  message: string;
+};

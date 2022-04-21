@@ -4,6 +4,6 @@ public class Models
 {
     public class Request
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = default!;
     }
 }

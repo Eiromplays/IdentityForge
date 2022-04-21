@@ -6,7 +6,7 @@ public class Models
 {
     public class Request
     {
-        public Guid Id { get; set; }
-        public UpdateProductRequest UpdateProductRequest { get; set; }
+        public Guid Id { get; set; } = default;
+        public UpdateProductRequest Data { get; set; } = default!;
     }
 }

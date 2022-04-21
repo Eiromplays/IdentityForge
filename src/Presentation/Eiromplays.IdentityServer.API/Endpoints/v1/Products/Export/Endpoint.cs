@@ -24,7 +24,7 @@ public class Endpoint : Endpoint<Models.Request>
 
     public override async Task HandleAsync(Models.Request request, CancellationToken ct)
     {
-        var result = await _mediator.Send(request.ExportProductsRequest, ct);
+        var result = await _mediator.Send(request.Data, ct);
 
         await SendStreamAsync(result, "ProductExports.csv", result.Length, contentType: "application/octet-stream",
             cancellation: ct);

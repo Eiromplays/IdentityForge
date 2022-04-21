@@ -51,7 +51,7 @@ public interface IUserService : ITransientService
     Task<string> DeleteUserSessionAsync(string key, string? userId = default,  CancellationToken cancellationToken = default);
     
     
-    Task DeleteAsync(string userId, CancellationToken cancellationToken = default);
+    Task DeleteAsync(string userId);
 
     Task<string> DisableTwoFactorAsync(string userId);
 

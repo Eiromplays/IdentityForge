@@ -13,10 +13,10 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override void Configure()
     {
-        Post("/users/forgot-password");
+        Post("/users/reset-password");
         Summary(s =>
         {
-            s.Summary = "Request a password reset email for a user.";
+            s.Summary = "Reset a user's password.";
         });
         Version(1);
         AllowAnonymous();
@@ -24,7 +24,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        Response.Message = await _userService.ForgotPasswordAsync(req.ForgotPasswordRequest, BaseURL);
+        Response.Message = await _userService.ResetPasswordAsync(req.Data);
 
         await SendAsync(Response, cancellation: ct);
     }

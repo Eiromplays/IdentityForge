@@ -201,7 +201,7 @@ internal partial class UserService
         await RemoveSessionsAsync(userId, cancellationToken);
     }
 
-    public async Task DeleteAsync(string userId, CancellationToken cancellationToken)
+    public async Task DeleteAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
 

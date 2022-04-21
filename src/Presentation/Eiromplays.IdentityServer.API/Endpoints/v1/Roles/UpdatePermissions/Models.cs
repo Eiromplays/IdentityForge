@@ -6,9 +6,9 @@ public class Models
 {
     public class Request
     {
-        public string? Id { get; set; }
-        
-        public UpdateRolePermissionsRequest UpdateRolePermissionsRequest { get; set; }
+        public string Id { get; set; } = default!;
+
+        public UpdateRolePermissionsRequest Data { get; set; } = default!;
     }
 
     public class Response

@@ -26,7 +26,7 @@ public class Endpoint : Endpoint<Models.Request, PaginationResponse<ProductDto>>
 
     public override async Task HandleAsync(Models.Request request, CancellationToken ct)
     {
-        Response = await _mediator.Send(request.SearchProductsRequest, ct);
+        Response = await _mediator.Send(request.Data, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

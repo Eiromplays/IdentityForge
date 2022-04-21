@@ -25,7 +25,7 @@ public class Endpoint : Endpoint<Models.Request, PaginationResponse<UserDetailsD
     
     public override async Task HandleAsync(Models.Request request, CancellationToken ct)
     {
-        Response = await _userService.SearchAsync(request.UserListFilter, ct);
+        Response = await _userService.SearchAsync(request.Data, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

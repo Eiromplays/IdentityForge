@@ -6,6 +6,6 @@ public class Models
 {
     public class Request
     {
-        public UserListFilter UserListFilter { get; set; }
+        public UserListFilter Data { get; set; } = default!;
     }
 }

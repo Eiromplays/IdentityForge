@@ -27,7 +27,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         // TODO: Add a option to allow anonymous users to create users
         // Returns Unauthorized if it is disabled
         // TODO: Add some more protection, like a captcha or something
-        Response.UserId = await _userService.CreateAsync(req.UserDto, BaseURL);
+        Response.UserId = await _userService.CreateAsync(req.Data, BaseURL);
 
         await SendCreatedAtAsync<GetUserById.Endpoint>(new GetUserById.Models.Request { Id = Response.UserId },
             Response, cancellation: ct);

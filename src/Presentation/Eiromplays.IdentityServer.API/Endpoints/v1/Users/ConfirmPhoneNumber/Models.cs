@@ -4,11 +4,9 @@ public class Models
 {
     public class Request
     {
-        [QueryParam]
-        public string? UserId { get; set; }
-        
-        [QueryParam]
-        public string? Code { get; set; }
+        [QueryParam] public string? UserId { get; set; } = default;
+
+        [QueryParam] public string? Code { get; set; } = default;
     }
     
     public class Response

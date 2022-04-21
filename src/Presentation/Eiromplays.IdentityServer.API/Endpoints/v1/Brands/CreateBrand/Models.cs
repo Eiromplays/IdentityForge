@@ -6,6 +6,6 @@ public class Models
 {
     public class Request
     {
-        public CreateBrandRequest CreateBrandRequest { get; set; }
+        public CreateBrandRequest Data { get; set; } = default!;
     }
 }

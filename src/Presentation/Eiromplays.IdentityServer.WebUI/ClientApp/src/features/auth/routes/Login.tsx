@@ -28,7 +28,10 @@ export const Login = () => {
   return (
     <Layout title="Log in to your account">
       <LoginForm onSuccess={() => window.location.assign('/bff/login')} />
-      <ExternalLoginProviders externalProviders={loginQuery.data.visibleExternalProviders} />
+      <ExternalLoginProviders
+        title="External Login Providers:"
+        externalProviders={loginQuery.data.visibleExternalProviders}
+      />
     </Layout>
   );
 };

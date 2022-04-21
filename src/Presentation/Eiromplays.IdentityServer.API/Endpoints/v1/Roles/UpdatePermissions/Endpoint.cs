@@ -24,9 +24,9 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        Response.Message = await _roleService.UpdatePermissionsAsync(req.UpdateRolePermissionsRequest, ct);
+        Response.Message = await _roleService.UpdatePermissionsAsync(req.Data, ct);
 
-        if (req.Id != req.UpdateRolePermissionsRequest.RoleId) 
+        if (req.Id != req.Data.RoleId) 
         {
             AddError("UserId and Id must match.");
             await SendErrorsAsync(cancellation: ct);

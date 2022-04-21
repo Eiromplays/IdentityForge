@@ -6,11 +6,11 @@ public class Models
 {
     public class Request
     {
-        public GenerateRandomBrandRequest GenerateRandomBrandRequest { get; set; }
+        public GenerateRandomBrandRequest Data { get; set; } = default!;
     }
 
     public class Response
     {
-        public string Message { get; set; }
+        public string Message { get; set; } = default!;
     }
 }

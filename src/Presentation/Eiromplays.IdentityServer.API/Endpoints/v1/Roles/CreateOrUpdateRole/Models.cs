@@ -6,7 +6,7 @@ public class Models
 {
     public class Request
     {
-        public CreateOrUpdateRoleRequest? CreateOrUpdateRoleRequest { get; set; }
+        public CreateOrUpdateRoleRequest Data { get; set; } = default!;
     }
 
     public class Response

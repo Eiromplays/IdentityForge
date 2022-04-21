@@ -24,14 +24,14 @@ public class Endpoint : Endpoint<Models.Request>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        if (req.Id != req.UserId) 
+        if (req.Id != req.Data.UserId) 
         {
             AddError("UserId and Id must match.");
             await SendErrorsAsync(cancellation: ct);
             return;
         }
         
-        await _userService.ToggleStatusAsync(req, ct);
+        await _userService.ToggleStatusAsync(req.Data, ct);
 
         await SendOkAsync(cancellation: ct);
     }

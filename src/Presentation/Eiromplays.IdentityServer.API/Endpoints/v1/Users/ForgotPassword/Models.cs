@@ -6,7 +6,7 @@ public class Models
 {
     public class Request
     {
-        public ResetPasswordRequest ResetPasswordRequest { get; set; }
+        public ForgotPasswordRequest Data { get; set; } = default!;
     }
     
     public class Response

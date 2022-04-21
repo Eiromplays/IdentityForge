@@ -25,7 +25,7 @@ public class Endpoint : Endpoint<Models.Request, PaginationResponse<PersistedGra
 
     public override async Task HandleAsync(Models.Request request, CancellationToken ct)
     {
-        Response = await _persistedGrantService.SearchAsync(request.PersistedGrantListFilter, ct);
+        Response = await _persistedGrantService.SearchAsync(request.Data, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

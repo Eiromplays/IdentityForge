@@ -6,6 +6,6 @@ public class Models
 {
     public class Request
     {
-        public UpdateUserRequest UpdateUserRequest { get; set; }
+        public UpdateUserRequest Data { get; set; } = default!;
     }
 }

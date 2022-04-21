@@ -74,6 +74,7 @@ app.UseAuthorization();
 app.MapBffManagementEndpoints();
 
 app.MapRemoteBffApiEndpoint("/users/self-register", "https://localhost:7003/v1/users/self-register");
+app.MapRemoteBffApiEndpoint("/users/forgot-password", "https://localhost:7003/v1/users/forgot-password");
 
 app.MapRemoteBffApiEndpoint("/roles", "https://localhost:7003/v1/roles")
     .RequireAccessToken();

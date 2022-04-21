@@ -2,7 +2,7 @@ using Eiromplays.IdentityServer.Application.Identity.Users;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Personal.ChangePassword;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : Endpoint<Models.Request>
 {
     private readonly IUserService _userService;
     
@@ -29,7 +29,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             return;
         }
 
-        await _userService.ChangePasswordAsync(req, userId);
+        await _userService.ChangePasswordAsync(req.Data, userId);
         
         await SendNoContentAsync(cancellation: ct);
     }

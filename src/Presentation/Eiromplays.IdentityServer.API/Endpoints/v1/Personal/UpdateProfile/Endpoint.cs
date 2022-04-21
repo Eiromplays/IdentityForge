@@ -29,7 +29,7 @@ public class Endpoint : Endpoint<Models.Request>
             return;
         }
 
-        await _userService.UpdateAsync(req.UpdateUserRequest, userId, ct);
+        await _userService.UpdateAsync(req.Data, userId, ct);
         
         await SendNoContentAsync(cancellation: ct);
     }

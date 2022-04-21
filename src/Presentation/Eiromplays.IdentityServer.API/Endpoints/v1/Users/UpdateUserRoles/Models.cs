@@ -4,9 +4,11 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.UpdateUserRoles;
 
 public class Models
 {
-    public class Request : UserRolesRequest
+    public class Request
     {
-        public string? Id { get; set; }
+        public string Id { get; set; } = default!;
+
+        public UserRolesRequest Data { get; set; } = default!;
     }
     
     public class Response

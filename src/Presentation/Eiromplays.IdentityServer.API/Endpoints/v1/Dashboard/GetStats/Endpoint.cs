@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Dashboard.GetStats;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : EndpointWithoutRequest<Models.Response>
 {
     private readonly ISender _mediator;
     
@@ -23,7 +23,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.Dashboard));
     }
 
-    public override async Task HandleAsync(Models.Request request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(CancellationToken cancellationToken)
     {
         Response.Stats = await _mediator.Send(new GetStatsRequest(), cancellationToken);
 
