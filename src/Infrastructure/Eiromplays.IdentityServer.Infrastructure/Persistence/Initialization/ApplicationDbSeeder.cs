@@ -14,7 +14,7 @@ using Claim = System.Security.Claims.Claim;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Persistence.Initialization;
 
-internal class ApplicationDbSeeder
+internal class  ApplicationDbSeeder
 {
     private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly UserManager<ApplicationUser> _userManager;

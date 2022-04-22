@@ -4,6 +4,8 @@ import loadable from '@loadable/component';
 import { CSSProperties, SVGAttributes } from 'react';
 import { IconContext } from 'react-icons';
 
+import { Spinner } from '../Spinner';
+
 export type DynamicIconProps = {
   icon: string;
   color?: string;
@@ -28,7 +30,20 @@ export const DynamicIcon = ({
   const lib = library.toLowerCase();
 
   const Icon = loadable(() => import(`react-icons/${lib}/index.js`), {
-    resolveComponent: (el: JSX.Element) => el[iconComponent as keyof JSX.Element],
+    resolveComponent: (components) => {
+      let selectedComponent = iconComponent.toLowerCase();
+      for (const component in components) {
+        if (component.toLowerCase() === selectedComponent) {
+          selectedComponent = component;
+          break;
+        }
+      }
+      if (selectedComponent === iconComponent.toLowerCase()) {
+        return <></>;
+      }
+      return components[selectedComponent as keyof JSX.Element];
+    },
+    fallback: <Spinner />,
   });
 
   const value: IconContext = {

@@ -11,5 +11,9 @@ export type Claim = {
 export type WhitelistAxiosError = {
   status: number;
   urls: string[];
-  ignoreAll: boolean;
+  ignoreAll?: boolean;
+};
+
+export type MessageResponse = {
+  message: string;
 };

@@ -6,15 +6,39 @@ import { axios } from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
 
 export type UpdateProfileDTO = {
-  id?: string;
   data: {
     username: string;
+    firstName: string;
+    lastName: string;
     email: string;
+    gravatarEmail: string;
+    image: any;
+    deleteCurrentImage?: boolean;
   };
 };
 
-export const updateProfile = ({ data, id }: UpdateProfileDTO) => {
-  return axios.put(`/users/${id}`, data);
+const toBase64 = (file: File) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+
+export const updateProfile = async ({ data }: UpdateProfileDTO) => {
+  if (data.image instanceof File) {
+    const fileExtension = `.${data.image.name.slice(
+      ((data.image.name.lastIndexOf('.') - 1) >>> 0) + 2
+    )}`;
+    data.image = {
+      data: await toBase64(data.image),
+      extension: fileExtension,
+      name: data.image.name.replace(fileExtension, ''),
+    };
+    data.deleteCurrentImage = data.image ? true : data.deleteCurrentImage;
+  }
+
+  return axios.put(`/personal/profile`, { UpdateUserRequest: data });
 };
 
 type UseUpdateProfileOptions = {
@@ -23,10 +47,11 @@ type UseUpdateProfileOptions = {
 
 export const useUpdateProfile = ({ config }: UseUpdateProfileOptions = {}) => {
   const { refetchUser } = useAuth();
-  return useMutation({
-    onSuccess: () => {
+
+  const updateProfileMutation = useMutation({
+    onSuccess: async () => {
       toast.success('User Updated');
-      refetchUser();
+      await refetchUser();
     },
     onError: (error) => {
       toast.error('Failed to update user');
@@ -35,4 +60,6 @@ export const useUpdateProfile = ({ config }: UseUpdateProfileOptions = {}) => {
     ...config,
     mutationFn: updateProfile,
   });
+
+  return { updateProfileMutation };
 };

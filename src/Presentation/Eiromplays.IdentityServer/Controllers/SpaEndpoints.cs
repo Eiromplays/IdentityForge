@@ -181,7 +181,7 @@ namespace Eiromplays.IdentityServer.Controllers
         {
             // build a model so we know what to show on the login page
             var vm = await BuildLoginViewModelAsync(returnUrl);
-
+            
             if (vm.EnableLocalLogin == false && vm.ExternalProviders.Count() == 1)
             {
                 // only one option for logging in
@@ -222,16 +222,12 @@ namespace Eiromplays.IdentityServer.Controllers
                         response.Error = "Invalid username or password";
                         return new BadRequestObjectResult(response);
                     }
-
+                    
                     var url = model.ReturnUrl != null ? Uri.UnescapeDataString(model.ReturnUrl) : null;
 
-                    var authzContext = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl) ??
-                                        await _interaction.GetAuthorizationContextAsync(url);
-                    if (authzContext != null)
-                        response.ValidReturnUrl = url;
-
-                    if (Url.IsLocalUrl(url))
-                        return Redirect(url);
+                    // TODO: See if I can improve this
+                    if (_interaction.IsValidReturnUrl(url))
+                        response.ValidReturnUrl = url ?? _serverUrls.BaseUrl;
 
                     return Ok(response);
                 }
@@ -289,8 +285,9 @@ namespace Eiromplays.IdentityServer.Controllers
             {
                 var url = model.ReturnUrl != null ? Uri.UnescapeDataString(model.ReturnUrl) : null;
 
-                var authzContext = await _interaction.GetAuthorizationContextAsync(url);
-                response.ValidReturnUrl = authzContext != null ? url : _serverUrls.BaseUrl;
+                // TODO: See if I can improve this
+                if (_interaction.IsValidReturnUrl(url))
+                    response.ValidReturnUrl = url ?? _serverUrls.BaseUrl;
 
                 return Ok(response);
             }
@@ -493,7 +490,7 @@ namespace Eiromplays.IdentityServer.Controllers
                 var vm = new LoginViewModel
                 {
                     EnableLocalLogin = local,
-                    ReturnUrl = returnUrl,
+                    ReturnUrl = Uri.UnescapeDataString(returnUrl),
                     Login = context.LoginHint,
                 };
 
@@ -501,7 +498,7 @@ namespace Eiromplays.IdentityServer.Controllers
                 {
                     vm.ExternalProviders = new[] { new ExternalProvider { AuthenticationScheme = context.IdP } };
                 }
-
+                
                 return vm;
             }
 

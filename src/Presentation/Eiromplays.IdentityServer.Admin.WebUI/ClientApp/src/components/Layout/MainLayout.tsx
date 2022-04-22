@@ -1,54 +1,99 @@
 import { Dialog, Menu, Transition } from '@headlessui/react';
-import { HomeIcon, MenuAlt2Icon, UserIcon, UsersIcon, XIcon } from '@heroicons/react/outline';
 import clsx from 'clsx';
 import * as React from 'react';
+import {
+  HiOutlineHome,
+  HiOutlineMenuAlt2,
+  HiOutlineUser,
+  HiOutlineX,
+  HiOutlineCollection,
+  HiOutlineLockClosed,
+  HiOutlineKey,
+  HiOutlineDocumentText,
+  HiOutlineShieldCheck,
+} from 'react-icons/hi';
+import { MdOutlineDevicesOther, MdOutlineHistory } from 'react-icons/md';
 import { NavLink, Link } from 'react-router-dom';
 
 import logo from '@/assets/logo.svg';
 import { useAuth } from '@/lib/auth';
-import { useAuthorization, ROLES } from '@/lib/authorization';
+
+import ThemeToggle from '../Theme/ThemeToggle';
 
 type SideNavigationItem = {
   name: string;
   to: string;
+  target?: string;
+  externalLink: boolean;
   icon: (props: React.SVGProps<SVGSVGElement>) => JSX.Element;
 };
 
 const SideNavigation = () => {
-  const { checkAccess } = useAuthorization();
   const navigation = [
-    { name: 'Dashboard', to: '.', icon: HomeIcon },
-    checkAccess({ allowedRoles: [ROLES.ADMIN] }) && {
-      name: 'Users',
-      to: './users',
-      icon: UsersIcon,
+    { name: 'Dashboard', to: '.', icon: HiOutlineHome },
+    { name: 'My Profile', to: './profile', icon: HiOutlineUser },
+    { name: 'Personal Data', to: './personal-data', icon: HiOutlineCollection },
+    {
+      name: 'Two-factor authentication',
+      to: './two-factor-authentication',
+      icon: HiOutlineLockClosed,
+    },
+    { name: 'Change Password', to: './change-password', icon: HiOutlineKey },
+    { name: 'Grants', to: './grants', icon: HiOutlineShieldCheck },
+    { name: 'User Sessions', to: './user-sessions', icon: MdOutlineDevicesOther },
+    { name: 'Logs', to: './logs', icon: MdOutlineHistory },
+    {
+      name: 'Discovery Document',
+      to: 'https://localhost:7001/.well-known/openid-configuration',
+      target: '_blank',
+      externalLink: true,
+      icon: HiOutlineDocumentText,
     },
   ].filter(Boolean) as SideNavigationItem[];
 
   return (
     <>
-      {navigation.map((item, index) => (
-        <NavLink
-          end={index === 0}
-          key={item.name}
-          to={item.to}
-          className={(navData) =>
-            clsx(
-              'hover:bg-gray-700 hover:text-white',
-              'group flex items-center px-2 py-2 text-base font-medium rounded-md'
-            ) + (navData.isActive ? 'bg-gray-900 text-white' : 'text-gray-300')
-          }
-        >
-          <item.icon
-            className={clsx(
-              'text-gray-400 group-hover:text-gray-300',
-              'mr-4 flex-shrink-0 h-6 w-6'
-            )}
-            aria-hidden="true"
-          />
-          {item.name}
-        </NavLink>
-      ))}
+      {navigation.map((item, index) => {
+        return item.externalLink ? (
+          <a
+            key={item.name}
+            href={item.to}
+            target={item.target}
+            className="hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 font-medium rounded-md bg-transparent text-gray-400"
+          >
+            <item.icon
+              className={clsx(
+                'text-gray-400 group-hover:text-gray-300',
+                'mr-4 flex-shrink-0 h-6 w-6'
+              )}
+              aria-hidden="true"
+            />
+            {item.name}
+          </a>
+        ) : (
+          <NavLink
+            end={index === 0}
+            key={item.name}
+            to={item.to}
+            target={item.target}
+            className={(navData) =>
+              clsx(
+                'hover:bg-gray-700 hover:text-white',
+                'group flex items-center px-2 py-2 font-medium rounded-md'
+              ) + (navData.isActive ? 'bg-gray-900 text-white' : 'bg-transparent text-gray-400')
+            }
+          >
+            <item.icon
+              className={clsx(
+                'text-gray-400 group-hover:text-gray-300',
+                'mr-4 flex-shrink-0 h-6 w-6'
+              )}
+              aria-hidden="true"
+            />
+            {item.name}
+          </NavLink>
+        );
+      })}
     </>
   );
 };
@@ -60,15 +105,15 @@ type UserNavigationItem = {
 };
 
 const UserNavigation = () => {
-  const { logout, user } = useAuth();
+  const { user } = useAuth();
 
   const userNavigation = [
     { name: 'Your Profile', to: './profile' },
     {
       name: 'Sign out',
-      to: '',
+      to: user?.logoutUrl,
       onClick: () => {
-        logout();
+        if (user?.logoutUrl) window.location.assign(user.logoutUrl);
       },
     },
   ].filter(Boolean) as UserNavigationItem[];
@@ -77,17 +122,17 @@ const UserNavigation = () => {
     <Menu as="div" className="ml-3 relative">
       {({ open }) => (
         <>
-          <div>
-            <Menu.Button className="max-w-xs  bg-gray-200 p-2 flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          <div className="flex">
+            <ThemeToggle />
+            <Menu.Button
+              className="max-w-xs bg-gray-200 dark:bg-gray-600 p-2 flex items-center text-sm rounded-full 
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
               <span className="sr-only">Open user menu</span>
-              {user?.data.profilePicture ? (
-                <img
-                  alt="Avatar"
-                  src={user?.data.profilePicture}
-                  className="h-8 w-8 rounded-full"
-                />
+              {user?.profilePicture ? (
+                <img alt="Avatar" src={user?.profilePicture} className="h-8 w-8 rounded-full" />
               ) : (
-                <UserIcon className="h-8 w-8 rounded-full" />
+                <HiOutlineUser className="h-8 w-8 rounded-full" />
               )}
             </Menu.Button>
           </div>
@@ -103,7 +148,8 @@ const UserNavigation = () => {
           >
             <Menu.Items
               static
-              className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+              className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white dark:bg-lighter-black ring-1 
+              ring-black ring-opacity-5 focus:outline-none"
             >
               {userNavigation.map((item) => (
                 <Menu.Item key={item.name}>
@@ -112,8 +158,8 @@ const UserNavigation = () => {
                       onClick={item.onClick}
                       to={item.to}
                       className={clsx(
-                        active ? 'bg-gray-100' : '',
-                        'block px-4 py-2 text-sm text-gray-700'
+                        active ? 'bg-gray-100 dark:bg-gray-800' : '',
+                        'block px-4 py-2 text-sm text-gray-700 dark:text-white'
                       )}
                     >
                       {item.name}
@@ -180,7 +226,7 @@ const MobileSidebar = ({ sidebarOpen, setSidebarOpen }: MobileSidebarProps) => {
                   onClick={() => setSidebarOpen(false)}
                 >
                   <span className="sr-only">Close sidebar</span>
-                  <XIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                  <HiOutlineX className="h-6 w-6 text-white" aria-hidden="true" />
                 </button>
               </div>
             </Transition.Child>
@@ -205,11 +251,11 @@ const Sidebar = () => {
     <div className="hidden md:flex md:flex-shrink-0">
       <div className="flex flex-col w-64">
         <div className="flex flex-col h-0 flex-1">
-          <div className="flex items-center h-16 flex-shrink-0 px-4 bg-gray-900">
+          <div className="flex items-center h-16 flex-shrink-0 px-4 bg-gray-900 dark:bg-indigo-900">
             <Logo />
           </div>
           <div className="flex-1 flex flex-col overflow-y-auto">
-            <nav className="flex-1 px-2 py-4 bg-gray-800 space-y-1">
+            <nav className="flex-1 px-2 py-4 bg-gray-800 dark:bg-lighter-black space-y-1">
               <SideNavigation />
             </nav>
           </div>
@@ -223,7 +269,7 @@ const Logo = () => {
   return (
     <Link className="flex items-center text-white" to=".">
       <img className="h-8 w-auto" src={logo} alt="Workflow" />
-      <span className="text-xl text-white font-semibold">Bulletproof React</span>
+      <span className="text-xl text-white font-semibold">Eiromplays IdentityServer</span>
     </Link>
   );
 };
@@ -236,17 +282,17 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
   return (
-    <div className="h-screen flex overflow-hidden bg-gray-100">
+    <div className="h-screen flex overflow-hidden bg-gray-100 dark:bg-gray-900">
       <MobileSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       <Sidebar />
       <div className="flex flex-col w-0 flex-1 overflow-hidden">
-        <div className="relative z-10 flex-shrink-0 flex h-16 bg-white shadow">
+        <div className="relative z-10 flex-shrink-0 flex h-16 bg-white dark:bg-gray-800 shadow">
           <button
             className="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
             onClick={() => setSidebarOpen(true)}
           >
             <span className="sr-only">Open sidebar</span>
-            <MenuAlt2Icon className="h-6 w-6" aria-hidden="true" />
+            <HiOutlineMenuAlt2 className="h-6 w-6" aria-hidden="true" />
           </button>
           <div className="flex-1 px-4 flex justify-end">
             <div className="ml-4 flex items-center md:ml-6">

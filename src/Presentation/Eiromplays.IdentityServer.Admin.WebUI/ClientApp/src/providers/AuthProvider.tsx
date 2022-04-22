@@ -24,11 +24,13 @@ export interface AuthProviderConfig<User = unknown, Error = unknown> {
   key?: string;
   loadUser: (data: any) => Promise<User>;
   loginFn: (data: any) => Promise<User>;
+  login2faFn: (data: any) => Promise<User>;
   registerFn: (data: any) => Promise<User>;
-  logoutFn: () => Promise<any>;
+  logoutFn: (data: any) => Promise<any>;
   waitInitial?: boolean;
   LoaderComponent?: () => JSX.Element;
   NotLoggedInComponent?: () => JSX.Element;
+  NotLoggedInEnabled?: false;
   ErrorComponent?: ({ error }: { error: Error | null }) => JSX.Element;
 }
 
@@ -36,10 +38,12 @@ export interface AuthContextValue<
   User = unknown,
   Error = unknown,
   LoginCredentials = unknown,
+  Login2faCredentials = unknown,
   RegisterCredentials = unknown
 > {
   user: User | undefined;
   login: UseMutateAsyncFunction<User, any, LoginCredentials>;
+  login2fa: UseMutateAsyncFunction<User, any, Login2faCredentials>;
   logout: UseMutateAsyncFunction<any, any, void, any>;
   register: UseMutateAsyncFunction<User, any, RegisterCredentials>;
   isLoggingIn: boolean;
@@ -58,12 +62,14 @@ export function initReactQueryAuth<
   User = unknown,
   Error = unknown,
   LoginCredentials = unknown,
+  Login2faCredentials = unknown,
   RegisterCredentials = unknown
 >(config: AuthProviderConfig<User, Error>) {
   const AuthContext = React.createContext<AuthContextValue<
     User,
     Error,
     LoginCredentials,
+    Login2faCredentials,
     RegisterCredentials
   > | null>(null);
   AuthContext.displayName = 'AuthContext';
@@ -71,6 +77,7 @@ export function initReactQueryAuth<
   const {
     loadUser,
     loginFn,
+    login2faFn,
     registerFn,
     logoutFn,
     key = 'auth-user',
@@ -81,6 +88,7 @@ export function initReactQueryAuth<
       </div>
     ),
     NotLoggedInComponent = () => <NotLoggedIn />,
+    NotLoggedInEnabled = false,
     ErrorComponent = (error: any) => (
       <div style={{ color: 'tomato' }}>{JSON.stringify(error, null, 2)}</div>
     ),
@@ -112,6 +120,13 @@ export function initReactQueryAuth<
       },
     });
 
+    const login2faMutation = useMutation({
+      mutationFn: login2faFn,
+      onSuccess: (user) => {
+        setUser(user);
+      },
+    });
+
     const registerMutation = useMutation({
       mutationFn: registerFn,
       onSuccess: (user) => {
@@ -126,7 +141,7 @@ export function initReactQueryAuth<
       },
     });
 
-    const isLoggedIn = !!(user as unknown as AuthUser)?.data;
+    const isLoggedIn = !!(user as unknown as AuthUser)?.id;
 
     const value = React.useMemo(
       () => ({
@@ -134,7 +149,8 @@ export function initReactQueryAuth<
         error,
         refetchUser: refetch,
         login: loginMutation.mutateAsync,
-        isLoggingIn: loginMutation.isLoading,
+        login2fa: login2faMutation.mutateAsync,
+        isLoggingIn: loginMutation.isLoading || login2faMutation.isLoading,
         isLoggedIn: isLoggedIn,
         logout: logoutMutation.mutateAsync,
         isLoggingOut: logoutMutation.isLoading,
@@ -146,6 +162,8 @@ export function initReactQueryAuth<
         error,
         refetch,
         loginMutation.mutateAsync,
+        login2faMutation.mutateAsync,
+        login2faMutation.isLoading,
         loginMutation.isLoading,
         isLoggedIn,
         logoutMutation.mutateAsync,
@@ -155,11 +173,15 @@ export function initReactQueryAuth<
       ]
     );
 
-    if ((isSuccess || !waitInitial) && !isLoggedIn) {
+    if ((isSuccess || !waitInitial) && !isLoggedIn && NotLoggedInEnabled) {
       return <NotLoggedInComponent />;
     }
 
     if ((isSuccess || !waitInitial) && isLoggedIn) {
+      return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    }
+
+    if (isSuccess || !waitInitial) {
       return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
     }
 

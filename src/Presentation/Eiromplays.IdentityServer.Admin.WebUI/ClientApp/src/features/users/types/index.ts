@@ -1,9 +1,12 @@
-import { BaseEntity } from '@/types';
+export type EnableAuthenticatorViewModel = {
+  code: string;
+  sharedKey: string;
+  authenticatorUri: string;
+};
 
-export type User = {
-  id: string;
-  userName: string;
-  profilePicture: string;
-  email: string;
-  role: 'ADMIN' | 'USER';
-} & BaseEntity;
+export type TwoFactorAuthenticationViewModel = {
+  hasAuthenticator: boolean;
+  recoveryCodesLeft: number;
+  is2FaEnabled: boolean;
+  isMachineRemembered: boolean;
+};

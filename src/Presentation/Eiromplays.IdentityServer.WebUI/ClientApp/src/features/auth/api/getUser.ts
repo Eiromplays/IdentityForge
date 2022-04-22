@@ -35,9 +35,9 @@ export const getUser = async (): Promise<AuthUser | null> => {
       userSessionInfo?.find((claim: Claim) => claim.type === 'gravatar_email')?.value ?? '',
     profilePicture: userSessionInfo?.find((claim: Claim) => claim.type === 'picture')?.value ?? '',
     roles:
-      (userSessionInfo
+      userSessionInfo
         ?.filter((claim: Claim) => claim.type === 'role')
-        .map((claim: Claim) => claim.value.toLowerCase()) as unknown as string[]) ?? [],
+        .map((claim: Claim) => claim.value.toLowerCase()) as unknown as string[] ?? [],
     logoutUrl:
       userSessionInfo?.find((claim: Claim) => claim.type === 'bff:logout_url')?.value ??
       '/bff/logout',

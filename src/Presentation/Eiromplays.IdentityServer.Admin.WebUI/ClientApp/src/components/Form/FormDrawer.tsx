@@ -12,6 +12,7 @@ type FormDrawerProps = {
   title: string;
   children: React.ReactNode;
   size?: DrawerProps['size'];
+  zIndex?: number;
 };
 
 export const FormDrawer = ({
