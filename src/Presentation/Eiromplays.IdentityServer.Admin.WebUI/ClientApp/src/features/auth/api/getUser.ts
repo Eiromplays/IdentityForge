@@ -1,7 +1,7 @@
 import { axios } from '@/lib/axios';
 import { Claim } from '@/types';
 
-import { AuthUser, UserSessionInfo, UserData } from '../types';clients
+import { AuthUser, UserSessionInfo, UserData } from '../types';
 
 export const getUser = async (): Promise<AuthUser> => {
   const userSessionInfo = await getUserSessionInfo();

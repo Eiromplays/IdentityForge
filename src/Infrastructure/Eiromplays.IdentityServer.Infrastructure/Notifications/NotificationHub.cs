@@ -17,11 +17,11 @@ public class NotificationHub : Hub, ITransientService
 
     public override async Task OnConnectedAsync()
     {
-        await Groups.AddToGroupAsync(Context.ConnectionId, $"GroupTenant");
+        await Groups.AddToGroupAsync(Context.ConnectionId, "GroupTenant");
 
         await base.OnConnectedAsync();
 
-        _logger.LogInformation("A client connected to NotificationHub: {connectionId}", Context.ConnectionId);
+        _logger.LogInformation("A client connected to NotificationHub: {ConnectionId}", Context.ConnectionId);
     }
 
     public override async Task OnDisconnectedAsync(Exception? exception)

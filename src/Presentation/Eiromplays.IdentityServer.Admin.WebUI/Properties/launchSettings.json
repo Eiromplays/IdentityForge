@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "Eiromplays.IdentityServer.WebUI": {
+    "Eiromplays.IdentityServer.Admin.WebUI": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
