@@ -15,7 +15,7 @@ export const ExternalLoginProvider = ({
   return (
     <div>
       <Button
-        startIcon={<DynamicIcon icon={`fa/Fa${externalProvider.displayName}`} />}
+        //startIcon={<DynamicIcon icon={`fa/Fa${externalProvider.displayName}`} />}
         onClick={() =>
           (window.location.href = `https://localhost:7001/spa/externalLogin?provider=${externalProvider.authenticationScheme}&returnUrl=${returnUrl}`)
         }

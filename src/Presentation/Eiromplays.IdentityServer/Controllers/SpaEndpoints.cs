@@ -11,6 +11,7 @@ using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Configuration;
+using Eiromplays.IdentityServer.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Validators.Account;
 using Eiromplays.IdentityServer.ViewModels.Account;
@@ -224,8 +225,13 @@ namespace Eiromplays.IdentityServer.Controllers
 
                     var url = model.ReturnUrl != null ? Uri.UnescapeDataString(model.ReturnUrl) : null;
 
-                    var authzContext = await _interaction.GetAuthorizationContextAsync(url);
-                    response.ValidReturnUrl = authzContext != null ? url : _serverUrls.BaseUrl;
+                    var authzContext = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl) ??
+                                        await _interaction.GetAuthorizationContextAsync(url);
+                    if (authzContext != null)
+                        response.ValidReturnUrl = url;
+
+                    if (Url.IsLocalUrl(url))
+                        return Redirect(url);
 
                     return Ok(response);
                 }
