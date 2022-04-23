@@ -1,9 +1,9 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Eiromplays IdentityServer" type="CompoundRunConfigurationType">
-    <toRun name="Eiromplays.IdentityServer" type="LaunchSettings" />
-    <toRun name="Eiromplays.IdentityServer.API" type="LaunchSettings" />
-    <toRun name="Eiromplays.IdentityServer.Admin.WebUI" type="LaunchSettings" />
-    <toRun name="Eiromplays.IdentityServer.WebUI" type="LaunchSettings" />
+    <toRun name="IdentityServer" type="LaunchSettings" />
+    <toRun name="API" type="LaunchSettings" />
+    <toRun name="Admin.WebUI" type="LaunchSettings" />
+    <toRun name="WebUI" type="LaunchSettings" />
     <method v="2" />
   </configuration>
 </component>

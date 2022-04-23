@@ -105,16 +105,14 @@ type UserNavigationItem = {
 };
 
 const UserNavigation = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   const userNavigation = [
     { name: 'Your Profile', to: './profile' },
     {
       name: 'Sign out',
       to: user?.logoutUrl,
-      onClick: () => {
-        if (user?.logoutUrl) window.location.assign(user.logoutUrl);
-      },
+      onClick: async () => await logout(),
     },
   ].filter(Boolean) as UserNavigationItem[];
 

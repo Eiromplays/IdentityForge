@@ -6,7 +6,7 @@ import { useDeleteUser } from '../api/deleteUser';
 import { useExportPersonalData } from '../api/exportPersonalData';
 
 export const PersonalData = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const exportPersonalDataMutation = useExportPersonalData();
   const deleteUserMutation = useDeleteUser();
 
@@ -42,7 +42,7 @@ export const PersonalData = () => {
                 isLoading={deleteUserMutation.isLoading}
                 onClick={async () => {
                   await deleteUserMutation.mutateAsync(undefined);
-                  if (user?.logoutUrl) window.location.assign(user.logoutUrl);
+                  await logout();
                 }}
               >
                 Proceed

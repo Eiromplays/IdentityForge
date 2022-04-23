@@ -4,6 +4,7 @@ import { FieldError } from 'react-hook-form';
 
 type FieldWrapperProps = {
   label?: string;
+  subLabel?: string;
   className?: string;
   children: React.ReactNode;
   error?: FieldError | undefined;
@@ -13,11 +14,12 @@ type FieldWrapperProps = {
 export type FieldWrapperPassThroughProps = Omit<FieldWrapperProps, 'className' | 'children'>;
 
 export const FieldWrapper = (props: FieldWrapperProps) => {
-  const { label, className, error, children } = props;
+  const { label, subLabel, className, error, children } = props;
   return (
     <div>
       <label className={clsx('block text-sm font-medium text-gray-700 dark:text-white', className)}>
         {label}
+        {subLabel && <p className="text-xs text-gray-500 dark:text-gray-400">{subLabel}</p>}
         <div className="mt-1">{children}</div>
       </label>
       {error?.message && (

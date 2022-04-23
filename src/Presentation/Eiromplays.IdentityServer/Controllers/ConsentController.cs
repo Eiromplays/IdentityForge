@@ -22,7 +22,6 @@ namespace Eiromplays.IdentityServer.Controllers;
 /// </summary>
 [SecurityHeaders]
 [Microsoft.AspNetCore.Authorization.Authorize]
-[ApiVersion("1.0")]
 public class ConsentController : Controller
 {
     private readonly IIdentityServerInteractionService _interaction;
@@ -48,22 +47,22 @@ public class ConsentController : Controller
     public async Task<IActionResult> Index(string returnUrl)
     {
         var vm = await BuildViewModelAsync(returnUrl);
-        return vm != null ? View("Index", vm) : View("Error");
+        
+        return vm != null ? Ok(vm) : View("Error");
     }
 
     /// <summary>
     /// Handles the consent screen postback
     /// </summary>
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Index(ConsentInputModel model)
+    public async Task<IActionResult> Index([FromBody] ConsentInputModel model)
     {
         var result = await ProcessConsent(model);
 
         if (result.IsRedirect)
         {
             var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
-            return context?.IsNativeClient() == true ? this.LoadingPage("Redirect", result.RedirectUri!) : Redirect(result.RedirectUri!);
+            return context?.IsNativeClient() == true ? this.LoadingPage("Redirect", result.RedirectUri!) : Ok(result);
         }
 
         if (result.HasValidationError)
@@ -71,7 +70,7 @@ public class ConsentController : Controller
             ModelState.AddModelError(string.Empty, result.ValidationError!);
         }
 
-        return result.ShowView ? View("Index", result.ViewModel) : View("Error");
+        return result.ShowView ? Ok(result.ViewModel) : View("Error");
     }
 
     /*****************************************/
@@ -80,10 +79,12 @@ public class ConsentController : Controller
     private async Task<ProcessConsentResult> ProcessConsent(ConsentInputModel model)
     {
         var result = new ProcessConsentResult();
+        
+        var url = model.ReturnUrl != null ? Uri.UnescapeDataString(model.ReturnUrl) : null;
 
         // validate return url is still valid
-        var request = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
-        if (request == null) return result;
+        var request = await _interaction.GetAuthorizationContextAsync(url);
+        if (request is null) return result;
 
         ConsentResponse? grantedConsent = null;
 
@@ -125,19 +126,19 @@ public class ConsentController : Controller
                 break;
         }
 
-        if (grantedConsent != null)
+        if (grantedConsent is not null)
         {
             // communicate outcome of consent back to identityserver
             await _interaction.GrantConsentAsync(request, grantedConsent);
 
             // indicate that's it ok to redirect back to authorization endpoint
-            result.RedirectUri = model.ReturnUrl;
+            result.RedirectUri = url;
             result.Client = request.Client;
         }
         else
         {
             // we need to redisplay the consent UI
-            result.ViewModel = await BuildViewModelAsync(model.ReturnUrl, model);
+            result.ViewModel = await BuildViewModelAsync(url, model);
         }
 
         return result;

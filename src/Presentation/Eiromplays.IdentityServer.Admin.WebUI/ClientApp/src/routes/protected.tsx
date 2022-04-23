@@ -3,6 +3,9 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 import { Spinner } from '@/components/Elements';
 import { MainLayout } from '@/components/Layout';
+// eslint-disable-next-line no-restricted-imports
+import { NotAllowed } from '@/features/auth/components/NotAllowed';
+import { ROLES, useAuthorization } from '@/lib/authorization';
 import { lazyImport } from '@/utils/lazyImport';
 
 const { GrantsRoutes } = lazyImport(() => import('@/features/grants'), 'GrantsRoutes');
@@ -21,6 +24,8 @@ const { TwoFactorAuthentication } = lazyImport(
 const { ChangePassword } = lazyImport(() => import('@/features/users'), 'ChangePassword');
 
 const App = () => {
+  const { checkAccess } = useAuthorization();
+
   return (
     <MainLayout>
       <Suspense
@@ -30,7 +35,7 @@ const App = () => {
           </div>
         }
       >
-        <Outlet />
+        {!checkAccess({ allowedRoles: [ROLES.ADMINISTRATOR] }) ? <NotAllowed /> : <Outlet />}
       </Suspense>
     </MainLayout>
   );

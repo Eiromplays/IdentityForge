@@ -21,12 +21,14 @@ async function loadUser(): Promise<AuthUser> {
 }
 
 async function loginFn(data: LoginCredentialsDTO) {
-  console.log(data);
   const response = await loginWithEmailAndPassword(data);
 
   // TODO: Check if I can handle this, and signInResult better
-  console.log(response);
-  if (response?.validReturnUrl) window.location.href = response.validReturnUrl;
+
+  if (response?.validReturnUrl) {
+    console.log(response.validReturnUrl);
+    window.location.href = response.validReturnUrl;
+  }
 
   if (response?.signInResult?.isLockedOut) {
     window.location.assign('/auth/lockout');

@@ -20,6 +20,8 @@ const { TwoFactorAuthentication } = lazyImport(
 );
 const { ChangePassword } = lazyImport(() => import('@/features/users'), 'ChangePassword');
 
+const { ConsentRoutes } = lazyImport(() => import('@/features/consent'), 'ConsentRoutes');
+
 const App = () => {
   return (
     <MainLayout>
@@ -48,6 +50,7 @@ export const protectedRoutes = [
       { path: 'personal-data', element: <PersonalData /> },
       { path: 'two-factor-authentication', element: <TwoFactorAuthentication /> },
       { path: 'change-password', element: <ChangePassword /> },
+      { path: 'consent/*', element: <ConsentRoutes /> },
       { path: '', element: <Dashboard /> },
       { path: '*', element: <Navigate to="." /> },
     ],

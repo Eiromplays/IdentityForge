@@ -21,7 +21,9 @@ export const Layout = ({ children, title }: LayoutProps) => {
             </Link>
           </div>
 
-          <h2 className="mt-3 text-center text-3xl font-extrabold text-gray-900">{title}</h2>
+          <h2 className="mt-3 text-center text-3xl font-extrabold text-gray-900 dark:text-gray-300">
+            {title}
+          </h2>
         </div>
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">

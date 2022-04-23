@@ -95,9 +95,9 @@
   },
   "scripts": {
     "prestart": "node aspnetcore-https && node aspnetcore-react",
-    "start": "craco start",
+    "start": "export NODE_OPTIONS=--openssl-legacy-provider; craco start",
     "start:cli": "cross-env BROWSER=none craco start",
-    "build": "craco build",
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider; craco build",
     "test": "is-ci \"test:coverage\" \"test:watch\"",
     "test:jest": "craco test",
     "serve": "serve --no-clipboard --single --listen 3000 build",

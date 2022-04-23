@@ -61,7 +61,7 @@ namespace Eiromplays.IdentityServer.Controllers
 
     [Route("spa")]
     [AllowAnonymous]
-    public class SpaEndpoints : ControllerBase
+    public class SpaEndpoints : Controller
     {
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IServerUrls _serverUrls;
@@ -224,10 +224,33 @@ namespace Eiromplays.IdentityServer.Controllers
                     }
                     
                     var url = model.ReturnUrl != null ? Uri.UnescapeDataString(model.ReturnUrl) : null;
+                    var context = await _interaction.GetAuthorizationContextAsync(url);
 
-                    // TODO: See if I can improve this
-                    if (_interaction.IsValidReturnUrl(url))
-                        response.ValidReturnUrl = url ?? _serverUrls.BaseUrl;
+                    if (context != null)
+                    {
+                        if (context.IsNativeClient())
+                        {
+                            // The client is native, so this change in how to
+                            // return the response is for better UX for the end user.
+                            return this.LoadingPage("Redirect", model.ReturnUrl);
+                        }
+
+                        // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
+                        response.ValidReturnUrl = url;
+                        
+                        return Ok(response);
+                    }
+
+                    // request for a local page
+                    if (Url.IsLocalUrl(model.ReturnUrl))
+                    {
+                        return Redirect(model.ReturnUrl);
+                    }
+
+                    if (string.IsNullOrEmpty(model.ReturnUrl))
+                    {
+                        response.ValidReturnUrl = _serverUrls.BaseUrl;
+                    }
 
                     return Ok(response);
                 }
