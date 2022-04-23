@@ -1,6 +1,7 @@
 import { useRoutes } from 'react-router-dom';
 
 import { Logout, Lockout } from '@/features/auth';
+import { Error } from '@/features/error';
 import { Landing, NotFound } from '@/features/misc';
 import { useAuth } from '@/lib/auth';
 
@@ -12,6 +13,7 @@ export const AppRoutes = () => {
 
   const commonRoutes = [
     { path: '/', element: <Landing /> },
+    { path: '/error', element: <Error /> },
     { path: '*', element: <NotFound /> },
     { path: '/auth/logout', element: <Logout /> },
     { path: '/auth/lockout', element: <Lockout /> },

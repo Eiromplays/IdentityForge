@@ -1,6 +1,10 @@
+import { useAuth } from '@/lib/auth';
+
 import { Layout } from './Layout';
 
 export const NotAllowed = () => {
+  const { user } = useAuth();
+
   return (
     <Layout title="Not Allowed">
       <div className="text-center">
@@ -13,6 +17,11 @@ export const NotAllowed = () => {
           </a>{' '}
           to go back.
         </p>
+        {user?.logoutUrl && (
+          <a className="hover:underline" href={user.logoutUrl}>
+            Logout
+          </a>
+        )}
       </div>
     </Layout>
   );

@@ -19,6 +19,7 @@ export const InputField = (props: InputFieldProps) => {
     type = 'text',
     label,
     subLabel,
+    icon,
     className,
     multiple,
     accept,
@@ -30,7 +31,7 @@ export const InputField = (props: InputFieldProps) => {
   } = props;
 
   return (
-    <FieldWrapper label={label} subLabel={subLabel} error={error}>
+    <FieldWrapper label={label} subLabel={subLabel} icon={icon} error={error}>
       <fieldset disabled={disabled}>
         <input
           type={type}

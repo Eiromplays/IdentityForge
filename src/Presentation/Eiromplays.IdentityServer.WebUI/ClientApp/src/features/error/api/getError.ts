@@ -1,0 +1,25 @@
+import { useQuery } from 'react-query';
+
+import { axios } from '@/lib/axios';
+import { ExtractFnReturnType, QueryConfig } from '@/lib/react-query';
+
+import { ErrorMessage } from '../types';
+
+export const getError = ({ errorId }: { errorId?: string }): Promise<ErrorMessage> => {
+  return axios.get(`https://localhost:7001/spa/error?errorId=${errorId}`);
+};
+
+type QueryFnType = typeof getError;
+
+type UseErrorOptions = {
+  errorId?: string;
+  config?: QueryConfig<QueryFnType>;
+};
+
+export const useError = ({ errorId, config }: UseErrorOptions) => {
+  return useQuery<ExtractFnReturnType<QueryFnType>>({
+    ...config,
+    queryKey: ['error'],
+    queryFn: () => getError({ errorId }),
+  });
+};

@@ -26,6 +26,8 @@ const { ChangePassword } = lazyImport(() => import('@/features/users'), 'ChangeP
 const App = () => {
   const { checkAccess } = useAuthorization();
 
+  if (!checkAccess({ allowedRoles: [ROLES.ADMINISTRATOR] })) return <NotAllowed />;
+
   return (
     <MainLayout>
       <Suspense
@@ -35,7 +37,7 @@ const App = () => {
           </div>
         }
       >
-        {!checkAccess({ allowedRoles: [ROLES.ADMINISTRATOR] }) ? <NotAllowed /> : <Outlet />}
+        <Outlet />
       </Suspense>
     </MainLayout>
   );

@@ -1,4 +1,5 @@
 import { UseFormRegister } from 'react-hook-form';
+import { HiOutlineExclamationCircle } from 'react-icons/hi';
 
 import { InputField } from '@/components/Form';
 
@@ -23,8 +24,13 @@ export const ScopesList = ({ title, scopes, register }: ScopesListProps) => {
           <div key={scope.displayName}>
             <InputField
               type="checkbox"
-              label={scope.displayName}
+              label={`${scope.displayName} ${scope.required ? '(required)' : ''}`}
               subLabel={scope.description}
+              icon={
+                scope.emphasize && (
+                  <HiOutlineExclamationCircle className="h-5 w-5 inline-block justify-center items-center" />
+                )
+              }
               value={`${scope.value}`}
               disabled={scope.required}
               registration={register('scopesConsented')}
