@@ -10,3 +10,11 @@ export type User = {
   updated_at: number;
   created_at: number;
 };
+
+export type UserRole = {
+  id: string;
+  roleId: string;
+  roleName: string;
+  description: string;
+  enabled: boolean;
+};

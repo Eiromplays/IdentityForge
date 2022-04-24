@@ -1,13 +1,13 @@
 import { Table, Spinner, Link } from '@/components/Elements';
 import { formatDate } from '@/utils/format';
 
-import { useGrants } from '../api/getGrants';
-import { Grant } from '../types';
+import { usePersistedGrants } from '../api/getPersistedGrants';
+import { PersistedGrant } from '../types';
 
-import { RevokeGrant } from './RevokeGrant';
+import { DeletePersistedGrant } from './DeletePersistedGrant';
 
-export const GrantsList = () => {
-  const grantsQuery = useGrants();
+export const PersistedGrantsList = () => {
+  const grantsQuery = usePersistedGrants();
 
   if (grantsQuery.isLoading) {
     return (
@@ -17,19 +17,23 @@ export const GrantsList = () => {
     );
   }
 
-  if (!grantsQuery.data?.grants) return null;
+  if (!grantsQuery.data) return null;
 
   return (
-    <Table<Grant>
-      data={grantsQuery.data.grants}
+    <Table<PersistedGrant>
+      data={grantsQuery.data}
       columns={[
+        {
+          title: 'Type',
+          field: 'type',
+        },
         {
           title: 'Client Id',
           field: 'clientId',
         },
         {
-          title: 'Client Name',
-          field: 'clientName',
+          title: 'Subject Id',
+          field: 'subjectId',
         },
         {
           title: 'Description',
@@ -37,16 +41,16 @@ export const GrantsList = () => {
         },
         {
           title: 'Created At',
-          field: 'created',
-          Cell({ entry: { created } }) {
-            return <span>{formatDate(created)}</span>;
+          field: 'creationTime',
+          Cell({ entry: { creationTime } }) {
+            return <span>{formatDate(creationTime)}</span>;
           },
         },
         {
           title: 'Expires At',
-          field: 'expires',
-          Cell({ entry: { expires } }) {
-            return <span>{formatDate(expires)}</span>;
+          field: 'expiration',
+          Cell({ entry: { expiration } }) {
+            return <span>{formatDate(expiration)}</span>;
           },
         },
         {
@@ -58,9 +62,9 @@ export const GrantsList = () => {
         },
         {
           title: '',
-          field: 'clientId',
-          Cell({ entry: { clientId } }) {
-            return <RevokeGrant clientId={clientId} />;
+          field: 'key',
+          Cell({ entry: { key } }) {
+            return <DeletePersistedGrant key={key} />;
           },
         },
       ]}

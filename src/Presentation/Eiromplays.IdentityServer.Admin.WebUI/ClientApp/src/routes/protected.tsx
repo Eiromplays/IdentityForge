@@ -8,7 +8,10 @@ import { NotAllowed } from '@/features/auth/components/NotAllowed';
 import { ROLES, useAuthorization } from '@/lib/authorization';
 import { lazyImport } from '@/utils/lazyImport';
 
-const { GrantsRoutes } = lazyImport(() => import('@/features/grants'), 'GrantsRoutes');
+const { PersistedGrantsRoutes } = lazyImport(
+  () => import('@/features/persisted-grants'),
+  'PersistedGrantsRoutes'
+);
 const { UserSessionsRoutes } = lazyImport(
   () => import('@/features/user-sessions'),
   'UserSessionsRoutes'
@@ -17,6 +20,7 @@ const { LogsRoutes } = lazyImport(() => import('@/features/logs'), 'LogsRoutes')
 const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
 const { Profile } = lazyImport(() => import('@/features/users'), 'Profile');
 const { Users } = lazyImport(() => import('@/features/users'), 'Users');
+const { UserRoles } = lazyImport(() => import('@/features/users'), 'UserRoles');
 
 const App = () => {
   const { checkAccess } = useAuthorization();
@@ -43,11 +47,12 @@ export const protectedRoutes = [
     path: '/app',
     element: <App />,
     children: [
-      { path: 'grants/*', element: <GrantsRoutes /> },
+      { path: 'persisted-grants/*', element: <PersistedGrantsRoutes /> },
       { path: 'user-sessions/*', element: <UserSessionsRoutes /> },
       { path: 'logs/*', element: <LogsRoutes /> },
       { path: 'profile/:id', element: <Profile /> },
       { path: 'users', element: <Users /> },
+      { path: 'users/:id/roles', element: <UserRoles /> },
       { path: '', element: <Dashboard /> },
       { path: '*', element: <Navigate to="." /> },
     ],

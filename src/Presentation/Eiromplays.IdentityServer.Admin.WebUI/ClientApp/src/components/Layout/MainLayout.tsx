@@ -30,7 +30,7 @@ const SideNavigation = () => {
   const navigation = [
     { name: 'Dashboard', to: '.', icon: HiOutlineHome },
     { name: 'Users', to: './users', icon: HiOutlineUsers },
-    { name: 'Grants', to: './grants', icon: HiOutlineShieldCheck },
+    { name: 'Persisted Grants', to: './persisted-grants', icon: HiOutlineShieldCheck },
     { name: 'User Sessions', to: './user-sessions', icon: MdOutlineDevicesOther },
     { name: 'Logs', to: './logs', icon: MdOutlineHistory },
     {

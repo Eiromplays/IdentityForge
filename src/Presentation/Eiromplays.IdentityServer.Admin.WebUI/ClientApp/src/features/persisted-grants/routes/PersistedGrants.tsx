@@ -1,8 +1,8 @@
 import { ContentLayout } from '@/components/Layout';
 
-import { GrantsList } from '../../grants/components/GrantsList';
+import { PersistedGrantsList } from '../components/PersistedGrantsList';
 
-export const Grants = () => {
+export const PersistedGrants = () => {
   return (
     <ContentLayout
       title="Grants"
@@ -10,7 +10,7 @@ export const Grants = () => {
     to."
     >
       <div className="mt-4">
-        <GrantsList />
+        <PersistedGrantsList />
       </div>
     </ContentLayout>
   );

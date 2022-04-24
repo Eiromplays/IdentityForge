@@ -5,13 +5,13 @@ import { Head } from '@/components/Head';
 import { ContentLayout } from '@/components/Layout';
 import { formatDate } from '@/utils/format';
 
-import { useGrant } from '../api/getGrant';
-import { RevokeGrant } from '../components/RevokeGrant';
+import { usePersistedGrant } from '../api/getPersistedGrant';
+import { DeletePersistedGrant } from '../components/DeletePersistedGrant';
 
-export const Grant = () => {
-  const { clientId } = useParams();
+export const PersistedGrant = () => {
+  const { key } = useParams();
 
-  const grantQuery = useGrant({ clientId: clientId || '' });
+  const grantQuery = usePersistedGrant({ persistedGrantKey: key || '' });
 
   if (grantQuery.isLoading) {
     return (
@@ -25,20 +25,12 @@ export const Grant = () => {
 
   return (
     <>
-      <Head title={grantQuery.data.clientId} />
-      <ContentLayout title={`${grantQuery.data.clientName} (${grantQuery.data.clientId})`}>
+      <Head title={grantQuery.data.key} />
+      <ContentLayout title={`${grantQuery.data.key}`}>
         <span className="text-xs font-bold">
-          {formatDate(grantQuery.data.created)} - {formatDate(grantQuery.data.expires)}
+          {formatDate(grantQuery.data.creationTime)} - {formatDate(grantQuery.data.expiration)}
         </span>
-        <RevokeGrant clientId={grantQuery.data.clientId} />
-        {grantQuery.data.clientLogoUrl && (
-          <img
-            src={grantQuery.data.clientLogoUrl}
-            alt="Client logo"
-            className="mt-4"
-            title={`${grantQuery.data.clientName} Logo`}
-          />
-        )}
+        <DeletePersistedGrant key={grantQuery.data.key} />
         <div className="mt-6 flex flex-col space-y-16">
           <div>
             <div className="bg-white dark:bg-lighter-black shadow overflow-hidden sm:rounded-lg">
@@ -47,10 +39,6 @@ export const Grant = () => {
                   {grantQuery.data.description && (
                     <MDPreview value={`Description: ${grantQuery.data.description}`} />
                   )}
-                  <MDPreview
-                    value={`Identity Grants: ${grantQuery.data.identityGrantNames.join(', ')}`}
-                  />
-                  <MDPreview value={`API Grants: ${grantQuery.data.apiGrantNames.join(', ')}`} />
                 </div>
               </div>
             </div>

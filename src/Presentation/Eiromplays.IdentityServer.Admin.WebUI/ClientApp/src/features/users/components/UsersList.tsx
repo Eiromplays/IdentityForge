@@ -5,6 +5,7 @@ import { useUsers } from '../api/getUsers';
 import { User } from '../types';
 
 import { DeleteUser } from './DeleteUser';
+import { UserRoles } from './UserRoles';
 
 export const UsersList = () => {
   const usersQuery = useUsers();
@@ -47,6 +48,13 @@ export const UsersList = () => {
           field: 'id',
           Cell({ entry: { id } }) {
             return <DeleteUser id={id} />;
+          },
+        },
+        {
+          title: '',
+          field: 'id',
+          Cell({ entry: { id } }) {
+            return <UserRoles id={id} />;
           },
         },
         {
