@@ -6,6 +6,7 @@ import { axios } from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
 
 export type UpdateProfileDTO = {
+  userId: string;
   data: {
     username: string;
     firstName: string;
@@ -25,7 +26,7 @@ const toBase64 = (file: File) =>
     reader.onerror = (error) => reject(error);
   });
 
-export const updateProfile = async ({ data }: UpdateProfileDTO) => {
+export const updateProfile = async ({ userId, data }: UpdateProfileDTO) => {
   if (data.image instanceof File) {
     const fileExtension = `.${data.image.name.slice(
       ((data.image.name.lastIndexOf('.') - 1) >>> 0) + 2
@@ -38,7 +39,7 @@ export const updateProfile = async ({ data }: UpdateProfileDTO) => {
     data.deleteCurrentImage = data.image ? true : data.deleteCurrentImage;
   }
 
-  return axios.put(`/personal/profile`, { UpdateUserRequest: data });
+  return axios.put(`/users/${userId}`, { Data: data });
 };
 
 type UseUpdateProfileOptions = {

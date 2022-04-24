@@ -16,12 +16,7 @@ const { UserSessionsRoutes } = lazyImport(
 const { LogsRoutes } = lazyImport(() => import('@/features/logs'), 'LogsRoutes');
 const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
 const { Profile } = lazyImport(() => import('@/features/users'), 'Profile');
-const { PersonalData } = lazyImport(() => import('@/features/users'), 'PersonalData');
-const { TwoFactorAuthentication } = lazyImport(
-  () => import('@/features/users'),
-  'TwoFactorAuthentication'
-);
-const { ChangePassword } = lazyImport(() => import('@/features/users'), 'ChangePassword');
+const { Users } = lazyImport(() => import('@/features/users'), 'Users');
 
 const App = () => {
   const { checkAccess } = useAuthorization();
@@ -51,10 +46,8 @@ export const protectedRoutes = [
       { path: 'grants/*', element: <GrantsRoutes /> },
       { path: 'user-sessions/*', element: <UserSessionsRoutes /> },
       { path: 'logs/*', element: <LogsRoutes /> },
-      { path: 'profile', element: <Profile /> },
-      { path: 'personal-data', element: <PersonalData /> },
-      { path: 'two-factor-authentication', element: <TwoFactorAuthentication /> },
-      { path: 'change-password', element: <ChangePassword /> },
+      { path: 'profile/:id', element: <Profile /> },
+      { path: 'users', element: <Users /> },
       { path: '', element: <Dashboard /> },
       { path: '*', element: <Navigate to="." /> },
     ],

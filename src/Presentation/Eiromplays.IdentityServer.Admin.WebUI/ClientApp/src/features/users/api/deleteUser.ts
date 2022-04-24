@@ -2,10 +2,16 @@ import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
 import { axios } from '@/lib/axios';
-import { MutationConfig } from '@/lib/react-query';
+import { MutationConfig, queryClient } from '@/lib/react-query';
 
-export const deleteUser = () => {
-  return axios.delete(`/personal/profile`);
+import { User } from '../types';
+
+export type DeleteUserDTO = {
+  userId: string;
+};
+
+export const deleteUser = ({ userId }: DeleteUserDTO) => {
+  return axios.delete(`/users/${userId}`);
 };
 
 type UseDeleteUserOptions = {
@@ -14,11 +20,26 @@ type UseDeleteUserOptions = {
 
 export const useDeleteUser = ({ config }: UseDeleteUserOptions = {}) => {
   return useMutation({
-    onError: () => {
-      toast.error('Unable to delete user');
+    onMutate: async (deletedUser) => {
+      await queryClient.cancelQueries('users');
+
+      const previousUsers = queryClient.getQueryData<User[]>('users');
+
+      queryClient.setQueryData(
+        'users',
+        previousUsers?.filter((discussion) => discussion.id !== deletedUser.userId)
+      );
+
+      return { previousUsers };
+    },
+    onError: (_, __, context: any) => {
+      if (context?.previousUsers) {
+        queryClient.setQueryData('users', context.previousUsers);
+      }
     },
     onSuccess: () => {
-      toast.success('User Deleted');
+      queryClient.invalidateQueries('users');
+      toast.success('User deleted');
     },
     ...config,
     mutationFn: deleteUser,

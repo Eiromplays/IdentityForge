@@ -1,11 +1,11 @@
 import { HiOutlinePencil } from 'react-icons/hi';
 import * as z from 'zod';
 
-import { Button, ConfirmationDialog } from '@/components/Elements';
+import { Button, ConfirmationDialog, Spinner } from '@/components/Elements';
 import { Form, FormDrawer, InputField } from '@/components/Form';
 import { ImageCropper } from '@/components/Images';
-import { useAuth } from '@/lib/auth';
 
+import { useUser } from '../api/getUser';
 import { UpdateProfileDTO, useUpdateProfile } from '../api/updateProfile';
 
 const schema = z.object({
@@ -13,15 +13,29 @@ const schema = z.object({
   firstName: z.string().min(1, 'Required'),
   lastName: z.string().min(1, 'Required'),
   email: z.string().min(1, 'Required'),
-  gravatarEmail: z.string(),
   deleteCurrentImage: z.boolean(),
 });
 
-export const UpdateProfile = () => {
-  const { user } = useAuth();
+type UpdateProfileProps = {
+  id: string;
+};
+
+export const UpdateProfile = ({ id }: UpdateProfileProps) => {
+  const userQuery = useUser({ userId: id || '' });
+  const { updateProfileMutation } = useUpdateProfile();
+
+  if (userQuery.isLoading) {
+    return (
+      <div className="w-full h-48 flex justify-center items-center">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
+
+  if (!userQuery.data) return null;
+
   let files: FileList[] = [];
   let profilePicture: File;
-  const { updateProfileMutation } = useUpdateProfile();
 
   return (
     <>
@@ -37,7 +51,7 @@ export const UpdateProfile = () => {
           <ConfirmationDialog
             icon="warning"
             title="Update Profile"
-            body="Are you sure you want to update your profile? This will require you to log back in."
+            body="Are you sure you want to update this profile? This will log them out of all sessions."
             triggerButton={
               <Button size="sm" isLoading={updateProfileMutation.isLoading}>
                 Submit
@@ -62,15 +76,15 @@ export const UpdateProfile = () => {
           id="update-profile"
           onSubmit={async (values) => {
             values.image = profilePicture;
-            await updateProfileMutation.mutateAsync({ data: values });
+            await updateProfileMutation.mutateAsync({ userId: id, data: values });
           }}
           options={{
             defaultValues: {
-              username: user?.username,
-              firstName: user?.firstName,
-              lastName: user?.lastName,
-              email: user?.email,
-              gravatarEmail: user?.gravatarEmail,
+              username: userQuery.data?.userName,
+              firstName: userQuery.data?.firstName,
+              lastName: userQuery.data?.lastName,
+              email: userQuery.data?.email,
+              gravatarEmail: userQuery.data?.gravatarEmail,
               deleteCurrentImage: false,
             },
           }}
@@ -113,7 +127,7 @@ export const UpdateProfile = () => {
                 error={formState.errors['image']}
                 registration={register('image')}
               />
-              {user?.profilePicture && (
+              {userQuery.data?.profilePicture && (
                 <InputField
                   label="Delete profile picture"
                   type="checkbox"

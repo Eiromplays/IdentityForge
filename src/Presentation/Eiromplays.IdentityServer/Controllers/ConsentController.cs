@@ -9,6 +9,7 @@ using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Validation;
+using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Security;
 using Eiromplays.IdentityServer.Configuration;
 using Eiromplays.IdentityServer.Extensions;
@@ -48,7 +49,7 @@ public class ConsentController : Controller
     {
         var vm = await BuildViewModelAsync(returnUrl);
         
-        return vm != null ? Ok(vm) : View("Error");
+        return vm != null ? Ok(vm) : throw new InternalServerException("Failed to build consent view model");
     }
 
     /// <summary>
@@ -70,7 +71,7 @@ public class ConsentController : Controller
             ModelState.AddModelError(string.Empty, result.ValidationError!);
         }
 
-        return result.ShowView ? Ok(result.ViewModel) : View("Error");
+        return result.ShowView ? Ok(result.ViewModel) : throw new InternalServerException("Failed to get consent view");
     }
 
     /*****************************************/

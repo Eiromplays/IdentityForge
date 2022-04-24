@@ -1,6 +1,9 @@
-import { ContentLayout } from '@/components/Layout';
-import { useAuth } from '@/lib/auth';
+import { useParams } from 'react-router-dom';
 
+import { Spinner } from '@/components/Elements';
+import { ContentLayout } from '@/components/Layout';
+
+import { useUser } from '../api/getUser';
 import { UpdateProfile } from '../components/UpdateProfile';
 
 type EntryProps = {
@@ -25,9 +28,19 @@ const PictureEntry = ({ label, value }: EntryProps) => (
 );
 
 export const Profile = () => {
-  const { user } = useAuth();
+  const { id } = useParams();
 
-  if (!user) return null;
+  const userQuery = useUser({ userId: id || '' });
+
+  if (userQuery.isLoading) {
+    return (
+      <div className="w-full h-48 flex justify-center items-center">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
+
+  if (!userQuery.data) return null;
 
   return (
     <ContentLayout title="Profile">
@@ -37,7 +50,7 @@ export const Profile = () => {
             <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
               User Information
             </h3>
-            <UpdateProfile />
+            <UpdateProfile id={id || ''} />
           </div>
           <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-white">
             Personal details of the user.
@@ -45,25 +58,27 @@ export const Profile = () => {
         </div>
         <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
           <dl className="sm:divide-y sm:divide-gray-200">
-            <Entry label="Id" value={user.id} />
-            <Entry label="Username" value={user.username} />
-            <Entry label="First Name" value={user.firstName} />
-            <Entry label="Last Name" value={user.lastName} />
-            <Entry label="Email Address" value={user.email} />
-            {user.updated_at && (
-              <Entry label="Last updated at" value={user.updated_at.toString()} />
+            <Entry label="Id" value={userQuery.data.id} />
+            <Entry label="Username" value={userQuery.data.userName} />
+            <Entry label="First Name" value={userQuery.data.firstName} />
+            <Entry label="Last Name" value={userQuery.data.lastName} />
+            <Entry label="Email Address" value={userQuery.data.email} />
+            {userQuery.data.updated_at && (
+              <Entry label="Last updated at" value={userQuery.data.updated_at.toString()} />
             )}
-            {user.created_at && <Entry label="Created at" value={user.created_at.toString()} />}
-            {user.gravatarEmail && (
-              <Entry label="Gravatar Email Address" value={user.gravatarEmail} />
+            {userQuery.data.created_at && (
+              <Entry label="Created at" value={userQuery.data.created_at.toString()} />
             )}
-            {user.profilePicture && (
-              <PictureEntry label={'Profile Picture'} value={user.profilePicture} />
+            {userQuery.data.gravatarEmail && (
+              <Entry label="Gravatar Email Address" value={userQuery.data.gravatarEmail} />
             )}
-            {user.roles.length > 0 && (
+            {userQuery.data.profilePicture && (
+              <PictureEntry label={'Profile Picture'} value={userQuery.data.profilePicture} />
+            )}
+            {userQuery.data.roles?.length > 0 && (
               <Entry
-                label={user.roles.length > 1 ? 'Roles' : 'Role'}
-                value={user.roles.join(', ')}
+                label={userQuery.data.roles.length > 1 ? 'Roles' : 'Role'}
+                value={userQuery.data.roles.join(', ')}
               />
             )}
           </dl>

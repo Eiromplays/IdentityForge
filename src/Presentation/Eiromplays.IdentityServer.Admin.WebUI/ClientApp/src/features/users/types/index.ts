@@ -1,12 +1,12 @@
-export type EnableAuthenticatorViewModel = {
-  code: string;
-  sharedKey: string;
-  authenticatorUri: string;
-};
-
-export type TwoFactorAuthenticationViewModel = {
-  hasAuthenticator: boolean;
-  recoveryCodesLeft: number;
-  is2FaEnabled: boolean;
-  isMachineRemembered: boolean;
+export type User = {
+  id: string;
+  userName: string;
+  firstName: string;
+  lastName: string;
+  profilePicture: string;
+  email: string;
+  gravatarEmail?: string;
+  roles: string[];
+  updated_at: number;
+  created_at: number;
 };

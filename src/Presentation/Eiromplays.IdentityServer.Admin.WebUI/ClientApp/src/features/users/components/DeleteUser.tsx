@@ -11,7 +11,7 @@ export const DeleteUser = ({ id }: DeleteUserProps) => {
   const { user } = useAuth();
   const deleteUserMutation = useDeleteUser();
 
-  if (user?.data.id === id) return null;
+  if (user?.id === id) return null;
 
   return (
     <ConfirmationDialog

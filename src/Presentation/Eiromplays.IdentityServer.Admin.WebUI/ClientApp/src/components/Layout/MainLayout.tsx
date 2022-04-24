@@ -6,11 +6,9 @@ import {
   HiOutlineMenuAlt2,
   HiOutlineUser,
   HiOutlineX,
-  HiOutlineCollection,
-  HiOutlineLockClosed,
-  HiOutlineKey,
   HiOutlineDocumentText,
   HiOutlineShieldCheck,
+  HiOutlineUsers,
 } from 'react-icons/hi';
 import { MdOutlineDevicesOther, MdOutlineHistory } from 'react-icons/md';
 import { NavLink, Link } from 'react-router-dom';
@@ -31,14 +29,7 @@ type SideNavigationItem = {
 const SideNavigation = () => {
   const navigation = [
     { name: 'Dashboard', to: '.', icon: HiOutlineHome },
-    { name: 'My Profile', to: './profile', icon: HiOutlineUser },
-    { name: 'Personal Data', to: './personal-data', icon: HiOutlineCollection },
-    {
-      name: 'Two-factor authentication',
-      to: './two-factor-authentication',
-      icon: HiOutlineLockClosed,
-    },
-    { name: 'Change Password', to: './change-password', icon: HiOutlineKey },
+    { name: 'Users', to: './users', icon: HiOutlineUsers },
     { name: 'Grants', to: './grants', icon: HiOutlineShieldCheck },
     { name: 'User Sessions', to: './user-sessions', icon: MdOutlineDevicesOther },
     { name: 'Logs', to: './logs', icon: MdOutlineHistory },
@@ -108,7 +99,13 @@ const UserNavigation = () => {
   const { user, logout } = useAuth();
 
   const userNavigation = [
-    { name: 'Your Profile', to: './profile' },
+    {
+      name: 'Your Profile',
+      to: 'https://localhost:3000/app/profile',
+      onClick: () => {
+        window.location.href = 'https://localhost:3000/app/profile';
+      },
+    },
     {
       name: 'Sign out',
       to: user?.logoutUrl,
