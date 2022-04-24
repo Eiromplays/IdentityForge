@@ -5,7 +5,7 @@ import { PersistedGrantsList } from '../components/PersistedGrantsList';
 export const PersistedGrants = () => {
   return (
     <ContentLayout
-      title="Grants"
+      title="Persisted Grants"
       subTitle="Below is a list of applications you have given access to, and the resources they have access
     to."
     >

@@ -55,9 +55,9 @@ export const PersistedGrantsList = () => {
         },
         {
           title: '',
-          field: 'clientId',
-          Cell({ entry: { clientId } }) {
-            return <Link to={`./${clientId}`}>View</Link>;
+          field: 'key',
+          Cell({ entry: { key } }) {
+            return <Link to={`./${key}`}>View</Link>;
           },
         },
         {
