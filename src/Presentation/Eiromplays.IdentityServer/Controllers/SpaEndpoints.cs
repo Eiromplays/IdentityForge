@@ -12,7 +12,6 @@ using Eiromplays.IdentityServer.Configuration;
 using Eiromplays.IdentityServer.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.ViewModels.Account;
-using Eiromplays.IdentityServer.ViewModels.Home;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;

@@ -6,7 +6,7 @@ import { ExtractFnReturnType, QueryConfig } from '@/lib/react-query';
 import { Log } from '../types';
 
 export const getLogs = (): Promise<Log[]> => {
-  return axios.get(`/personal/logs`);
+  return axios.get(`/logs`);
 };
 
 type QueryFnType = typeof getLogs;

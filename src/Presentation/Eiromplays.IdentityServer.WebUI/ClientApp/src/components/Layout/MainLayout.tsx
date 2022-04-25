@@ -18,6 +18,7 @@ import { NavLink, Link } from 'react-router-dom';
 import logo from '@/assets/logo.svg';
 import { useAuth } from '@/lib/auth';
 
+import { Button } from '../Elements';
 import ThemeToggle from '../Theme/ThemeToggle';
 
 type SideNavigationItem = {
@@ -123,6 +124,13 @@ const UserNavigation = () => {
       {({ open }) => (
         <>
           <div className="flex">
+            <Button
+              className="max-w-xs bg-gray-200 dark:bg-gray-600 p-2 flex items-center text-sm rounded-full 
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              onClick={() => (window.location.href = 'https://localhost:3001')}
+            >
+              Admin
+            </Button>
             <ThemeToggle />
             <Menu.Button
               className="max-w-xs bg-gray-200 dark:bg-gray-600 p-2 flex items-center text-sm rounded-full 

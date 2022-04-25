@@ -39,4 +39,11 @@ public class AuditService : IAuditService
         
         return trail.Adapt<AuditDto>();
     }
+    
+    public async Task<List<AuditDto>> GetListAsync(CancellationToken cancellationToken)
+    {
+        var trails = await _context.AuditTrails.OrderByDescending(a => a.DateTime).ToListAsync(cancellationToken);
+
+        return trails.Adapt<List<AuditDto>>();
+    }
 }

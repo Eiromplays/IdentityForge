@@ -16,6 +16,7 @@ import { NavLink, Link } from 'react-router-dom';
 import logo from '@/assets/logo.svg';
 import { useAuth } from '@/lib/auth';
 
+import { Button } from '../Elements';
 import ThemeToggle from '../Theme/ThemeToggle';
 
 type SideNavigationItem = {
@@ -30,6 +31,7 @@ const SideNavigation = () => {
   const navigation = [
     { name: 'Dashboard', to: '.', icon: HiOutlineHome },
     { name: 'Users', to: './users', icon: HiOutlineUsers },
+    { name: 'Roles', to: './roles', icon: HiOutlineUsers },
     { name: 'Persisted Grants', to: './persisted-grants', icon: HiOutlineShieldCheck },
     { name: 'User Sessions', to: './user-sessions', icon: MdOutlineDevicesOther },
     { name: 'Logs', to: './logs', icon: MdOutlineHistory },
@@ -118,6 +120,13 @@ const UserNavigation = () => {
       {({ open }) => (
         <>
           <div className="flex">
+            <Button
+              className="max-w-xs bg-gray-200 dark:bg-gray-600 p-2 flex items-center text-sm rounded-full 
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              onClick={() => (window.location.href = 'https://localhost:3000')}
+            >
+              IdentityServer
+            </Button>
             <ThemeToggle />
             <Menu.Button
               className="max-w-xs bg-gray-200 dark:bg-gray-600 p-2 flex items-center text-sm rounded-full 
