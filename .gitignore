@@ -332,3 +332,7 @@ ASALocalRun/
 
 # Local History for Visual Studio
 .localhistory/
+
+# Ignore Logs
+src/Presentation/Eiromplays.IdentityServer/Logs/
+src/Presentation/Eiromplays.IdentityServer.API/Logs/
