@@ -34,7 +34,7 @@ export const RoleInfo = () => {
   if (!roleQuery.data) return null;
 
   return (
-    <ContentLayout title="Profile">
+    <ContentLayout title="Role">
       <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
         <div className="px-4 py-5 sm:px-6">
           <div className="flex justify-between">
@@ -44,7 +44,7 @@ export const RoleInfo = () => {
             <UpdateRole id={id || ''} />
           </div>
           <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-white">
-            Personal details of the role.
+            Details abut the role.
           </p>
         </div>
         <div className="border-t border-gray-200 px-4 py-5 sm:p-0">

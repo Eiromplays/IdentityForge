@@ -21,8 +21,7 @@ const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
 const { Profile } = lazyImport(() => import('@/features/users'), 'Profile');
 const { Users } = lazyImport(() => import('@/features/users'), 'Users');
 const { UserRoles } = lazyImport(() => import('@/features/users'), 'UserRoles');
-const { Roles } = lazyImport(() => import('@/features/roles'), 'Roles');
-const { RoleInfo } = lazyImport(() => import('@/features/roles'), 'RoleInfo');
+const { RolesRoutes } = lazyImport(() => import('@/features/roles'), 'RolesRoutes');
 
 const App = () => {
   const { checkAccess } = useAuthorization();
@@ -54,8 +53,7 @@ export const protectedRoutes = [
       { path: 'logs/*', element: <LogsRoutes /> },
       { path: 'profile/:id', element: <Profile /> },
       { path: 'users', element: <Users /> },
-      { path: 'roles/:id', element: <RoleInfo /> },
-      { path: 'roles', element: <Roles /> },
+      { path: 'roles/*', element: <RolesRoutes /> },
       { path: 'users/:id/roles', element: <UserRoles /> },
       { path: '', element: <Dashboard /> },
       { path: '*', element: <Navigate to="." /> },

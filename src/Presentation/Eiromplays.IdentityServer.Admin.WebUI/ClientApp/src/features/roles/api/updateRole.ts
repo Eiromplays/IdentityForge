@@ -5,15 +5,15 @@ import { axios } from '@/lib/axios';
 import { MutationConfig, queryClient } from '@/lib/react-query';
 
 export type UpdateRoleDTO = {
-  roleId: string;
   data: {
+    id: string;
     name: string;
     description: string;
   };
 };
 
-export const updateRole = async ({ roleId, data }: UpdateRoleDTO) => {
-  return axios.put(`/roles/${roleId}`, { Data: data });
+export const updateRole = async ({ data }: UpdateRoleDTO) => {
+  return axios.post(`/roles`, { Data: data });
 };
 
 type UseUpdateRoleOptions = {
@@ -22,8 +22,9 @@ type UseUpdateRoleOptions = {
 
 export const useUpdateRole = ({ config }: UseUpdateRoleOptions = {}) => {
   return useMutation({
-    onSuccess: async () => {
+    onSuccess: async (response) => {
       queryClient.invalidateQueries('roles');
+      queryClient.invalidateQueries(`role-${response.roleId}`);
       toast.success('Role Updated');
     },
     onError: (error) => {

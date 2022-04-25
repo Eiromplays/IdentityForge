@@ -36,15 +36,15 @@ export const UpdateRole = ({ id }: UpdateRoleProps) => {
         isDone={updateRoleMutation.isSuccess}
         triggerButton={
           <Button startIcon={<HiOutlinePencil className="h-4 w-4" />} size="sm">
-            Update Profile
+            Update Role
           </Button>
         }
-        title="Update Profile"
+        title="Update Role"
         submitButton={
           <ConfirmationDialog
             icon="warning"
-            title="Update Profile"
-            body="Are you sure you want to update this profile? This will log them out of all sessions."
+            title="Update Role"
+            body="Are you sure you want to update this role?"
             triggerButton={
               <Button size="sm" isLoading={updateRoleMutation.isLoading}>
                 Submit
@@ -52,14 +52,14 @@ export const UpdateRole = ({ id }: UpdateRoleProps) => {
             }
             confirmButton={
               <Button
-                form="update-profile"
+                form="update-role"
                 type="submit"
                 className="mt-2"
                 variant="warning"
                 size="sm"
                 isLoading={updateRoleMutation.isLoading}
               >
-                Update Profile
+                Update Role
               </Button>
             }
           />
@@ -68,7 +68,8 @@ export const UpdateRole = ({ id }: UpdateRoleProps) => {
         <Form<UpdateRoleDTO['data'], typeof schema>
           id="update-role"
           onSubmit={async (values) => {
-            await updateRoleMutation.mutateAsync({ roleId: id, data: values });
+            values.id = id;
+            await updateRoleMutation.mutateAsync({ data: values });
           }}
           options={{
             defaultValues: {

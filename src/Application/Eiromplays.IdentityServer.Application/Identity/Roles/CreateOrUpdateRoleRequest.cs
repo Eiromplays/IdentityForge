@@ -1,7 +1,3 @@
-using Eiromplays.IdentityServer.Application.Common.Validation;
-using FluentValidation;
-using Microsoft.Extensions.Localization;
-
 namespace Eiromplays.IdentityServer.Application.Identity.Roles;
 
 public class CreateOrUpdateRoleRequest
