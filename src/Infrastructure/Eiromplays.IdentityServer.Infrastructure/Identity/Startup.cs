@@ -5,6 +5,7 @@ using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
+using Honeycomb.OpenTelemetry;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration; 
@@ -68,15 +69,16 @@ internal static class Startup
             .AddProfileService<CustomProfileService>()
             .AddServerSideSessions()
             .Services
-            .AddOpenTelemetryTracing(projectType);
+            .AddOpenTelemetryTracing(configuration, projectType);
     }
 
     internal static IServiceCollection AddOpenTelemetryTracing(this IServiceCollection services,
+        IConfiguration configuration,
         ProjectType projectType)
     {
         if (projectType != ProjectType.Spa) return services;
 
-        return services
+        /*return services
             .AddOpenTelemetryTracing(builder =>
             {
                 builder
@@ -104,7 +106,27 @@ internal static class Startup
                     {
                         options.Targets = ConsoleExporterOutputTargets.Console;
                     });
-            });
+            });*/
+        
+        return services
+                .AddOpenTelemetryTracing(builder =>
+                {
+                    builder
+                        .AddSource(IdentityServerConstants.Tracing.Basic)
+                        .AddSource(IdentityServerConstants.Tracing.Cache)
+                        .AddSource(IdentityServerConstants.Tracing.Services)
+                        .AddSource(IdentityServerConstants.Tracing.Stores)
+                        .AddSource(IdentityServerConstants.Tracing.Validation)
+
+                        .SetResourceBuilder(
+                            ResourceBuilder.CreateDefault()
+                                .AddService("Eiromplays.IdentityServer"))
+                        .AddHttpClientInstrumentation()
+                        .AddAspNetCoreInstrumentation()
+                        .AddSqlClientInstrumentation()
+                        
+                        .AddConsoleExporter();
+                });
     }
 
     internal static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration, ProjectType projectType)

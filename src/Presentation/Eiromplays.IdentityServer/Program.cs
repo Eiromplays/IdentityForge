@@ -1,10 +1,16 @@
+using System.Collections.Immutable;
+using Duende.IdentityServer;
 using Eiromplays.IdentityServer.Application;
 using Eiromplays.IdentityServer.Configurations;
 using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure;
 using Eiromplays.IdentityServer.Infrastructure.Common;
 using FluentValidation.AspNetCore;
+using Honeycomb.OpenTelemetry;
 using Microsoft.AspNetCore.Mvc;
+using OpenTelemetry.Context.Propagation;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Serilog;
 
 try
@@ -26,7 +32,7 @@ try
 
     builder.Services.Configure<ApiBehaviorOptions>(options =>
         options.SuppressModelStateInvalidFilter = true);
-    
+
     var app = builder.Build();
     
     await app.Services.InitializeDatabasesAsync();
