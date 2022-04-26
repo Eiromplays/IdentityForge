@@ -6,7 +6,7 @@ import { ExtractFnReturnType, QueryConfig } from '@/lib/react-query';
 import { UserSession } from '../types';
 
 export const getUserSessions = (): Promise<UserSession[]> => {
-  return axios.get(`/personal/user-sessions`);
+  return axios.get(`/user-sessions`);
 };
 
 type QueryFnType = typeof getUserSessions;

@@ -23,7 +23,7 @@ type UseRoleOptions = {
 export const useRole = ({ roleId, config }: UseRoleOptions) => {
   return useQuery<ExtractFnReturnType<QueryFnType>>({
     ...config,
-    queryKey: [`role-${roleId}`],
+    queryKey: ['role', roleId],
     queryFn: () => getRole({ roleId }),
   });
 };

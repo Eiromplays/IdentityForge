@@ -7,6 +7,12 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
 internal partial class UserService
 {
+    public async Task<List<UserSessionDto>> GetAllUserSessions(CancellationToken cancellationToken)
+    {
+        return (await _sessionDbContext.UserSessions.AsNoTracking().ToListAsync(cancellationToken))
+            .Adapt<List<UserSessionDto>>();
+    }
+    
     public async Task<bool> RemoveSessionsAsync(string userId, CancellationToken cancellationToken)
     {
         _sessionDbContext.UserSessions

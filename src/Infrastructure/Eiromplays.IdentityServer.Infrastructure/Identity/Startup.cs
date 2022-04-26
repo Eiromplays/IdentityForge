@@ -5,13 +5,10 @@ using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
-using Honeycomb.OpenTelemetry;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration; 
 using Microsoft.Extensions.DependencyInjection;
-using OpenTelemetry;
-using OpenTelemetry.Exporter;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
@@ -69,11 +66,10 @@ internal static class Startup
             .AddProfileService<CustomProfileService>()
             .AddServerSideSessions()
             .Services
-            .AddOpenTelemetryTracing(configuration, projectType);
+            .AddOpenTelemetryTracing(projectType);
     }
 
     internal static IServiceCollection AddOpenTelemetryTracing(this IServiceCollection services,
-        IConfiguration configuration,
         ProjectType projectType)
     {
         if (projectType != ProjectType.Spa) return services;

@@ -24,7 +24,7 @@ export const useUpdateRole = ({ config }: UseUpdateRoleOptions = {}) => {
   return useMutation({
     onSuccess: async (response) => {
       queryClient.invalidateQueries('roles');
-      queryClient.invalidateQueries(`role-${response.roleId}`);
+      queryClient.invalidateQueries(`role-${response.data.RoleId}`);
       toast.success('Role Updated');
     },
     onError: (error) => {
