@@ -57,7 +57,7 @@ public static class Startup
             .AddServices();
     }
 
-    public static IServiceCollection AddInfrastructureSpa(this IServiceCollection services, IConfiguration config, ProjectType projectType)
+    private static IServiceCollection AddInfrastructureSpa(this IServiceCollection services, IConfiguration config, ProjectType projectType)
     {
         if (projectType is not ProjectType.Spa) return services;
 

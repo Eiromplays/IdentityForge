@@ -1,15 +1,18 @@
+using Duende.IdentityServer;
 using Duende.IdentityServer.Configuration;
-using Eiromplays.IdentityServer.Application.Common.Configurations;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration; 
 using Microsoft.Extensions.DependencyInjection;
+using OpenTelemetry;
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity;
 
@@ -64,9 +67,46 @@ internal static class Startup
             .AddAspNetIdentity<ApplicationUser>()
             .AddProfileService<CustomProfileService>()
             .AddServerSideSessions()
-            .Services;
+            .Services
+            .AddOpenTelemetryTracing(projectType);
     }
-    
+
+    internal static IServiceCollection AddOpenTelemetryTracing(this IServiceCollection services,
+        ProjectType projectType)
+    {
+        if (projectType != ProjectType.Spa) return services;
+
+        return services
+            .AddOpenTelemetryTracing(builder =>
+            {
+                builder
+                    // all available sources
+                    .AddSource(IdentityServerConstants.Tracing.Basic)
+                    .AddSource(IdentityServerConstants.Tracing.Cache)
+                    .AddSource(IdentityServerConstants.Tracing.Services)
+                    .AddSource(IdentityServerConstants.Tracing.Stores)
+                    .AddSource(IdentityServerConstants.Tracing.Validation)
+                
+                    .SetResourceBuilder(
+                        ResourceBuilder.CreateDefault()
+                            .AddService("IdentityServer"))
+                    .AddHttpClientInstrumentation()
+                    .AddAspNetCoreInstrumentation()
+                    .AddSqlClientInstrumentation()
+                    
+                    .AddJaegerExporter(options =>
+                    {
+                        options.AgentHost = "localhost";
+                        options.AgentPort = 6831;
+                        options.ExportProcessorType = ExportProcessorType.Simple;
+                    })
+                    .AddConsoleExporter(options =>
+                    {
+                        options.Targets = ConsoleExporterOutputTargets.Console;
+                    });
+            });
+    }
+
     internal static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration, ProjectType projectType)
     {
         if (projectType is not ProjectType.IdentityServer) return services;
