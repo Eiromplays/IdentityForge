@@ -13,7 +13,7 @@ export type UpdateRoleDTO = {
 };
 
 export const updateRole = async ({ data }: UpdateRoleDTO) => {
-  return axios.post(`/roles`, { Data: data });
+  return axios.post(`/roles`, data);
 };
 
 type UseUpdateRoleOptions = {

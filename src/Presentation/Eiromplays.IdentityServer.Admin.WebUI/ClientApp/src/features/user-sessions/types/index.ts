@@ -1,5 +1,4 @@
 export type UserSession = {
-  id: string;
   key: string;
   subjectId: string;
   sessionId?: string;

@@ -1,16 +1,21 @@
-import { Table, Spinner } from '@/components/Elements';
+import { PaginatedTable, Spinner } from '@/components/Elements';
 import { formatDate } from '@/utils/format';
 
-import { useUsers } from '../api/getUsers';
+import { SearchUserDTO, useSearchUsers } from '../api/searchUsers';
 import { User } from '../types';
 
 import { DeleteUser } from './DeleteUser';
 import { UserRoles } from './UserRoles';
 
 export const UsersList = () => {
-  const usersQuery = useUsers();
+  const searchUserDto: SearchUserDTO = {
+    pageNumber: 1,
+    pageSize: 10,
+    isActive: true,
+  };
+  const searchUsersQuery = useSearchUsers({ data: searchUserDto });
 
-  if (usersQuery.isLoading) {
+  if (searchUsersQuery.isLoading) {
     return (
       <div className="w-full h-48 flex justify-center items-center">
         <Spinner size="lg" />
@@ -18,11 +23,12 @@ export const UsersList = () => {
     );
   }
 
-  if (!usersQuery.data) return null;
+  if (!searchUsersQuery.data?.data) return null;
 
   return (
-    <Table<User>
-      data={usersQuery.data}
+    <PaginatedTable<User>
+      paginationResponse={searchUsersQuery.data}
+      data={searchUsersQuery.data.data}
       columns={[
         {
           title: 'First Name',

@@ -56,3 +56,14 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+axios.interceptors.request.use(
+  (request) => {
+    if (request.data) request.data = { Data: request.data };
+
+    return request;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { HiOutlineArchive } from 'react-icons/hi';
 
-type TableColumn<Entry> = {
+export type TableColumn<Entry> = {
   title: string;
   field: keyof Entry;
   Cell?({ entry }: { entry: Entry }): React.ReactElement;
@@ -12,7 +12,11 @@ export type TableProps<Entry> = {
   columns: TableColumn<Entry>[];
 };
 
-export const Table = <Entry extends { id: string }>({ data, columns }: TableProps<Entry>) => {
+export type BaseEntry = {
+  id?: string;
+};
+
+export const Table = <Entry extends BaseEntry | any>({ data, columns }: TableProps<Entry>) => {
   if (!data?.length) {
     return (
       <div className="bg-white dark:bg-lighter-black text-gray-500 dark:text-white h-80 flex justify-center items-center flex-col">
@@ -44,7 +48,7 @@ export const Table = <Entry extends { id: string }>({ data, columns }: TableProp
               <tbody>
                 {data.map((entry, entryIndex) => (
                   <tr
-                    key={entry?.id || entryIndex}
+                    key={(entry as BaseEntry)?.id || entryIndex}
                     className={
                       entryIndex % 2 === 0
                         ? 'bg-white dark:bg-lighter-black'

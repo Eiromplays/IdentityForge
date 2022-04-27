@@ -17,3 +17,29 @@ export type WhitelistAxiosError = {
 export type MessageResponse = {
   message: string;
 };
+
+export type PaginationFilter = BaseFilter & {
+  pageNumber: number;
+  pageSize: number;
+  orderBy?: string[];
+};
+
+export type BaseFilter = {
+  advancedSearch?: Search;
+  keyword?: string;
+};
+
+export type Search = {
+  fields: string[];
+  keyword?: string;
+};
+
+export type PaginationResponse<T> = {
+  data: T[];
+  currentPage: number;
+  totalPages: number;
+  totalCount: number;
+  pageSize: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+};
