@@ -1,3 +1,5 @@
+import { useSearchParams } from 'react-router-dom';
+
 import { PaginatedTable, Spinner } from '@/components/Elements';
 import { formatDate } from '@/utils/format';
 
@@ -8,11 +10,15 @@ import { DeleteUser } from './DeleteUser';
 import { UserRoles } from './UserRoles';
 
 export const UsersList = () => {
+  const [searchParams] = useSearchParams();
+  const page = parseInt(searchParams.get('page') || '1', 10);
+
   const searchUserDto: SearchUserDTO = {
-    pageNumber: 1,
+    pageNumber: page,
     pageSize: 10,
     isActive: true,
   };
+
   const searchUsersQuery = useSearchUsers({ data: searchUserDto });
 
   if (searchUsersQuery.isLoading) {

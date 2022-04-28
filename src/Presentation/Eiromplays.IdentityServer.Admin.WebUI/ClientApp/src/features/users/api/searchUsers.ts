@@ -24,7 +24,7 @@ type UseSearchUsersOptions = {
 export const useSearchUsers = ({ data, config }: UseSearchUsersOptions) => {
   return useQuery<ExtractFnReturnType<QueryFnType>>({
     ...config,
-    queryKey: ['search-users'],
+    queryKey: [`search-users-${data.pageNumber}`],
     queryFn: () => searchUsers(data),
   });
 };
