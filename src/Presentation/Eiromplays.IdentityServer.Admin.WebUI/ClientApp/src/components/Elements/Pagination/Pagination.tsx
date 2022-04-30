@@ -2,10 +2,18 @@
 
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from 'react-icons/hi';
 import { useSearchParams } from 'react-router-dom';
+import { OnChangeValue } from 'react-select';
+import CreatableSelect from 'react-select/creatable';
 
 import { PaginationResponse } from '@/types';
 
 import { Button } from '../Button';
+
+import {
+  defaultPaginationPageSizeOption,
+  PaginationPageSizeOption,
+  paginationPageSizeOptions,
+} from './data';
 import { EmptyPageButton } from './EmptyPageButton';
 import { PageButton } from './PageButton';
 
@@ -30,6 +38,18 @@ export const Pagination = <Entry extends any>({ paginationResponse }: Pagination
   const SetPage = (page: number) => {
     searchParams.set('page', page.toString());
     setSearchParams(searchParams);
+  };
+
+  const SetPageSize = (pageSize: number) => {
+    searchParams.set('pageSize', pageSize.toString());
+    setSearchParams(searchParams);
+  };
+
+  const handleChange = (newValue: OnChangeValue<PaginationPageSizeOption, false>) => {
+    SetPageSize(newValue?.value || 10);
+  };
+  const handleInputChange = (inputValue: any) => {
+    SetPageSize(inputValue || 10);
   };
 
   return (
@@ -91,8 +111,12 @@ export const Pagination = <Entry extends any>({ paginationResponse }: Pagination
                 </li>
                 <PageButton page={1} isActive={1 === page} onClick={SetPage} />
                 {page > 3 && <EmptyPageButton />}
-                {page === totalPages && totalPages > 3 && (<PageButton page={page - 2} isActive={page - 2 === page} onClick={SetPage} />)}
-                {page > 2 && <PageButton page={page - 1} isActive={page - 1 === page} onClick={SetPage} />}
+                {page === totalPages && totalPages > 3 && (
+                  <PageButton page={page - 2} isActive={page - 2 === page} onClick={SetPage} />
+                )}
+                {page > 2 && (
+                  <PageButton page={page - 1} isActive={page - 1 === page} onClick={SetPage} />
+                )}
                 {page !== 1 && page !== totalPages && (
                   <PageButton page={page} isActive={page === page} onClick={SetPage} />
                 )}
@@ -103,7 +127,9 @@ export const Pagination = <Entry extends any>({ paginationResponse }: Pagination
                   <PageButton page={page + 2} isActive={page + 2 === page} onClick={SetPage} />
                 )}
                 {page < totalPages - 2 && <EmptyPageButton />}
-                {totalPages > 1 && <PageButton page={totalPages} isActive={totalPages === page} onClick={SetPage} />}
+                {totalPages > 1 && (
+                  <PageButton page={totalPages} isActive={totalPages === page} onClick={SetPage} />
+                )}
                 <li>
                   {paginationResponse.hasNextPage && (
                     <Button
@@ -119,6 +145,15 @@ export const Pagination = <Entry extends any>({ paginationResponse }: Pagination
             </nav>
           </div>
         </div>
+
+        <CreatableSelect
+          isClearable
+          onChange={handleChange}
+          onInputChange={handleInputChange}
+          defaultValue={defaultPaginationPageSizeOption}
+          options={paginationPageSizeOptions}
+          className="ml-4"
+        />
       </div>
     </div>
   );
