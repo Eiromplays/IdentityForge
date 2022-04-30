@@ -1,7 +1,11 @@
+using Ardalis.Specification.EntityFrameworkCore;
 using Eiromplays.IdentityServer.Application.Common.Events;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Application.Common.Models;
+using Eiromplays.IdentityServer.Application.Common.Specification;
 using Eiromplays.IdentityServer.Application.Identity.Roles;
+using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Domain.Identity;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
@@ -38,6 +42,21 @@ internal class RoleService : IRoleService
         _events = events;
     }
 
+    public async Task<PaginationResponse<RoleDto>> SearchAsync(RoleListFilter filter, CancellationToken cancellationToken)
+    {
+        var spec = new EntitiesByPaginationFilterSpec<ApplicationRole>(filter);
+
+        var roles = await _roleManager.Roles
+            .WithSpecification(spec)
+            .ProjectToType<RoleDto>()
+            .ToListAsync(cancellationToken);
+        
+        var count = await _roleManager.Roles
+            .CountAsync(cancellationToken);
+
+        return new PaginationResponse<RoleDto>(roles, count, filter.PageNumber, filter.PageSize);
+    }
+    
     public async Task<List<RoleDto>> GetListAsync(CancellationToken cancellationToken) =>
         (await _roleManager.Roles.ToListAsync(cancellationToken))
             .Adapt<List<RoleDto>>();

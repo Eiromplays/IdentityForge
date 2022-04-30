@@ -28,7 +28,7 @@
     <PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="6.1.0-preview.3" />
     <PackageReference Include="Duende.IdentityServer.EntityFramework" Version="6.1.0-preview.3" />
     <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.1.0-preview.3" />
-    <PackageReference Include="FastEndpoints.Swagger" Version="4.0.0" />
+    <PackageReference Include="FastEndpoints.Swagger" Version="4.1.0" />
     <PackageReference Include="FluentEmail.Core" Version="3.0.2" />
     <PackageReference Include="FluentEmail.Graph" Version="1.4.0" />
     <PackageReference Include="FluentEmail.Mailgun" Version="3.0.2" />
@@ -60,7 +60,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.4" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.4" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="1.24.0" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="1.24.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.4" />
     <PackageReference Include="NSwag.AspNetCore" Version="13.15.10" />
     <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="3.0.0" />
