@@ -11,8 +11,9 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.6.1",
+    "@tanstack/react-location-devtools": "^3.4.4",
     "dompurify": "^2.3.6",
-    "eiromplays-ui": "^0.2.3",
+    "eiromplays-ui": "^0.2.7",
     "intersection-observer": "^0.12.0",
     "marked": "^4.0.15",
     "react": "^18.0.0",

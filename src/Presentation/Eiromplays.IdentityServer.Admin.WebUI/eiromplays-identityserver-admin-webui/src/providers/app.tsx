@@ -4,11 +4,13 @@ import { HelmetProvider } from 'react-helmet-async';
 import { QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { ToastContainer } from 'react-toastify';
-import { Router, ReactLocation } from '@tanstack/react-location';
+import { Router, ReactLocation, Outlet } from '@tanstack/react-location';
+import { ReactLocationDevtools } from '@tanstack/react-location-devtools';
 
 import { queryClient, AuthProvider, Button, Spinner } from 'eiromplays-ui';
 
 import 'react-toastify/dist/ReactToastify.css';
+import { Landing, NotFound } from '@/features/misc';
 
 const ErrorFallback = () => {
   return (
@@ -42,8 +44,9 @@ export const AppProvider = ({ children }: AppProviderProps) => {
       <ErrorBoundary FallbackComponent={ErrorFallback}>
         <HelmetProvider>
           <QueryClientProvider client={queryClient}>
-            <Router location={location} routes={[{path: '/', element: <>Hello World!</>}]}>
-              <ReactQueryDevtools />
+            <Router location={location} routes={[{path: '/', element: <Landing />}, {path: '*', element: <NotFound />}]}>
+              <ReactQueryDevtools position='bottom-right' />
+              <ReactLocationDevtools />
               <AuthProvider>
                 <ToastContainer
                   position="top-right"
@@ -57,6 +60,8 @@ export const AppProvider = ({ children }: AppProviderProps) => {
                   draggable
                   pauseOnHover
                 />
+                <Outlet />
+                {children}
               </AuthProvider>
             </Router>
           </QueryClientProvider>

@@ -341,6 +341,13 @@
     hex-rgb "^4.1.0"
     postcss-selector-parser "^6.0.2"
 
+"@tanstack/react-location-devtools@^3.4.4":
+  version "3.4.4"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-location-devtools/-/react-location-devtools-3.4.4.tgz#e7b064d39d3376cead2fba35d0e6a6f6eb5cb5a4"
+  integrity sha512-EyPdaPXlIgGoZl8S34RPcQ/OD2WqwZSNg89lpTfFf3yUWOOMJHmK6MUH3jubOjtAONnIs+UreePWbW+NY7gBAQ==
+  dependencies:
+    "@babel/runtime" "^7.16.7"
+
 "@tanstack/react-location@^3.7.4":
   version "3.7.4"
   resolved "https://registry.yarnpkg.com/@tanstack/react-location/-/react-location-3.7.4.tgz#0125ba5685805d232429b8df70d20cb6c2a56cec"
@@ -646,10 +653,10 @@ dompurify@^2.3.6:
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.6.tgz#2e019d7d7617aacac07cbbe3d88ae3ad354cf875"
   integrity sha512-OFP2u/3T1R5CEgWCEONuJ1a5+MFKnOYpkywpUSxv/dj1LeBT1erK+JwM7zK0ROy2BRhqVCf0LRw/kHqKuMkVGg==
 
-eiromplays-ui@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/eiromplays-ui/-/eiromplays-ui-0.2.3.tgz#30fb701cf8905fb6dafe0861822750f54d853093"
-  integrity sha512-X+9W2c4/ci3VM1wQChKb8n+o2mUwqQEIs+udBOIjl7nls8AiOsrSg9RYjp2z3RD7WJmEtRgHlAeCQmeiTuO7FQ==
+eiromplays-ui@^0.2.7:
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/eiromplays-ui/-/eiromplays-ui-0.2.7.tgz#4ab9709fa8b4c4a6d093f74c662407116bd00892"
+  integrity sha512-giLhMymU2PkC3xaPlBQkmPvqD5wWDAJtMvfyoeV8hdkoR7tYsKcQ7bZx+7M93rfa9GK9Mtwhcbw2AXTa9y7kbw==
   dependencies:
     "@tanstack/react-location" "^3.7.4"
     react-query "^3.38.1"
