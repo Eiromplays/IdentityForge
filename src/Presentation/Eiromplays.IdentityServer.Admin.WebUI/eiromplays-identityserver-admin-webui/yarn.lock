@@ -653,12 +653,13 @@ dompurify@^2.3.6:
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.6.tgz#2e019d7d7617aacac07cbbe3d88ae3ad354cf875"
   integrity sha512-OFP2u/3T1R5CEgWCEONuJ1a5+MFKnOYpkywpUSxv/dj1LeBT1erK+JwM7zK0ROy2BRhqVCf0LRw/kHqKuMkVGg==
 
-eiromplays-ui@^0.2.7:
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/eiromplays-ui/-/eiromplays-ui-0.2.7.tgz#4ab9709fa8b4c4a6d093f74c662407116bd00892"
-  integrity sha512-giLhMymU2PkC3xaPlBQkmPvqD5wWDAJtMvfyoeV8hdkoR7tYsKcQ7bZx+7M93rfa9GK9Mtwhcbw2AXTa9y7kbw==
+eiromplays-ui@^0.2.8:
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/eiromplays-ui/-/eiromplays-ui-0.2.8.tgz#caddb4de9f63c1975ea952d4523c95a1f4df206c"
+  integrity sha512-SYdGVGNzoqyvclLRwwt0yzUHLZWjBfEh53f2c4DbNr3HNt0D6JCJGSlK6hFCbccb+Q9F813lPYwDMS3PI84IWQ==
   dependencies:
     "@tanstack/react-location" "^3.7.4"
+    react-helmet-async "^1.3.0"
     react-query "^3.38.1"
 
 electron-to-chromium@^1.4.118:
