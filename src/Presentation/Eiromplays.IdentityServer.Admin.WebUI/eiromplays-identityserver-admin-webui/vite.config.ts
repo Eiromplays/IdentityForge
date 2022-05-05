@@ -2,6 +2,8 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { env } from 'process';
 const path = require("path");
+import mkcert from 'vite-plugin-mkcert';
+import envCompatible from 'vite-plugin-env-compatible';
 
 const target = env.ASPNETCORE_HTTPS_PORT
   ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}`
@@ -11,7 +13,7 @@ const target = env.ASPNETCORE_HTTPS_PORT
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), mkcert(), envCompatible()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),

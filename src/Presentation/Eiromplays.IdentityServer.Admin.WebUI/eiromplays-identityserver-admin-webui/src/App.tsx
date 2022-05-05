@@ -1,8 +1,10 @@
-import { AppProvider } from './providers/app';
+import { AppProvider } from "eiromplays-ui";
+import { Landing, NotFound } from "./features/misc";
+
 
 function App() {
   return (
-    <AppProvider />
+    <AppProvider routes={[{path: '/', element: <Landing />}, {path: '*', element: <NotFound />}]}/>
   );
 }
 

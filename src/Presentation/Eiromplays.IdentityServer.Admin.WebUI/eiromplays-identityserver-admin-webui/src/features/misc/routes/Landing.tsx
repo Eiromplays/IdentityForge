@@ -1,13 +1,15 @@
 import React from 'react';
 import logo from '@/assets/logo.svg';
 import { Button, Head, useAuth } from 'eiromplays-ui';
+import { useNavigate } from '@tanstack/react-location';
 
 export const Landing = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
 
   const handleStart = () => {
     if (user) {
-      //navigate('/app');
+      navigate({ to: '/app', replace: true });
     } else {
       window.location.assign('/bff/login');
     }
