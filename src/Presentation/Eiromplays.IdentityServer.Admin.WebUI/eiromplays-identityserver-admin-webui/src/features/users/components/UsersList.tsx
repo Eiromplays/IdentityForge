@@ -1,7 +1,4 @@
-import { useSearchParams } from 'react-router-dom';
-
-import { PaginatedTable, Spinner } from '@/components/Elements';
-import { formatDate } from '@/utils/format';
+import { PaginatedTable, Spinner, formatDate } from 'eiromplays-ui';
 
 import { SearchUserDTO, useSearchUsers } from '../api/searchUsers';
 import { User } from '../types';
@@ -10,8 +7,8 @@ import { DeleteUser } from './DeleteUser';
 import { UserRoles } from './UserRoles';
 
 export const UsersList = () => {
-  const [searchParams] = useSearchParams();
-  const page = parseInt(searchParams.get('page') || '1', 10);
+  //const [searchParams] = useSearchParams();
+  const page = parseInt('1', 10);
 
   const searchUserDto: SearchUserDTO = {
     pageNumber: page,

@@ -1,7 +1,4 @@
-import { useParams } from 'react-router-dom';
-
-import { Spinner } from '@/components/Elements';
-import { ContentLayout } from '@/components/Layout';
+import { Spinner, ContentLayout } from 'eiromplays-ui';
 
 import { useRole } from '../api/getRole';
 import { UpdateRole } from '../components/UpdateRole';
@@ -19,9 +16,9 @@ const Entry = ({ label, value }: EntryProps) => (
 );
 
 export const RoleInfo = () => {
-  const { id } = useParams();
+  //const { id } = useParams();
 
-  const roleQuery = useRole({ roleId: id || '' });
+  const roleQuery = useRole({ roleId: '' });
 
   if (roleQuery.isLoading) {
     return (
@@ -41,7 +38,7 @@ export const RoleInfo = () => {
             <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
               Role Information
             </h3>
-            <UpdateRole id={id || ''} />
+            <UpdateRole id={''} />
           </div>
           <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-white">
             Details abut the role.

@@ -1,8 +1,7 @@
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
-import { axios } from '@/lib/axios';
-import { MutationConfig, queryClient } from '@/lib/react-query';
+import { MutationConfig, queryClient, axios } from 'eiromplays-ui';
 
 export type UpdateRoleDTO = {
   data: {

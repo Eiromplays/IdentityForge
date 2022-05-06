@@ -1,9 +1,7 @@
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
-import { useAuth } from '@/lib/auth';
-import { axios } from '@/lib/axios';
-import { MutationConfig } from '@/lib/react-query';
+import { axios, MutationConfig, useAuth } from 'eiromplays-ui';
 
 export type UpdateProfileDTO = {
   userId: string;

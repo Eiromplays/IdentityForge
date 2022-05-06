@@ -1,7 +1,5 @@
 import { useQuery } from 'react-query';
-
-import { axios } from '@/lib/axios';
-import { ExtractFnReturnType, QueryConfig } from '@/lib/react-query';
+import { axios, QueryConfig, ExtractFnReturnType } from 'eiromplays-ui';
 
 import { User } from '../types';
 

@@ -12,15 +12,17 @@
   "dependencies": {
     "@headlessui/react": "^1.6.1",
     "dompurify": "^2.3.6",
-    "eiromplays-ui": "^0.4.3",
+    "eiromplays-ui": "^0.5.2",
     "intersection-observer": "^0.12.0",
     "marked": "^4.0.15",
     "react-dom": "^18.0.0",
     "react-hook-form": "^7.30.0",
+    "react-icons": "^4.3.1",
     "react-image-crop": "^10.0.0",
     "react-toastify": "^8.2.0",
     "sass": "^1.51.0",
-    "vite-plugin-proxy-middleware": "^1.0.2"
+    "vite-plugin-proxy-middleware": "^1.0.2",
+    "zod": "^3.15.1"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.2",

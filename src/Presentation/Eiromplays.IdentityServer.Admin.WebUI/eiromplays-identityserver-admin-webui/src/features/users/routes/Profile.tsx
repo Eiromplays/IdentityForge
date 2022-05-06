@@ -1,7 +1,5 @@
-import { useParams } from 'react-router-dom';
 
-import { Spinner } from '@/components/Elements';
-import { ContentLayout } from '@/components/Layout';
+import { Spinner, ContentLayout } from 'eiromplays-ui';
 
 import { useUser } from '../api/getUser';
 import { UpdateProfile } from '../components/UpdateProfile';
@@ -28,9 +26,9 @@ const PictureEntry = ({ label, value }: EntryProps) => (
 );
 
 export const Profile = () => {
-  const { id } = useParams();
+  //const { id } = useParams();
 
-  const userQuery = useUser({ userId: id || '' });
+  const userQuery = useUser({ userId: '' });
 
   if (userQuery.isLoading) {
     return (
@@ -50,7 +48,7 @@ export const Profile = () => {
             <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
               User Information
             </h3>
-            <UpdateProfile id={id || ''} />
+            <UpdateProfile id={''} />
           </div>
           <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-white">
             Personal details of the user.

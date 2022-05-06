@@ -1,14 +1,21 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { LocationGenerics } from '@/App';
+import { Navigate, Route } from '@tanstack/react-location';
 
 import { RoleInfo } from './RoleInfo';
 import { Roles } from './Roles';
 
-export const RolesRoutes = () => {
-  return (
-    <Routes>
-      <Route path="" element={<Roles />} />
-      <Route path=":id" element={<RoleInfo />} />
-      <Route path="*" element={<Navigate to="." />} />
-    </Routes>
-  );
+export const RolesRoutes: Route<LocationGenerics> = {
+  path: 'roles',
+  element: <Roles />,
+  children: [
+    {
+      path: ':id',
+      element: <RoleInfo />,
+    },
+    {
+      path: '*',
+      element: <Navigate to="." />
+    }
+  ]
 };
+

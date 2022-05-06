@@ -1,4 +1,4 @@
-import { Button, ConfirmationDialog } from '@/components/Elements';
+import { Button, ConfirmationDialog } from 'eiromplays-ui';
 
 import { useDeleteRole } from '../api/deleteRole';
 

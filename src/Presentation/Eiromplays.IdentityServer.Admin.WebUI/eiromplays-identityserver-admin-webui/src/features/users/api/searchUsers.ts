@@ -1,8 +1,6 @@
 import { useQuery } from 'react-query';
 
-import { axios } from '@/lib/axios';
-import { ExtractFnReturnType, QueryConfig } from '@/lib/react-query';
-import { PaginationFilter, PaginationResponse } from '@/types';
+import { axios, ExtractFnReturnType, QueryConfig, PaginationFilter, PaginationResponse } from 'eiromplays-ui';
 
 import { User } from '../types';
 
