@@ -1,4 +1,4 @@
-import { Table, Spinner } from 'eiromplays-ui';
+import { Spinner, Table } from 'eiromplays-ui';
 
 import { useUserRoles } from '../api/getUserRoles';
 import { UserRole } from '../types';

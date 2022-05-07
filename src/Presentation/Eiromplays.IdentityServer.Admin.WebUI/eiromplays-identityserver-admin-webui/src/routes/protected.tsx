@@ -1,11 +1,14 @@
+import { Outlet } from '@tanstack/react-location';
+import { lazyImport, MainLayout, NotAllowed, Spinner } from 'eiromplays-ui';
 import { Suspense } from 'react';
 
-import { Navigate, Outlet } from '@tanstack/react-location';
-import { Spinner, MainLayout, NotAllowed, lazyImport } from 'eiromplays-ui';
-
-import { ROLES, useAuthorization } from '@/lib/authorization';
+import logo from '@/assets/logo.svg';
+import { LogsRoutes } from '@/features/logs';
+import { PersistedGrantsRoutes } from '@/features/persisted-grants';
 import { RolesRoutes } from '@/features/roles';
+import { UserSessionsRoutes } from '@/features/user-sessions';
 import { UsersRoutes } from '@/features/users';
+import { ROLES, useAuthorization } from '@/lib/authorization';
 
 const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
 
@@ -15,7 +18,7 @@ const App = () => {
   if (!checkAccess({ allowedRoles: [ROLES.ADMINISTRATOR] })) return <NotAllowed />;
 
   return (
-    <MainLayout>
+    <MainLayout logo={logo}>
       <Suspense
         fallback={
           <div className="h-full w-full flex items-center justify-center">
@@ -34,9 +37,10 @@ export const protectedRoutes = [
     path: 'app',
     element: <App />,
     children: [
-      //{ path: 'persisted-grants/*', element: <PersistedGrantsRoutes /> },
-      //{ path: 'user-sessions/*', element: <UserSessionsRoutes /> },
-      //{ path: 'logs/*', element: <LogsRoutes /> },
+      { path: '/', element: <Dashboard /> },
+      PersistedGrantsRoutes,
+      UserSessionsRoutes,
+      LogsRoutes,
       UsersRoutes,
       RolesRoutes,
       { path: '*', element: <Dashboard /> },

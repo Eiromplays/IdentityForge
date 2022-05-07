@@ -1,7 +1,7 @@
 // Not found, original code: https://codepen.io/Navedkhan012/pen/vrWQMY
 
-import { Button } from 'eiromplays-ui';
 import { Link, useNavigate } from '@tanstack/react-location';
+import { Button } from 'eiromplays-ui';
 
 export const NotFound = () => {
   const navigate = useNavigate();

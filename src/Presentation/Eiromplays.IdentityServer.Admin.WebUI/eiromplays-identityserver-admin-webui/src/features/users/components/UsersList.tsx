@@ -1,4 +1,7 @@
-import { PaginatedTable, Spinner, formatDate } from 'eiromplays-ui';
+import { useSearch } from '@tanstack/react-location';
+import { formatDate, Link, PaginatedTable, Spinner } from 'eiromplays-ui';
+
+import { LocationGenerics } from '@/App';
 
 import { SearchUserDTO, useSearchUsers } from '../api/searchUsers';
 import { User } from '../types';
@@ -7,12 +10,13 @@ import { DeleteUser } from './DeleteUser';
 import { UserRoles } from './UserRoles';
 
 export const UsersList = () => {
-  //const [searchParams] = useSearchParams();
-  const page = parseInt('1', 10);
+  const search = useSearch<LocationGenerics>();
+  const page = search.pagination?.index || 1;
+  const pageSize = search.pagination?.size || 10;
 
   const searchUserDto: SearchUserDTO = {
     pageNumber: page,
-    pageSize: 10,
+    pageSize: pageSize,
     isActive: true,
   };
 
@@ -27,6 +31,10 @@ export const UsersList = () => {
   }
 
   if (!searchUsersQuery.data?.data) return null;
+
+  if (searchUsersQuery.data?.pageSize !== pageSize) {
+    searchUsersQuery.refetch();
+  }
 
   return (
     <PaginatedTable<User>
@@ -70,7 +78,7 @@ export const UsersList = () => {
           title: '',
           field: 'id',
           Cell({ entry: { id } }) {
-            return <a href={`/app/profile/${id}`}>Profile</a>;
+            return <Link to={`./${id}`}>View</Link>;
           },
         },
       ]}

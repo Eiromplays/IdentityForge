@@ -1,5 +1,7 @@
+import { useMatch } from '@tanstack/react-location';
+import { ContentLayout, Spinner } from 'eiromplays-ui';
 
-import { Spinner, ContentLayout } from 'eiromplays-ui';
+import { LocationGenerics } from '@/App';
 
 import { useUser } from '../api/getUser';
 import { UpdateProfile } from '../components/UpdateProfile';
@@ -25,10 +27,12 @@ const PictureEntry = ({ label, value }: EntryProps) => (
   </div>
 );
 
-export const Profile = () => {
-  //const { id } = useParams();
+export const User = () => {
+  const {
+    params: { userId },
+  } = useMatch<LocationGenerics>();
 
-  const userQuery = useUser({ userId: '' });
+  const userQuery = useUser({ userId: userId });
 
   if (userQuery.isLoading) {
     return (
@@ -37,7 +41,6 @@ export const Profile = () => {
       </div>
     );
   }
-
   if (!userQuery.data) return null;
 
   return (
@@ -48,7 +51,7 @@ export const Profile = () => {
             <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
               User Information
             </h3>
-            <UpdateProfile id={''} />
+            <UpdateProfile id={userId} />
           </div>
           <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-white">
             Personal details of the user.

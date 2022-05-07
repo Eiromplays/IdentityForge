@@ -1,6 +1,6 @@
-import * as React from 'react';
-
+/* eslint-disable no-unused-vars */
 import { useAuth } from 'eiromplays-ui';
+import * as React from 'react';
 
 export enum ROLES {
   ADMINISTRATOR = 'ADMINISTRATOR',

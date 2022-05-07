@@ -1,7 +1,8 @@
-import React from 'react';
-import logo from '@/assets/logo.svg';
-import { Button, Head, useAuth } from 'eiromplays-ui';
 import { useNavigate } from '@tanstack/react-location';
+import { Button, Head, useAuth } from 'eiromplays-ui';
+import React from 'react';
+
+import logo from '@/assets/logo.svg';
 
 export const Landing = () => {
   const navigate = useNavigate();
