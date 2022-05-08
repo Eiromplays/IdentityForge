@@ -1,7 +1,6 @@
+import { axios, MutationConfig, queryClient } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
-
-import { axios, MutationConfig, queryClient } from 'eiromplays-ui';
 
 import { Role } from '../types';
 

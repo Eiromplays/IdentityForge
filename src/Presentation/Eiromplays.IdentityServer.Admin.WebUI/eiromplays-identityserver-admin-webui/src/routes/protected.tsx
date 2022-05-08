@@ -15,7 +15,7 @@ const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
 const App = () => {
   const { checkAccess } = useAuthorization();
 
-  if (!checkAccess({ allowedRoles: [ROLES.ADMINISTRATOR] })) return <NotAllowed />;
+  if (!checkAccess({ allowedRoles: [ROLES.ADMINISTRATOR] })) return <NotAllowed logo={logo} />;
 
   return (
     <MainLayout logo={logo}>

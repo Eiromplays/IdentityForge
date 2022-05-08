@@ -47,12 +47,14 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
           <>
             <InputField
               label="Login / Email, Username, Phone Number or User ID"
+              autoComplete="username"
               error={formState.errors['login']}
               registration={register('login')}
             />
             <InputField
               type="password"
               label="Password"
+              autoComplete="current-password"
               error={formState.errors['password']}
               registration={register('password')}
             />

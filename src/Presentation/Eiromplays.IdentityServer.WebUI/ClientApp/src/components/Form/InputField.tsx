@@ -5,6 +5,7 @@ import { FieldWrapper, FieldWrapperPassThroughProps } from './FieldWrapper';
 
 type InputFieldProps = FieldWrapperPassThroughProps & {
   type?: 'text' | 'email' | 'password' | 'file' | 'checkbox' | 'hidden';
+  autoComplete?: string; // You can view the different autocomplete values here: https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values
   className?: string;
   multiple?: boolean;
   accept?: string;
@@ -17,6 +18,7 @@ type InputFieldProps = FieldWrapperPassThroughProps & {
 export const InputField = (props: InputFieldProps) => {
   const {
     type = 'text',
+    autoComplete = '',
     label,
     subLabel,
     icon,
@@ -35,6 +37,7 @@ export const InputField = (props: InputFieldProps) => {
       <fieldset disabled={disabled}>
         <input
           type={type}
+          autoComplete={autoComplete}
           multiple={multiple}
           accept={accept}
           value={value}
