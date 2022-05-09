@@ -6,4 +6,9 @@ public class Models
     {
         public string Key { get; set; } = default!;
     }
+
+    public class Response
+    {
+        public string Message { get; set; } = default!;
+    }
 }

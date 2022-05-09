@@ -1,11 +1,12 @@
+using Eiromplays.IdentityServer.Application.Identity.Sessions;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserSessions.GetUserSessionByKey;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : Endpoint<Models.Request, UserSessionDto>
 {
     private readonly IUserService _userService;
-
+    
     public Endpoint(IUserService userService)
     {
         _userService = userService;
@@ -13,10 +14,10 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override void Configure()
     {
-        Delete("/user-sessions/{Key}");
+        Get("/user-sessions/{Key}");
         Summary(s =>
         {
-            s.Summary = "Delete a user session.";
+            s.Summary = "Get a user session.";
         });
         Version(1);
     }
@@ -29,7 +30,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             return;
         }
         
-        Response.Message = await _userService.DeleteUserSessionAsync(req.Key, userId, ct);
+        Response = await _userService.GetUserSessionAsync(req.Key, userId, ct);
 
         await SendAsync(Response, cancellation: ct);
     }
