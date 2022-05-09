@@ -10,6 +10,7 @@ using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Common.Mailing;
 using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Common.Specification;
+using Eiromplays.IdentityServer.Application.Identity.Sessions;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Domain.Identity;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
@@ -82,7 +83,7 @@ internal partial class UserService : IUserService
 
         return new PaginationResponse<UserDetailsDto>(users, count, filter.PageNumber, filter.PageSize);
     }
-    
+
     public async Task<bool> ExistsWithNameAsync(string name)
     {
         return await _userManager.FindByNameAsync(name) is not null;

@@ -1,5 +1,8 @@
+using Ardalis.Specification.EntityFrameworkCore;
 using Eiromplays.IdentityServer.Application.Auditing;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
+using Eiromplays.IdentityServer.Application.Common.Models;
+using Eiromplays.IdentityServer.Application.Common.Specification;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +20,22 @@ public class AuditService : IAuditService
         _context = context;
         _t = t;
     }
+    
+    public async Task<PaginationResponse<AuditDto>> SearchAsync(AuditLogListFilter filter, CancellationToken cancellationToken)
+    {
+        var spec = new EntitiesByPaginationFilterSpec<Trail>(filter);
 
+        var trails = await _context.AuditTrails
+            .WithSpecification(spec)
+            .ProjectToType<AuditDto>()
+            .ToListAsync(cancellationToken);
+        
+        var count = await _context.AuditTrails
+            .CountAsync(cancellationToken);
+
+        return new PaginationResponse<AuditDto>(trails, count, filter.PageNumber, filter.PageSize);
+    }
+    
     public async Task<List<AuditDto>> GetUserTrailsAsync(string userId)
     {
         var trails = await _context.AuditTrails

@@ -1,5 +1,11 @@
+using Ardalis.Specification.EntityFrameworkCore;
+using Duende.Bff.EntityFramework;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
+using Eiromplays.IdentityServer.Application.Common.Models;
+using Eiromplays.IdentityServer.Application.Common.Specification;
 using Eiromplays.IdentityServer.Application.Identity.Sessions;
+using Eiromplays.IdentityServer.Application.Identity.Users;
+using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,6 +13,19 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
 internal partial class UserService
 {
+    public async Task<PaginationResponse<UserSessionDto>> SearchSessionsAsync(UserSessionListFilter filter, CancellationToken cancellationToken)
+    {
+        var spec = new EntitiesByPaginationFilterSpec<UserSessionEntity>(filter);
+
+        var sessions = await _sessionDbContext.UserSessions.WithSpecification(spec).ProjectToType<UserSessionDto>()
+            .ToListAsync(cancellationToken);
+
+        var count = await _sessionDbContext.UserSessions
+            .CountAsync(cancellationToken);
+
+        return new PaginationResponse<UserSessionDto>(sessions, count, filter.PageNumber, filter.PageSize);
+    }
+    
     public async Task<List<UserSessionDto>> GetAllUserSessions(CancellationToken cancellationToken)
     {
         return (await _sessionDbContext.UserSessions.AsNoTracking().ToListAsync(cancellationToken))

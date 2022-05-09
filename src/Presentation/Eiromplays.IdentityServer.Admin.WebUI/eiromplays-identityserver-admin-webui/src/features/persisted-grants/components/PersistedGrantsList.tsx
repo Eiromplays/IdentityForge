@@ -1,12 +1,24 @@
-import { formatDate, Link, Spinner, Table } from 'eiromplays-ui';
+import { useSearch, MatchRoute } from '@tanstack/react-location';
+import { formatDate, Link, PaginatedTable, Spinner } from 'eiromplays-ui';
 
-import { usePersistedGrants } from '../api/getPersistedGrants';
+import { LocationGenerics } from '@/App';
+
+import { SearchPersistedGrantDTO, useSearchPersistedGrants } from '../api/searchPersistedGrants';
 import { PersistedGrant } from '../types';
 
 import { DeletePersistedGrant } from './DeletePersistedGrant';
 
 export const PersistedGrantsList = () => {
-  const grantsQuery = usePersistedGrants();
+  const search = useSearch<LocationGenerics>();
+  const page = search.pagination?.index || 1;
+  const pageSize = search.pagination?.size || 10;
+
+  const searchPersistedGrantDto: SearchPersistedGrantDTO = {
+    pageNumber: page,
+    pageSize: pageSize,
+  };
+
+  const grantsQuery = useSearchPersistedGrants({ data: searchPersistedGrantDto });
 
   if (grantsQuery.isLoading) {
     return (
@@ -19,8 +31,10 @@ export const PersistedGrantsList = () => {
   if (!grantsQuery.data) return null;
 
   return (
-    <Table<PersistedGrant>
-      data={grantsQuery.data}
+    <PaginatedTable<PersistedGrant>
+      paginationResponse={grantsQuery.data}
+      data={grantsQuery.data?.data}
+      onPageSizeChanged={grantsQuery.remove}
       columns={[
         {
           title: 'Type',
@@ -56,14 +70,23 @@ export const PersistedGrantsList = () => {
           title: '',
           field: 'key',
           Cell({ entry: { key } }) {
-            return <Link to={`./${key}`}>View</Link>;
+            return (
+              <Link to={key} search={search} className="block">
+                <pre className={`text-sm`}>
+                  View{' '}
+                  <MatchRoute to={key} pending>
+                    <Spinner size="md" className="inline-block" />
+                  </MatchRoute>
+                </pre>
+              </Link>
+            );
           },
         },
         {
           title: '',
           field: 'key',
           Cell({ entry: { key } }) {
-            return <DeletePersistedGrant key={key} />;
+            return <DeletePersistedGrant persistedGrantKey={key} />;
           },
         },
       ]}

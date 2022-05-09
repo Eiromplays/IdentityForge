@@ -8,7 +8,7 @@ namespace Eiromplays.IdentityServer.Application.Identity.Users;
 
 public interface IUserService : ITransientService
 {
-    Task<PaginationResponse<UserDetailsDto>> SearchAsync(UserListFilter filter, CancellationToken cancellationToken);
+    Task<PaginationResponse<UserDetailsDto>> SearchAsync(UserListFilter filter, CancellationToken cancellationToken = default);
 
     Task<bool> ExistsWithNameAsync(string name);
     Task<bool> ExistsWithEmailAsync(string email, string? exceptId = null);
@@ -33,7 +33,7 @@ public interface IUserService : ITransientService
     Task<string> CreateAsync(CreateUserRequest request, string origin);
     Task UpdateAsync(UpdateUserRequest request, string userId, CancellationToken cancellationToken = default);
 
-    Task<string> ConfirmEmailAsync(string userId, string code, CancellationToken cancellationToken);
+    Task<string> ConfirmEmailAsync(string userId, string code, CancellationToken cancellationToken = default);
     Task<string> ConfirmPhoneNumberAsync(string userId, string code);
 
     Task<string> ForgotPasswordAsync(ForgotPasswordRequest request, string origin);
@@ -51,6 +51,7 @@ public interface IUserService : ITransientService
     Task<UserSessionDto> GetUserSessionAsync(string key, string? userId = default, CancellationToken cancellationToken = default);
     Task<string> DeleteUserSessionAsync(string key, string? userId = default,  CancellationToken cancellationToken = default);
     
+    Task<PaginationResponse<UserSessionDto>> SearchSessionsAsync(UserSessionListFilter filter, CancellationToken cancellationToken = default);
     
     Task DeleteAsync(string userId);
 
