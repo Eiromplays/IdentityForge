@@ -1,12 +1,18 @@
+import { useMatch } from '@tanstack/react-location';
 import { MDPreview, Spinner, Head, ContentLayout, useAuth, formatDate } from 'eiromplays-ui';
+
+import { LocationGenerics } from '@/App';
 
 import { useUserSession } from '../api/getUserSession';
 import { DeleteUserSession } from '../components/DeleteUserSession';
-
 export const UserSession = () => {
+  const {
+    params: { key },
+  } = useMatch<LocationGenerics>();
+
   const { user } = useAuth();
 
-  const userSessionQuery = useUserSession({ key: '' });
+  const userSessionQuery = useUserSession({ key: key });
 
   if (userSessionQuery.isLoading) {
     return (

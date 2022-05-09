@@ -1,4 +1,7 @@
+import { useMatch } from '@tanstack/react-location';
 import { Spinner, ContentLayout } from 'eiromplays-ui';
+
+import { LocationGenerics } from '@/App';
 
 import { useRole } from '../api/getRole';
 import { UpdateRole } from '../components/UpdateRole';
@@ -16,9 +19,11 @@ const Entry = ({ label, value }: EntryProps) => (
 );
 
 export const RoleInfo = () => {
-  //const { id } = useParams();
+  const {
+    params: { roleId },
+  } = useMatch<LocationGenerics>();
 
-  const roleQuery = useRole({ roleId: '' });
+  const roleQuery = useRole({ roleId: roleId });
 
   if (roleQuery.isLoading) {
     return (
@@ -38,7 +43,7 @@ export const RoleInfo = () => {
             <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
               Role Information
             </h3>
-            <UpdateRole id={''} />
+            <UpdateRole id={roleId} />
           </div>
           <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-white">
             Details abut the role.

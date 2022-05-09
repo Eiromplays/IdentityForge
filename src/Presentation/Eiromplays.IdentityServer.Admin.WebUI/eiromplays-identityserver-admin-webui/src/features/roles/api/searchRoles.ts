@@ -9,9 +9,7 @@ import { useQuery } from 'react-query';
 
 import { Role } from '../types';
 
-export type SearchRoleDTO = PaginationFilter & {
-  enabled?: boolean;
-};
+export type SearchRoleDTO = PaginationFilter;
 
 export const searchRoles = (data: SearchRoleDTO): Promise<PaginationResponse<Role>> => {
   return axios.post('/roles/search', data);
@@ -24,7 +22,7 @@ type UseSearchRolesOptions = {
   config?: QueryConfig<QueryFnType>;
 };
 
-export const useSearchUsers = ({ data, config }: UseSearchRolesOptions) => {
+export const useSearchRoles = ({ data, config }: UseSearchRolesOptions) => {
   return useQuery<ExtractFnReturnType<QueryFnType>>({
     ...config,
     queryKey: ['search-roles', data.pageNumber],

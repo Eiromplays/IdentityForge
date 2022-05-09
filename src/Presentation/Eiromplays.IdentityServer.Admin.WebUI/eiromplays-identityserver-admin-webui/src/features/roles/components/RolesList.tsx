@@ -1,12 +1,24 @@
-import { Table, Spinner } from 'eiromplays-ui';
+import { useSearch, MatchRoute } from '@tanstack/react-location';
+import { Spinner, PaginatedTable, Link } from 'eiromplays-ui';
 
-import { useRoles } from '../api/getRoles';
+import { LocationGenerics } from '@/App';
+
+import { SearchRoleDTO, useSearchRoles } from '../api/searchRoles';
 import { Role } from '../types';
 
 import { DeleteRole } from './DeleteRole';
 
 export const RolesList = () => {
-  const rolesQuery = useRoles();
+  const search = useSearch<LocationGenerics>();
+  const page = search.pagination?.index || 1;
+  const pageSize = search.pagination?.size || 10;
+
+  const searchRoleDto: SearchRoleDTO = {
+    pageNumber: page,
+    pageSize: pageSize,
+  };
+
+  const rolesQuery = useSearchRoles({ data: searchRoleDto });
 
   if (rolesQuery.isLoading) {
     return (
@@ -19,8 +31,10 @@ export const RolesList = () => {
   if (!rolesQuery.data) return null;
 
   return (
-    <Table<Role>
-      data={rolesQuery.data}
+    <PaginatedTable<Role>
+      paginationResponse={rolesQuery.data}
+      data={rolesQuery.data?.data}
+      onPageSizeChanged={rolesQuery.remove}
       columns={[
         {
           title: 'Id',
@@ -45,7 +59,16 @@ export const RolesList = () => {
           title: '',
           field: 'id',
           Cell({ entry: { id } }) {
-            return <a href={`/app/roles/${id}`}>View</a>;
+            return (
+              <Link to={id} search={search} className="block">
+                <pre className={`text-sm`}>
+                  View{' '}
+                  <MatchRoute to={id} pending>
+                    <Spinner size="md" className="inline-block" />
+                  </MatchRoute>
+                </pre>
+              </Link>
+            );
           },
         },
       ]}

@@ -1,10 +1,17 @@
+import { useMatch } from '@tanstack/react-location';
 import { ContentLayout, formatDate, Head, MDPreview, Spinner } from 'eiromplays-ui';
+
+import { LocationGenerics } from '@/App';
 
 import { usePersistedGrant } from '../api/getPersistedGrant';
 import { DeletePersistedGrant } from '../components/DeletePersistedGrant';
 
 export const PersistedGrant = () => {
-  const grantQuery = usePersistedGrant({ persistedGrantKey: '' });
+  const {
+    params: { key },
+  } = useMatch<LocationGenerics>();
+
+  const grantQuery = usePersistedGrant({ persistedGrantKey: key });
 
   if (grantQuery.isLoading) {
     return (
@@ -23,7 +30,7 @@ export const PersistedGrant = () => {
         <span className="text-xs font-bold">
           {formatDate(grantQuery.data.creationTime)} - {formatDate(grantQuery.data.expiration)}
         </span>
-        <DeletePersistedGrant key={grantQuery.data.key} />
+        <DeletePersistedGrant persistedGrantKey={grantQuery.data.key} />
         <div className="mt-6 flex flex-col space-y-16">
           <div>
             <div className="bg-white dark:bg-lighter-black shadow overflow-hidden sm:rounded-lg">
