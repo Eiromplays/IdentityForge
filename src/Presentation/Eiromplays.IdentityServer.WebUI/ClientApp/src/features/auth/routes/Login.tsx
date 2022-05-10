@@ -1,4 +1,4 @@
-import { Spinner } from '@/components/Elements';
+import { Spinner } from 'eiromplays-ui';
 
 import { useLogin } from '../api/getLogin';
 import { ExternalLoginProviders } from '../components/ExternalLoginProviders';

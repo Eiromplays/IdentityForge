@@ -1,6 +1,5 @@
+import { Button, ConfirmationDialog } from 'eiromplays-ui';
 import { HiOutlineTrash } from 'react-icons/hi';
-
-import { Button, ConfirmationDialog } from '@/components/Elements';
 
 import { useDeleteUserSession } from '../api/deleteUserSession';
 

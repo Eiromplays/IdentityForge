@@ -1,4 +1,4 @@
-import { Button } from '@/components/Elements';
+import { Button } from 'eiromplays-ui';
 
 import { useDisableAuthenticator } from '../api/disableAuthenticator';
 

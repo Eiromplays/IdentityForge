@@ -1,4 +1,4 @@
-import { Button } from '@/components/Elements';
+import { Button } from 'eiromplays-ui';
 
 import { useResetAuthenticator } from '../api/resetAuthenticator';
 

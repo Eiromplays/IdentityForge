@@ -1,19 +1,18 @@
-import { useParams } from 'react-router-dom';
+import { useMatch } from '@tanstack/react-location';
+import { MDPreview, Spinner, Head, ContentLayout, useAuth, formatDate } from 'eiromplays-ui';
 
-import { MDPreview, Spinner } from '@/components/Elements';
-import { Head } from '@/components/Head';
-import { ContentLayout } from '@/components/Layout';
-import { useAuth } from '@/lib/auth';
-import { formatDate } from '@/utils/format';
+import { LocationGenerics } from '@/App';
 
 import { useUserSession } from '../api/getUserSession';
 import { DeleteUserSession } from '../components/DeleteUserSession';
-
 export const UserSession = () => {
-  const { user } = useAuth();
-  const { key } = useParams();
+  const {
+    params: { key },
+  } = useMatch<LocationGenerics>();
 
-  const userSessionQuery = useUserSession({ key: key || '' });
+  const { user } = useAuth();
+
+  const userSessionQuery = useUserSession({ key: key });
 
   if (userSessionQuery.isLoading) {
     return (

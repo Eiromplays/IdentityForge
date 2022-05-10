@@ -1,10 +1,14 @@
+import {
+  Button,
+  ConfirmationDialog,
+  Form,
+  FormDrawer,
+  InputField,
+  ImageCropper,
+  useAuth,
+} from 'eiromplays-ui';
 import { HiOutlinePencil } from 'react-icons/hi';
 import * as z from 'zod';
-
-import { Button, ConfirmationDialog } from '@/components/Elements';
-import { Form, FormDrawer, InputField } from '@/components/Form';
-import { ImageCropper } from '@/components/Images';
-import { useAuth } from '@/lib/auth';
 
 import { UpdateProfileDTO, useUpdateProfile } from '../api/updateProfile';
 

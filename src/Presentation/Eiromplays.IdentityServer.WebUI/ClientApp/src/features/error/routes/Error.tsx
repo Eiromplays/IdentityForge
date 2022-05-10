@@ -1,5 +1,4 @@
-import { Spinner } from '@/components/Elements';
-import { ContentLayout } from '@/components/Layout';
+import { Spinner, ContentLayout } from 'eiromplays-ui';
 
 import { useError } from '../api/getError';
 

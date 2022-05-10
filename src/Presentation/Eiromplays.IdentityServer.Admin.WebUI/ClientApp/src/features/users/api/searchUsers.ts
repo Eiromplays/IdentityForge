@@ -1,8 +1,11 @@
+import {
+  axios,
+  ExtractFnReturnType,
+  QueryConfig,
+  PaginationFilter,
+  PaginationResponse,
+} from 'eiromplays-ui';
 import { useQuery } from 'react-query';
-
-import { axios } from '@/lib/axios';
-import { ExtractFnReturnType, QueryConfig } from '@/lib/react-query';
-import { PaginationFilter, PaginationResponse } from '@/types';
 
 import { User } from '../types';
 
@@ -24,7 +27,7 @@ type UseSearchUsersOptions = {
 export const useSearchUsers = ({ data, config }: UseSearchUsersOptions) => {
   return useQuery<ExtractFnReturnType<QueryFnType>>({
     ...config,
-    queryKey: [`search-users-${data.pageNumber}`],
+    queryKey: ['search-users', data.pageNumber],
     queryFn: () => searchUsers(data),
   });
 };

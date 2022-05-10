@@ -1,9 +1,14 @@
+import {
+  Button,
+  ConfirmationDialog,
+  Spinner,
+  Form,
+  FormDrawer,
+  InputField,
+  ImageCropper,
+} from 'eiromplays-ui';
 import { HiOutlinePencil } from 'react-icons/hi';
 import * as z from 'zod';
-
-import { Button, ConfirmationDialog, Spinner } from '@/components/Elements';
-import { Form, FormDrawer, InputField } from '@/components/Form';
-import { ImageCropper } from '@/components/Images';
 
 import { useUser } from '../api/getUser';
 import { UpdateProfileDTO, useUpdateProfile } from '../api/updateProfile';

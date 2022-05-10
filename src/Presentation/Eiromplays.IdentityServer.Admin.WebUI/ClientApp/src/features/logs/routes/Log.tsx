@@ -1,16 +1,16 @@
-import { useParams } from 'react-router-dom';
+import { useMatch } from '@tanstack/react-location';
+import { MDPreview, Spinner, Head, ContentLayout, formatDate, formatLogType } from 'eiromplays-ui';
 
-import { MDPreview, Spinner } from '@/components/Elements';
-import { Head } from '@/components/Head';
-import { ContentLayout } from '@/components/Layout';
-import { formatDate, formatLogType } from '@/utils/format';
+import { LocationGenerics } from '@/App';
 
 import { useLog } from '../api/getLog';
 
 export const Log = () => {
-  const { logId } = useParams();
+  const {
+    params: { logId },
+  } = useMatch<LocationGenerics>();
 
-  const logQuery = useLog({ logId: logId || '' });
+  const logQuery = useLog({ logId });
 
   if (logQuery.isLoading) {
     return (

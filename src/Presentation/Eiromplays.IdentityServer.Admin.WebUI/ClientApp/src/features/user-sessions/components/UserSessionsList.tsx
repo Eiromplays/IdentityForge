@@ -1,17 +1,27 @@
-import { Table, Spinner, Link } from '@/components/Elements';
-import { useAuth } from '@/lib/auth';
-import { formatDate } from '@/utils/format';
+import { useSearch, MatchRoute } from '@tanstack/react-location';
+import { formatDate, Link, PaginatedTable, Spinner, useAuth } from 'eiromplays-ui';
 
-import { useUserSessions } from '../api/getUserSessions';
+import { LocationGenerics } from '@/App';
+
+import { SearchUserSessionDTO, useSearchUserSessions } from '../api/searchUserSessions';
 import { UserSession } from '../types';
 
 import { DeleteUserSession } from './DeleteUserSession';
 
 export const UserSessionsList = () => {
   const { user } = useAuth();
-  const userSessionsQuery = useUserSessions();
+  const search = useSearch<LocationGenerics>();
+  const page = search.pagination?.index || 1;
+  const pageSize = search.pagination?.size || 10;
 
-  if (userSessionsQuery.isLoading) {
+  const searchUserSessionDto: SearchUserSessionDTO = {
+    pageNumber: page,
+    pageSize: pageSize,
+  };
+
+  const searchUserSessionsQuery = useSearchUserSessions({ data: searchUserSessionDto });
+
+  if (searchUserSessionsQuery.isLoading) {
     return (
       <div className="w-full h-48 flex justify-center items-center">
         <Spinner size="lg" />
@@ -19,11 +29,13 @@ export const UserSessionsList = () => {
     );
   }
 
-  if (!userSessionsQuery.data || !user) return null;
+  if (!searchUserSessionsQuery.data || !user) return null;
 
   return (
-    <Table<UserSession>
-      data={userSessionsQuery.data}
+    <PaginatedTable<UserSession>
+      paginationResponse={searchUserSessionsQuery.data}
+      data={searchUserSessionsQuery.data?.data}
+      onPageSizeChanged={searchUserSessionsQuery.remove}
       columns={[
         {
           title: 'Session Id',
@@ -57,7 +69,16 @@ export const UserSessionsList = () => {
           title: '',
           field: 'key',
           Cell({ entry: { key } }) {
-            return <Link to={`./${key}`}>View</Link>;
+            return (
+              <Link to={key} search={search} className="block">
+                <pre className={`text-sm`}>
+                  View{' '}
+                  <MatchRoute to={key} pending>
+                    <Spinner size="md" className="inline-block" />
+                  </MatchRoute>
+                </pre>
+              </Link>
+            );
           },
         },
         {

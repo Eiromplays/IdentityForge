@@ -1,8 +1,6 @@
+import { axios, MutationConfig } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
-
-import { axios } from '@/lib/axios';
-import { MutationConfig } from '@/lib/react-query';
 
 export const deleteUser = () => {
   return axios.delete(`/personal/profile`);

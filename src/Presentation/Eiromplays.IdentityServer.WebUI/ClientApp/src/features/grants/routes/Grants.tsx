@@ -1,4 +1,4 @@
-import { ContentLayout } from '@/components/Layout';
+import { ContentLayout } from 'eiromplays-ui';
 
 import { GrantsList } from '../../grants/components/GrantsList';
 

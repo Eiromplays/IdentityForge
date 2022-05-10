@@ -1,7 +1,6 @@
+import { InputField } from 'eiromplays-ui';
 import { UseFormRegister } from 'react-hook-form';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
-
-import { InputField } from '@/components/Form';
 
 import { ScopeViewModel } from '../types';
 

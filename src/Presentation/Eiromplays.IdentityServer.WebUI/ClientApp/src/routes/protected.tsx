@@ -1,16 +1,11 @@
+import { Outlet } from '@tanstack/react-location';
+import { Spinner, MainLayout, lazyImport } from 'eiromplays-ui';
 import { Suspense } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
 
-import { Spinner } from '@/components/Elements';
-import { MainLayout } from '@/components/Layout';
-import { lazyImport } from '@/utils/lazyImport';
-
-const { GrantsRoutes } = lazyImport(() => import('@/features/grants'), 'GrantsRoutes');
-const { UserSessionsRoutes } = lazyImport(
-  () => import('@/features/user-sessions'),
-  'UserSessionsRoutes'
-);
-const { LogsRoutes } = lazyImport(() => import('@/features/logs'), 'LogsRoutes');
+import { ConsentRoutes } from '@/features/consent';
+import { GrantsRoutes } from '@/features/grants';
+import { LogsRoutes } from '@/features/logs';
+import { UserSessionsRoutes } from '@/features/user-sessions';
 const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
 const { Profile } = lazyImport(() => import('@/features/users'), 'Profile');
 const { PersonalData } = lazyImport(() => import('@/features/users'), 'PersonalData');
@@ -19,8 +14,6 @@ const { TwoFactorAuthentication } = lazyImport(
   'TwoFactorAuthentication'
 );
 const { ChangePassword } = lazyImport(() => import('@/features/users'), 'ChangePassword');
-
-const { ConsentRoutes } = lazyImport(() => import('@/features/consent'), 'ConsentRoutes');
 
 const App = () => {
   return (
@@ -43,16 +36,16 @@ export const protectedRoutes = [
     path: '/app',
     element: <App />,
     children: [
-      { path: 'grants/*', element: <GrantsRoutes /> },
-      { path: 'user-sessions/*', element: <UserSessionsRoutes /> },
-      { path: 'logs/*', element: <LogsRoutes /> },
+      { path: '/', element: <Dashboard /> },
+      GrantsRoutes,
+      UserSessionsRoutes,
+      LogsRoutes,
       { path: 'profile', element: <Profile /> },
       { path: 'personal-data', element: <PersonalData /> },
       { path: 'two-factor-authentication', element: <TwoFactorAuthentication /> },
       { path: 'change-password', element: <ChangePassword /> },
-      { path: 'consent/*', element: <ConsentRoutes /> },
-      { path: '', element: <Dashboard /> },
-      { path: '*', element: <Navigate to="." /> },
+      ConsentRoutes,
+      { path: '*', element: <Dashboard /> },
     ],
   },
 ];

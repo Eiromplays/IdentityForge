@@ -1,11 +1,9 @@
+import { axios, ExtractFnReturnType, QueryConfig } from 'eiromplays-ui';
 import { useQuery } from 'react-query';
-
-import { axios } from '@/lib/axios';
-import { ExtractFnReturnType, QueryConfig } from '@/lib/react-query';
 
 import { PersistedGrant } from '../types';
 
-export const getGrant = ({
+export const getPersistedGrant = ({
   persistedGrantKey,
 }: {
   persistedGrantKey: string;
@@ -13,7 +11,7 @@ export const getGrant = ({
   return axios.get(`/persisted-grants/${persistedGrantKey}`);
 };
 
-type QueryFnType = typeof getGrant;
+type QueryFnType = typeof getPersistedGrant;
 
 type UsePersistedGrantOptions = {
   persistedGrantKey: string;
@@ -24,6 +22,6 @@ export const usePersistedGrant = ({ persistedGrantKey, config }: UsePersistedGra
   return useQuery<ExtractFnReturnType<QueryFnType>>({
     ...config,
     queryKey: ['persisted-grant', persistedGrantKey],
-    queryFn: () => getGrant({ persistedGrantKey }),
+    queryFn: () => getPersistedGrant({ persistedGrantKey: persistedGrantKey }),
   });
 };

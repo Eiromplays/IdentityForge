@@ -1,8 +1,6 @@
+import { Button, Spinner, Form, InputField } from 'eiromplays-ui';
 import QRCode from 'react-qr-code';
 import * as z from 'zod';
-
-import { Button, Spinner } from '@/components/Elements';
-import { Form, InputField } from '@/components/Form';
 
 import { useAddAuthenticator } from '../api/addAuthenticator';
 import { useEnableAuthenticator } from '../api/getEnableAuthenticator';

@@ -1,6 +1,5 @@
-import { Button, Spinner } from '@/components/Elements';
-import { Form } from '@/components/Form';
-import { useAuth } from '@/lib/auth';
+import { Button, Spinner, Form, useAuth } from 'eiromplays-ui';
+import React from 'react';
 
 import { logoutUser, useLogout } from '../api/logout';
 import { LoggedOutViewModel } from '../types';
@@ -25,6 +24,9 @@ export const LogoutForm = ({ onSuccess }: LoginFormProps) => {
       >
         {() => (
           <>
+            {logoutQuery.isSuccess &&
+              !logoutQuery.data.logoutViewModel?.showLogoutPrompt &&
+              logoutIframe(logoutQuery.data.loggedOutViewModel)}
             <div>
               {logoutQuery.isSuccess && logoutQuery.data.logoutViewModel?.showLogoutPrompt && (
                 <>
@@ -37,9 +39,6 @@ export const LogoutForm = ({ onSuccess }: LoginFormProps) => {
                   </Button>
                 </>
               )}
-              {logoutQuery.isSuccess &&
-                !logoutQuery.data.logoutViewModel?.showLogoutPrompt &&
-                logoutIframe(logoutQuery.data.loggedOutViewModel)}
               {logoutQuery.isSuccess && !logoutQuery.data.logoutViewModel?.showLogoutPrompt && (
                 <div className="text-center">
                   <h1 className="text-1xl">

@@ -1,14 +1,15 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route } from '@tanstack/react-location';
+
+import { LocationGenerics } from '@/App';
 
 import { UserSession } from './UserSession';
 import { UserSessions } from './UserSessions';
 
-export const UserSessionsRoutes = () => {
-  return (
-    <Routes>
-      <Route path="" element={<UserSessions />} />
-      <Route path=":key" element={<UserSession />} />
-      <Route path="*" element={<Navigate to="." />} />
-    </Routes>
-  );
+export const UserSessionsRoutes: Route<LocationGenerics> = {
+  path: 'user-sessions',
+  children: [
+    { path: '/', element: <UserSessions /> },
+    { path: ':key', element: <UserSession /> },
+    { path: '*', element: <Navigate to="." /> },
+  ],
 };

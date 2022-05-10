@@ -1,9 +1,5 @@
-import { Link } from 'react-router-dom';
+import { Link, Button, Form, InputField, useAuth } from 'eiromplays-ui';
 import * as z from 'zod';
-
-import { Button } from '@/components/Elements';
-import { Form, InputField } from '@/components/Form';
-import { useAuth } from '@/lib/auth';
 
 const schema = z.object({
   login: z.string().min(1, 'Required'),

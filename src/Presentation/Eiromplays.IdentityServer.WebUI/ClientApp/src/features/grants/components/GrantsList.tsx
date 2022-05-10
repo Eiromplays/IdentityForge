@@ -1,5 +1,4 @@
-import { Table, Spinner, Link } from '@/components/Elements';
-import { formatDate } from '@/utils/format';
+import { Table, Spinner, Link, formatDate } from 'eiromplays-ui';
 
 import { useGrants } from '../api/getGrants';
 import { Grant } from '../types';

@@ -1,17 +1,17 @@
-import { useParams } from 'react-router-dom';
+import { useMatch } from '@tanstack/react-location';
+import { ContentLayout, formatDate, Head, MDPreview, Spinner } from 'eiromplays-ui';
 
-import { MDPreview, Spinner } from '@/components/Elements';
-import { Head } from '@/components/Head';
-import { ContentLayout } from '@/components/Layout';
-import { formatDate } from '@/utils/format';
+import { LocationGenerics } from '@/App';
 
 import { usePersistedGrant } from '../api/getPersistedGrant';
 import { DeletePersistedGrant } from '../components/DeletePersistedGrant';
 
 export const PersistedGrant = () => {
-  const { key } = useParams();
+  const {
+    params: { key },
+  } = useMatch<LocationGenerics>();
 
-  const grantQuery = usePersistedGrant({ persistedGrantKey: key || '' });
+  const grantQuery = usePersistedGrant({ persistedGrantKey: key });
 
   if (grantQuery.isLoading) {
     return (
@@ -30,7 +30,7 @@ export const PersistedGrant = () => {
         <span className="text-xs font-bold">
           {formatDate(grantQuery.data.creationTime)} - {formatDate(grantQuery.data.expiration)}
         </span>
-        <DeletePersistedGrant key={grantQuery.data.key} />
+        <DeletePersistedGrant persistedGrantKey={grantQuery.data.key} />
         <div className="mt-6 flex flex-col space-y-16">
           <div>
             <div className="bg-white dark:bg-lighter-black shadow overflow-hidden sm:rounded-lg">

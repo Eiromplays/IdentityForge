@@ -1,9 +1,6 @@
+import { Link, Button, Form, InputField } from 'eiromplays-ui';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 import * as z from 'zod';
-
-import { Button } from '@/components/Elements';
-import { Form, InputField } from '@/components/Form';
 
 import { useExternalLoginConfirmation } from '../api/externalLoginConfirmation';
 

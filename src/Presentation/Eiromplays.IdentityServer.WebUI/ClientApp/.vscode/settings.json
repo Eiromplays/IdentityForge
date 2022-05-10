@@ -22,6 +22,7 @@
         "identityserver",
         "loginwith",
         "logoutid",
+        "mkcert",
         "mswjs",
         "oidc",
         "Ooops",
@@ -35,9 +36,12 @@
         "Sjøløkken",
         "spdy",
         "tailwindcss",
+        "tanstack",
         "toastify",
         "todos",
         "USEPOLLING",
+        "vite",
+        "vitejs",
         "webui",
         "zustand"
     ]

@@ -1,10 +1,14 @@
-import { useParams } from 'react-router-dom';
+import { useMatch } from '@tanstack/react-location';
+
+import { LocationGenerics } from '@/App';
 
 import { Layout } from '../components/Layout';
 import { Login2faForm } from '../components/Login2faForm';
 
 export const Login2fa = () => {
-  const { rememberMe, returnUrl } = useParams();
+  const {
+    params: { rememberMe, returnUrl },
+  } = useMatch<LocationGenerics>();
 
   const rememberMeAsBoolean = rememberMe?.toLowerCase() === 'true' ? true : false;
 

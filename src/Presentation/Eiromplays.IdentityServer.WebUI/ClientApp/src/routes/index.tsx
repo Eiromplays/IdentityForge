@@ -1,27 +1,26 @@
-import { useRoutes } from 'react-router-dom';
+import { Route } from '@tanstack/react-location';
+//import { useAuth } from 'eiromplays-ui';
 
-import { Logout, Lockout } from '@/features/auth';
+import { LocationGenerics } from '@/App';
+import { Lockout, Logout } from '@/features/auth';
 import { Error } from '@/features/error';
-import { Landing, NotFound } from '@/features/misc';
-import { useAuth } from '@/lib/auth';
+import { Landing } from '@/features/misc';
 
 import { protectedRoutes } from './protected';
 import { publicRoutes } from './public';
 
-export const AppRoutes = () => {
-  const auth = useAuth();
+export const AppRoutes = (): Route<LocationGenerics>[] => {
+  //const auth = useAuth();
 
   const commonRoutes = [
     { path: '/', element: <Landing /> },
     { path: '/error', element: <Error /> },
-    { path: '*', element: <NotFound /> },
     { path: '/auth/logout', element: <Logout /> },
     { path: '/auth/lockout', element: <Lockout /> },
+    //{ path: '*', element: <NotFound /> },
   ];
 
-  const routes = auth.user ? protectedRoutes : publicRoutes;
+  const routes = [...protectedRoutes, ...publicRoutes];
 
-  const element = useRoutes([...routes, ...commonRoutes]);
-
-  return <>{element}</>;
+  return [...routes, ...commonRoutes];
 };

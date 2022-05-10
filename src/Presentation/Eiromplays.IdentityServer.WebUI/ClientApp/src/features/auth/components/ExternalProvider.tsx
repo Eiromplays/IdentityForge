@@ -1,5 +1,4 @@
-import { Button } from '@/components/Elements';
-import { DynamicIcon } from '@/components/Elements/DynamicIcon';
+import { Button, DynamicIcon } from 'eiromplays-ui';
 
 import { ExternalProvider } from '../types';
 

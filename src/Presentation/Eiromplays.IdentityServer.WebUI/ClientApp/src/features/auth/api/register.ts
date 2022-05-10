@@ -1,4 +1,4 @@
-import { axios } from '@/lib/axios';
+import { axios } from 'eiromplays-ui';
 
 export type RegisterCredentialsDTO = {
   firstName: string;

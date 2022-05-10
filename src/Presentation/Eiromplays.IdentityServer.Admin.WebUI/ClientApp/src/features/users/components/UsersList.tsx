@@ -1,21 +1,21 @@
-import { useSearchParams } from 'react-router-dom';
+import { useSearch, MatchRoute } from '@tanstack/react-location';
+import { formatDate, Link, PaginatedTable, Spinner } from 'eiromplays-ui';
 
-import { PaginatedTable, Spinner } from '@/components/Elements';
-import { formatDate } from '@/utils/format';
+import { LocationGenerics } from '@/App';
 
 import { SearchUserDTO, useSearchUsers } from '../api/searchUsers';
 import { User } from '../types';
 
 import { DeleteUser } from './DeleteUser';
-import { UserRoles } from './UserRoles';
 
 export const UsersList = () => {
-  const [searchParams] = useSearchParams();
-  const page = parseInt(searchParams.get('page') || '1', 10);
+  const search = useSearch<LocationGenerics>();
+  const page = search.pagination?.index || 1;
+  const pageSize = search.pagination?.size || 10;
 
   const searchUserDto: SearchUserDTO = {
     pageNumber: page,
-    pageSize: 10,
+    pageSize: pageSize,
     isActive: true,
   };
 
@@ -28,13 +28,13 @@ export const UsersList = () => {
       </div>
     );
   }
-
   if (!searchUsersQuery.data?.data) return null;
 
   return (
     <PaginatedTable<User>
       paginationResponse={searchUsersQuery.data}
       data={searchUsersQuery.data.data}
+      onPageSizeChanged={searchUsersQuery.remove}
       columns={[
         {
           title: 'First Name',
@@ -66,14 +66,32 @@ export const UsersList = () => {
           title: '',
           field: 'id',
           Cell({ entry: { id } }) {
-            return <UserRoles id={id} />;
+            return (
+              <Link to={`${id}/roles`} search={search} className="block">
+                <pre className={`text-sm`}>
+                  Roles{' '}
+                  <MatchRoute to={`${id}/roles`} pending>
+                    <Spinner size="md" className="inline-block" />
+                  </MatchRoute>
+                </pre>
+              </Link>
+            );
           },
         },
         {
           title: '',
           field: 'id',
           Cell({ entry: { id } }) {
-            return <a href={`/app/profile/${id}`}>Profile</a>;
+            return (
+              <Link to={id} search={search} className="block">
+                <pre className={`text-sm`}>
+                  View{' '}
+                  <MatchRoute to={id} pending>
+                    <Spinner size="md" className="inline-block" />
+                  </MatchRoute>
+                </pre>
+              </Link>
+            );
           },
         },
       ]}

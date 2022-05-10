@@ -1,17 +1,17 @@
-import { useParams } from 'react-router-dom';
+import { useMatch } from '@tanstack/react-location';
+import { MDPreview, Spinner, Head, ContentLayout, formatDate } from 'eiromplays-ui';
 
-import { MDPreview, Spinner } from '@/components/Elements';
-import { Head } from '@/components/Head';
-import { ContentLayout } from '@/components/Layout';
-import { formatDate } from '@/utils/format';
+import { LocationGenerics } from '@/App';
 
 import { useGrant } from '../api/getGrant';
 import { RevokeGrant } from '../components/RevokeGrant';
 
 export const Grant = () => {
-  const { clientId } = useParams();
+  const {
+    params: { clientId },
+  } = useMatch<LocationGenerics>();
 
-  const grantQuery = useGrant({ clientId: clientId || '' });
+  const grantQuery = useGrant({ clientId: clientId });
 
   if (grantQuery.isLoading) {
     return (

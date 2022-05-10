@@ -1,5 +1,4 @@
-import { ContentLayout } from '@/components/Layout';
-import { useAuth } from '@/lib/auth';
+import { ContentLayout, useAuth } from 'eiromplays-ui';
 
 import { UpdateProfile } from '../components/UpdateProfile';
 

@@ -1,4 +1,6 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route } from '@tanstack/react-location';
+
+import { LocationGenerics } from '@/App';
 
 import { ConfirmedEmail } from './ConfirmedEmail';
 import { ExternalLoginConfirmation } from './ExternalLoginConfirmation';
@@ -8,20 +10,19 @@ import { Login2fa } from './Login2fa';
 import { NotAllowed } from './NotAllowed';
 import { Register } from './Register';
 
-export const AuthRoutes = () => {
-  return (
-    <Routes>
-      <Route path="register" element={<Register />} />
-      <Route path="login" element={<Login />} />
-      <Route path="login2fa/:rememberMe/:returnUrl" element={<Login2fa />} />
-      <Route path="login2fa/:rememberMe" element={<Login2fa />} />
-      <Route
-        path="external-login-confirmation/:email/:userName/:loginProvider"
-        element={<ExternalLoginConfirmation />}
-      />
-      <Route path="not-allowed" element={<NotAllowed />} />
-      <Route path="confirmed-email" element={<ConfirmedEmail />} />
-      <Route path="forgot-password" element={<ForgotPassword />} />
-    </Routes>
-  );
+export const AuthRoutes: Route<LocationGenerics> = {
+  path: 'auth',
+  children: [
+    { path: 'register', element: <Register /> },
+    { path: 'login', element: <Login /> },
+    { path: 'login/:rememberMe/:returnUrl', element: <Login2fa /> },
+    { path: 'login/:rememberMe', element: <Login2fa /> },
+    {
+      path: 'external-login-confirmation/:email/:userName/:loginProvider',
+      element: <ExternalLoginConfirmation />,
+    },
+    { path: 'not-allowed', element: <NotAllowed /> },
+    { path: 'confirmed-email', element: <ConfirmedEmail /> },
+    { path: 'forgot-password', element: <ForgotPassword /> },
+  ],
 };

@@ -1,6 +1,4 @@
-import { axios } from '@/lib/axios';
-import { Claim } from '@/types';
-import { formatDate } from '@/utils/format';
+import { formatDate, Claim, axios } from 'eiromplays-ui';
 
 import { AuthUser } from '../types';
 

@@ -1,6 +1,4 @@
-import { MDPreview, Spinner } from '@/components/Elements';
-import { Head } from '@/components/Head';
-import { ContentLayout } from '@/components/Layout';
+import { MDPreview, Spinner, Head, ContentLayout } from 'eiromplays-ui';
 
 import { useConsent } from '../api/getConsent';
 import { ConsentForm } from '../components/ConsentForm';

@@ -1,9 +1,7 @@
-import { useNavigate } from 'react-router';
+import { useNavigate } from '@tanstack/react-location';
+import { Button, Head, useAuth } from 'eiromplays-ui';
 
 import logo from '@/assets/logo.svg';
-import { Button } from '@/components/Elements';
-import { Head } from '@/components/Head';
-import { useAuth } from '@/lib/auth';
 
 export const Landing = () => {
   const navigate = useNavigate();
@@ -11,7 +9,7 @@ export const Landing = () => {
 
   const handleStart = () => {
     if (user) {
-      navigate('/app');
+      navigate({ to: '/app' });
     } else {
       window.location.assign('/bff/login');
     }

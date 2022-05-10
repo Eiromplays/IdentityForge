@@ -1,12 +1,15 @@
-import { useParams } from 'react-router-dom';
+import { useMatch } from '@tanstack/react-location';
+import { ContentLayout } from 'eiromplays-ui';
 
-import { ContentLayout } from '@/components/Layout';
+import { LocationGenerics } from '@/App';
 import { Authorization, ROLES } from '@/lib/authorization';
 
 import { UserRolesList } from '../components/UserRolesList';
 
 export const UserRoles = () => {
-  const { id } = useParams();
+  const {
+    params: { userId },
+  } = useMatch<LocationGenerics>();
 
   return (
     <ContentLayout title={`User Roles`}>
@@ -15,7 +18,7 @@ export const UserRoles = () => {
           forbiddenFallback={<div>Only admin can view this.</div>}
           allowedRoles={[ROLES.ADMINISTRATOR]}
         >
-          <UserRolesList id={id || ''} />
+          <UserRolesList id={userId} />
         </Authorization>
       </div>
     </ContentLayout>

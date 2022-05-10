@@ -1,8 +1,5 @@
-import { Link } from 'react-router-dom';
+import { Link, Button, Form, InputField } from 'eiromplays-ui';
 import * as z from 'zod';
-
-import { Button } from '@/components/Elements';
-import { Form, InputField } from '@/components/Form';
 
 import { useForgotPassword } from '../api/forgotPassword';
 

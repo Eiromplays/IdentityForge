@@ -1,7 +1,5 @@
+import { axios, QueryConfig, ExtractFnReturnType } from 'eiromplays-ui';
 import { useQuery } from 'react-query';
-
-import { axios } from '@/lib/axios';
-import { ExtractFnReturnType, QueryConfig } from '@/lib/react-query';
 
 import { UserRole } from '../types';
 
@@ -23,7 +21,7 @@ type UseUserRolesOptions = {
 export const useUserRoles = ({ userId, config }: UseUserRolesOptions) => {
   return useQuery<ExtractFnReturnType<QueryFnType>>({
     ...config,
-    queryKey: [`user-${userId}-roles`],
+    queryKey: ['user', userId, 'roles'],
     queryFn: () => getUserRoles({ userId }),
   });
 };

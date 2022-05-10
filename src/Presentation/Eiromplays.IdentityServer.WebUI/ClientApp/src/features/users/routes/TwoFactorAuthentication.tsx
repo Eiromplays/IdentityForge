@@ -1,6 +1,4 @@
-import { Spinner } from '@/components/Elements';
-import { ContentLayout } from '@/components/Layout';
-import { useAuth } from '@/lib/auth';
+import { Spinner, ContentLayout, useAuth } from 'eiromplays-ui';
 
 import { useTwoFactorAuthentication } from '../api/getTwoFactorAuthentication';
 import { AddAuthenticator } from '../components/AddAuthenticator';

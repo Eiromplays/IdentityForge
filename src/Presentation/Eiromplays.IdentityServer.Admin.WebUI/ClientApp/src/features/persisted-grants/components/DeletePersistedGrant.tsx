@@ -1,14 +1,13 @@
+import { Button, ConfirmationDialog } from 'eiromplays-ui';
 import { HiOutlineTrash } from 'react-icons/hi';
-
-import { Button, ConfirmationDialog } from '@/components/Elements';
 
 import { useDeletePersistedGrant } from '../api/deletePersistedGrant';
 
 type RevokePersistedGrantProps = {
-  key: string;
+  persistedGrantKey: string;
 };
 
-export const DeletePersistedGrant = ({ key }: RevokePersistedGrantProps) => {
+export const DeletePersistedGrant = ({ persistedGrantKey }: RevokePersistedGrantProps) => {
   const revokeGrantMutation = useDeletePersistedGrant();
 
   return (
@@ -26,7 +25,9 @@ export const DeletePersistedGrant = ({ key }: RevokePersistedGrantProps) => {
           isLoading={revokeGrantMutation.isLoading}
           type="button"
           className="bg-red-600"
-          onClick={async () => await revokeGrantMutation.mutateAsync({ persistedGrantKey: key })}
+          onClick={async () =>
+            await revokeGrantMutation.mutateAsync({ persistedGrantKey: persistedGrantKey })
+          }
         >
           Delete Persisted Grant
         </Button>

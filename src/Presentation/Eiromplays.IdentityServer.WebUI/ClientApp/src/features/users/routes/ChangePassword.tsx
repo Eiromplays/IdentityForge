@@ -1,4 +1,4 @@
-import { ContentLayout } from '@/components/Layout';
+import { ContentLayout } from 'eiromplays-ui';
 
 import { ChangePasswordForm } from '../components/ChangePasswordForm';
 

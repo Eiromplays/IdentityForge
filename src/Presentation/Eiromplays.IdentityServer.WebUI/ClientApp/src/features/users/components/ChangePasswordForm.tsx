@@ -1,7 +1,5 @@
+import { Button, Form, InputField } from 'eiromplays-ui';
 import * as z from 'zod';
-
-import { Button } from '@/components/Elements';
-import { Form, InputField } from '@/components/Form';
 
 import { ChangePasswordDTO, useChangePassword } from '../api/changePassword';
 

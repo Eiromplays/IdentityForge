@@ -1,13 +1,16 @@
-import { useParams } from 'react-router-dom';
+import { useMatch } from '@tanstack/react-location';
+import { Spinner } from 'eiromplays-ui';
 
-import { Spinner } from '@/components/Elements';
+import { LocationGenerics } from '@/App';
 
 import { useLogin } from '../api/getLogin';
 import { ExternalLoginConfirmationForm } from '../components/ExternalLoginConfirmationForm';
 import { Layout } from '../components/Layout';
 
 export const ExternalLoginConfirmation = () => {
-  const { email, userName, loginProvider } = useParams();
+  const {
+    params: { email, userName, loginProvider },
+  } = useMatch<LocationGenerics>();
 
   //TODO: Find a better way to get the returnUrl
   let returnUrl = '';

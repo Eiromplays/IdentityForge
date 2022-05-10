@@ -1,22 +1,15 @@
-import { useRoutes } from 'react-router-dom';
+import { Route } from '@tanstack/react-location';
 
+import { LocationGenerics } from '@/App';
 import { Landing, NotFound } from '@/features/misc';
-import { useAuth } from '@/lib/auth';
 
 import { protectedRoutes } from './protected';
-import { publicRoutes } from './public';
 
-export const AppRoutes = () => {
-  const auth = useAuth();
-
+export const AppRoutes = (): Route<LocationGenerics>[] => {
   const commonRoutes = [
     { path: '/', element: <Landing /> },
     { path: '*', element: <NotFound /> },
   ];
 
-  const routes = auth.user ? protectedRoutes : publicRoutes;
-
-  const element = useRoutes([...routes, ...commonRoutes]);
-
-  return <>{element}</>;
+  return [...protectedRoutes, ...commonRoutes];
 };

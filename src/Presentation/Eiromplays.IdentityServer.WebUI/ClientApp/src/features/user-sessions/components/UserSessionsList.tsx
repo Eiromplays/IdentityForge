@@ -1,6 +1,4 @@
-import { Table, Spinner, Link } from '@/components/Elements';
-import { useAuth } from '@/lib/auth';
-import { formatDate } from '@/utils/format';
+import { Table, Spinner, Link, useAuth, formatDate } from 'eiromplays-ui';
 
 import { useUserSessions } from '../api/getUserSessions';
 import { UserSession } from '../types';

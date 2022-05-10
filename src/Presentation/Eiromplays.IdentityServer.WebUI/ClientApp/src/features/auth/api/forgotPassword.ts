@@ -1,9 +1,6 @@
+import { axios, MutationConfig, MessageResponse } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
-
-import { axios } from '@/lib/axios';
-import { MutationConfig } from '@/lib/react-query';
-import { MessageResponse } from '@/types';
 
 type ForgotPasswordDTO = {
   email: string;

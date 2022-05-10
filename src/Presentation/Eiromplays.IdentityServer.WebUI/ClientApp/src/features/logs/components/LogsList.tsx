@@ -1,5 +1,4 @@
-import { Table, Spinner, Link } from '@/components/Elements';
-import { formatDate, formatLogType } from '@/utils/format';
+import { Table, Spinner, Link, formatDate, formatLogType } from 'eiromplays-ui';
 
 import { useLogs } from '../api/getLogs';
 import { Log } from '../types';

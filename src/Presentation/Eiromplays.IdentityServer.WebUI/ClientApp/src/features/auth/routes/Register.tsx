@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from '@tanstack/react-location';
 
 import { Layout } from '../components/Layout';
 import { RegisterForm } from '../components/RegisterForm';
@@ -8,7 +8,7 @@ export const Register = () => {
 
   return (
     <Layout title="Register your account">
-      <RegisterForm onSuccess={() => navigate('/auth/login')} />
+      <RegisterForm onSuccess={() => navigate({ to: '/auth/login' })} />
     </Layout>
   );
 };

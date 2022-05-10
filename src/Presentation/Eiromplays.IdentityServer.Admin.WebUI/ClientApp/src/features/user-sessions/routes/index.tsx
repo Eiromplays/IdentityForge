@@ -1,14 +1,41 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route } from '@tanstack/react-location';
+import { queryClient } from 'eiromplays-ui';
+
+import { LocationGenerics } from '@/App';
+
+import { getUserSession } from '../api/getUserSession';
+import { searchUserSessions } from '../api/searchUserSessions';
 
 import { UserSession } from './UserSession';
 import { UserSessions } from './UserSessions';
 
-export const UserSessionsRoutes = () => {
-  return (
-    <Routes>
-      <Route path="" element={<UserSessions />} />
-      <Route path=":key" element={<UserSession />} />
-      <Route path="*" element={<Navigate to="." />} />
-    </Routes>
-  );
+export const UserSessionsRoutes: Route<LocationGenerics> = {
+  path: 'user-sessions',
+  children: [
+    {
+      path: '/',
+      element: <UserSessions />,
+      loader: async ({ search: { pagination } }) =>
+        queryClient.getQueryData(['user-sessions', pagination?.index ?? 1]) ??
+        queryClient
+          .fetchQuery(['user-sessions', pagination?.index ?? 1], () =>
+            searchUserSessions({
+              pageNumber: pagination?.index ?? 1,
+              pageSize: pagination?.size ?? 10,
+            })
+          )
+          .then(() => ({})),
+    },
+    {
+      path: ':key',
+      element: <UserSession />,
+      loader: async ({ params: { key } }) =>
+        queryClient.getQueryData(['user-session', key]) ??
+        queryClient.fetchQuery(['user-session', key], () => getUserSession({ key: key })),
+    },
+    {
+      path: '*',
+      element: <Navigate to="." />,
+    },
+  ],
 };

@@ -1,7 +1,5 @@
+import { ExtractFnReturnType, QueryConfig, axios } from 'eiromplays-ui';
 import { useQuery } from 'react-query';
-
-import { axios } from '@/lib/axios';
-import { ExtractFnReturnType, QueryConfig } from '@/lib/react-query';
 
 import { LogoutResponse } from '../types';
 

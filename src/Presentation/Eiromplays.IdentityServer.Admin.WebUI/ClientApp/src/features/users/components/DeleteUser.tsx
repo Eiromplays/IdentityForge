@@ -1,5 +1,4 @@
-import { Button, ConfirmationDialog } from '@/components/Elements';
-import { useAuth } from '@/lib/auth';
+import { Button, ConfirmationDialog, useAuth } from 'eiromplays-ui';
 
 import { useDeleteUser } from '../api/deleteUser';
 

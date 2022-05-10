@@ -1,14 +1,13 @@
 // Not found, original code: https://codepen.io/Navedkhan012/pen/vrWQMY
 
-import { Link, useNavigate } from 'react-router-dom';
-
-import { Button } from '@/components/Elements';
+import { useNavigate } from '@tanstack/react-location';
+import { Button, Link } from 'eiromplays-ui';
 
 export const NotFound = () => {
   const navigate = useNavigate();
 
   const handleBackToSafeGround = () => {
-    navigate('/');
+    navigate({ to: '/' });
   };
 
   return (
