@@ -2,8 +2,8 @@ import path from 'path';
 import { env } from 'process';
 
 import react from '@vitejs/plugin-react';
-import reactRefresh from '@vitejs/plugin-react-refresh';
 import { defineConfig } from 'vite';
+import dynamicImport from 'vite-plugin-dynamic-import';
 import envCompatible from 'vite-plugin-env-compatible';
 import mkcert from 'vite-plugin-mkcert';
 import tsconfigPaths from 'vite-tsconfig-paths';
@@ -16,7 +16,7 @@ const target = env.ASPNETCORE_HTTPS_PORT
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), reactRefresh(), tsconfigPaths(), mkcert(), envCompatible()],
+  plugins: [react(), tsconfigPaths(), mkcert(), envCompatible(), dynamicImport()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
@@ -33,7 +33,7 @@ export default defineConfig({
       },
       '/roles': {
         target: target,
-        changeOrigin: true,
+        changeOrigin: false,
         secure: false,
       },
       '/bff': {
@@ -53,21 +53,26 @@ export default defineConfig({
       },
       '/personal': {
         target: target,
-        changeOrigin: true,
+        changeOrigin: false,
         secure: false,
       },
       '/user-sessions': {
         target: target,
-        changeOrigin: true,
+        changeOrigin: false,
         secure: false,
       },
       '/logs': {
         target: target,
-        changeOrigin: true,
+        changeOrigin: false,
         secure: false,
       },
       '/persisted-grants': {
         target: target,
+        changeOrigin: false,
+        secure: false,
+      },
+      '/consent': {
+        target: 'https://localhost:7001',
         changeOrigin: true,
         secure: false,
       },

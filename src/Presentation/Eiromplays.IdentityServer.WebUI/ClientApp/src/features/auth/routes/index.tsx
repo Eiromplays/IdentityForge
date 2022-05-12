@@ -5,8 +5,10 @@ import { LocationGenerics } from '@/App';
 import { ConfirmedEmail } from './ConfirmedEmail';
 import { ExternalLoginConfirmation } from './ExternalLoginConfirmation';
 import { ForgotPassword } from './ForgotPassword';
+import { Lockout } from './Lockout';
 import { Login } from './Login';
 import { Login2fa } from './Login2fa';
+import { Logout } from './Logout';
 import { NotAllowed } from './NotAllowed';
 import { Register } from './Register';
 
@@ -24,5 +26,7 @@ export const AuthRoutes: Route<LocationGenerics> = {
     { path: 'not-allowed', element: <NotAllowed /> },
     { path: 'confirmed-email', element: <ConfirmedEmail /> },
     { path: 'forgot-password', element: <ForgotPassword /> },
+    { path: 'logout', element: <Logout /> },
+    { path: 'lockout', element: <Lockout /> },
   ],
 };

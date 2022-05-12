@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 import { ConsentViewModel } from '../types';
 
 export const getConsent = ({ returnUrl }: { returnUrl?: string }): Promise<ConsentViewModel> => {
-  return axios.get(`https://localhost:7001/consent?returnUrl=${returnUrl}`);
+  return axios.get(`/consent?returnUrl=${returnUrl}`);
 };
 
 type QueryFnType = typeof getConsent;

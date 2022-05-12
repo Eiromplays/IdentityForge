@@ -9,7 +9,7 @@ type ConsentDto = {
 };
 
 export const consent = async ({ data }: ConsentDto): Promise<ProcessConsentResult> => {
-  return axios.post(`https://localhost:7001/consent`, data);
+  return axios.post('/consent', data);
 };
 
 type UseConsentOptions = {
