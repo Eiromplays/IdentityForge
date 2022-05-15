@@ -3,7 +3,6 @@ import { env } from 'process';
 
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
-import dynamicImport from 'vite-plugin-dynamic-import';
 import envCompatible from 'vite-plugin-env-compatible';
 import mkcert from 'vite-plugin-mkcert';
 import tsconfigPaths from 'vite-tsconfig-paths';
@@ -16,7 +15,7 @@ const target = env.ASPNETCORE_HTTPS_PORT
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), tsconfigPaths(), mkcert(), envCompatible(), dynamicImport()],
+  plugins: [react(), tsconfigPaths(), mkcert(), envCompatible()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
@@ -72,7 +71,7 @@ export default defineConfig({
         secure: false,
       },
       '/consent': {
-        target: 'https://localhost:7001',
+        target: target,
         changeOrigin: true,
         secure: false,
       },

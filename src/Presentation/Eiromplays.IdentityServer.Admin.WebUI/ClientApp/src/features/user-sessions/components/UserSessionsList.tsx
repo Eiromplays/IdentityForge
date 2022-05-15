@@ -3,7 +3,7 @@ import { formatDate, Link, PaginatedTable, Spinner, useAuth } from 'eiromplays-u
 
 import { LocationGenerics } from '@/App';
 
-import { SearchUserSessionDTO, useSearchUserSessions } from '../api/searchUserSessions';
+import { SearchUserSessionDTO } from '../api/searchUserSessions';
 import { UserSession } from '../types';
 
 import { DeleteUserSession } from './DeleteUserSession';
@@ -14,28 +14,13 @@ export const UserSessionsList = () => {
   const page = search.pagination?.index || 1;
   const pageSize = search.pagination?.size || 10;
 
-  const searchUserSessionDto: SearchUserSessionDTO = {
-    pageNumber: page,
-    pageSize: pageSize,
-  };
-
-  const searchUserSessionsQuery = useSearchUserSessions({ data: searchUserSessionDto });
-
-  if (searchUserSessionsQuery.isLoading) {
-    return (
-      <div className="w-full h-48 flex justify-center items-center">
-        <Spinner size="lg" />
-      </div>
-    );
-  }
-
-  if (!searchUserSessionsQuery.data || !user) return null;
+  if (!user) return null;
 
   return (
-    <PaginatedTable<UserSession>
-      paginationResponse={searchUserSessionsQuery.data}
-      data={searchUserSessionsQuery.data?.data}
-      onPageSizeChanged={searchUserSessionsQuery.remove}
+    <PaginatedTable<SearchUserSessionDTO, UserSession>
+      url="/user-sessions/search"
+      queryKeyName="search-user-sessions"
+      searchData={{ pageNumber: page, pageSize: pageSize }}
       columns={[
         {
           title: 'Session Id',

@@ -3,7 +3,7 @@ import { formatDate, Link, PaginatedTable, Spinner } from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
-import { SearchUserDTO, useSearchUsers } from '../api/searchUsers';
+import { SearchUserDTO } from '../api/searchUsers';
 import { User } from '../types';
 
 import { DeleteUser } from './DeleteUser';
@@ -13,28 +13,11 @@ export const UsersList = () => {
   const page = search.pagination?.index || 1;
   const pageSize = search.pagination?.size || 10;
 
-  const searchUserDto: SearchUserDTO = {
-    pageNumber: page,
-    pageSize: pageSize,
-    isActive: true,
-  };
-
-  const searchUsersQuery = useSearchUsers({ data: searchUserDto });
-
-  if (searchUsersQuery.isLoading) {
-    return (
-      <div className="w-full h-48 flex justify-center items-center">
-        <Spinner size="lg" />
-      </div>
-    );
-  }
-  if (!searchUsersQuery.data?.data) return null;
-
   return (
-    <PaginatedTable<User>
-      paginationResponse={searchUsersQuery.data}
-      data={searchUsersQuery.data.data}
-      onPageSizeChanged={searchUsersQuery.remove}
+    <PaginatedTable<SearchUserDTO, User>
+      url="/users/search"
+      queryKeyName="search-users"
+      searchData={{ pageNumber: page, pageSize: pageSize }}
       columns={[
         {
           title: 'First Name',

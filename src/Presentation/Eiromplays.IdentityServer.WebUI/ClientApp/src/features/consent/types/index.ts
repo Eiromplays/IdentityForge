@@ -11,8 +11,8 @@ export type ConsentInputModel = {
   button: string;
   scopesConsented: string[];
   rememberConsent: boolean;
-  returnUrl: string;
-  description: string;
+  returnUrl?: string;
+  description?: string;
 };
 
 export type ScopeViewModel = {

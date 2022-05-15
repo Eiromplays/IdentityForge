@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using Eiromplays.IdentityServer.Application.Common.FileStorage;
 using Eiromplays.IdentityServer.Domain.Common;
 using Eiromplays.IdentityServer.Infrastructure.Common.Extensions;
+using Microsoft.AspNetCore.Http;
 
 namespace Eiromplays.IdentityServer.Infrastructure.FileStorage;
 
@@ -25,49 +26,44 @@ public class LocalFileStorageService : IFileStorageService
         var base64Data = Regex.Match(request.Data, "data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
 
         var streamData = new MemoryStream(Convert.FromBase64String(base64Data));
+
+        if (streamData.Length <= 0) return string.Empty;
         
-        if (streamData.Length > 0)
+        var folder = typeof(T).Name;
+            
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
-            var folder = typeof(T).Name;
-            
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                folder = folder.Replace(@"\", "/");
-            }
-
-            var folderName = supportedFileType switch
-            {
-                FileType.Image => Path.Combine("Files", "Images", folder),
-                _ => Path.Combine("Files", "Others", folder),
-            };
-            
-            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-            Directory.CreateDirectory(pathToSave);
-
-            var fileName = request.Name.Trim('"');
-            fileName = RemoveSpecialCharacters(fileName);
-            fileName = fileName.ReplaceWhitespace("-");
-            fileName += request.Extension.Trim();
-            
-            var fullPath = Path.Combine(pathToSave, fileName);
-            var dbPath = Path.Combine(folderName, fileName);
-            
-            if (File.Exists(dbPath))
-            {
-                dbPath = NextAvailableFilename(dbPath);
-                fullPath = NextAvailableFilename(fullPath);
-            }
-
-            await using var stream = new FileStream(fullPath, FileMode.Create);
-            
-            await streamData.CopyToAsync(stream, cancellationToken);
-            
-            return dbPath.Replace("\\", "/");
+            folder = folder.Replace(@"\", "/");
         }
-        else
+
+        var folderName = supportedFileType switch
         {
-            return string.Empty;
+            FileType.Image => Path.Combine("Files", "Images", folder),
+            _ => Path.Combine("Files", "Others", folder),
+        };
+            
+        var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+        Directory.CreateDirectory(pathToSave);
+
+        var fileName = request.Name.Trim('"');
+        fileName = RemoveSpecialCharacters(fileName);
+        fileName = fileName.ReplaceWhitespace("-");
+        fileName += request.Extension.Trim();
+            
+        var fullPath = Path.Combine(pathToSave, fileName);
+        var dbPath = Path.Combine(folderName, fileName);
+            
+        if (File.Exists(dbPath))
+        {
+            dbPath = NextAvailableFilename(dbPath);
+            fullPath = NextAvailableFilename(fullPath);
         }
+
+        await using var stream = new FileStream(fullPath, FileMode.Create);
+            
+        await streamData.CopyToAsync(stream, cancellationToken);
+            
+        return dbPath.Replace("\\", "/");
     }
 
     private static string RemoveSpecialCharacters(string str)

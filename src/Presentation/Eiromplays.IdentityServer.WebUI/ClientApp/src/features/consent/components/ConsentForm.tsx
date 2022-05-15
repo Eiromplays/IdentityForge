@@ -26,14 +26,8 @@ export const ConsentForm = ({ data }: ConsentFormProps) => {
       <div className="flex flex-column flex-wrap gap-5 pl-5 pb-5">
         <Form<ConsentInputModel, typeof schema>
           onSubmit={async (values) => {
-            //TODO: Find a better way to get the returnUrl
-            let returnUrl = '';
-            const idx = location.href.toLowerCase().indexOf('?returnurl=');
-            if (idx > 0) {
-              returnUrl = location.href.substring(idx + 11);
-            }
             values.button = buttonClicked;
-            values.returnUrl = returnUrl;
+            values.returnUrl = data.returnUrl;
 
             await consentMutation.mutateAsync({ data: values });
           }}

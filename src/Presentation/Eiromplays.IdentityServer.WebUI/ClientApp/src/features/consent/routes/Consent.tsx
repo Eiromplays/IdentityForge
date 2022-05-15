@@ -1,17 +1,15 @@
+import { useSearch } from '@tanstack/react-location';
 import { MDPreview, Spinner, Head, ContentLayout } from 'eiromplays-ui';
+
+import { LocationGenerics } from '@/App';
 
 import { useConsent } from '../api/getConsent';
 import { ConsentForm } from '../components/ConsentForm';
 
 export const Consent = () => {
-  //TODO: Find a better way to get the returnUrl
-  let returnUrl = '';
-  const idx = location.href.toLowerCase().indexOf('?returnurl=');
-  if (idx > 0) {
-    returnUrl = location.href.substring(idx + 11);
-  }
+  const { returnUrl: returnUrl } = useSearch<LocationGenerics>();
 
-  const consentQuery = useConsent({ returnUrl });
+  const consentQuery = useConsent({ returnUrl: encodeURIComponent(returnUrl ?? '') });
 
   if (consentQuery.isLoading) {
     return (

@@ -3,7 +3,7 @@ import { Spinner, PaginatedTable, Link } from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
-import { SearchRoleDTO, useSearchRoles } from '../api/searchRoles';
+import { SearchRoleDTO } from '../api/searchRoles';
 import { Role } from '../types';
 
 import { DeleteRole } from './DeleteRole';
@@ -13,28 +13,11 @@ export const RolesList = () => {
   const page = search.pagination?.index || 1;
   const pageSize = search.pagination?.size || 10;
 
-  const searchRoleDto: SearchRoleDTO = {
-    pageNumber: page,
-    pageSize: pageSize,
-  };
-
-  const rolesQuery = useSearchRoles({ data: searchRoleDto });
-
-  if (rolesQuery.isLoading) {
-    return (
-      <div className="w-full h-48 flex justify-center items-center">
-        <Spinner size="lg" />
-      </div>
-    );
-  }
-
-  if (!rolesQuery.data) return null;
-
   return (
-    <PaginatedTable<Role>
-      paginationResponse={rolesQuery.data}
-      data={rolesQuery.data?.data}
-      onPageSizeChanged={rolesQuery.remove}
+    <PaginatedTable<SearchRoleDTO, Role>
+      url="/roles/search"
+      queryKeyName="search-roles"
+      searchData={{ pageNumber: page, pageSize: pageSize }}
       columns={[
         {
           title: 'Id',

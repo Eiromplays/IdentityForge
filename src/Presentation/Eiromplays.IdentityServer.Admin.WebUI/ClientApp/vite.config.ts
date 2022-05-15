@@ -33,7 +33,7 @@ export default defineConfig({
       },
       '/roles': {
         target: target,
-        changeOrigin: true,
+        changeOrigin: false,
         secure: false,
       },
       '/bff': {
@@ -53,22 +53,22 @@ export default defineConfig({
       },
       '/personal': {
         target: target,
-        changeOrigin: true,
+        changeOrigin: false,
         secure: false,
       },
       '/user-sessions': {
         target: target,
-        changeOrigin: true,
+        changeOrigin: false,
         secure: false,
       },
       '/logs': {
         target: target,
-        changeOrigin: true,
+        changeOrigin: false,
         secure: false,
       },
       '/persisted-grants': {
         target: target,
-        changeOrigin: true,
+        changeOrigin: false,
         secure: false,
       },
     },

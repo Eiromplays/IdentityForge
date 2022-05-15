@@ -4,6 +4,7 @@
 // Original file: https://github.com/DuendeSoftware/Samples/blob/main/IdentityServer/v6/Quickstarts
 // Modified by Eirik Sjøløkken
 
+using System.Text.Json;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
@@ -45,10 +46,10 @@ public class ConsentController : Controller
     /// <param name="returnUrl"></param>
     /// <returns></returns>
     [HttpGet]
-    public async Task<IActionResult> Index(string returnUrl)
+    public async Task<IActionResult> Index(string? returnUrl)
     {
         var vm = await BuildViewModelAsync(returnUrl);
-        
+
         return vm != null ? Ok(vm) : throw new InternalServerException("Failed to build consent view model");
     }
 
@@ -58,8 +59,8 @@ public class ConsentController : Controller
     [HttpPost]
     public async Task<IActionResult> Index([FromBody] ConsentInputModel model)
     {
+        _logger.LogInformation("Model: {@Model}", model);
         var result = await ProcessConsent(model);
-
         if (result.IsRedirect)
         {
             var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
@@ -77,11 +78,12 @@ public class ConsentController : Controller
     /*****************************************/
     /* helper APIs for the ConsentController */
     /*****************************************/
+    
     private async Task<ProcessConsentResult> ProcessConsent(ConsentInputModel model)
     {
         var result = new ProcessConsentResult();
-        
-        var url = model.ReturnUrl != null ? Uri.UnescapeDataString(model.ReturnUrl) : null;
+
+        var url = model.ReturnUrl;
 
         // validate return url is still valid
         var request = await _interaction.GetAuthorizationContextAsync(url);
@@ -150,14 +152,8 @@ public class ConsentController : Controller
     private async Task<ConsentViewModel?> BuildViewModelAsync(string? returnUrl, ConsentInputModel? model = null)
     {
         var request = await _interaction.GetAuthorizationContextAsync(returnUrl);
-        if (request is not null)
-        {
-            return CreateConsentViewModel(model, returnUrl, request);
-        }
 
-        _logger.LogError("No consent request matching request: {ReturnUrl}", returnUrl);
-
-        return null;
+        return request is not null ? CreateConsentViewModel(model, returnUrl, request) : null;
     }
 
     private ConsentViewModel CreateConsentViewModel(

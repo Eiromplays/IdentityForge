@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 import { ConsentViewModel } from '../types';
 
 export const getConsent = ({ returnUrl }: { returnUrl?: string }): Promise<ConsentViewModel> => {
-  return axios.get(`/consent?returnUrl=${returnUrl}`);
+  return axios.get(`https://localhost:7001/consent?returnUrl=${returnUrl}`);
 };
 
 type QueryFnType = typeof getConsent;
@@ -17,6 +17,6 @@ export const useConsent = ({ returnUrl, config }: UseConsentOptions) => {
   return useQuery<ExtractFnReturnType<QueryFnType>>({
     ...config,
     queryKey: ['consent'],
-    queryFn: () => getConsent({ returnUrl }),
+    queryFn: () => getConsent({ returnUrl: returnUrl }),
   });
 };

@@ -27,7 +27,7 @@ type UseSearchUserSessionsOptions = {
 export const useSearchUserSessions = ({ data, config }: UseSearchUserSessionsOptions) => {
   return useQuery<ExtractFnReturnType<QueryFnType>>({
     ...config,
-    queryKey: ['search-user-sessions', data.pageNumber],
+    queryKey: ['search-user-sessions', data.pageNumber, data.pageSize],
     queryFn: () => searchUserSessions(data),
   });
 };

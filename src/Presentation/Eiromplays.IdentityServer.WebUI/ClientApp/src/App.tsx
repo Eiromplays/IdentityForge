@@ -1,5 +1,10 @@
 import { ReactLocation } from '@tanstack/react-location';
-import { AppProvider, DefaultLocationGenerics } from 'eiromplays-ui';
+import {
+  AddDataToRequestIgnoreUrls,
+  AppProvider,
+  axios,
+  DefaultLocationGenerics,
+} from 'eiromplays-ui';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
 import { AppRoutes } from './routes';
@@ -19,9 +24,14 @@ export type LocationGenerics = DefaultLocationGenerics & {
     userName: string;
     loginProvider: string;
   };
+  Search: {
+    returnUrl: string;
+  };
 };
 
 const location = new ReactLocation<LocationGenerics>();
+axios.defaults.withCredentials = true;
+AddDataToRequestIgnoreUrls.push('https://localhost:7001/consent');
 
 function App() {
   return (

@@ -1092,10 +1092,10 @@ dompurify@^2.3.6:
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.6.tgz#2e019d7d7617aacac07cbbe3d88ae3ad354cf875"
   integrity sha512-OFP2u/3T1R5CEgWCEONuJ1a5+MFKnOYpkywpUSxv/dj1LeBT1erK+JwM7zK0ROy2BRhqVCf0LRw/kHqKuMkVGg==
 
-eiromplays-ui@^0.8.7:
-  version "0.8.7"
-  resolved "https://registry.yarnpkg.com/eiromplays-ui/-/eiromplays-ui-0.8.7.tgz#b92e2b5888159d985570b0ce86d846bae36350dc"
-  integrity sha512-Q4TYPY02E2zZYQTQ/YAemN74x9DyemSuEDUbq+k8YxKipBhZspiSr4T2asDmowEjFtTWzqx0YJPqXNgvElknLg==
+eiromplays-ui@^1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/eiromplays-ui/-/eiromplays-ui-1.1.5.tgz#5c57a8ac960b8e23c0b1ee533d81237a28d1819b"
+  integrity sha512-YmjcXLX/WFOHJHWFwPqgd6Q9/MLKBK/W0rofetgj+meOWwkVj/4gn/SDFfBZdpwY8Rq+H4lP0VZPitgh0QVr1Q==
   dependencies:
     "@tanstack/react-location" "^3.7.4"
     "@tanstack/react-location-devtools" "^3.4.4"
