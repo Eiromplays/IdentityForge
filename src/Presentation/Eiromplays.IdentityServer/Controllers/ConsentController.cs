@@ -59,12 +59,11 @@ public class ConsentController : Controller
     [HttpPost]
     public async Task<IActionResult> Index([FromBody] ConsentInputModel model)
     {
-        _logger.LogInformation("Model: {@Model}", model);
         var result = await ProcessConsent(model);
         if (result.IsRedirect)
         {
-            var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
-            return context?.IsNativeClient() == true ? this.LoadingPage("Redirect", result.RedirectUri!) : Ok(result);
+            await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+            return Ok(result);
         }
 
         if (result.HasValidationError)
@@ -76,17 +75,15 @@ public class ConsentController : Controller
     }
 
     /*****************************************/
-    /* helper APIs for the ConsentController */
+    /* Helper APIs for the ConsentController */
     /*****************************************/
     
     private async Task<ProcessConsentResult> ProcessConsent(ConsentInputModel model)
     {
         var result = new ProcessConsentResult();
-
-        var url = model.ReturnUrl;
-
+        
         // validate return url is still valid
-        var request = await _interaction.GetAuthorizationContextAsync(url);
+        var request = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
         if (request is null) return result;
 
         ConsentResponse? grantedConsent = null;
@@ -137,13 +134,14 @@ public class ConsentController : Controller
             await _interaction.GrantConsentAsync(request, grantedConsent);
 
             // indicate that's it ok to redirect back to authorization endpoint
-            result.RedirectUri = url;
+
+            result.RedirectUri = model.ReturnUrl;
             result.Client = request.Client;
         }
         else
         {
             // we need to redisplay the consent UI
-            result.ViewModel = await BuildViewModelAsync(url, model);
+            result.ViewModel = await BuildViewModelAsync(model.ReturnUrl, model);
         }
 
         return result;

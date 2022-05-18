@@ -1,10 +1,43 @@
 {
-  "MailSettings": {
-    "DisplayName": "Mukesh Murugan",
-    "From": "mukesh@fullstackhero.net",
-    "Host": "smtp.ethereal.email",
-    "Password": "vAKmWQB8CyPUBg8rBQ",
-    "Port": 587,
-    "UserName": "adaline.pfannerstill49@ethereal.email"
+  "EmailConfiguration": {
+    "EmailProvider": "Smtp",
+    "From": "eirom.plays@gmail.com",
+    "DefaultFromName": "Eiromplays.IdentityServer",
+    "SmtpEmailConfiguration": {
+      "Host": "smtp.gmail.com",
+      "Login": "eirom.plays@gmail.com",
+      "Password": "ngrrqudayhfxwylb",
+      "Port": 587,
+      "UseSsl": true
+    },
+    "MailKitConfiguration": {
+      "Server": "{Server/Host}",
+      "Port": 587,
+      "User": "{UserName}",
+      "Password": "{Password}",
+      "UseSsl": true,
+      "RequiresAuthentication": true
+    },
+    "SendGridConfiguration": {
+      "ApiKey": "{Your_API_Key}",
+      "SandboxMode": true
+    },
+    "MailgunConfiguration": {
+      "DomainName": "{DomainName}",
+      "ApiKey": "{Your_API_Key}",
+      "MailGunRegion": "EU"
+    },
+    "MailtrapConfiguration": {
+      "UserName": "{UserName}",
+      "Password": "{Password}",
+      "Host": "{Host}",
+      "Port": 25
+    },
+    "GraphConfiguration": {
+      "ClientId": "{ClientId}",
+      "TenantId": "{TenantId}",
+      "Secret": "{Secret}",
+      "SaveSentItems": true
+    }
   }
 }

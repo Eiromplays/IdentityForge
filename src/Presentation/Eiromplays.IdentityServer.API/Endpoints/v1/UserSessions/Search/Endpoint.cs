@@ -13,7 +13,7 @@ public class Endpoint : Endpoint<Models.Request, PaginationResponse<UserSessionD
         _userService = userService;
     }
 
-    public override void Configure()
+    public override void Configure() 
     {
         Post("/user-sessions/search");
         Summary(s =>

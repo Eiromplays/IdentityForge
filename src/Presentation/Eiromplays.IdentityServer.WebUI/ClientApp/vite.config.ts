@@ -70,11 +70,6 @@ export default defineConfig({
         changeOrigin: false,
         secure: false,
       },
-      '/consent': {
-        target: target,
-        changeOrigin: true,
-        secure: false,
-      },
     },
   },
 });

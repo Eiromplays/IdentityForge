@@ -1,12 +1,12 @@
 {
   "EmailConfiguration": {
     "EmailProvider": "Smtp",
-    "From": "{yourname@yourdomain.com}",
+    "From": "eirom.plays@gmail.com",
     "DefaultFromName": "Eiromplays.IdentityServer",
     "SmtpEmailConfiguration": {
-      "Host": "{Host}",
-      "Login": "{Login/username}",
-      "Password": "{Password}",
+      "Host": "smtp.gmail.com",
+      "Login": "eirom.plays@gmail.com",
+      "Password": "ngrrqudayhfxwylb",
       "Port": 587,
       "UseSsl": true
     },

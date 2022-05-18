@@ -9,8 +9,6 @@ import { protectedRoutes } from './protected';
 import { publicRoutes } from './public';
 
 export const AppRoutes = (): Route<LocationGenerics>[] => {
-  //const auth = useAuth();
-
   const commonRoutes = [
     { path: '/', element: <Landing /> },
     { path: '/error', element: <Error /> },

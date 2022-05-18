@@ -164,16 +164,9 @@ public class SpaEndpoints : Controller
 
                 if (context != null)
                 {
-                    if (context.IsNativeClient())
-                    {
-                        // The client is native, so this change in how to
-                        // return the response is for better UX for the end user.
-                        return this.LoadingPage("Redirect", model.ReturnUrl);
-                    }
-
                     // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
                     response.ValidReturnUrl = url;
-                        
+
                     return Ok(response);
                 }
 
