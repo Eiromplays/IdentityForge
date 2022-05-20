@@ -20,7 +20,7 @@ export const UsersRoutes: Route<LocationGenerics> = {
       loader: async ({ search: { pagination } }) =>
         queryClient.getQueryData(['search-users', pagination?.index ?? 1]) ??
         queryClient
-          .fetchQuery(['search-users', pagination?.index ?? 1], () =>
+          .fetchQuery(['search-users', pagination?.index ?? 1, pagination?.size ?? 10], () =>
             searchUsers({ pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 })
           )
           .then(() => ({})),
