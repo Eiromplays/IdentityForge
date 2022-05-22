@@ -31,9 +31,9 @@ export const PersistedGrantsRoutes: Route<LocationGenerics> = {
       element: <PersistedGrant />,
       loader: async ({ params: { key } }) =>
         queryClient.getQueryData(['persisted-grant', key]) ??
-        queryClient.fetchQuery(['persisted-grant', key], () =>
+        (await queryClient.fetchQuery(['persisted-grant', key], () =>
           getPersistedGrant({ persistedGrantKey: key })
-        ),
+        )),
     },
     {
       path: '*',

@@ -30,14 +30,16 @@ export const UsersRoutes: Route<LocationGenerics> = {
       element: <UserRoles />,
       loader: async ({ params: { userId } }) =>
         queryClient.getQueryData(['user', userId, 'roles']) ??
-        queryClient.fetchQuery(['user', userId, 'roles'], () => getUserRoles({ userId: userId })),
+        (await queryClient.fetchQuery(['user', userId, 'roles'], () =>
+          getUserRoles({ userId: userId })
+        )),
     },
     {
       path: ':userId',
       element: <User />,
       loader: async ({ params: { userId } }) =>
         queryClient.getQueryData(['user', userId]) ??
-        queryClient.fetchQuery(['user', userId], () => getUser({ userId: userId })),
+        (await queryClient.fetchQuery(['user', userId], () => getUser({ userId: userId }))),
     },
     {
       path: '*',

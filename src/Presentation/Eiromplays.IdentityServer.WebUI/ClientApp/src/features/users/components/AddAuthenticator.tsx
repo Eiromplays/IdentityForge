@@ -1,6 +1,5 @@
-import { HiOutlinePlus } from 'react-icons/hi';
-
 import { Button, ConfirmationDialog } from 'eiromplays-ui';
+import { HiOutlinePlus } from 'react-icons/hi';
 
 import { EnableAuthenticator } from './EnableAuthenticator';
 

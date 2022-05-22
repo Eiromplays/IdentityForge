@@ -1,7 +1,6 @@
+import { MutationConfig, queryClient, axios } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
-
-import { MutationConfig, queryClient, axios } from 'eiromplays-ui';
 
 export type UpdateRoleDTO = {
   data: {
@@ -22,8 +21,8 @@ type UseUpdateRoleOptions = {
 export const useUpdateRole = ({ config }: UseUpdateRoleOptions = {}) => {
   return useMutation({
     onSuccess: async (response) => {
-      queryClient.invalidateQueries('roles');
-      queryClient.invalidateQueries(`role-${response.data.RoleId}`);
+      await queryClient.invalidateQueries('roles');
+      await queryClient.invalidateQueries(`role-${response.data.RoleId}`);
       toast.success('Role Updated');
     },
     onError: (error) => {

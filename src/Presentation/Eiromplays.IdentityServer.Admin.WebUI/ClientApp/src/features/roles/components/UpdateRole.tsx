@@ -1,7 +1,6 @@
+import { Button, ConfirmationDialog, Spinner, Form, FormDrawer, InputField } from 'eiromplays-ui';
 import { HiOutlinePencil } from 'react-icons/hi';
 import * as z from 'zod';
-
-import { Button, ConfirmationDialog, Spinner, Form, FormDrawer, InputField } from 'eiromplays-ui';
 
 import { useRole } from '../api/getRole';
 import { UpdateRoleDTO, useUpdateRole } from '../api/updateRole';

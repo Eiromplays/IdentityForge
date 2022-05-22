@@ -28,7 +28,7 @@ export const RolesRoutes: Route<LocationGenerics> = {
       element: <RoleInfo />,
       loader: async ({ params: { roleId } }) =>
         queryClient.getQueryData(['role', roleId]) ??
-        queryClient.fetchQuery(['role', roleId], () => getRole({ roleId: roleId })),
+        (await queryClient.fetchQuery(['role', roleId], () => getRole({ roleId: roleId }))),
     },
     {
       path: '*',

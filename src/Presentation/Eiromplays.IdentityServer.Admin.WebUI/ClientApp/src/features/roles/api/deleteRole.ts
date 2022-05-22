@@ -35,8 +35,8 @@ export const useDeleteRole = ({ config }: UseDeleteRoleOptions = {}) => {
         queryClient.setQueryData('roles', context.previousRoles);
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries('roles');
+    onSuccess: async () => {
+      await queryClient.invalidateQueries('roles');
       toast.success('Role deleted');
     },
     ...config,

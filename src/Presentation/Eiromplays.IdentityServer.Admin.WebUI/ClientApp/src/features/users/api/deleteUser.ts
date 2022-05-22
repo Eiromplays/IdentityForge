@@ -1,7 +1,6 @@
+import { axios, MutationConfig, queryClient } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
-
-import { axios, MutationConfig, queryClient } from 'eiromplays-ui';
 
 import { User } from '../types';
 
@@ -36,8 +35,8 @@ export const useDeleteUser = ({ config }: UseDeleteUserOptions = {}) => {
         queryClient.setQueryData('users', context.previousUsers);
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries('users');
+    onSuccess: async () => {
+      await queryClient.invalidateQueries('users');
       toast.success('User deleted');
     },
     ...config,

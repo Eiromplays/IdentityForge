@@ -1,7 +1,6 @@
+import { axios, MutationConfig, useAuth } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
-
-import { axios, MutationConfig, useAuth } from 'eiromplays-ui';
 
 export type UpdateProfileDTO = {
   userId: string;
@@ -16,6 +15,7 @@ export type UpdateProfileDTO = {
   };
 };
 
+// even if you decide not to use precaching. See https://cra.link/PWA
 const toBase64 = (file: File) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();

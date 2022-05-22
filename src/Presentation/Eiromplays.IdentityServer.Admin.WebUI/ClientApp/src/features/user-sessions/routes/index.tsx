@@ -31,7 +31,7 @@ export const UserSessionsRoutes: Route<LocationGenerics> = {
       element: <UserSession />,
       loader: async ({ params: { key } }) =>
         queryClient.getQueryData(['user-session', key]) ??
-        queryClient.fetchQuery(['user-session', key], () => getUserSession({ key: key })),
+        (await queryClient.fetchQuery(['user-session', key], () => getUserSession({ key: key }))),
     },
     {
       path: '*',

@@ -31,8 +31,8 @@ export const useRevokeGrant = ({ config }: UseRevokeGrantOptions = {}) => {
         queryClient.setQueryData('grants', context.previousDiscussions);
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries('grants');
+    onSuccess: async () => {
+      await queryClient.invalidateQueries('grants');
       toast.success('Grant Revoked');
     },
     ...config,

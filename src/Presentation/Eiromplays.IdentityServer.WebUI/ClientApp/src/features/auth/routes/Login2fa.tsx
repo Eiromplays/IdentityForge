@@ -10,7 +10,7 @@ export const Login2fa = () => {
     params: { rememberMe, returnUrl },
   } = useMatch<LocationGenerics>();
 
-  const rememberMeAsBoolean = rememberMe?.toLowerCase() === 'true' ? true : false;
+  const rememberMeAsBoolean = rememberMe?.toLowerCase() === 'true';
 
   return (
     <Layout title="Log in to your account with two-factor authentication">

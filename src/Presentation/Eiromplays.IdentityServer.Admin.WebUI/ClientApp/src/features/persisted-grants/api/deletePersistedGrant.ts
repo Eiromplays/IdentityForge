@@ -34,8 +34,8 @@ export const useDeletePersistedGrant = ({ config }: UseDeletePersistedGrantOptio
         queryClient.setQueryData('persisted-grants', context.previousPersistedGrants);
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries('persisted-grants');
+    onSuccess: async () => {
+      await queryClient.invalidateQueries('persisted-grants');
       toast.success('Persisted Grant Deleted');
     },
     ...config,

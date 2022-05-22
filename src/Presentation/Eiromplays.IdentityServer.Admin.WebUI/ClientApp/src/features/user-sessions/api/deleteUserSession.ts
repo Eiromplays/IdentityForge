@@ -33,8 +33,8 @@ export const useDeleteUserSession = ({ config }: UseDeleteUserSessionOptions = {
         queryClient.setQueryData('user-sessions', context.previousUserSessions);
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries('user-sessions');
+    onSuccess: async () => {
+      await queryClient.invalidateQueries('user-sessions');
       toast.success('User Session Deleted');
       window.location.href = '/app';
     },
