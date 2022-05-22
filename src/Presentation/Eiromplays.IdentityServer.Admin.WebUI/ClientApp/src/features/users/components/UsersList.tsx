@@ -1,5 +1,12 @@
 import { useSearch, MatchRoute } from '@tanstack/react-location';
-import { formatDate, Link, PaginatedTable, Spinner } from 'eiromplays-ui';
+import {
+  defaultPageIndex,
+  defaultPageSize,
+  formatDate,
+  Link,
+  PaginatedTable,
+  Spinner,
+} from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
@@ -10,8 +17,8 @@ import { DeleteUser } from './DeleteUser';
 
 export const UsersList = () => {
   const search = useSearch<LocationGenerics>();
-  const page = search.pagination?.index || 1;
-  const pageSize = search.pagination?.size || 10;
+  const page = search.pagination?.index || defaultPageIndex;
+  const pageSize = search.pagination?.size || defaultPageSize;
 
   return (
     <PaginatedTable<SearchUserDTO, User>

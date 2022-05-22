@@ -1,40 +1,30 @@
 import { useSearch, MatchRoute } from '@tanstack/react-location';
-import { formatDate, Link, PaginatedTable, Spinner } from 'eiromplays-ui';
+import {
+  defaultPageIndex,
+  defaultPageSize,
+  formatDate,
+  Link,
+  PaginatedTable,
+  Spinner,
+} from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
-import { SearchPersistedGrantDTO, useSearchPersistedGrants } from '../api/searchPersistedGrants';
+import { SearchPersistedGrantDTO } from '../api/searchPersistedGrants';
 import { PersistedGrant } from '../types';
 
 import { DeletePersistedGrant } from './DeletePersistedGrant';
 
 export const PersistedGrantsList = () => {
   const search = useSearch<LocationGenerics>();
-  const page = search.pagination?.index || 1;
-  const pageSize = search.pagination?.size || 10;
-
-  const searchPersistedGrantDto: SearchPersistedGrantDTO = {
-    pageNumber: page,
-    pageSize: pageSize,
-  };
-
-  const grantsQuery = useSearchPersistedGrants({ data: searchPersistedGrantDto });
-
-  if (grantsQuery.isLoading) {
-    return (
-      <div className="w-full h-48 flex justify-center items-center">
-        <Spinner size="lg" />
-      </div>
-    );
-  }
-
-  if (!grantsQuery.data) return null;
+  const page = search.pagination?.index || defaultPageIndex;
+  const pageSize = search.pagination?.size || defaultPageSize;
 
   return (
-    <PaginatedTable<PersistedGrant>
-      paginationResponse={grantsQuery.data}
-      data={grantsQuery.data?.data}
-      onPageSizeChanged={grantsQuery.remove}
+    <PaginatedTable<SearchPersistedGrantDTO, PersistedGrant>
+      url="/persisted-grants/search"
+      queryKeyName="search-persisted-grants"
+      searchData={{ pageNumber: page, pageSize: pageSize }}
       columns={[
         {
           title: 'Type',

@@ -1,38 +1,28 @@
 import { useSearch, MatchRoute } from '@tanstack/react-location';
-import { Spinner, Link, formatDate, formatLogType, PaginatedTable } from 'eiromplays-ui';
+import {
+  Spinner,
+  Link,
+  formatDate,
+  formatLogType,
+  PaginatedTable,
+  defaultPageIndex,
+  defaultPageSize,
+} from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
-import { SearchLogsDTO, useSearchLogs } from '../api/searchLogs';
+import { SearchLogsDTO } from '../api/searchLogs';
 import { Log } from '../types';
 
 export const LogsList = () => {
   const search = useSearch<LocationGenerics>();
-  const page = search.pagination?.index || 1;
-  const pageSize = search.pagination?.size || 10;
-
-  const searchLogsDto: SearchLogsDTO = {
-    pageNumber: page,
-    pageSize: pageSize,
-  };
-
-  const searchLogsQuery = useSearchLogs({ data: searchLogsDto });
-
-  if (searchLogsQuery.isLoading) {
-    return (
-      <div className="w-full h-48 flex justify-center items-center">
-        <Spinner size="lg" />
-      </div>
-    );
-  }
-
-  if (!searchLogsQuery.data) return null;
-
+  const page = search.pagination?.index || defaultPageIndex;
+  const pageSize = search.pagination?.size || defaultPageSize;
   return (
-    <PaginatedTable<Log>
-      paginationResponse={searchLogsQuery.data}
-      data={searchLogsQuery.data?.data}
-      onPageSizeChanged={searchLogsQuery.remove}
+    <PaginatedTable<SearchLogsDTO, Log>
+      url="/logs/search"
+      queryKeyName="search-logs"
+      searchData={{ pageNumber: page, pageSize: pageSize }}
       columns={[
         {
           title: 'Id',

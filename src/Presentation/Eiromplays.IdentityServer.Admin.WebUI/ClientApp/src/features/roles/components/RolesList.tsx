@@ -1,5 +1,5 @@
 import { useSearch, MatchRoute } from '@tanstack/react-location';
-import { Spinner, PaginatedTable, Link } from 'eiromplays-ui';
+import { Spinner, PaginatedTable, Link, defaultPageIndex, defaultPageSize } from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
@@ -10,8 +10,8 @@ import { DeleteRole } from './DeleteRole';
 
 export const RolesList = () => {
   const search = useSearch<LocationGenerics>();
-  const page = search.pagination?.index || 1;
-  const pageSize = search.pagination?.size || 10;
+  const page = search.pagination?.index || defaultPageIndex;
+  const pageSize = search.pagination?.size || defaultPageSize;
 
   return (
     <PaginatedTable<SearchRoleDTO, Role>
