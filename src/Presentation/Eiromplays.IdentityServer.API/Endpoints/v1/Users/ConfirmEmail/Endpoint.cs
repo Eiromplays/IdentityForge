@@ -25,7 +25,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
         Response.Message = await _userService.ConfirmEmailAsync(req.UserId, req.Code, ct);
-
+        
         if (!string.IsNullOrWhiteSpace(req.ReturnUrl))
         {
             await SendRedirectAsync(req.ReturnUrl, true, ct);

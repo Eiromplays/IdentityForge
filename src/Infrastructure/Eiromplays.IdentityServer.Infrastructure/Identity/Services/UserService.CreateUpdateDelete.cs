@@ -167,9 +167,9 @@ internal partial class UserService
         var user = await _userManager.FindByIdAsync(userId);
 
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
-
+        
         var currentImage = user.ProfilePicture ?? string.Empty;
-        if (request.Image != null || request.DeleteCurrentImage)
+        if (request.Image is not null || request.DeleteCurrentImage)
         {
             user.ProfilePicture =
                 await _fileStorage.UploadAsync<ApplicationUser>(request.Image, FileType.Image, cancellationToken);
@@ -179,11 +179,13 @@ internal partial class UserService
                 _fileStorage.Remove(Path.Combine(root, currentImage));
             }
         }
-        
+
         user.FirstName = request.FirstName;
         user.LastName = request.LastName;
         user.PhoneNumber = request.PhoneNumber;
+
         var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+        
         if (request.PhoneNumber != phoneNumber)
         {
             await _userManager.SetPhoneNumberAsync(user, request.PhoneNumber);
@@ -192,7 +194,7 @@ internal partial class UserService
         var result = await _userManager.UpdateAsync(user);
 
         await _events.PublishAsync(new ApplicationUserUpdatedEvent(user.Id));
-
+        
         if (!result.Succeeded)
         {
             throw new InternalServerException(_t["Update profile failed"], result.GetErrors(_t));

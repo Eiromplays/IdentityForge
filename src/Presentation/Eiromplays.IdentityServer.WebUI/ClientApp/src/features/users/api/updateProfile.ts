@@ -35,7 +35,7 @@ export const updateProfile = async ({ data }: UpdateProfileDTO) => {
     data.deleteCurrentImage = data.image ? true : data.deleteCurrentImage;
   }
 
-  return axios.put(`/personal/profile`, { UpdateUserRequest: data });
+  return axios.put(`/personal/profile`, data);
 };
 
 type UseUpdateProfileOptions = {
