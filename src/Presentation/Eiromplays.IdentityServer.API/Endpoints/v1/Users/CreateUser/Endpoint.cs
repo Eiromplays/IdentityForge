@@ -29,7 +29,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         // TODO: Add some more protection, like a captcha or something
         Response.UserId = await _userService.CreateAsync(req.Data, BaseURL);
 
-        await SendCreatedAtAsync<GetUserById.Endpoint>(new GetUserById.Models.Request { Id = Response.UserId },
-            Response, cancellation: ct);
+        await SendCreatedAtAsync<GetUserById.Endpoint>(new { Id = Response.UserId },
+            Response, generateAbsoluteUrl: true, cancellation: ct);
     }
 }

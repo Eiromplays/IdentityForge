@@ -26,6 +26,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
     {
         Response.RoleId = await _roleService.CreateOrUpdateAsync(req.Data);
 
-        await SendCreatedAtAsync<GetRoleById.Endpoint>(Response.RoleId, Response, cancellation: ct);
+        await SendCreatedAtAsync<GetRoleById.Endpoint>(new { Id = Response.RoleId }, Response,
+            generateAbsoluteUrl: true, cancellation: ct);
     }
 }
