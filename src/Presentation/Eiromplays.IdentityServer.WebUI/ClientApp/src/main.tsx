@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+
 import './index.scss';
 import 'eiromplays-ui/dist/style.css';
 

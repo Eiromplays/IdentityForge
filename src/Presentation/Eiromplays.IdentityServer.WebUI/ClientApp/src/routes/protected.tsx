@@ -1,5 +1,5 @@
 import { Outlet } from '@tanstack/react-location';
-import { Spinner, MainLayout, lazyImport } from 'eiromplays-ui';
+import { Spinner, MainLayout, lazyImport, Button } from 'eiromplays-ui';
 import { Suspense } from 'react';
 import {
   HiOutlineHome,
@@ -30,28 +30,42 @@ const App = () => {
   return (
     <MainLayout
       logo={logo}
-      userNavigationItems={[{ name: 'Your Profile', to: 'profile' }]}
-      sideBarNavigationItems={[
-        { name: 'Dashboard', to: '.', icon: HiOutlineHome },
-        { name: 'My Profile', to: 'profile', icon: HiOutlineUser },
-        { name: 'Personal Data', to: 'personal-data', icon: HiOutlineCollection },
-        {
-          name: 'Two-factor authentication',
-          to: 'two-factor-authentication',
-          icon: HiOutlineLockClosed,
-        },
-        { name: 'Change Password', to: 'change-password', icon: HiOutlineKey },
-        { name: 'Grants', to: 'grants', icon: HiOutlineShieldCheck },
-        { name: 'User Sessions', to: 'user-sessions', icon: MdOutlineDevicesOther },
-        { name: 'Logs', to: 'logs', icon: MdOutlineHistory },
-        {
-          name: 'Discovery Document',
-          to: 'https://localhost:7001/.well-known/openid-configuration',
-          target: '_blank',
-          externalLink: true,
-          icon: HiOutlineDocumentText,
-        },
-      ]}
+      userNavigationProps={{
+        items: [{ name: 'Your Profile', to: 'profile' }],
+        addProfileItem: false,
+        customButtons: (
+          <Button
+            className="max-w-xs bg-gray-200 dark:bg-gray-600 p-2 flex items-center text-sm rounded-full
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            onClick={() => (window.location.href = 'https://localhost:3001')}
+          >
+            Admin
+          </Button>
+        ),
+      }}
+      sideBarNavigationProps={{
+        items: [
+          { name: 'Dashboard', to: '.', icon: HiOutlineHome },
+          { name: 'My Profile', to: 'profile', icon: HiOutlineUser },
+          { name: 'Personal Data', to: 'personal-data', icon: HiOutlineCollection },
+          {
+            name: 'Two-factor authentication',
+            to: 'two-factor-authentication',
+            icon: HiOutlineLockClosed,
+          },
+          { name: 'Change Password', to: 'change-password', icon: HiOutlineKey },
+          { name: 'Grants', to: 'grants', icon: HiOutlineShieldCheck },
+          { name: 'User Sessions', to: 'user-sessions', icon: MdOutlineDevicesOther },
+          { name: 'Logs', to: 'logs', icon: MdOutlineHistory },
+          {
+            name: 'Discovery Document',
+            to: 'https://localhost:7001/.well-known/openid-configuration',
+            target: '_blank',
+            externalLink: true,
+            icon: HiOutlineDocumentText,
+          },
+        ],
+      }}
     >
       <Suspense
         fallback={

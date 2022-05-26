@@ -7,9 +7,15 @@ import {
   initializeAuth,
   Spinner,
 } from 'eiromplays-ui';
+import React from 'react';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
-import { AuthUser } from '@/features/auth';
+import {
+  AuthUser,
+  Login2faCredentialsDto,
+  LoginCredentialsDTO,
+  RegisterCredentialsDTO,
+} from '@/features/auth';
 import { loadUser, login2faFn, loginFn, logoutFn, registerFn } from '@/lib/auth';
 
 import { AppRoutes } from './routes';
@@ -41,7 +47,12 @@ AddDataToRequestIgnoreUrls.push(
   'https://localhost:7001/spa/Login'
 );
 
-initializeAuth<AuthUser>({
+const { AuthProvider } = initializeAuth<
+  AuthUser,
+  LoginCredentialsDTO,
+  Login2faCredentialsDto,
+  RegisterCredentialsDTO
+>({
   authConfig: {
     loadUser,
     loginFn,
@@ -60,7 +71,11 @@ initializeAuth<AuthUser>({
 
 function App() {
   return (
-    <AppProvider<LocationGenerics> location={location} routes={AppRoutes()}>
+    <AppProvider<LocationGenerics>
+      location={location}
+      routes={AppRoutes()}
+      CustomAuthProvider={AuthProvider}
+    >
       <ReactQueryDevtools
         toggleButtonProps={{
           style: {
