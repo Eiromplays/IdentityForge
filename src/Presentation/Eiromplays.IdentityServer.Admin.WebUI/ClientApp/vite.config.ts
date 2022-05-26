@@ -1,4 +1,4 @@
-import path from 'path';
+import { resolve } from 'path';
 import { env } from 'process';
 
 import react from '@vitejs/plugin-react';
@@ -18,7 +18,7 @@ export default defineConfig({
   plugins: [react(), tsconfigPaths(), mkcert(), envCompatible()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'),
+      '@': resolve(__dirname, 'src'),
     },
   },
   server: {
@@ -66,6 +66,11 @@ export default defineConfig({
         secure: false,
       },
       '/persisted-grants': {
+        target: target,
+        changeOrigin: false,
+        secure: false,
+      },
+      '/dashboard': {
         target: target,
         changeOrigin: false,
         secure: false,

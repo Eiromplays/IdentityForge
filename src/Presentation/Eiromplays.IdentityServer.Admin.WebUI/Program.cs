@@ -91,6 +91,9 @@ app.MapRemoteBffApiEndpoint("/logs", "https://localhost:7003/v1/logs")
 app.MapRemoteBffApiEndpoint("/persisted-grants", "https://localhost:7003/v1/persisted-grants")
     .RequireAccessToken();
 
+app.MapRemoteBffApiEndpoint("/dashboard", "https://localhost:7003/v1/dashboard")
+    .RequireAccessToken();
+
 app.MapFallbackToFile("index.html");
 
 app.Run();
