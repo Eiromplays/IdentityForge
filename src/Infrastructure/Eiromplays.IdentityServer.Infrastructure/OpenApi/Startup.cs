@@ -167,8 +167,9 @@ internal static class Startup
     internal static IApplicationBuilder UseOpenApiDocumentation(this IApplicationBuilder app, IConfiguration config, ProjectType projectType)
     {
         if (!config.GetValue<bool>("SwaggerSettings:Enable") || projectType is not ProjectType.Api) return app;
-        
+
         app.UseOpenApi();
+
         app.UseSwaggerUi3(options =>
         {
             options.DefaultModelsExpandDepth = -1;

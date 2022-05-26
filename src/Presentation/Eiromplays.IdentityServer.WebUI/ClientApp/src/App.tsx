@@ -4,8 +4,13 @@ import {
   AppProvider,
   axios,
   DefaultLocationGenerics,
+  initializeAuth,
+  Spinner,
 } from 'eiromplays-ui';
 import { ReactQueryDevtools } from 'react-query/devtools';
+
+import { AuthUser } from '@/features/auth';
+import { loadUser, login2faFn, loginFn, logoutFn, registerFn } from '@/lib/auth';
 
 import { AppRoutes } from './routes';
 
@@ -31,7 +36,27 @@ export type LocationGenerics = DefaultLocationGenerics & {
 
 const location = new ReactLocation<LocationGenerics>();
 axios.defaults.withCredentials = true;
-AddDataToRequestIgnoreUrls.push('https://localhost:7001/consent');
+AddDataToRequestIgnoreUrls.push(
+  'https://localhost:7001/consent',
+  'https://localhost:7001/spa/Login'
+);
+
+initializeAuth<AuthUser>({
+  authConfig: {
+    loadUser,
+    loginFn,
+    login2faFn,
+    registerFn,
+    logoutFn,
+    LoaderComponent() {
+      return (
+        <div className="w-screen h-screen flex justify-center items-center">
+          <Spinner />
+        </div>
+      );
+    },
+  },
+});
 
 function App() {
   return (
