@@ -1,7 +1,8 @@
 import { Route } from '@tanstack/react-location';
+import { NotFound } from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
-import { Landing, NotFound } from '@/features/misc';
+import { Landing } from '@/features/misc';
 
 import { protectedRoutes } from './protected';
 
