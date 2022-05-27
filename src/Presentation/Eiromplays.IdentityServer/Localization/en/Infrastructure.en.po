@@ -189,7 +189,7 @@ msgstr "Confirm Registration"
 #: Infrastructure\Identity\Services\UserService.cs:141
 #: Infrastructure\Identity\Services\UserService.Password.cs:54
 #: Infrastructure\Identity\Services\UserService.Permissions.cs:14
-#: Infrastructure\Identity\Services\UserService.Roles.cs:38
+#: Infrastructure\Identity\Services\UserService.Clients.cs:38
 msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "User Not Found."
 msgstr "User Not Found."
@@ -241,11 +241,11 @@ msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
 msgid "Change password failed"
 msgstr "Change password failed"
 
-#. return _t["User Roles Updated Successfully."];
-#: Infrastructure\Identity\Services\UserService.Roles.cs:83
+#. return _t["User Clients Updated Successfully."];
+#: Infrastructure\Identity\Services\UserService.Clients.cs:83
 msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.Services.UserService"
-msgid "User Roles Updated Successfully."
-msgstr "User Roles Updated Successfully."
+msgid "User Clients Updated Successfully."
+msgstr "User Clients Updated Successfully."
 
 #. SupportMessage = _t["Provide the ErrorId {0} to the support team for further analysis.", errorId]
 #: Infrastructure\Middleware\ExceptionMiddleware.cs:50

@@ -10,6 +10,7 @@ import { useDashboardStats } from '../api/getDashboardStats';
 
 export const Dashboard = () => {
   const { user } = useAuth();
+  user.id;
   const dashboardStatsQuery = useDashboardStats();
 
   if (dashboardStatsQuery.isLoading) {
@@ -41,30 +42,34 @@ export const Dashboard = () => {
           {
             title: 'Users',
             value: dashboardStatsQuery.data.userCount,
+            countUpProps: { duration: 3, end: dashboardStatsQuery.data.userCount },
             description: 'Total number of users',
-            smallIcon: <HiOutlineUsers className="text-purple-600 w-full h-full" />,
-            largeIcon: <HiOutlineUsers className="text-purple-600 w-full h-full" />,
+            smallIcon: <HiOutlineUsers className="text-green-600 w-full h-full" />,
+            largeIcon: <HiOutlineUsers className="text-green-600 w-full h-full" />,
           },
           {
             title: 'Roles',
             value: dashboardStatsQuery.data.roleCount,
+            countUpProps: { duration: 3, end: dashboardStatsQuery.data.roleCount },
             description: 'Total number of roles',
-            smallIcon: <HiLockClosed className="text-purple-600 w-full h-full" />,
-            largeIcon: <HiLockClosed className="text-purple-600 w-full h-full" />,
+            smallIcon: <HiLockClosed className="text-blue-600 w-full h-full" />,
+            largeIcon: <HiLockClosed className="text-blue-600 w-full h-full" />,
           },
           {
             title: 'Products',
             value: dashboardStatsQuery.data.productCount,
+            countUpProps: { duration: 3, end: dashboardStatsQuery.data.productCount },
             description: 'Total number of products',
-            smallIcon: <HiOutlineShoppingCart className="text-purple-600 w-full h-full" />,
-            largeIcon: <HiOutlineShoppingCart className="text-purple-600 w-full h-full" />,
+            smallIcon: <HiOutlineShoppingCart className="text-red-600 w-full h-full" />,
+            largeIcon: <HiOutlineShoppingCart className="text-red-600 w-full h-full" />,
           },
           {
             title: 'Brands',
             value: dashboardStatsQuery.data.brandCount,
+            countUpProps: { duration: 3, end: dashboardStatsQuery.data.brandCount },
             description: 'Total number of brands',
-            smallIcon: <HiOutlineCollection className="text-purple-600 w-full h-full" />,
-            largeIcon: <HiOutlineCollection className="text-purple-600 w-full h-full" />,
+            smallIcon: <HiOutlineCollection className="text-yellow-600 w-full h-full" />,
+            largeIcon: <HiOutlineCollection className="text-yellow-600 w-full h-full" />,
           },
         ]}
       />

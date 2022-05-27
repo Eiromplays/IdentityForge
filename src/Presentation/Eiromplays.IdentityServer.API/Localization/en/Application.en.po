@@ -128,9 +128,9 @@ msgid "Brands"
 msgstr "Brands"
 
 #. .WithMessage(T["Similar Role already exists."]);
-#: Application\Identity\Roles\CreateOrUpdateRoleRequest.cs:16
+#: Application\Identity\Clients\CreateOrUpdateRoleRequest.cs:16
 msgctxt ""
-"Eiromplays.IdentityServer.Application.Identity.Roles.CreateOrUpdateRoleRequestValidator"
+"Eiromplays.IdentityServer.Application.Identity.Clients.CreateOrUpdateRoleRequestValidator"
 msgid "Similar Role already exists."
 msgstr "Similar Role already exists."
 

@@ -16,9 +16,9 @@ export const LogsRoutes: Route<LocationGenerics> = {
       path: '/',
       element: <Logs />,
       loader: async ({ search: { pagination } }) =>
-        queryClient.getQueryData(['search-logs', pagination?.index ?? 1]) ??
+        queryClient.getQueryData(['search-logs', pagination?.index ?? 1, pagination?.size ?? 10]) ??
         queryClient
-          .fetchQuery(['search-logs', pagination?.index ?? 1], () =>
+          .fetchQuery(['search-logs', pagination?.index ?? 1, pagination?.size ?? 10], () =>
             searchLogs({
               pageNumber: pagination?.index ?? 1,
               pageSize: pagination?.size ?? 10,

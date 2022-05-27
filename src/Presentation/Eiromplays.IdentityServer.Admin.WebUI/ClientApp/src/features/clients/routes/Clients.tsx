@@ -2,9 +2,9 @@ import { ContentLayout } from 'eiromplays-ui';
 
 import { Authorization, ROLES } from '@/lib/authorization';
 
-import { RolesList } from '../components/RolesList';
+import { ClientsList } from '../components/ClientsList';
 
-export const Roles = () => {
+export const Clients = () => {
   return (
     <ContentLayout title="Clients">
       <div className="mt-4">
@@ -12,7 +12,7 @@ export const Roles = () => {
           forbiddenFallback={<div>Only admin can view this.</div>}
           allowedRoles={[ROLES.ADMINISTRATOR]}
         >
-          <RolesList />
+          <ClientsList />
         </Authorization>
       </div>
     </ContentLayout>

@@ -13,5 +13,5 @@ public class GetMyAuditLogsRequestHandler : IRequestHandler<GetMyAuditLogsReques
         (_currentUser, _auditService) = (currentUser, auditService);
 
     public Task<List<AuditDto>> Handle(GetMyAuditLogsRequest request, CancellationToken cancellationToken) =>
-        _auditService.GetUserTrailsAsync(_currentUser.GetUserId());
+        _auditService.GetUserTrailsAsync(_currentUser.GetUserId(), cancellationToken);
 }

@@ -36,15 +36,16 @@ public class AuditService : IAuditService
         return new PaginationResponse<AuditDto>(trails, count, filter.PageNumber, filter.PageSize);
     }
     
-    public async Task<List<AuditDto>> GetUserTrailsAsync(string userId)
+    public async Task<List<AuditDto>> GetUserTrailsAsync(string userId, CancellationToken cancellationToken)
     {
         var trails = await _context.AuditTrails
             .Where(a => a.UserId == userId)
             .OrderByDescending(a => a.DateTime)
             .Take(250)
-            .ToListAsync();
+            .ProjectToType<AuditDto>()
+            .ToListAsync(cancellationToken);
 
-        return trails.Adapt<List<AuditDto>>();
+        return trails;
     }
     
     public async Task<AuditDto> GetTrailAsync(string id, CancellationToken cancellationToken)

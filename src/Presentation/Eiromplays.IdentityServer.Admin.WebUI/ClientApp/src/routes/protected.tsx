@@ -11,6 +11,7 @@ import {
 import { MdOutlineDevicesOther, MdOutlineHistory } from 'react-icons/md';
 
 import logo from '@/assets/logo.svg';
+import { ClientsRoutes } from '@/features/clients';
 import { LogsRoutes } from '@/features/logs';
 import { PersistedGrantsRoutes } from '@/features/persisted-grants';
 import { RolesRoutes } from '@/features/roles';
@@ -33,6 +34,7 @@ const App = () => {
           { name: 'Dashboard', to: '.', icon: HiOutlineHome },
           { name: 'Users', to: './users', icon: HiOutlineUsers },
           { name: 'Roles', to: './roles', icon: HiLockClosed },
+          { name: 'Clients', to: './clients', icon: HiLockClosed },
           { name: 'Persisted Grants', to: './persisted-grants', icon: HiOutlineShieldCheck },
           { name: 'User Sessions', to: './user-sessions', icon: MdOutlineDevicesOther },
           { name: 'Logs', to: './logs', icon: MdOutlineHistory },
@@ -70,6 +72,7 @@ export const protectedRoutes = [
       LogsRoutes,
       UsersRoutes,
       RolesRoutes,
+      ClientsRoutes,
       { path: '*', element: <Dashboard /> },
     ],
   },

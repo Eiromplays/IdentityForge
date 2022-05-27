@@ -16,9 +16,13 @@ export const RolesRoutes: Route<LocationGenerics> = {
       path: '/',
       element: <Roles />,
       loader: async ({ search: { pagination } }) =>
-        queryClient.getQueryData(['search-roles', pagination?.index ?? 1]) ??
+        queryClient.getQueryData([
+          'search-roles',
+          pagination?.index ?? 1,
+          pagination?.size ?? 10,
+        ]) ??
         queryClient
-          .fetchQuery(['search-roles', pagination?.index ?? 1], () =>
+          .fetchQuery(['search-roles', pagination?.index ?? 1, pagination?.size ?? 10], () =>
             searchRoles({ pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 })
           )
           .then(() => ({})),

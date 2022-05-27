@@ -16,9 +16,13 @@ export const UserSessionsRoutes: Route<LocationGenerics> = {
       path: '/',
       element: <UserSessions />,
       loader: async ({ search: { pagination } }) =>
-        queryClient.getQueryData(['user-sessions', pagination?.index ?? 1]) ??
+        queryClient.getQueryData([
+          'user-sessions',
+          pagination?.index ?? 1,
+          pagination?.size ?? 10,
+        ]) ??
         queryClient
-          .fetchQuery(['user-sessions', pagination?.index ?? 1], () =>
+          .fetchQuery(['user-sessions', pagination?.index ?? 1, pagination?.size ?? 10], () =>
             searchUserSessions({
               pageNumber: pagination?.index ?? 1,
               pageSize: pagination?.size ?? 10,

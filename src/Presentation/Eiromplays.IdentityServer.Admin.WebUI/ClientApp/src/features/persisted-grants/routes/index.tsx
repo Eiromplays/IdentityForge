@@ -16,13 +16,19 @@ export const PersistedGrantsRoutes: Route<LocationGenerics> = {
       path: '/',
       element: <PersistedGrants />,
       loader: async ({ search: { pagination } }) =>
-        queryClient.getQueryData(['search-persisted-grants', pagination?.index ?? 1]) ??
+        queryClient.getQueryData([
+          'search-persisted-grants',
+          pagination?.index ?? 1,
+          pagination?.size ?? 10,
+        ]) ??
         queryClient
-          .fetchQuery(['search-persisted-grants', pagination?.index ?? 1], () =>
-            searchPersistedGrants({
-              pageNumber: pagination?.index ?? 1,
-              pageSize: pagination?.size ?? 10,
-            })
+          .fetchQuery(
+            ['search-persisted-grants', pagination?.index ?? 1, pagination?.size ?? 10],
+            () =>
+              searchPersistedGrants({
+                pageNumber: pagination?.index ?? 1,
+                pageSize: pagination?.size ?? 10,
+              })
           )
           .then(() => ({})),
     },

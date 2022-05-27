@@ -1,5 +1,9 @@
+using Ardalis.Specification.EntityFrameworkCore;
+using Duende.IdentityServer.EntityFramework.Entities;
 using Duende.IdentityServer.EntityFramework.Mappers;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
+using Eiromplays.IdentityServer.Application.Common.Models;
+using Eiromplays.IdentityServer.Application.Common.Specification;
 using Eiromplays.IdentityServer.Application.Identity.Clients;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
 using Mapster;
@@ -20,6 +24,22 @@ internal partial class ClientService : IClientService
         _db = db;
         _t = t;
         _logger = logger;
+    }
+    
+    public async Task<PaginationResponse<Duende.IdentityServer.Models.Client>> SearchAsync(ClientListFilter filter, CancellationToken cancellationToken)
+    {
+        var spec = new EntitiesByPaginationFilterSpec<Client>(filter);
+
+        var clients = await _db.Clients
+            .WithSpecification(spec)
+            .AsSplitQuery()
+            .Select(x => x.ToModel())
+            .ToListAsync(cancellationToken);
+
+        var count = await _db.Clients
+            .CountAsync(cancellationToken);
+
+        return new PaginationResponse<Duende.IdentityServer.Models.Client>(clients, count, filter.PageNumber, filter.PageSize);
     }
     
     public async Task<ClientDto> GetAsync(string? clientId, CancellationToken cancellationToken)

@@ -15,7 +15,7 @@ const target = env.ASPNETCORE_HTTPS_PORT
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), tsconfigPaths(), mkcert(), envCompatible()],
+  plugins: [react(), tsconfigPaths(), mkcert(), envCompatible({ prefix: 'REACT_APP_' })],
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
@@ -71,6 +71,11 @@ export default defineConfig({
         secure: false,
       },
       '/dashboard': {
+        target: target,
+        changeOrigin: false,
+        secure: false,
+      },
+      '/clients': {
         target: target,
         changeOrigin: false,
         secure: false,
