@@ -1,4 +1,4 @@
-import { ContentLayout, useAuth, StatsList, Spinner } from 'eiromplays-ui';
+import { ContentLayout, useAuth, StatsList, Spinner, LineChart } from 'eiromplays-ui';
 import {
   HiLockClosed,
   HiOutlineCollection,
@@ -7,6 +7,39 @@ import {
 } from 'react-icons/hi';
 
 import { useDashboardStats } from '../api/getDashboardStats';
+
+const data = [
+  {
+    name: 'Day 1',
+    users: 200,
+    roles: 100,
+    amt: 100,
+  },
+  {
+    name: 'Day 2',
+    users: 250,
+    roles: 150,
+    amt: 150,
+  },
+  {
+    name: 'Day 3',
+    users: 300,
+    roles: 200,
+    amt: 200,
+  },
+  {
+    name: 'Day 4',
+    users: 350,
+    roles: 250,
+    amt: 250,
+  },
+  {
+    name: 'Day 5',
+    users: 500,
+    roles: 400,
+    amt: 300,
+  },
+];
 
 export const Dashboard = () => {
   const { user } = useAuth();
@@ -70,6 +103,33 @@ export const Dashboard = () => {
             description: 'Total number of brands',
             smallIcon: <HiOutlineCollection className="text-yellow-600 w-full h-full" />,
             largeIcon: <HiOutlineCollection className="text-yellow-600 w-full h-full" />,
+          },
+        ]}
+      />
+      <br />
+      <LineChart
+        title={'Test chart'}
+        subTitle={'This is just a test chart using fake data.'}
+        data={data}
+        xAxisProps={{ dataKey: 'name' }}
+        responseContainerProps={{
+          width: '100%',
+          height: 300,
+          children: <></>,
+        }}
+        lines={[
+          {
+            type: 'monotone',
+            dataKey: 'users',
+            stroke: '#8884d8',
+            activeDot: {
+              r: 8,
+            },
+          },
+          {
+            type: 'monotone',
+            dataKey: 'roles',
+            stroke: '#82ca9d',
           },
         ]}
       />
