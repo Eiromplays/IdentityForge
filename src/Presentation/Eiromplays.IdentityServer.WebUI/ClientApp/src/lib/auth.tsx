@@ -23,8 +23,12 @@ export const loginFn = async (data: LoginCredentialsDTO) => {
   // TODO: Check if I can handle this, and signInResult better
 
   if (response?.validReturnUrl) {
-    console.log(response.validReturnUrl);
     window.location.href = response.validReturnUrl;
+  }
+
+  if (response?.signInResult.succeeded) {
+    toast.success('Login successful');
+    window.location.href = '/app';
   }
 
   if (response?.signInResult?.isLockedOut) {
