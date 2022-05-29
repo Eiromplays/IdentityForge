@@ -20,10 +20,10 @@ const Entry = ({ label, value }: EntryProps) => (
 
 export const ClientInfo = () => {
   const {
-    params: { Id },
+    params: { clientId },
   } = useMatch<LocationGenerics>();
 
-  const clientQuery = useClient({ clientId: Id });
+  const clientQuery = useClient({ clientId: clientId });
 
   if (clientQuery.isLoading) {
     return (
@@ -36,22 +36,22 @@ export const ClientInfo = () => {
   if (!clientQuery.data) return null;
 
   return (
-    <ContentLayout title="Role">
+    <ContentLayout title="Client">
       <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
         <div className="px-4 py-5 sm:px-6">
           <div className="flex justify-between">
             <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
-              Role Information
+              Client Information
             </h3>
-            <UpdateClient id={Id} />
+            <UpdateClient clientId={clientId} />
           </div>
           <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-white">
-            Details abut the role.
+            Details abut the client.
           </p>
         </div>
         <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
           <dl className="sm:divide-y sm:divide-gray-200">
-            <Entry label="Id" value={clientQuery.data.id.toString()} />
+            <Entry label="ClientId" value={clientQuery.data.clientId} />
             <Entry label="Name" value={clientQuery.data.clientName} />
             <Entry label="Description" value={clientQuery.data.description} />
           </dl>

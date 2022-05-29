@@ -11,7 +11,7 @@ export type UpdateClientDTO = {
 };
 
 export const updateClient = async ({ data }: UpdateClientDTO) => {
-  return axios.post(`/clients`, data);
+  return axios.put(`/clients/${data.id}`, data);
 };
 
 type UseUpdateClientOptions = {
@@ -20,8 +20,7 @@ type UseUpdateClientOptions = {
 
 export const useUpdateClient = ({ config }: UseUpdateClientOptions = {}) => {
   return useMutation({
-    onSuccess: async (response) => {
-      await queryClient.invalidateQueries(['role', response.data.ClientId]);
+    onSuccess: async () => {
       toast.success('Client Updated');
     },
     onError: (error) => {

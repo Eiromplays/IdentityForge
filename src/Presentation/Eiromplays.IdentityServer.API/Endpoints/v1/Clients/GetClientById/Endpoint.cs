@@ -1,9 +1,8 @@
-using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Identity.Clients;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Clients.Search;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Clients.GetClientById;
 
-public class Endpoint : Endpoint<Models.Request, PaginationResponse<Duende.IdentityServer.Models.Client>>
+public class Endpoint : Endpoint<Models.Request, Duende.IdentityServer.Models.Client>
 {
     private readonly IClientService _clientService;
     
@@ -14,18 +13,18 @@ public class Endpoint : Endpoint<Models.Request, PaginationResponse<Duende.Ident
 
     public override void Configure()
     {
-        Post("/clients/search");
+        Get("/clients/{Id}");
         Summary(s =>
         {
-            s.Summary = "Search clients using available filters.";
+            s.Summary = "Get client details.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Search, EIAResource.Clients));
+        Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.Clients));
     }
 
     public override async Task HandleAsync(Models.Request request, CancellationToken ct)
     {
-        Response = await _clientService.SearchAsync(request.Data, ct);
+        Response = await _clientService.GetAsync(request.Id, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

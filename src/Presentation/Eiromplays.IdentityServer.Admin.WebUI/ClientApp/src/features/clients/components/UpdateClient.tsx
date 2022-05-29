@@ -11,11 +11,11 @@ const schema = z.object({
 });
 
 type UpdateRoleProps = {
-  id: string;
+  clientId: string;
 };
 
-export const UpdateClient = ({ id }: UpdateRoleProps) => {
-  const clientQuery = useClient({ clientId: id || '' });
+export const UpdateClient = ({ clientId }: UpdateRoleProps) => {
+  const clientQuery = useClient({ clientId: clientId });
   const updateClientMutation = useUpdateClient();
 
   if (clientQuery.isLoading) {
@@ -34,15 +34,15 @@ export const UpdateClient = ({ id }: UpdateRoleProps) => {
         isDone={updateClientMutation.isSuccess}
         triggerButton={
           <Button startIcon={<HiOutlinePencil className="h-4 w-4" />} size="sm">
-            Update Role
+            Update Client
           </Button>
         }
-        title="Update Role"
+        title="Update Client"
         submitButton={
           <ConfirmationDialog
             icon="warning"
-            title="Update Role"
-            body="Are you sure you want to update this role?"
+            title="Update Client"
+            body="Are you sure you want to update this client?"
             triggerButton={
               <Button size="sm" isLoading={updateClientMutation.isLoading}>
                 Submit
@@ -50,23 +50,23 @@ export const UpdateClient = ({ id }: UpdateRoleProps) => {
             }
             confirmButton={
               <Button
-                form="update-role"
+                form="update-client"
                 type="submit"
                 className="mt-2"
                 variant="warning"
                 size="sm"
                 isLoading={updateClientMutation.isLoading}
               >
-                Update Role
+                Update Client
               </Button>
             }
           />
         }
       >
         <Form<UpdateClientDTO['data'], typeof schema>
-          id="update-role"
+          id="update-client"
           onSubmit={async (values) => {
-            values.id = id;
+            values.id = clientId;
             await updateClientMutation.mutateAsync({ data: values });
           }}
           options={{

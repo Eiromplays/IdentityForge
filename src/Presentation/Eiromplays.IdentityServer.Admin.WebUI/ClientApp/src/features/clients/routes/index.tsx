@@ -28,11 +28,13 @@ export const ClientsRoutes: Route<LocationGenerics> = {
           .then(() => ({})),
     },
     {
-      path: ':Id',
+      path: ':clientId',
       element: <ClientInfo />,
-      loader: async ({ params: { Id } }) =>
-        queryClient.getQueryData(['client', Id]) ??
-        (await queryClient.fetchQuery(['client', Id], () => getClient({ clientId: Id }))),
+      loader: async ({ params: { clientId } }) =>
+        queryClient.getQueryData(['client', clientId]) ??
+        (await queryClient.fetchQuery(['client', clientId], () =>
+          getClient({ clientId: clientId })
+        )),
     },
     {
       path: '*',
