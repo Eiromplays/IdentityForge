@@ -44,6 +44,7 @@ public static class EIAPermissions
         new("Export Users", EIAAction.Export, EIAResource.Users),
         new("View UserRoles", EIAAction.View, EIAResource.UserRoles),
         new("Update UserRoles", EIAAction.Update, EIAResource.UserRoles),
+        new("Search Roles", EIAAction.Search, EIAResource.Roles),
         new("View Roles", EIAAction.View, EIAResource.Roles),
         new("Create Roles", EIAAction.Create, EIAResource.Roles),
         new("Update Roles", EIAAction.Update, EIAResource.Roles),
@@ -69,6 +70,7 @@ public static class EIAPermissions
         new("Update Persisted Grants", EIAAction.Update, EIAResource.PersistedGrants),
         new("Delete Persisted Grants", EIAAction.Delete, EIAResource.PersistedGrants),
         new("Export Persisted Grants", EIAAction.Export, EIAResource.PersistedGrants),
+        new("Search Audit Logs", EIAAction.Search, EIAResource.AuditLog),
         new("View Audit Logs", EIAAction.View, EIAResource.AuditLog),
     };
 

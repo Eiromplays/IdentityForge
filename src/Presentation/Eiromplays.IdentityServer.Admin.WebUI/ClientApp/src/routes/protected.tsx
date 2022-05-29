@@ -34,7 +34,7 @@ const App = () => {
           { name: 'Dashboard', to: '.', icon: HiOutlineHome },
           { name: 'Users', to: './users', icon: HiOutlineUsers },
           { name: 'Roles', to: './roles', icon: HiLockClosed },
-          { name: 'Clients', to: './clients', icon: HiLockClosed },
+          { name: 'Clients', to: './clients', icon: MdOutlineDevicesOther },
           { name: 'Persisted Grants', to: './persisted-grants', icon: HiOutlineShieldCheck },
           { name: 'User Sessions', to: './user-sessions', icon: MdOutlineDevicesOther },
           { name: 'Logs', to: './logs', icon: MdOutlineHistory },

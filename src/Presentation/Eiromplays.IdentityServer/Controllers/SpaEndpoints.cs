@@ -122,7 +122,7 @@ public class SpaEndpoints : Controller
             // only one option for logging in
             return ExternalLogin(vm.ExternalProviders.First().AuthenticationScheme, returnUrl);
         }
-
+        
         return Ok(vm);
     }
         
@@ -134,14 +134,13 @@ public class SpaEndpoints : Controller
         if (ModelState.IsValid)
         {
             var user = await _userResolver.GetUserAsync(model.Login);
-
             if (user is not null)
             {
                 var loginResult = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: true);
-                    
+                response.SignInResult = loginResult;
+                
                 if (!loginResult.Succeeded)
                 {
-                    response.SignInResult = loginResult;
                     if (loginResult.RequiresTwoFactor)
                     {
                         return RedirectToAction(nameof(LoginWith2Fa), new { model.ReturnUrl, RememberMe = model.RememberMe });
@@ -179,7 +178,6 @@ public class SpaEndpoints : Controller
                 {
                     response.ValidReturnUrl = _serverUrls.BaseUrl;
                 }
-
                 return Ok(response);
             }
         }
