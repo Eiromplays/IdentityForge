@@ -1,6 +1,5 @@
 using Ardalis.Specification.EntityFrameworkCore;
 using Duende.IdentityServer.EntityFramework.Entities;
-using Duende.IdentityServer.EntityFramework.Mappers;
 using Eiromplays.IdentityServer.Application.Common.Events;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Models;
@@ -57,6 +56,7 @@ internal partial class ClientService : IClientService
     {
         var client = await FindClientByIdAsync(clientId, cancellationToken);
 
+        client.ClientId = request.ClientId;
         client.ClientName = request.ClientName;
         client.Description = request.Description;
         client.ClientUri = request.ClientUri;
@@ -93,8 +93,15 @@ internal partial class ClientService : IClientService
         }
     }
 
-
     #region Entity Queries
+    
+    public async Task<bool> ExistsWithClientIdAsync(string clientId, CancellationToken cancellationToken, int? exceptId = null)
+    {
+        return await _db.Clients
+            .Where(x => x.ClientId == clientId)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(cancellationToken) is { } client && client.Id == exceptId;
+    }
 
     // TODO: Move to repository or something like that :)
     private async Task<Client> FindClientByIdAsync(int clientId, CancellationToken cancellationToken)

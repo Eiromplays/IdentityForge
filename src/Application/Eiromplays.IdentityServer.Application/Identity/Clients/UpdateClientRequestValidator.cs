@@ -2,11 +2,16 @@ namespace Eiromplays.IdentityServer.Application.Identity.Clients;
 
 public class UpdateClientRequestValidator : CustomValidator<UpdateClientRequest>
 {
-    public UpdateClientRequestValidator(IStringLocalizer<UpdateClientRequestValidator> T)
+    public UpdateClientRequestValidator(IClientService clientService, IStringLocalizer<UpdateClientRequestValidator> T)
     {
         RuleFor(p => p.Id)
             .NotEmpty();
 
+        RuleFor(p => p.ClientId)
+            .NotEmpty()
+            .MustAsync(async (client, clientId, _) => !await clientService.ExistsWithClientIdAsync(clientId, default, client.Id))
+            .WithMessage((_, clientId) => string.Format(T["Client {0} is already registered."], clientId));
+        
         RuleFor(p => p.ClientName)
             .NotEmpty()
             .MaximumLength(75);

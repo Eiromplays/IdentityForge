@@ -42,7 +42,7 @@ export const ClientInfo = () => {
   if (!clientQuery.data) return null;
 
   return (
-    <ContentLayout title="Client">
+    <ContentLayout title={`Client ${clientQuery.data?.clientName}`}>
       <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
         <div className="px-4 py-5 sm:px-6">
           <div className="flex justify-between">

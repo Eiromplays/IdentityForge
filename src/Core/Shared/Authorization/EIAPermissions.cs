@@ -28,6 +28,7 @@ public static class EIAResource
     public const string PersistedGrants = nameof(PersistedGrants);
     public const string AuditLog = nameof(AuditLog);
     public const string Clients = nameof(Clients);
+    public const string IdentityResources = nameof(IdentityResources);
 }
 
 
@@ -78,6 +79,11 @@ public static class EIAPermissions
         new("Create Clients", EIAAction.Create, EIAResource.Clients),
         new("Update Clients", EIAAction.Update, EIAResource.Clients),
         new("Delete Clients", EIAAction.Delete, EIAResource.Clients),
+        new("Search IdentityResources", EIAAction.Search, EIAResource.IdentityResources),
+        new("View IdentityResources", EIAAction.View, EIAResource.IdentityResources),
+        new("Create IdentityResources", EIAAction.Create, EIAResource.IdentityResources),
+        new("Update IdentityResources", EIAAction.Update, EIAResource.IdentityResources),
+        new("Delete IdentityResources", EIAAction.Delete, EIAResource.IdentityResources),
     };
 
     public static IReadOnlyList<EIAPermission> All { get; } = new ReadOnlyCollection<EIAPermission>(_all);

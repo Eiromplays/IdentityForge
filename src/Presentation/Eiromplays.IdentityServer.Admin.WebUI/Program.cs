@@ -97,6 +97,8 @@ app.MapRemoteBffApiEndpoint("/dashboard", "https://localhost:7003/v1/dashboard")
 app.MapRemoteBffApiEndpoint("/clients", "https://localhost:7003/v1/clients")
     .RequireAccessToken();
 
+app.MapRemoteBffApiEndpoint("/identity-resources", "https://localhost:7003/v1/identity-resources")
+    .RequireAccessToken();
 
 app.MapFallbackToFile("index.html");
 

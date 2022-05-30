@@ -6,6 +6,7 @@ export type UpdateClientDTO = {
   clientId: number;
   data: {
     id: number;
+    clientId: string;
     clientName: string;
     description: string;
     clientUri: string;

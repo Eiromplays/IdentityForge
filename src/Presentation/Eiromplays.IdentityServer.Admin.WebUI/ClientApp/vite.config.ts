@@ -80,6 +80,11 @@ export default defineConfig({
         changeOrigin: false,
         secure: false,
       },
+      '/identity-resources': {
+        target: target,
+        changeOrigin: false,
+        secure: false,
+      },
     },
   },
 });

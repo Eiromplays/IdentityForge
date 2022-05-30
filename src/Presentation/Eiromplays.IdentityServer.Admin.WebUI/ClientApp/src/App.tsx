@@ -20,6 +20,7 @@ export type LocationGenerics = DefaultLocationGenerics & {
     key: string;
     Id: string;
     clientId: string;
+    identityResourceId: string;
   };
 };
 

@@ -6,6 +6,7 @@ import { useClient } from '../api/getClient';
 import { UpdateClientDTO, useUpdateClient } from '../api/updateClient';
 
 const schema = z.object({
+  clientId: z.string().min(1, 'Required'),
   clientName: z.string().min(1, 'Required'),
   description: z.string(),
   clientUri: z.string().url('Invalid URL').optional(),
@@ -76,6 +77,7 @@ export const UpdateClient = ({ clientId }: UpdateClientProps) => {
           }}
           options={{
             defaultValues: {
+              clientId: clientQuery.data?.clientId,
               clientName: clientQuery.data?.clientName,
               description: clientQuery.data?.description,
               clientUri: clientQuery.data?.clientUri,
@@ -89,6 +91,11 @@ export const UpdateClient = ({ clientId }: UpdateClientProps) => {
         >
           {({ register, formState }) => (
             <>
+              <InputField
+                  label="ClientId"
+                  error={formState.errors['clientId']}
+                  registration={register('clientId')}
+              />
               <InputField
                 label="ClientName"
                 error={formState.errors['clientName']}

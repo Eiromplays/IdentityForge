@@ -18,7 +18,7 @@ public class ClientCreatedEvent : ClientEvent
 public class ClientUpdatedEvent : ClientEvent
 {
 
-    public ClientUpdatedEvent(string clientId, bool rolesUpdated = false)
+    public ClientUpdatedEvent(string clientId)
         : base(clientId)
     {
         

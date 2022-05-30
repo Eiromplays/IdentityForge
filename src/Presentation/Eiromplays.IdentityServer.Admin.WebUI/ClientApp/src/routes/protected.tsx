@@ -12,6 +12,7 @@ import { MdOutlineDevicesOther, MdOutlineHistory } from 'react-icons/md';
 
 import logo from '@/assets/logo.svg';
 import { ClientsRoutes } from '@/features/clients';
+import { IdentityResourcesRoutes } from '@/features/identity-resources';
 import { LogsRoutes } from '@/features/logs';
 import { PersistedGrantsRoutes } from '@/features/persisted-grants';
 import { RolesRoutes } from '@/features/roles';
@@ -73,6 +74,7 @@ export const protectedRoutes = [
       UsersRoutes,
       RolesRoutes,
       ClientsRoutes,
+      IdentityResourcesRoutes,
       { path: '*', element: <Dashboard /> },
     ],
   },

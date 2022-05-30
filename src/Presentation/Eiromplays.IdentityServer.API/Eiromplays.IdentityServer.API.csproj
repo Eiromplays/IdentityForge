@@ -20,17 +20,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resources\v1\Clients.en.resx">
+    <EmbeddedResource Update="Resources\v1\IdentityResources.en.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Clients.en.Designer.cs</LastGenOutput>
+      <LastGenOutput>IdentityResources.en.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources\v1\Clients.en.Designer.cs">
+    <Compile Update="Resources\v1\IdentityResources.en.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>Clients.en.resx</DependentUpon>
+      <DependentUpon>IdentityResources.en.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 

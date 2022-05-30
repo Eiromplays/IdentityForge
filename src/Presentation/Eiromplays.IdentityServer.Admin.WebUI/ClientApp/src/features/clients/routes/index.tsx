@@ -33,7 +33,7 @@ export const ClientsRoutes: Route<LocationGenerics> = {
       loader: async ({ params: { clientId } }) =>
         queryClient.getQueryData(['client', clientId]) ??
         (await queryClient.fetchQuery(['client', clientId], () =>
-          getClient({ clientId: clientId })
+          getClient({ clientId: parseInt(clientId, 10) })
         )),
     },
     {
