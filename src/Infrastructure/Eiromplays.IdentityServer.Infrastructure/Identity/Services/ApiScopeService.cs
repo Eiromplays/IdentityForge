@@ -41,7 +41,7 @@ internal partial class  ApiScopeService : IApiScopeService
             .ProjectToType<ApiScopeDto>()
             .ToListAsync(cancellationToken);
 
-        var count = await _db.IdentityResources
+        var count = await _db.ApiScopes
             .CountAsync(cancellationToken);
 
         return new PaginationResponse<ApiScopeDto>(apiScopes, count, filter.PageNumber, filter.PageSize);
@@ -71,7 +71,7 @@ internal partial class  ApiScopeService : IApiScopeService
 
         var success = await _db.SaveChangesAsync(cancellationToken) > 0;
 
-        await _events.PublishAsync(new IdentityResourceUpdatedEvent(apiScope.Id));
+        await _events.PublishAsync(new ApiScopeUpdatedEvent(apiScope.Id));
         
         if (!success)
         {
@@ -88,11 +88,11 @@ internal partial class  ApiScopeService : IApiScopeService
 
         var success = await _db.SaveChangesAsync(cancellationToken) > 0;
 
-        await _events.PublishAsync(new IdentityResourceDeletedEvent(apiScope.Id));
+        await _events.PublishAsync(new ApiScopeDeletedEvent(apiScope.Id));
         
         if (!success)
         {
-            throw new InternalServerException(_t["Delete client failed"], new List<string>{ "Failed to delete client" });
+            throw new InternalServerException(_t["Delete ApiScope failed"], new List<string>{ "Failed to delete ApiScope" });
         }
     }
     

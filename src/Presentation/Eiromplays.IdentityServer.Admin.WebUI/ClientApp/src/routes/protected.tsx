@@ -11,6 +11,7 @@ import {
 import { MdOutlineDevicesOther, MdOutlineHistory } from 'react-icons/md';
 
 import logo from '@/assets/logo.svg';
+import { ApiResourcesRoutes } from '@/features/api-resources';
 import { ApiScopesRoutes } from '@/features/api-scopes';
 import { ClientsRoutes } from '@/features/clients';
 import { IdentityResourcesRoutes } from '@/features/identity-resources';
@@ -39,6 +40,7 @@ const App = () => {
           { name: 'Clients', to: './clients', icon: MdOutlineDevicesOther },
           { name: 'Identity Resources', to: './identity-resources', icon: MdOutlineDevicesOther },
           { name: 'Api Scopes', to: './api-scopes', icon: MdOutlineDevicesOther },
+          { name: 'Api Resources', to: './api-resources', icon: HiOutlineShieldCheck },
           { name: 'Persisted Grants', to: './persisted-grants', icon: HiOutlineShieldCheck },
           { name: 'User Sessions', to: './user-sessions', icon: MdOutlineDevicesOther },
           { name: 'Logs', to: './logs', icon: MdOutlineHistory },
@@ -79,6 +81,7 @@ export const protectedRoutes = [
       ClientsRoutes,
       IdentityResourcesRoutes,
       ApiScopesRoutes,
+      ApiResourcesRoutes,
       { path: '*', element: <Dashboard /> },
     ],
   },

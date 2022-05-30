@@ -2,17 +2,17 @@ import { ContentLayout } from 'eiromplays-ui';
 
 import { Authorization, ROLES } from '@/lib/authorization';
 
-import { IdentityResourcesList } from '../components/IdentityResourcesList';
+import { ApiResourcesList } from '../components/ApiResourcesList';
 
-export const IdentityResources = () => {
+export const ApiResources = () => {
   return (
-    <ContentLayout title="IdentityResources">
+    <ContentLayout title="ApiResources">
       <div className="mt-4">
         <Authorization
           forbiddenFallback={<div>Only admin can view this.</div>}
           allowedRoles={[ROLES.ADMINISTRATOR]}
         >
-          <IdentityResourcesList />
+          <ApiResourcesList />
         </Authorization>
       </div>
     </ContentLayout>

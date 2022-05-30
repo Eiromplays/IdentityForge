@@ -25,10 +25,6 @@ export const ClientInfo = () => {
 
   const clientId = parseInt(id, 10);
 
-  if (!clientId) {
-    return <div>Invalid client id</div>;
-  }
-
   const clientQuery = useClient({ clientId: clientId });
 
   if (clientQuery.isLoading) {
@@ -64,7 +60,10 @@ export const ClientInfo = () => {
             <Entry label="Client Uri" value={clientQuery.data.clientUri} />
             <Entry label="Logo Uri" value={clientQuery.data.logoUri} />
             <Entry label="Require Consent" value={clientQuery.data.requireConsent.toString()} />
-            <Entry label="Allow Remember Consent" value={clientQuery.data.allowRememberConsent.toString()} />
+            <Entry
+              label="Allow Remember Consent"
+              value={clientQuery.data.allowRememberConsent.toString()}
+            />
           </dl>
         </div>
       </div>

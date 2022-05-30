@@ -25,10 +25,6 @@ export const IdentityResourceInfo = () => {
 
   const identityResourceId = parseInt(id, 10);
 
-  if (!identityResourceId) {
-    return <div>Invalid IdentityResource id</div>;
-  }
-
   const identityResourceQuery = useIdentityResource({ identityResourceId: identityResourceId });
 
   if (identityResourceQuery.isLoading) {
