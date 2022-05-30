@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 import { Client } from '../types';
 
 export type GetClientDTO = {
-  clientId: string;
+  clientId: number;
 };
 
 export const getClient = ({ clientId }: GetClientDTO): Promise<Client> => {
@@ -14,7 +14,7 @@ export const getClient = ({ clientId }: GetClientDTO): Promise<Client> => {
 type QueryFnType = typeof getClient;
 
 type UseClientOptions = {
-  clientId: string;
+  clientId: number;
   config?: QueryConfig<QueryFnType>;
 };
 
@@ -22,6 +22,6 @@ export const useClient = ({ clientId, config }: UseClientOptions) => {
   return useQuery<ExtractFnReturnType<QueryFnType>>({
     ...config,
     queryKey: ['client', clientId],
-    queryFn: () => getClient({ clientId }),
+    queryFn: () => getClient({ clientId: clientId }),
   });
 };

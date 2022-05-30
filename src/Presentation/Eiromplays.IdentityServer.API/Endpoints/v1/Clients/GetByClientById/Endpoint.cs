@@ -1,8 +1,8 @@
 using Eiromplays.IdentityServer.Application.Identity.Clients;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Clients.GetClientById;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Clients.GetByClientById;
 
-public class Endpoint : Endpoint<Models.Request, Duende.IdentityServer.Models.Client>
+public class Endpoint : Endpoint<Models.Request, ClientDto>
 {
     private readonly IClientService _clientService;
     

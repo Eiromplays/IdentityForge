@@ -6,15 +6,20 @@ import { useClient } from '../api/getClient';
 import { UpdateClientDTO, useUpdateClient } from '../api/updateClient';
 
 const schema = z.object({
-  name: z.string().min(1, 'Required'),
-  description: z.string().min(1, 'Required'),
+  clientName: z.string().min(1, 'Required'),
+  description: z.string(),
+  clientUri: z.string().url('Invalid URL').optional(),
+  logoUri: z.string().url('Invalid URL').optional().nullable(),
+  enabled: z.boolean(),
+  requireConsent: z.boolean(),
+  allowRememberConsent: z.boolean(),
 });
 
-type UpdateRoleProps = {
-  clientId: string;
+type UpdateClientProps = {
+  clientId: number;
 };
 
-export const UpdateClient = ({ clientId }: UpdateRoleProps) => {
+export const UpdateClient = ({ clientId }: UpdateClientProps) => {
   const clientQuery = useClient({ clientId: clientId });
   const updateClientMutation = useUpdateClient();
 
@@ -67,12 +72,17 @@ export const UpdateClient = ({ clientId }: UpdateRoleProps) => {
           id="update-client"
           onSubmit={async (values) => {
             values.id = clientId;
-            await updateClientMutation.mutateAsync({ data: values });
+            await updateClientMutation.mutateAsync({ clientId: clientId, data: values });
           }}
           options={{
             defaultValues: {
-              name: clientQuery.data?.clientName,
+              clientName: clientQuery.data?.clientName,
               description: clientQuery.data?.description,
+              clientUri: clientQuery.data?.clientUri,
+              logoUri: clientQuery.data?.logoUri,
+              enabled: clientQuery.data?.enabled,
+              requireConsent: clientQuery.data?.requireConsent,
+              allowRememberConsent: clientQuery.data?.allowRememberConsent,
             },
           }}
           schema={schema}
@@ -80,14 +90,42 @@ export const UpdateClient = ({ clientId }: UpdateRoleProps) => {
           {({ register, formState }) => (
             <>
               <InputField
-                label="Name"
-                error={formState.errors['name']}
-                registration={register('name')}
+                label="ClientName"
+                error={formState.errors['clientName']}
+                registration={register('clientName')}
               />
               <InputField
                 label="Description"
                 error={formState.errors['description']}
                 registration={register('description')}
+              />
+              <InputField
+                label="Client Uri"
+                error={formState.errors['clientUri']}
+                registration={register('clientUri')}
+              />
+              <InputField
+                label="Logo Uri"
+                error={formState.errors['logoUri']}
+                registration={register('logoUri')}
+              />
+              <InputField
+                label="Enabled"
+                type="checkbox"
+                error={formState.errors['enabled']}
+                registration={register('enabled')}
+              />
+              <InputField
+                label="Allow remember Consent"
+                type="checkbox"
+                error={formState.errors['allowRememberConsent']}
+                registration={register('allowRememberConsent')}
+              />
+              <InputField
+                label="Require Consent"
+                type="checkbox"
+                error={formState.errors['requireConsent']}
+                registration={register('requireConsent')}
               />
             </>
           )}

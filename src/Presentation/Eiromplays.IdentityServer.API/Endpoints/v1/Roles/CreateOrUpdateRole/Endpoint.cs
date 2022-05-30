@@ -24,9 +24,9 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        Response.RoleId = await _roleService.CreateOrUpdateAsync(req.Data);
+        Response.Message = await _roleService.CreateOrUpdateAsync(req.Data);
 
-        await SendCreatedAtAsync<GetRoleById.Endpoint>(new { Id = Response.RoleId }, Response,
+        await SendCreatedAtAsync<GetRoleById.Endpoint>(new { Id = req.Data.Id }, Response,
             generateAbsoluteUrl: true, cancellation: ct);
     }
 }

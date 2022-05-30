@@ -6,7 +6,7 @@ public class Models
 {
     public class Request
     {
-        public string Id { get; set; } = default!;
+        public int Id { get; set; }
         public UpdateClientRequest Data { get; set; } = default!;
     }
 }

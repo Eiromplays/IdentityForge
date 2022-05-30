@@ -1,4 +1,4 @@
-import { MutationConfig, queryClient, axios } from 'eiromplays-ui';
+import {MutationConfig, queryClient, axios, MessageResponse} from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
@@ -10,7 +10,7 @@ export type UpdateRoleDTO = {
   };
 };
 
-export const updateRole = async ({ data }: UpdateRoleDTO) => {
+export const updateRole = async ({ data }: UpdateRoleDTO): Promise<MessageResponse> => {
   return axios.post(`/roles`, data);
 };
 
@@ -20,10 +20,9 @@ type UseUpdateRoleOptions = {
 
 export const useUpdateRole = ({ config }: UseUpdateRoleOptions = {}) => {
   return useMutation({
-    onSuccess: async (response) => {
-      await queryClient.invalidateQueries('roles');
-      await queryClient.invalidateQueries(`role-${response.data.RoleId}`);
-      toast.success('Role Updated');
+    onSuccess: async (response, variables) => {
+      await queryClient.invalidateQueries(['role', variables.data.id]);
+      toast.success(response.message);
     },
     onError: (error) => {
       toast.error('Failed to update role');

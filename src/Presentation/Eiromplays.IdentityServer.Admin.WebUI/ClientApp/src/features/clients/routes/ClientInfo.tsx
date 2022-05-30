@@ -20,8 +20,14 @@ const Entry = ({ label, value }: EntryProps) => (
 
 export const ClientInfo = () => {
   const {
-    params: { clientId },
+    params: { clientId: id },
   } = useMatch<LocationGenerics>();
+
+  const clientId = parseInt(id, 10);
+
+  if (!clientId) {
+    return <div>Invalid client id</div>;
+  }
 
   const clientQuery = useClient({ clientId: clientId });
 
@@ -51,9 +57,14 @@ export const ClientInfo = () => {
         </div>
         <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
           <dl className="sm:divide-y sm:divide-gray-200">
+            <Entry label="Enabled" value={clientQuery.data.enabled.toString()} />
             <Entry label="ClientId" value={clientQuery.data.clientId} />
             <Entry label="Name" value={clientQuery.data.clientName} />
             <Entry label="Description" value={clientQuery.data.description} />
+            <Entry label="Client Uri" value={clientQuery.data.clientUri} />
+            <Entry label="Logo Uri" value={clientQuery.data.logoUri} />
+            <Entry label="Require Consent" value={clientQuery.data.requireConsent.toString()} />
+            <Entry label="Allow Remember Consent" value={clientQuery.data.allowRememberConsent.toString()} />
           </dl>
         </div>
       </div>

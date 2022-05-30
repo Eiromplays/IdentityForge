@@ -14,5 +14,13 @@ public class UpdateClientRequestValidator : CustomValidator<UpdateClientRequest>
         RuleFor(p => p.Description)
             .NotEmpty()
             .MaximumLength(75);
+        
+        RuleFor(p => p.ClientUri)
+            .Must(uri => Uri.TryCreate(uri, UriKind.Absolute, out _))
+            .When(x => !string.IsNullOrEmpty(x.ClientUri));
+        
+        RuleFor(p => p.LogoUri)
+            .Must(uri => Uri.TryCreate(uri, UriKind.Absolute, out _))
+            .When(x => !string.IsNullOrEmpty(x.LogoUri));
     }
 }

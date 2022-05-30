@@ -36,20 +36,20 @@ export const ClientsList = () => {
         },
         {
           title: '',
-          field: 'clientId',
-          Cell({ entry: { clientId } }) {
-            return <DeleteClient clientId={clientId} />;
+          field: 'id',
+          Cell({ entry: { id } }) {
+            return <DeleteClient clientId={id} />;
           },
         },
         {
           title: '',
-          field: 'clientId',
-          Cell({ entry: { clientId } }) {
+          field: 'id',
+          Cell({ entry: { id } }) {
             return (
-              <Link to={clientId} search={search} className="block">
+              <Link to={id} search={search} className="block">
                 <pre className={`text-sm`}>
                   View{' '}
-                  <MatchRoute to={clientId} pending>
+                  <MatchRoute to={id} pending>
                     <Spinner size="md" className="inline-block" />
                   </MatchRoute>
                 </pre>

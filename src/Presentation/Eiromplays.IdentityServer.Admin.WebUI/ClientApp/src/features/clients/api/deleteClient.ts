@@ -3,7 +3,7 @@ import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
 export type DeleteClientDTO = {
-  clientId: string;
+  clientId: number;
 };
 
 export const deleteClient = ({ clientId }: DeleteClientDTO) => {

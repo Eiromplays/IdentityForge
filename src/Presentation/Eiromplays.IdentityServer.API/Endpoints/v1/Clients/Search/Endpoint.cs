@@ -3,7 +3,7 @@ using Eiromplays.IdentityServer.Application.Identity.Clients;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Clients.Search;
 
-public class Endpoint : Endpoint<Models.Request, PaginationResponse<Duende.IdentityServer.Models.Client>>
+public class Endpoint : Endpoint<Models.Request, PaginationResponse<ClientDto>>
 {
     private readonly IClientService _clientService;
     

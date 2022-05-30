@@ -2,11 +2,11 @@ import { Button, ConfirmationDialog } from 'eiromplays-ui';
 
 import { useDeleteClient } from '../api/deleteClient';
 
-type DeleteRoleProps = {
-  clientId: string;
+type DeleteClientProps = {
+  clientId: number;
 };
 
-export const DeleteClient = ({ clientId }: DeleteRoleProps) => {
+export const DeleteClient = ({ clientId }: DeleteClientProps) => {
   const deleteClientMutation = useDeleteClient();
 
   return (

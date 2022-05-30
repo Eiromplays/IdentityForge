@@ -1086,10 +1086,10 @@ dompurify@^2.3.6:
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.8.tgz#224fe9ae57d7ebd9a1ae1ac18c1c1ca3f532226f"
   integrity sha512-eVhaWoVibIzqdGYjwsBWodIQIaXFSB+cKDf4cfxLMsK0xiud6SE+/WCVx/Xw/UwQsa4cS3T2eITcdtmTg2UKcw==
 
-eiromplays-ui@^1.3.3:
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/eiromplays-ui/-/eiromplays-ui-1.3.3.tgz#c55ad95c1e689373e0b2acf37f31c7aa0d7a5781"
-  integrity sha512-EwW7UT0EtLieyjOGw/TAAqdH8E7lTgY0mkANeQrNuotJ2MvgaoKakWzcpOlhx+xLcGwlhSlLzGJ3MVQi0Fo7VA==
+eiromplays-ui@^1.3.4:
+  version "1.3.4"
+  resolved "https://registry.npmjs.org/eiromplays-ui/-/eiromplays-ui-1.3.4.tgz#82626e5cabb823bd3ac3fe1f2c5e9cb786a68d7a"
+  integrity sha512-7aG8Chbhj1fbIATDm/PWF0KR/ILfzIPpy6tWa1fU5EkqG83pVX4misvFPKPtm3MsUWGkEJ91R4v/1LUC9tPH2w==
   dependencies:
     "@tanstack/react-location" "^3.7.4"
     "@tanstack/react-location-devtools" "^3.4.4"
@@ -1098,6 +1098,7 @@ eiromplays-ui@^1.3.3:
     react-error-boundary "^3.1.4"
     react-helmet-async "^1.3.0"
     react-query "^3.38.1"
+    react-toastify "^9.0.2"
 
 electron-to-chromium@^1.4.118:
   version "1.4.141"
@@ -2491,10 +2492,10 @@ react-refresh@^0.13.0:
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.13.0.tgz#cbd01a4482a177a5da8d44c9755ebb1f26d5a1c1"
   integrity sha512-XP8A9BT0CpRBD+NYLLeIhld/RqG9+gktUjW1FkE+Vm7OCinbG1SshcK5tb9ls4kzvjZr9mOQc7HYgBngEyPAXg==
 
-react-toastify@^8.2.0:
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/react-toastify/-/react-toastify-8.2.0.tgz#ef7d56bdfdc6272ca6b228368ab564721c3a3244"
-  integrity sha512-Pg2Ju7NngAamarFvLwqrFomJ57u/Ay6i6zfLurt/qPynWkAkOthu6vxfqYpJCyNhHRhR4hu7+bySSeWWJu6PAg==
+react-toastify@^9.0.2:
+  version "9.0.2"
+  resolved "https://registry.npmjs.org/react-toastify/-/react-toastify-9.0.2.tgz#f7934b52ac30eb0c4de452920494b45d65957026"
+  integrity sha512-IknOvdh7LNzeLKmZTn7EXYC4kaSM0VdUvRuNdBJs/F/NMgRW9kFXbzAUb8rpQxIH+p1YJ3KVbfmL5ThCPH6o0A==
   dependencies:
     clsx "^1.1.1"
 

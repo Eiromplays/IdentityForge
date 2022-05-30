@@ -3,15 +3,21 @@ import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
 export type UpdateClientDTO = {
+  clientId: number;
   data: {
-    id: string;
-    name: string;
+    id: number;
+    clientName: string;
     description: string;
+    clientUri: string;
+    logoUri: string;
+    enabled: boolean;
+    requireConsent: boolean;
+    allowRememberConsent: boolean;
   };
 };
 
-export const updateClient = async ({ data }: UpdateClientDTO) => {
-  return axios.put(`/clients/${data.id}`, data);
+export const updateClient = async ({ clientId, data }: UpdateClientDTO) => {
+  return axios.put(`/clients/${clientId}`, data);
 };
 
 type UseUpdateClientOptions = {
@@ -20,7 +26,8 @@ type UseUpdateClientOptions = {
 
 export const useUpdateClient = ({ config }: UseUpdateClientOptions = {}) => {
   return useMutation({
-    onSuccess: async () => {
+    onSuccess: async (_, variables) => {
+      await queryClient.invalidateQueries(['client', variables.clientId]);
       toast.success('Client Updated');
     },
     onError: (error) => {

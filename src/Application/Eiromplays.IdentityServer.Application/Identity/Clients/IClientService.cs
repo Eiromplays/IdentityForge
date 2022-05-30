@@ -2,10 +2,12 @@ namespace Eiromplays.IdentityServer.Application.Identity.Clients;
 
 public interface IClientService : ITransientService
 {
-    Task<PaginationResponse<Duende.IdentityServer.Models.Client>> SearchAsync(ClientListFilter filter,
+    Task<PaginationResponse<ClientDto>> SearchAsync(ClientListFilter filter,
         CancellationToken cancellationToken = default);
     
-    Task<Duende.IdentityServer.Models.Client> GetAsync(string? clientId, CancellationToken cancellationToken = default);
+    Task<ClientDto> GetAsync(int clientId, CancellationToken cancellationToken = default);
 
-    Task UpdateAsync(UpdateClientRequest request, string clientId, CancellationToken cancellationToken = default);
+    Task UpdateAsync(UpdateClientRequest request, int clientId, CancellationToken cancellationToken = default);
+    
+    Task DeleteAsync(int clientId, CancellationToken cancellationToke = default);
 }
