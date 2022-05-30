@@ -3,7 +3,7 @@ import { Button, ConfirmationDialog } from 'eiromplays-ui';
 import { useDeleteIdentityResource } from '../api/deleteIdentityResource';
 
 type DeleteIdentityResourceProps = {
-    identityResourceId: number;
+  identityResourceId: number;
 };
 
 export const DeleteIdentityResource = ({ identityResourceId }: DeleteIdentityResourceProps) => {
@@ -20,7 +20,9 @@ export const DeleteIdentityResource = ({ identityResourceId }: DeleteIdentityRes
           isLoading={deleteIdentityResourceMutation.isLoading}
           type="button"
           className="bg-red-600"
-          onClick={() => deleteIdentityResourceMutation.mutate({ identityResourceId: identityResourceId })}
+          onClick={() =>
+            deleteIdentityResourceMutation.mutate({ identityResourceId: identityResourceId })
+          }
         >
           Delete IdentityResource
         </Button>

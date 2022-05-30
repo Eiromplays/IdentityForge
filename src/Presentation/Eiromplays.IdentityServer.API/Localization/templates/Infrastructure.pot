@@ -212,7 +212,7 @@ msgstr ""
 #. _ = user ?? throw new NotFoundException(_t["User Not Found."]);
 #: Infrastructure\Identity\UserService.Permissions.cs:14
 #. _ = user ?? throw new NotFoundException(_t["User Not Found."]);
-#: Infrastructure\Identity\UserService.IdentityResources.cs:38
+#: Infrastructure\Identity\UserService.ApiScopes.cs:38
 #. _ = user ?? throw new NotFoundException(_t["User Not Found."]);
 msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
 msgid "User Not Found."
@@ -270,22 +270,22 @@ msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
 msgid "Change password failed"
 msgstr ""
 
-#: Infrastructure\Identity\UserService.IdentityResources.cs:53
+#: Infrastructure\Identity\UserService.ApiScopes.cs:53
 #. throw new ConflictException(_t["Cannot Remove Admin Role From Root Tenant Admin."]);
 msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
 msgid "Cannot Remove Admin Role From Root Tenant Admin."
 msgstr ""
 
-#: Infrastructure\Identity\UserService.IdentityResources.cs:58
+#: Infrastructure\Identity\UserService.ApiScopes.cs:58
 #. throw new ConflictException(_t["Tenant should have at least 2 Admins."]);
 msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
 msgid "Tenant should have at least 2 Admins."
 msgstr ""
 
-#: Infrastructure\Identity\UserService.IdentityResources.cs:83
-#. return _t["User IdentityResources Updated Successfully."];
+#: Infrastructure\Identity\UserService.ApiScopes.cs:83
+#. return _t["User ApiScopes Updated Successfully."];
 msgctxt "Eiromplays.IdentityServer.Infrastructure.Identity.UserService"
-msgid "User IdentityResources Updated Successfully."
+msgid "User ApiScopes Updated Successfully."
 msgstr ""
 
 #: Infrastructure\Middleware\ExceptionMiddleware.cs:50

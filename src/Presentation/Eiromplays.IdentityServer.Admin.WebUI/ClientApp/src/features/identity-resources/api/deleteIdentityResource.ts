@@ -2,11 +2,11 @@ import { axios, MutationConfig } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
-export type DeleteClientDTO = {
+export type DeleteIdentityResourceDTO = {
   identityResourceId: number;
 };
 
-export const deleteIdentityResource = ({ identityResourceId }: DeleteClientDTO) => {
+export const deleteIdentityResource = ({ identityResourceId }: DeleteIdentityResourceDTO) => {
   return axios.delete(`/identity-resources/${identityResourceId}`);
 };
 

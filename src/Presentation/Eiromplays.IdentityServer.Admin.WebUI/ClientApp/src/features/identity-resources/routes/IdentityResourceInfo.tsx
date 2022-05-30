@@ -61,7 +61,10 @@ export const IdentityResourceInfo = () => {
             <Entry label="Name" value={identityResourceQuery.data.name} />
             <Entry label="DisplayName" value={identityResourceQuery.data.displayName} />
             <Entry label="Description" value={identityResourceQuery.data.description} />
-            <Entry label="ShowInDiscoveryDocument" value={identityResourceQuery.data.showInDiscoveryDocument.toString()} />
+            <Entry
+              label="ShowInDiscoveryDocument"
+              value={identityResourceQuery.data.showInDiscoveryDocument.toString()}
+            />
             <Entry label="Emphasize" value={identityResourceQuery.data.emphasize.toString()} />
             <Entry label="Required" value={identityResourceQuery.data.required.toString()} />
             <Entry label="NonEditable" value={identityResourceQuery.data.nonEditable.toString()} />

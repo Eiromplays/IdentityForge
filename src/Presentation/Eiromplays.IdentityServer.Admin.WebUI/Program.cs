@@ -100,6 +100,12 @@ app.MapRemoteBffApiEndpoint("/clients", "https://localhost:7003/v1/clients")
 app.MapRemoteBffApiEndpoint("/identity-resources", "https://localhost:7003/v1/identity-resources")
     .RequireAccessToken();
 
+app.MapRemoteBffApiEndpoint("/api-scopes", "https://localhost:7003/v1/api-scopes")
+    .RequireAccessToken();
+
+app.MapRemoteBffApiEndpoint("/api-resources", "https://localhost:7003/v1/api-resources")
+    .RequireAccessToken();
+
 app.MapFallbackToFile("index.html");
 
 app.Run();

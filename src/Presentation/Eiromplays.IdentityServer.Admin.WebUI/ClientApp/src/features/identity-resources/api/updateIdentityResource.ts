@@ -17,7 +17,10 @@ export type UpdateIdentityResourceDTO = {
   };
 };
 
-export const updateIdentityResource = async ({ identityResourceId, data }: UpdateIdentityResourceDTO) => {
+export const updateIdentityResource = async ({
+  identityResourceId,
+  data,
+}: UpdateIdentityResourceDTO) => {
   return axios.put(`/identity-resources/${identityResourceId}`, data);
 };
 

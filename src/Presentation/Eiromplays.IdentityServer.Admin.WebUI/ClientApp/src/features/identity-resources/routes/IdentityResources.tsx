@@ -6,7 +6,7 @@ import { IdentityResourcesList } from '../components/IdentityResourcesList';
 
 export const IdentityResources = () => {
   return (
-    <ContentLayout title="IdentityResources">
+    <ContentLayout title="ApiScopes">
       <div className="mt-4">
         <Authorization
           forbiddenFallback={<div>Only admin can view this.</div>}

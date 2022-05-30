@@ -3,7 +3,10 @@ import { HiOutlinePencil } from 'react-icons/hi';
 import * as z from 'zod';
 
 import { useIdentityResource } from '../api/getIdentityResource';
-import { UpdateIdentityResourceDTO, useUpdateIdentityResource } from '../api/updateIdentityResource';
+import {
+  UpdateIdentityResourceDTO,
+  useUpdateIdentityResource,
+} from '../api/updateIdentityResource';
 
 const schema = z.object({
   name: z.string().min(1, 'Required'),
@@ -63,7 +66,7 @@ export const UpdateIdentityResource = ({ identityResourceId }: UpdateIdentityRes
                 size="sm"
                 isLoading={updateIdentityResourceMutation.isLoading}
               >
-                Update Client
+                Update IdentityResource
               </Button>
             }
           />
@@ -73,7 +76,10 @@ export const UpdateIdentityResource = ({ identityResourceId }: UpdateIdentityRes
           id="update-identity-resource"
           onSubmit={async (values) => {
             values.id = identityResourceId;
-            await updateIdentityResourceMutation.mutateAsync({ identityResourceId: identityResourceId, data: values });
+            await updateIdentityResourceMutation.mutateAsync({
+              identityResourceId: identityResourceId,
+              data: values,
+            });
           }}
           options={{
             defaultValues: {
@@ -92,9 +98,9 @@ export const UpdateIdentityResource = ({ identityResourceId }: UpdateIdentityRes
           {({ register, formState }) => (
             <>
               <InputField
-                  label="Name"
-                  error={formState.errors['name']}
-                  registration={register('name')}
+                label="Name"
+                error={formState.errors['name']}
+                registration={register('name')}
               />
               <InputField
                 label="DisplayName"

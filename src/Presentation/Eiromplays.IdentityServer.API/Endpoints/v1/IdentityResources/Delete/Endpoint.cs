@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Models.Request>
             s.Summary = "Delete a IdentityResource.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Delete, EIAResource.IdentityResources));
+        Policies(EIAPermission.NameFor(EIAAction.Delete, EIAResource.ApiScopes));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)

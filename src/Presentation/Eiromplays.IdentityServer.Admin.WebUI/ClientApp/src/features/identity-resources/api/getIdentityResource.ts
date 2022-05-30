@@ -7,18 +7,20 @@ export type GetIdentityResourceDTO = {
   identityResourceId: number;
 };
 
-export const getIdentityResource = ({ identityResourceId }: GetIdentityResourceDTO): Promise<IdentityResource> => {
+export const getIdentityResource = ({
+  identityResourceId,
+}: GetIdentityResourceDTO): Promise<IdentityResource> => {
   return axios.get(`/identity-resources/${identityResourceId}`);
 };
 
 type QueryFnType = typeof getIdentityResource;
 
-type UseIdentityResourcetOptions = {
+type UseIdentityResourceOptions = {
   identityResourceId: number;
   config?: QueryConfig<QueryFnType>;
 };
 
-export const useIdentityResource = ({ identityResourceId, config }: UseIdentityResourcetOptions) => {
+export const useIdentityResource = ({ identityResourceId, config }: UseIdentityResourceOptions) => {
   return useQuery<ExtractFnReturnType<QueryFnType>>({
     ...config,
     queryKey: ['identity-resource', identityResourceId],

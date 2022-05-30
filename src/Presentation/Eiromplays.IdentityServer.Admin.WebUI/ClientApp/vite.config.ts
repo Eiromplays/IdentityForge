@@ -85,6 +85,16 @@ export default defineConfig({
         changeOrigin: false,
         secure: false,
       },
+      '/api-scopes': {
+        target: target,
+        changeOrigin: false,
+        secure: false,
+      },
+      '/api-resources': {
+        target: target,
+        changeOrigin: false,
+        secure: false,
+      },
     },
   },
 });

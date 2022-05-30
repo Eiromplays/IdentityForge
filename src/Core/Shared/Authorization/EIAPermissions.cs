@@ -29,6 +29,8 @@ public static class EIAResource
     public const string AuditLog = nameof(AuditLog);
     public const string Clients = nameof(Clients);
     public const string IdentityResources = nameof(IdentityResources);
+    public const string ApiResources = nameof(ApiResources);
+    public const string ApiScopes = nameof(ApiScopes);
 }
 
 
@@ -84,6 +86,16 @@ public static class EIAPermissions
         new("Create IdentityResources", EIAAction.Create, EIAResource.IdentityResources),
         new("Update IdentityResources", EIAAction.Update, EIAResource.IdentityResources),
         new("Delete IdentityResources", EIAAction.Delete, EIAResource.IdentityResources),
+        new("Search ApiScopes", EIAAction.Search, EIAResource.ApiResources),
+        new("View ApiResources", EIAAction.View, EIAResource.ApiResources),
+        new("Create ApiResources", EIAAction.Create, EIAResource.ApiResources),
+        new("Update ApiResources", EIAAction.Update, EIAResource.ApiResources),
+        new("Delete ApiResources", EIAAction.Delete, EIAResource.ApiResources),
+        new("Search ApiResources", EIAAction.Search, EIAResource.ApiScopes),
+        new("View ApiScopes", EIAAction.View, EIAResource.ApiScopes),
+        new("Create ApiScopes", EIAAction.Create, EIAResource.ApiScopes),
+        new("Update ApiScopes", EIAAction.Update, EIAResource.ApiScopes),
+        new("Delete ApiScopes", EIAAction.Delete, EIAResource.ApiScopes),
     };
 
     public static IReadOnlyList<EIAPermission> All { get; } = new ReadOnlyCollection<EIAPermission>(_all);

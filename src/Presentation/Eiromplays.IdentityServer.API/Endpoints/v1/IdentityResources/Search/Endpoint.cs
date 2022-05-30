@@ -17,10 +17,10 @@ public class Endpoint : Endpoint<Models.Request, PaginationResponse<IdentityReso
         Post("/identity-resources/search");
         Summary(s =>
         {
-            s.Summary = "Search IdentityResources using available filters.";
+            s.Summary = "Search ApiScopes using available filters.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Search, EIAResource.IdentityResources));
+        Policies(EIAPermission.NameFor(EIAAction.Search, EIAResource.ApiScopes));
     }
 
     public override async Task HandleAsync(Models.Request request, CancellationToken ct)
