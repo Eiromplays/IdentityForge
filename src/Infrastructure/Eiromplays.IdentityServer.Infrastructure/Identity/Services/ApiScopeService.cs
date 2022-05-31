@@ -96,6 +96,31 @@ internal partial class  ApiScopeService : IApiScopeService
         }
     }
     
+    public async Task<string> CreateAsync(CreateApiScopeRequest request, CancellationToken cancellationToken)
+    {
+        var apiScope = new ApiScope
+        {
+            Name = request.Name,
+            DisplayName = request.DisplayName,
+            Description = request.Description,
+            ShowInDiscoveryDocument = request.ShowInDiscoveryDocument,
+            Emphasize = request.Emphasize,
+            Required = request.Required,
+            Enabled = request.Enabled,
+            NonEditable = request.NonEditable
+        };
+
+        await _db.ApiScopes.AddAsync(apiScope, cancellationToken);
+
+        var success = await _db.SaveChangesAsync(cancellationToken) > 0;
+        
+        if (!success) throw new InternalServerException(_t["Create ApiScope failed"], new List<string>{ "Failed to create ApiScope" });
+        
+        await _events.PublishAsync(new ApiScopeCreatedEvent(apiScope.Id));
+
+        return string.Format(_t["ApiScope {0} Registered."], apiScope.Id);
+    }
+    
     #region Entity Queries
 
     // TODO: Move to repository or something like that :)

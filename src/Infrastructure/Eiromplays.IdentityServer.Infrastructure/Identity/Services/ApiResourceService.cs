@@ -95,6 +95,31 @@ internal partial class ApiResourceService : IApiResourceService
         }
     }
     
+    public async Task<string> CreateAsync(CreateApiResourceRequest request, CancellationToken cancellationToken)
+    {
+        var apiResource = new ApiResource
+        {
+            Name = request.Name,
+            DisplayName = request.DisplayName,
+            Description = request.Description,
+            ShowInDiscoveryDocument = request.ShowInDiscoveryDocument,
+            AllowedAccessTokenSigningAlgorithms = request.AllowedAccessTokenSigningAlgorithms,
+            RequireResourceIndicator = request.RequireResourceIndicator,
+            Enabled = request.Enabled,
+            NonEditable = request.NonEditable
+        };
+
+        await _db.ApiResources.AddAsync(apiResource, cancellationToken);
+
+        var success = await _db.SaveChangesAsync(cancellationToken) > 0;
+        
+        if (!success) throw new InternalServerException(_t["Create ApiResource failed"], new List<string>{ "Failed to create ApiResource" });
+        
+        await _events.PublishAsync(new ApiResourceCreatedEvent(apiResource.Id));
+
+        return string.Format(_t["ApiResource {0} Registered."], apiResource.Id);
+    }
+    
     #region Entity Queries
 
     // TODO: Move to repository or something like that :)

@@ -11,4 +11,6 @@ public interface IApiScopeService : ITransientService
         CancellationToken cancellationToken = default);
     
     Task DeleteAsync(int apiScopeId, CancellationToken cancellationToken = default);
+
+    Task<string> CreateAsync(CreateApiScopeRequest request, CancellationToken cancellationToken = default);
 }

@@ -11,4 +11,6 @@ public interface IApiResourceService : ITransientService
         CancellationToken cancellationToken = default);
     
     Task DeleteAsync(int apiResourceId, CancellationToken cancellationToken = default);
+    
+    Task<string> CreateAsync(CreateApiResourceRequest request, CancellationToken cancellationToken = default);
 }
