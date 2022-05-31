@@ -2,10 +2,12 @@ import { axios, MutationConfig, queryClient } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
+import { identityServerUrl } from '@/utils/envVariables';
+
 import { GrantsViewModel } from '../types';
 
 export const revokeGrant = ({ clientId }: { clientId: string }) => {
-  return axios.delete(`https://localhost:7001/grants/revoke/${clientId}`);
+  return axios.delete(`${identityServerUrl}/grants/revoke/${clientId}`);
 };
 
 type UseRevokeGrantOptions = {

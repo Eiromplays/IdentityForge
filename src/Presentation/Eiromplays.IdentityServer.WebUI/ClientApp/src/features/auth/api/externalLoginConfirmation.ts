@@ -1,10 +1,19 @@
-import { axios, MutationConfig } from 'eiromplays-ui';
+import { axios, MessageResponse, MutationConfig } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
-type ExternalLoginConfirmationViewModel = {
+import { identityServerUrl } from '@/utils/envVariables';
+
+export type ExternalLoginConfirmationViewModel = {
+  firstName: string;
+  lastName: string;
   userName: string;
   email: string;
+  phoneNumber?: string;
+};
+
+export type ExternalLoginConfirmationResponse = MessageResponse & {
+  returnUrl: string;
 };
 
 export const externalLoginConfirmation = ({
@@ -13,9 +22,9 @@ export const externalLoginConfirmation = ({
 }: {
   data: ExternalLoginConfirmationViewModel;
   returnUrl?: string;
-}) => {
+}): Promise<ExternalLoginConfirmationResponse> => {
   return axios.post(
-    `https://localhost:7001/spa/externalLoginConfirmation?returnUrl=${returnUrl}`,
+    `${identityServerUrl}/spa/externalLoginConfirmation?returnUrl=${returnUrl}`,
     data
   );
 };
@@ -26,8 +35,9 @@ type UseRevokeGrantOptions = {
 
 export const useExternalLoginConfirmation = ({ config }: UseRevokeGrantOptions = {}) => {
   return useMutation({
-    onSuccess: () => {
+    onSuccess: (response) => {
       toast.success('Successfully created account');
+      toast.success(response.message);
     },
     ...config,
     mutationFn: externalLoginConfirmation,

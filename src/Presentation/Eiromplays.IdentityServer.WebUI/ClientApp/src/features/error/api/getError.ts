@@ -1,10 +1,12 @@
 import { axios, ExtractFnReturnType, QueryConfig } from 'eiromplays-ui';
 import { useQuery } from 'react-query';
 
+import { identityServerUrl } from '@/utils/envVariables';
+
 import { ErrorMessage } from '../types';
 
 export const getError = ({ errorId }: { errorId?: string }): Promise<ErrorMessage> => {
-  return axios.get(`https://localhost:7001/spa/error?errorId=${errorId}`);
+  return axios.get(`${identityServerUrl}/spa/error?errorId=${errorId}`);
 };
 
 type QueryFnType = typeof getError;

@@ -2,8 +2,10 @@ import { axios, MutationConfig } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
+import { identityServerUrl } from '@/utils/envVariables';
+
 export const disableAuthenticator = () => {
-  return axios.post(`https://localhost:7001/account/DisableAuthenticator`);
+  return axios.post(`${identityServerUrl}/account/DisableAuthenticator`);
 };
 
 type UseDisableAuthenticatorOptions = {

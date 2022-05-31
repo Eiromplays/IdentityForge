@@ -1,4 +1,4 @@
-import { useMatch } from '@tanstack/react-location';
+import { useMatch, useSearch } from '@tanstack/react-location';
 import { Spinner } from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
@@ -12,14 +12,7 @@ export const ExternalLoginConfirmation = () => {
     params: { email, userName, loginProvider },
   } = useMatch<LocationGenerics>();
 
-  //TODO: Find a better way to get the returnUrl
-  let returnUrl = '';
-  const idx = location.href.toLowerCase().indexOf('?returnurl=');
-  if (idx > 0) {
-    returnUrl = location.href.substring(idx + 11);
-  }
-
-  console.log('ExternalLoginConfirmation', { email, userName, returnUrl, loginProvider });
+  const { returnUrl } = useSearch<LocationGenerics>();
 
   const loginQuery = useLogin({ returnUrl });
 

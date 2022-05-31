@@ -70,6 +70,6 @@ export const registerFn = async (data: RegisterCredentialsDTO) => {
   return await loadUser();
 };
 
-export const logoutFn = async () => {
-  await logoutUser();
+export const logoutFn = async (logoutId: string) => {
+  await logoutUser({ logoutId: logoutId });
 };

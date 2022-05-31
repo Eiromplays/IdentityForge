@@ -2,7 +2,7 @@ using Eiromplays.IdentityServer.Application.Identity.Users;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.SelfRegister;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : Endpoint<Models.Request, CreateUserResponse>
 {
     private readonly IUserService _userService;
     
@@ -27,7 +27,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         // TODO: Add a option to allow anonymous users to create users
         // Returns Unauthorized if it is disabled
         // TODO: Add some more protection, like a captcha or something
-        Response.Message = await _userService.CreateAsync(req.Data, BaseURL);
+        Response = await _userService.CreateAsync(req.Data, BaseURL);
 
         await SendAsync(Response, cancellation: ct);
     }

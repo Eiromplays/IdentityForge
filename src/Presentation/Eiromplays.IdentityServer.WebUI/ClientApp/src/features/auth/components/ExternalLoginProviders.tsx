@@ -1,3 +1,7 @@
+import { useSearch } from '@tanstack/react-location';
+
+import { LocationGenerics } from '@/App';
+
 import { ExternalProvider } from '../types';
 
 import { ExternalLoginProvider } from './ExternalProvider';
@@ -8,12 +12,7 @@ type ExternalProvidersProps = {
 };
 
 export const ExternalLoginProviders = ({ title, externalProviders }: ExternalProvidersProps) => {
-  //TODO: Find a better way to get the returnUrl
-  let returnUrl = '';
-  const idx = location.href.toLowerCase().indexOf('?returnurl=');
-  if (idx > 0) {
-    returnUrl = location.href.substring(idx + 11);
-  }
+  const { returnUrl } = useSearch<LocationGenerics>();
 
   return (
     <div>

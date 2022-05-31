@@ -2,8 +2,10 @@ import { axios, MutationConfig } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
+import { identityServerUrl } from '@/utils/envVariables';
+
 export const resetAuthenticator = () => {
-  return axios.post(`https://localhost:7001/account/ResetAuthenticator`);
+  return axios.post(`${identityServerUrl}/account/ResetAuthenticator`);
 };
 
 type UseResetAuthenticatorOptions = {

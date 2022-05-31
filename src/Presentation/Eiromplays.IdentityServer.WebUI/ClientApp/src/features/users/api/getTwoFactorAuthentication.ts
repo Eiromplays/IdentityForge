@@ -1,10 +1,12 @@
 import { axios, ExtractFnReturnType, QueryConfig } from 'eiromplays-ui';
 import { useQuery } from 'react-query';
 
+import { identityServerUrl } from '@/utils/envVariables';
+
 import { TwoFactorAuthenticationViewModel } from '../types';
 
 export const getTwoFactorAuthentication = (): Promise<TwoFactorAuthenticationViewModel> => {
-  return axios.get(`https://localhost:7001/account/TwoFactorAuthentication`);
+  return axios.get(`${identityServerUrl}/account/TwoFactorAuthentication`);
 };
 
 type QueryFnType = typeof getTwoFactorAuthentication;

@@ -21,6 +21,7 @@ import { RolesRoutes } from '@/features/roles';
 import { UserSessionsRoutes } from '@/features/user-sessions';
 import { UsersRoutes } from '@/features/users';
 import { ROLES, useAuthorization } from '@/lib/authorization';
+import { identityServerUiUrl, identityServerUrl } from '@/utils/envVariables';
 
 const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
 
@@ -32,6 +33,7 @@ const App = () => {
   return (
     <MainLayout
       logo={logo}
+      userNavigationProps={{ identityServerUiUrl: identityServerUiUrl }}
       sideBarNavigationProps={{
         items: [
           { name: 'Dashboard', to: '.', icon: HiOutlineHome },
@@ -46,7 +48,7 @@ const App = () => {
           { name: 'Logs', to: './logs', icon: MdOutlineHistory },
           {
             name: 'Discovery Document',
-            to: 'https://localhost:7001/.well-known/openid-configuration',
+            to: `${identityServerUrl}/.well-known/openid-configuration`,
             target: '_blank',
             externalLink: true,
             icon: HiOutlineDocumentText,

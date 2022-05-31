@@ -1,10 +1,12 @@
 import { axios, ExtractFnReturnType, QueryConfig } from 'eiromplays-ui';
 import { useQuery } from 'react-query';
 
+import { identityServerUrl } from '@/utils/envVariables';
+
 import { EnableAuthenticatorViewModel } from '../types';
 
 export const getEnableAuthenticator = (): Promise<EnableAuthenticatorViewModel> => {
-  return axios.get(`https://localhost:7001/account/EnableAuthenticator`);
+  return axios.get(`${identityServerUrl}/account/EnableAuthenticator`);
 };
 
 type QueryFnType = typeof getEnableAuthenticator;

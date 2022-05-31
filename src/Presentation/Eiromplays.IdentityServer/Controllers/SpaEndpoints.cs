@@ -1,22 +1,27 @@
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using System.Text.Json;
 using Duende.IdentityServer;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
+using Eiromplays.IdentityServer.Application.Common.Configurations;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Configuration;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.ViewModels.Account;
 using IdentityModel;
+using Mapster;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace Eiromplays.IdentityServer.Controllers;
@@ -52,6 +57,12 @@ public class LoginConsentResponse
     public string? ValidReturnUrl { get; set; }
 }
 
+public class ExternalLoginConfirmationResponse
+{
+    public string Message { get; set; } = default!;
+    public string ReturnUrl { get; set; } = default!;
+}
+
 [Route("spa")]
 [AllowAnonymous]
 public class SpaEndpoints : Controller
@@ -65,12 +76,15 @@ public class SpaEndpoints : Controller
     private readonly IClientStore _clientStore;
     private readonly IAuthenticationSchemeProvider _schemeProvider;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IUserService _userService;
+    private readonly SpaConfiguration _spaConfiguration;
 
     public SpaEndpoints(IIdentityServerInteractionService interaction, IServerUrls serverUrls,
         SignInManager<ApplicationUser> signInManager, IUserResolver<ApplicationUser> userResolver,
         IAuthenticationHandlerProvider authenticationHandlerProvider, IEventService eventService,
         IClientStore clientStore, IAuthenticationSchemeProvider schemeProvider,
-        UserManager<ApplicationUser> userManager)
+        UserManager<ApplicationUser> userManager, IUserService userService,
+        IOptions<SpaConfiguration> spaConfiguration)
     {
         _interaction = interaction;
         _serverUrls = serverUrls;
@@ -81,6 +95,8 @@ public class SpaEndpoints : Controller
         _clientStore = clientStore;
         _schemeProvider = schemeProvider;
         _userManager = userManager;
+        _userService = userService;
+        _spaConfiguration = spaConfiguration.Value;
     }
 
     [HttpGet("error")]
@@ -154,7 +170,7 @@ public class SpaEndpoints : Controller
                     }
                         
                     response.Error = "Invalid username or password";
-                    return new BadRequestObjectResult(response);
+                    return BadRequest(response);
                 }
                     
                 var url = model.ReturnUrl != null ? Uri.UnescapeDataString(model.ReturnUrl) : null;
@@ -257,7 +273,7 @@ public class SpaEndpoints : Controller
         var info = await _signInManager.GetExternalLoginInfoAsync();
         if (info is null)
         {
-            return Redirect("https://localhost:3000/auth/login");
+            return Redirect($"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/login");
         }
 
         // Sign in the user with this external login provider if the user already has a login.
@@ -265,27 +281,32 @@ public class SpaEndpoints : Controller
         if (result.Succeeded)
         {
             var url = returnUrl != null ? Uri.UnescapeDataString(returnUrl) : null;
-            return Redirect(url ?? Request.GetDisplayUrl());
+            return Redirect(url ?? _spaConfiguration.IdentityServerUiBaseUrl);
         }
         response.SignInResult = result;
         if (result.RequiresTwoFactor)
         {
-            return BadRequest(response);
+            return RedirectToAction(nameof(LoginWith2Fa), new { returnUrl, RememberMe = true });
         }
 
         if (result.IsLockedOut)
         {
             // TODO: should probably send an email to the user
 
-            return BadRequest(response);
+            return Redirect($"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/lockout");
+        }
+
+        if (result.IsNotAllowed)
+        {
+            return Redirect($"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/not-allowed");
         }
 
         // If the user does not have an account, then ask the user to create an account.
         var email = info.Principal.FindFirstValue(ClaimTypes.Email);
         var userName = info.Principal.Identity?.Name;
-            
+        
         return Redirect(
-            $"https://localhost:3000/auth/external-login-confirmation/{email}/{userName}/{info.LoginProvider}?returnUrl={returnUrl}");
+            $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/external-login-confirmation/{email}/{userName}/{info.LoginProvider}?returnUrl={returnUrl}");
     }
         
     [HttpPost("ExternalLogin")]
@@ -294,16 +315,18 @@ public class SpaEndpoints : Controller
     {
         if (string.IsNullOrWhiteSpace(provider))
             throw new BadRequestException("Provider is required");
-            
+
+        Console.WriteLine($"Redirect url: {returnUrl}");
+
         // Request a redirect to the external login provider.
-        var redirectUrl = Url.Action("ExternalLoginCallback", new { ReturnUrl = returnUrl });
+        var redirectUrl = Url.Action("ExternalLoginCallback", new { returnUrl });
         var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
 
         return Challenge(properties, provider);
     }
         
     [HttpPost("ExternalLoginConfirmation")]
-    public async Task<IActionResult> ExternalLoginConfirmation([FromBody]ExternalLoginConfirmationViewModel model, string? returnUrl = null)
+    public async Task<IActionResult> ExternalLoginConfirmation([FromBody]CreateExternalUserRequest request, string? returnUrl = null)
     {
         returnUrl ??= Url.Content("~/");
 
@@ -311,28 +334,45 @@ public class SpaEndpoints : Controller
         var info = await _signInManager.GetExternalLoginInfoAsync();
         if (info == null)
         {
-            return BadRequest("ExternalLoginFailure");
+            return BadRequest(new ExternalLoginConfirmationResponse{Message = "Error loading external login information during confirmation."});
         }
 
-        if (!ModelState.IsValid) return BadRequest(model);
-            
-        var user = new ApplicationUser
+        var createUserResponse = await _userService.CreateExternalAsync(request, Request.GetDisplayUrl());
+
+        var addLoginMessage = await _userService.AddLoginAsync(createUserResponse.UserId, info.Adapt<UserLoginInfoDto>());
+
+        // TODO: Check if user should be logged in automatically
+        /*if (_signInManager.CanSignInAsync())
+        await _signInManager.SignInAsync(user, isPersistent: false);*/
+
+        var response = new ExternalLoginConfirmationResponse
         {
-            UserName = model.UserName,
-            DisplayName = model.DisplayName ?? model.UserName,
-            Email = model.Email
+            Message = string.Join(Environment.NewLine, new List<string> { createUserResponse.Message, addLoginMessage })
         };
+        
+        var url = returnUrl is not null ? Uri.UnescapeDataString(returnUrl) : null;
+        var context = await _interaction.GetAuthorizationContextAsync(url);
 
-        var result = await _userManager.CreateAsync(user);
-        if (!result.Succeeded) throw new BadRequestException("Unable to create user", result.Errors.Select(x => x.Description).ToList());
-                
-        result = await _userManager.AddLoginAsync(user, info);
-                
-        if (!result.Succeeded) throw new BadRequestException("Unable to add login", result.Errors.Select(x => x.Description).ToList());
-                
-        await _signInManager.SignInAsync(user, isPersistent: false);
+        if (context != null && !string.IsNullOrWhiteSpace(url))
+        {
+            // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
+            response.ReturnUrl = url;
 
-        return Ok(returnUrl);
+            return Ok(response);
+        }
+
+        // request for a local page
+        if (Url.IsLocalUrl(returnUrl))
+        {
+            return Redirect(returnUrl);
+        }
+
+        if (string.IsNullOrEmpty(returnUrl))
+        {
+            response.ReturnUrl = _serverUrls.BaseUrl;
+        }
+
+        return Ok(response);
 
     }
         

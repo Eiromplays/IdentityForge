@@ -22,7 +22,6 @@ import { AppRoutes } from './routes';
 
 export type LocationGenerics = DefaultLocationGenerics & {
   Params: {
-    invoiceId: string;
     userId: string;
     logId: string;
     roleId: string;
@@ -37,15 +36,15 @@ export type LocationGenerics = DefaultLocationGenerics & {
   };
   Search: {
     returnUrl: string;
+    errorId: string;
+    logoutId: string;
   };
 };
 
 const location = new ReactLocation<LocationGenerics>();
+
 axios.defaults.withCredentials = true;
-AddDataToRequestIgnoreUrls.push(
-  'https://localhost:7001/consent',
-  'https://localhost:7001/spa/Login'
-);
+AddDataToRequestIgnoreUrls.push(`/consent`, `/spa/Login`, `/spa/externalLoginConfirmation`);
 
 const { AuthProvider } = initializeAuth<
   AuthUser,

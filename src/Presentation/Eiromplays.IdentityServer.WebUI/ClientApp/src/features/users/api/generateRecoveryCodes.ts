@@ -2,8 +2,10 @@ import { axios, MutationConfig } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
+import { identityServerUrl } from '@/utils/envVariables';
+
 export const generateRecoveryCodes = (): Promise<string[]> => {
-  return axios.post(`https://localhost:7001/account/GenerateRecoveryCodes`);
+  return axios.post(`${identityServerUrl}/account/GenerateRecoveryCodes`);
 };
 
 type UseGenerateRecoveryCodesOptions = {

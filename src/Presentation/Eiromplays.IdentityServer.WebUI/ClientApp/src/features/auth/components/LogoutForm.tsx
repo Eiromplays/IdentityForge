@@ -1,5 +1,8 @@
+import { useSearch } from '@tanstack/react-location';
 import { Button, Spinner, Form, useAuth } from 'eiromplays-ui';
 import React from 'react';
+
+import { LocationGenerics } from '@/App';
 
 import { logoutUser, useLogout } from '../api/logout';
 import { LoggedOutViewModel } from '../types';
@@ -17,7 +20,7 @@ export const LogoutForm = ({ onSuccess }: LoginFormProps) => {
       {logoutQuery.isLoading && <Spinner />}
       <Form
         onSubmit={async () => {
-          await logoutUser();
+          await logoutUser({ logoutId: logoutQuery.data?.logoutViewModel.logoutId || '' });
 
           onSuccess();
         }}

@@ -105,7 +105,7 @@ internal partial class UserService
         return user;
     }
 
-    public async Task<string> CreateAsync(CreateUserRequest request, string origin)
+    public async Task<CreateUserResponse> CreateAsync(CreateUserRequest request, string origin)
     {
         if (_accountConfiguration.RegisterConfiguration is { Enabled: false }) throw new InternalServerException(_t["Registration is disabled."]);
         
@@ -115,7 +115,7 @@ internal partial class UserService
             FirstName = request.FirstName,
             LastName = request.LastName,
             UserName = request.UserName,
-            DisplayName = request.UserName,
+            DisplayName = !string.IsNullOrWhiteSpace(request.DisplayName) ? request.DisplayName : request.UserName,
             PhoneNumber = request.PhoneNumber,
             IsActive = true
         };
@@ -158,9 +158,65 @@ internal partial class UserService
 
         await _events.PublishAsync(new ApplicationUserCreatedEvent(user.Id));
 
-        return string.Join(Environment.NewLine, messages);
+        return new CreateUserResponse(user.Id, string.Join(Environment.NewLine, messages));
     }
 
+    public async Task<CreateUserResponse> CreateExternalAsync(CreateExternalUserRequest request, string origin)
+    {
+        if (_accountConfiguration.RegisterConfiguration is { Enabled: false }) throw new InternalServerException(_t["Registration is disabled."]);
+        
+        var user = new ApplicationUser
+        {
+            Email = request.Email,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            UserName = request.UserName,
+            DisplayName = !string.IsNullOrWhiteSpace(request.DisplayName) ? request.DisplayName : request.UserName,
+            PhoneNumber = request.PhoneNumber,
+            IsActive = true
+        };
+        
+        if (_accountConfiguration.ProfilePictureConfiguration is { Enabled: true, AutoGenerate: true })
+            user.ProfilePicture = $"{_accountConfiguration.ProfilePictureConfiguration.DefaultUrl}{user.UserName}.svg";
+
+        var result = await _userManager.CreateAsync(user);
+        if (!result.Succeeded)
+        {
+            throw new InternalServerException(_t["Validation Errors Occurred."], result.GetErrors(_t));
+        }
+
+        if (await _roleManager.RoleExistsAsync(EIARoles.Basic))
+            await _userManager.AddToRoleAsync(user, EIARoles.Basic);
+
+        var messages = new List<string> { string.Format(_t["User {0} Registered."], user.UserName) };
+
+        if (_signInManager.Options.SignIn.RequireConfirmedAccount && !string.IsNullOrEmpty(user.Email))
+        {
+            // send verification email
+            var emailVerificationUri = await GetEmailVerificationUriAsync(user, origin);
+            
+            var emailModel = new RegisterUserEmailModel
+            {
+                Email = user.Email,
+                UserName = user.UserName,
+                Url = emailVerificationUri
+            };
+            
+            var mailRequest = new MailRequest(
+                new List<string> { user.Email },
+                _t["Confirm Registration"],
+                _templateService.GenerateEmailTemplate("email-confirmation", emailModel));
+            
+            _jobService.Enqueue(() => _mailService.SendAsync(mailRequest, CancellationToken.None));
+            
+            messages.Add(_t[$"Please check {user.Email} to verify your account!"]);
+        }
+
+        await _events.PublishAsync(new ApplicationUserCreatedEvent(user.Id));
+
+        return new CreateUserResponse(user.Id, string.Join(Environment.NewLine, messages));
+    }
+    
     // TODO: Add support for changing email
     public async Task UpdateAsync(UpdateUserRequest request, string userId, CancellationToken cancellationToken)
     {

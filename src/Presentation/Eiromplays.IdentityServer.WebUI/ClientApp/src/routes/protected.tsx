@@ -17,6 +17,7 @@ import { ConsentRoutes } from '@/features/consent';
 import { GrantsRoutes } from '@/features/grants';
 import { LogsRoutes } from '@/features/logs';
 import { UserSessionsRoutes } from '@/features/user-sessions';
+import { identityServerUrl } from '@/utils/envVariables';
 const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
 const { Profile } = lazyImport(() => import('@/features/users'), 'Profile');
 const { PersonalData } = lazyImport(() => import('@/features/users'), 'PersonalData');
@@ -59,7 +60,7 @@ const App = () => {
           { name: 'Logs', to: 'logs', icon: MdOutlineHistory },
           {
             name: 'Discovery Document',
-            to: 'https://localhost:7001/.well-known/openid-configuration',
+            to: `${identityServerUrl}/.well-known/openid-configuration`,
             target: '_blank',
             externalLink: true,
             icon: HiOutlineDocumentText,

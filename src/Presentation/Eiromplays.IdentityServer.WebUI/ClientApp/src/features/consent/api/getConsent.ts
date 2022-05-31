@@ -1,10 +1,12 @@
 import { axios, ExtractFnReturnType, QueryConfig } from 'eiromplays-ui';
 import { useQuery } from 'react-query';
 
+import { identityServerUrl } from '@/utils/envVariables';
+
 import { ConsentViewModel } from '../types';
 
 export const getConsent = ({ returnUrl }: { returnUrl?: string }): Promise<ConsentViewModel> => {
-  return axios.get(`https://localhost:7001/consent?returnUrl=${returnUrl}`);
+  return axios.get(`${identityServerUrl}/consent?returnUrl=${returnUrl}`);
 };
 
 type QueryFnType = typeof getConsent;

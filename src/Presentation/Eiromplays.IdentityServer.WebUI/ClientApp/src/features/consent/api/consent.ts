@@ -2,6 +2,8 @@ import { useAuth, axios, MutationConfig } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
+import { identityServerUrl } from '@/utils/envVariables';
+
 import { ConsentInputModel, ProcessConsentResult } from '../types';
 
 type ConsentDto = {
@@ -9,7 +11,7 @@ type ConsentDto = {
 };
 
 export const consent = async ({ data }: ConsentDto): Promise<ProcessConsentResult> => {
-  return axios.post('https://localhost:7001/consent', data);
+  return axios.post(`${identityServerUrl}/consent`, data);
 };
 
 type UseConsentOptions = {

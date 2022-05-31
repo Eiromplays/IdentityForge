@@ -1,10 +1,12 @@
 import { axios, ExtractFnReturnType, QueryConfig } from 'eiromplays-ui';
 import { useQuery } from 'react-query';
 
+import { identityServerUrl } from '@/utils/envVariables';
+
 import { Grant } from '../types';
 
 export const getGrant = ({ clientId }: { clientId: string }): Promise<Grant> => {
-  return axios.get(`https://localhost:7001/grants/${clientId}`);
+  return axios.get(`${identityServerUrl}/grants/${clientId}`);
 };
 
 type QueryFnType = typeof getGrant;

@@ -13,7 +13,6 @@ import { AppRoutes } from './routes';
 
 export type LocationGenerics = DefaultLocationGenerics & {
   Params: {
-    invoiceId: string;
     userId: string;
     logId: string;
     roleId: string;

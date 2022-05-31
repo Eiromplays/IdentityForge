@@ -30,7 +30,8 @@ public interface IUserService : ITransientService
     Task ToggleStatusAsync(ToggleUserStatusRequest request, CancellationToken cancellationToken);
 
     Task<string> GetOrCreateFromPrincipalAsync(ClaimsPrincipal principal);
-    Task<string> CreateAsync(CreateUserRequest request, string origin);
+    Task<CreateUserResponse> CreateAsync(CreateUserRequest request, string origin);
+    Task<CreateUserResponse> CreateExternalAsync(CreateExternalUserRequest request, string origin);
     Task UpdateAsync(UpdateUserRequest request, string userId, CancellationToken cancellationToken = default);
 
     Task<string> ConfirmEmailAsync(string userId, string code, CancellationToken cancellationToken = default);
@@ -41,6 +42,8 @@ public interface IUserService : ITransientService
     Task ChangePasswordAsync(ChangePasswordRequest request, string userId);
 
     Task<List<UserLoginInfoDto>> GetLoginsAsync(string userId);
+
+    Task<string> AddLoginAsync(string userId, UserLoginInfoDto login);
 
     Task<Stream> ExportPersonalDataAsync(string userId, bool includeLogins = true);
 

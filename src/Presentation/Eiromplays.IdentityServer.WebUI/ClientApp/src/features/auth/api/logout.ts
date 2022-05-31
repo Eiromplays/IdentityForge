@@ -1,5 +1,9 @@
+import { useSearch } from '@tanstack/react-location';
 import { ExtractFnReturnType, QueryConfig, axios } from 'eiromplays-ui';
 import { useQuery } from 'react-query';
+
+import { LocationGenerics } from '@/App';
+import { identityServerUrl } from '@/utils/envVariables';
 
 import { LogoutResponse } from '../types';
 
@@ -7,32 +11,16 @@ export type LogoutDTO = {
   logoutId: string;
 };
 
-export const getLogoutInfo = (): Promise<LogoutResponse> => {
-  const logoutId = getLogoutId();
-
-  return axios.get(`https://localhost:7001/spa/Logout?logoutId=${logoutId}`);
+export const getLogoutInfo = ({ logoutId }: LogoutDTO): Promise<LogoutResponse> => {
+  return axios.get(`${identityServerUrl}/spa/Logout?logoutId=${logoutId}`);
 };
 
-export const logoutUser = (): Promise<LogoutResponse> => {
-  const logoutId = getLogoutId();
-
+export const logoutUser = ({ logoutId }: LogoutDTO): Promise<LogoutResponse> => {
   const logoutDto: LogoutDTO = {
     logoutId: logoutId,
   };
 
-  return axios.post(`https://localhost:7001/spa/Logout`, logoutDto);
-};
-
-const getLogoutId = (): string => {
-  // TODO: I need to refactor this, one day :)
-
-  let logoutId = '';
-  const idx = location.href.toLowerCase().indexOf('?logoutid=');
-  if (idx > 0) {
-    logoutId = location.href.substring(idx + 10);
-  }
-
-  return logoutId;
+  return axios.post(`${identityServerUrl}/spa/Logout`, logoutDto);
 };
 
 type QueryFnType = typeof getLogoutInfo;
@@ -42,9 +30,11 @@ type UseLogoutOptions = {
 };
 
 export const useLogout = ({ config }: UseLogoutOptions = {}) => {
+  const { logoutId } = useSearch<LocationGenerics>();
+
   return useQuery<ExtractFnReturnType<QueryFnType>>({
     ...config,
-    queryKey: ['logoutInfo'],
-    queryFn: () => getLogoutInfo(),
+    queryKey: ['logout-info'],
+    queryFn: () => getLogoutInfo({ logoutId: logoutId || '' }),
   });
 };

@@ -8,9 +8,4 @@ public class Models
     {
         public CreateUserRequest Data { get; set; } = default!;
     }
-
-    public class Response
-    {
-        public string? Message { get; set; }
-    }
 }

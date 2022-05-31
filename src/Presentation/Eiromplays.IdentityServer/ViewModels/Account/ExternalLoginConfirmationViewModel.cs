@@ -7,11 +7,9 @@ namespace Eiromplays.IdentityServer.ViewModels.Account;
 
 public class ExternalLoginConfirmationViewModel
 {
-    [Required]
-    public string? UserName { get; set; }
-    
-    public string? DisplayName { get; set; }
+    [Required] public string UserName { get; set; } = default!;
 
-    [Required]
-    public string? Email { get; set; }
+    public string DisplayName { get; set; } = default!;
+
+    [Required] public string Email { get; set; } = default!;
 }
