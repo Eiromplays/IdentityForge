@@ -24,9 +24,6 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        // TODO: Add a option to allow anonymous users to create users
-        // Returns Unauthorized if it is disabled
-        // TODO: Add some more protection, like a captcha or something
         Response.Message = await _clientService.CreateAsync(req.Data, ct);
 
         await SendOkAsync(Response, cancellation: ct);

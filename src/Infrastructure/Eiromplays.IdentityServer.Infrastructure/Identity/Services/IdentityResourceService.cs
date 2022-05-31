@@ -1,11 +1,9 @@
 ﻿using Ardalis.Specification.EntityFrameworkCore;
-using DocumentFormat.OpenXml.Office2010.Excel;
 using Duende.IdentityServer.EntityFramework.Entities;
 using Eiromplays.IdentityServer.Application.Common.Events;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Common.Specification;
-using Eiromplays.IdentityServer.Application.Identity.Clients;
 using Eiromplays.IdentityServer.Application.Identity.IdentityResources;
 using Eiromplays.IdentityServer.Domain.Identity;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
@@ -95,6 +93,31 @@ internal partial class  IdentityResourceService : IIdentityResourceService
         {
             throw new InternalServerException(_t["Delete client failed"], new List<string>{ "Failed to delete client" });
         }
+    }
+    
+    public async Task<string> CreateAsync(CreateIdentityResourceRequest request, CancellationToken cancellationToken)
+    {
+        var identityResource = new IdentityResource
+        {
+            Name = request.Name,
+            DisplayName = request.DisplayName,
+            Description = request.Description,
+            ShowInDiscoveryDocument = request.ShowInDiscoveryDocument,
+            Emphasize = request.Emphasize,
+            Required = request.Required,
+            Enabled = request.Enabled,
+            NonEditable = request.NonEditable
+        };
+
+        await _db.IdentityResources.AddAsync(identityResource, cancellationToken);
+
+        var success = await _db.SaveChangesAsync(cancellationToken) > 0;
+        
+        if (!success) throw new InternalServerException(_t["Create IdentityResource failed"], new List<string>{ "Failed to create IdentityResource" });
+        
+        await _events.PublishAsync(new IdentityResourceCreatedEvent(identityResource.Id));
+
+        return string.Format(_t["IdentityResource {0} Registered."], identityResource.Id);
     }
     
     #region Entity Queries
