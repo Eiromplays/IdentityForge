@@ -1,25 +1,25 @@
-using Eiromplays.IdentityServer.Application.Identity.Users;
+using Eiromplays.IdentityServer.Application.Identity.Clients;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.CreateUser;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Clients.CreateClient;
 
 public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
-    private readonly IUserService _userService;
+    private readonly IClientService _clientService;
     
-    public Endpoint(IUserService userService)
+    public Endpoint(IClientService clientService)
     {
-        _userService = userService;
+        _clientService = clientService;
     }
 
     public override void Configure()
     {
-        Post("/users");
+        Post("/clients");
         Summary(s =>
         {
-            s.Summary = "Creates a new user.";
+            s.Summary = "Creates a new client.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Create, EIAResource.Users));
+        Policies(EIAPermission.NameFor(EIAAction.Create, EIAResource.Clients));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
@@ -27,7 +27,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         // TODO: Add a option to allow anonymous users to create users
         // Returns Unauthorized if it is disabled
         // TODO: Add some more protection, like a captcha or something
-        Response.Message = await _userService.CreateAsync(req.Data, BaseURL);
+        Response.Message = await _clientService.CreateAsync(req.Data, ct);
 
         await SendOkAsync(Response, cancellation: ct);
     }

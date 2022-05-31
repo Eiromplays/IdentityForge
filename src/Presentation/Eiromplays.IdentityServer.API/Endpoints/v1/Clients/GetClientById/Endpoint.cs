@@ -1,6 +1,6 @@
 using Eiromplays.IdentityServer.Application.Identity.Clients;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Clients.GetByClientById;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Clients.GetClientById;
 
 public class Endpoint : Endpoint<Models.Request, ClientDto>
 {

@@ -2,14 +2,14 @@ namespace Eiromplays.IdentityServer.Domain.Identity;
 
 public abstract class ClientEvent : DomainEvent
 {
-    public string ClientId { get; set; } = default!;
+    public int ClientId { get; set; }
 
-    protected ClientEvent(string clientId) => ClientId = clientId;
+    protected ClientEvent(int clientId) => ClientId = clientId;
 }
 
 public class ClientCreatedEvent : ClientEvent
 {
-    public ClientCreatedEvent(string clientId)
+    public ClientCreatedEvent(int clientId)
         : base(clientId)
     {
     }
@@ -18,7 +18,7 @@ public class ClientCreatedEvent : ClientEvent
 public class ClientUpdatedEvent : ClientEvent
 {
 
-    public ClientUpdatedEvent(string clientId)
+    public ClientUpdatedEvent(int clientId)
         : base(clientId)
     {
         
@@ -27,7 +27,7 @@ public class ClientUpdatedEvent : ClientEvent
 
 public class ClientDeletedEvent : ClientEvent
 {
-    public ClientDeletedEvent(string clientId)
+    public ClientDeletedEvent(int clientId)
         : base(clientId)
     {
         

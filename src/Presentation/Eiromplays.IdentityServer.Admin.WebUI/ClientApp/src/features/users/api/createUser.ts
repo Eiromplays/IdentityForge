@@ -1,4 +1,4 @@
-import { axios, MutationConfig } from 'eiromplays-ui';
+import { axios, MessageResponse, MutationConfig } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
@@ -15,7 +15,7 @@ export type CreateUserDTO = {
   };
 };
 
-export const createUser = async ({ data }: CreateUserDTO) => {
+export const createUser = async ({ data }: CreateUserDTO): Promise<MessageResponse> => {
   return axios.post(`/users`, data);
 };
 
@@ -26,8 +26,8 @@ type UseCreateUserOptions = {
 export const useCreateUser = ({ config }: UseCreateUserOptions = {}) => {
   return useMutation({
     onSuccess: async (response) => {
-      console.log(response);
       toast.success('User Created');
+      toast.success(response.message);
     },
     onError: (error) => {
       toast.error('Failed to create user');

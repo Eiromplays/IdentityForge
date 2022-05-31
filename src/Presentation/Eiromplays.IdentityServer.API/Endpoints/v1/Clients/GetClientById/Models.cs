@@ -1,4 +1,4 @@
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Clients.GetByClientById;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Clients.GetClientById;
 
 public class Models
 {

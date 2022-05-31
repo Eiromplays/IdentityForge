@@ -11,6 +11,6 @@ public class Models
 
     public class Response
     {
-        public string? UserId { get; set; }
+        public string? Message { get; set; }
     }
 }

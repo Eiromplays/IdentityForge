@@ -10,6 +10,8 @@ public interface IClientService : ITransientService
     Task UpdateAsync(UpdateClientRequest request, int clientId, CancellationToken cancellationToken = default);
     
     Task DeleteAsync(int clientId, CancellationToken cancellationToke = default);
-
+    
+    Task<string> CreateAsync(CreateClientRequest request, CancellationToken cancellationToken = default);
+    
     Task<bool> ExistsWithClientIdAsync(string clientId, CancellationToken cancellationToken = default, int? exceptId = null);
 }

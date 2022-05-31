@@ -69,7 +69,7 @@ internal partial class ClientService : IClientService
 
         var success = await _db.SaveChangesAsync(cancellationToken) > 0;
 
-        await _events.PublishAsync(new ClientUpdatedEvent(client.ClientId));
+        await _events.PublishAsync(new ClientUpdatedEvent(client.Id));
         
         if (!success)
         {
@@ -85,12 +85,37 @@ internal partial class ClientService : IClientService
 
         var success = await _db.SaveChangesAsync(cancellationToken) > 0;
 
-        await _events.PublishAsync(new ClientDeletedEvent(client.ClientId));
+        await _events.PublishAsync(new ClientDeletedEvent(client.Id));
         
         if (!success)
         {
             throw new InternalServerException(_t["Delete client failed"], new List<string>{ "Failed to delete client" });
         }
+    }
+    
+    public async Task<string> CreateAsync(CreateClientRequest request, CancellationToken cancellationToken)
+    {
+        var client = new Client
+        {
+            ClientId = request.ClientId,
+            ClientName = request.ClientName,
+            Description = request.Description,
+            ClientUri = request.ClientUri,
+            LogoUri = request.LogoUri,
+            Enabled = request.Enabled,
+            RequireConsent = request.RequireConsent,
+            AllowRememberConsent = request.AllowRememberConsent
+        };
+        
+        await _db.Clients.AddAsync(client, cancellationToken);
+
+        var success = await _db.SaveChangesAsync(cancellationToken) > 0;
+        
+        if (!success) throw new InternalServerException(_t["Create client failed"], new List<string>{ "Failed to create client" });
+        
+        await _events.PublishAsync(new ClientCreatedEvent(client.Id));
+
+        return string.Format(_t["Client {0} Registered."], client.Id);
     }
 
     #region Entity Queries
