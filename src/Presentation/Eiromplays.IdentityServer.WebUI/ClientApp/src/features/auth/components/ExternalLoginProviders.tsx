@@ -11,6 +11,8 @@ type ExternalProvidersProps = {
   externalProviders: ExternalProvider[];
 };
 
+//TODO: fix returnUrl having a capital letter as it is a query param, perhaps add a ReturnUrl search param as well
+
 export const ExternalLoginProviders = ({ title, externalProviders }: ExternalProvidersProps) => {
   const { returnUrl } = useSearch<LocationGenerics>();
 
