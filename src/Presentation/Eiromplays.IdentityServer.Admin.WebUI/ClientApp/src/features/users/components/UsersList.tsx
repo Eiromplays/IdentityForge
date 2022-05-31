@@ -27,6 +27,10 @@ export const UsersList = () => {
       searchData={{ pageNumber: page, pageSize: pageSize }}
       columns={[
         {
+          title: 'Username',
+          field: 'userName',
+        },
+        {
           title: 'First Name',
           field: 'firstName',
         },

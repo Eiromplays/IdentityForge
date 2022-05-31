@@ -64,6 +64,7 @@ export const User = () => {
             <Entry label="First Name" value={userQuery.data.firstName} />
             <Entry label="Last Name" value={userQuery.data.lastName} />
             <Entry label="Email Address" value={userQuery.data.email} />
+            <Entry label="Phone Number" value={userQuery.data.phoneNumber} />
             {userQuery.data.updated_at && (
               <Entry label="Last updated at" value={userQuery.data.updated_at.toString()} />
             )}

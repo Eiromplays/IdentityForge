@@ -40,7 +40,11 @@ export const UserRolesList = ({ id }: UserRolesListProps) => {
           title: 'Enabled',
           field: 'enabled',
           Cell({ entry: { enabled } }) {
-            return <span>{enabled.toString()}</span>;
+            return (
+              <span className={enabled ? 'text-green-500' : 'text-red-500'}>
+                {enabled.toString()}
+              </span>
+            );
           },
         },
       ]}
