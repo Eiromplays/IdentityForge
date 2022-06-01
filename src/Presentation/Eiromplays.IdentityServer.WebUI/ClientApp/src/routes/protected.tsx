@@ -28,6 +28,7 @@ const { TwoFactorAuthentication } = lazyImport(
   'TwoFactorAuthentication'
 );
 const { ChangePassword } = lazyImport(() => import('@/features/users'), 'ChangePassword');
+const { SetPassword } = lazyImport(() => import('@/features/users'), 'SetPassword');
 
 const App = () => {
   const { checkAccess } = useAuthorization();
@@ -60,6 +61,7 @@ const App = () => {
             icon: HiOutlineLockClosed,
           },
           { name: 'Change Password', to: 'change-password', icon: HiOutlineKey },
+          { name: 'Set Password', to: 'set-password', icon: HiOutlineKey },
           { name: 'Grants', to: 'grants', icon: HiOutlineShieldCheck },
           { name: 'User Sessions', to: 'user-sessions', icon: MdOutlineDevicesOther },
           { name: 'User Logins', to: 'user-logins', icon: MdOutlineDevicesOther },
@@ -101,6 +103,7 @@ export const protectedRoutes = [
       { path: 'personal-data', element: <PersonalData /> },
       { path: 'two-factor-authentication', element: <TwoFactorAuthentication /> },
       { path: 'change-password', element: <ChangePassword /> },
+      { path: 'set-password', element: <SetPassword /> },
       ConsentRoutes,
       { path: '*', element: <Dashboard /> },
     ],

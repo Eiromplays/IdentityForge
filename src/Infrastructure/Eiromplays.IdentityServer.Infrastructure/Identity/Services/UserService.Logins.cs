@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Application.Identity.Users.Logins;
@@ -38,13 +39,29 @@ internal partial class UserService
         var response = new ExternalLoginsResponse
         {
             CurrentLogins = await GetLoginsAsync(userId),
-            
         };
         
         response.OtherLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync())
-            .Where(auth => response.CurrentLogins.All(ul => auth.Name != ul.LoginProvider)).ToList();
+            .Where(auth => response.CurrentLogins.All(ul => auth.Name != ul.LoginProvider)).ToList().Adapt<List<AuthenticationSchemeDto>>();
         response.ShowRemoveButton = response.CurrentLogins.Count > 1 || await HasPasswordAsync(userId);
         
         return response;
+    }
+
+    public async Task<string> RemoveLoginAsync(RemoveLoginRequest model, string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        _ = user ?? throw new NotFoundException(_t["User Not Found."]);
+        
+        var result = await _userManager.RemoveLoginAsync(user, model.LoginProvider, model.ProviderKey);
+        if (!result.Succeeded)
+        {
+            throw new BadRequestException("Failed to remove login.");
+        }
+        
+        await _signInManager.RefreshSignInAsync(user);
+        
+        return string.Format(_t["Login provider {0} removed."], model.LoginProvider);
     }
 }

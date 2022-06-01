@@ -4,13 +4,15 @@ import { toast } from 'react-toastify';
 
 import { ExternalLoginsResponse } from '../types';
 
-type RemoveLoginProps = {
-  loginProvider: string;
-  providerKey: string;
+type RemoveLoginData = {
+  data: {
+    loginProvider: string;
+    providerKey: string;
+  };
 };
 
-export const removeLogin = ({ loginProvider, providerKey }: RemoveLoginProps) => {
-  return axios.delete(`/external-logins/${loginProvider}/${providerKey}`);
+export const removeLogin = (data: RemoveLoginData) => {
+  return axios.post(`/personal/remove-external-login`, data);
 };
 
 type UseRemoveLoginOptions = {
@@ -28,7 +30,7 @@ export const useRemoveLogin = ({ config }: UseRemoveLoginOptions = {}) => {
       queryClient.setQueryData(
         'external-logins',
         previousExternalLoginResponse?.currentLogins?.filter(
-          (userLogin) => userLogin.providerKey !== removedExternalLogin.providerKey
+          (userLogin) => userLogin.providerKey !== removedExternalLogin.data?.providerKey
         )
       );
 

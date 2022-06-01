@@ -1,10 +1,12 @@
 import { axios, ExtractFnReturnType, QueryConfig } from 'eiromplays-ui';
 import { useQuery } from 'react-query';
 
+import { identityServerUrl } from '@/utils/envVariables';
+
 import { ExternalLoginsResponse } from '../types';
 
 export const getLogins = (): Promise<ExternalLoginsResponse> => {
-  return axios.get(`/personal/external-logins`);
+  return axios.get(`${identityServerUrl}/ExternalLogins`);
 };
 
 type QueryFnType = typeof getLogins;

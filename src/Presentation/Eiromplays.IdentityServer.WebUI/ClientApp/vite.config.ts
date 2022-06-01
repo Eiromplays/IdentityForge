@@ -70,11 +70,6 @@ export default defineConfig({
         changeOrigin: false,
         secure: false,
       },
-      '/external-logins': {
-        target: target,
-        changeOrigin: false,
-        secure: false,
-      },
     },
   },
 });

@@ -3,12 +3,12 @@ import { HiOutlineTrash } from 'react-icons/hi';
 
 import { useRemoveLogin } from '../api/removeLogin';
 
-type DeleteUserLoginProps = {
+type RemoveUserLoginProps = {
   loginProvider: string;
   providerKey: string;
 };
 
-export const RemoveUserLogin = ({ loginProvider, providerKey }: DeleteUserLoginProps) => {
+export const RemoveUserLogin = ({ loginProvider, providerKey }: RemoveUserLoginProps) => {
   const removeLoginMutation = useRemoveLogin();
 
   return (
@@ -28,8 +28,10 @@ export const RemoveUserLogin = ({ loginProvider, providerKey }: DeleteUserLoginP
           className="bg-red-600"
           onClick={async () =>
             await removeLoginMutation.mutateAsync({
-              loginProvider: loginProvider,
-              providerKey: providerKey,
+              data: {
+                loginProvider: loginProvider,
+                providerKey: providerKey,
+              },
             })
           }
         >

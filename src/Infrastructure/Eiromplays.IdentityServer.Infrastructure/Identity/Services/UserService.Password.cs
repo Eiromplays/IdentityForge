@@ -73,6 +73,9 @@ internal partial class UserService
 
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
         
+        if (await HasPasswordAsync(userId))
+            throw new BadRequestException(_t["User already has a password."]);
+        
         var addPasswordResult = await _userManager.AddPasswordAsync(user, model.Password);
         
         if (!addPasswordResult.Succeeded)

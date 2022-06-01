@@ -49,6 +49,8 @@ public interface IUserService : ITransientService
     
     Task<List<UserLoginInfoDto>> GetLoginsAsync(string userId);
 
+    Task<string> RemoveLoginAsync(RemoveLoginRequest model, string userId);
+    
     Task<string> AddLoginAsync(string userId, UserLoginInfoDto login);
 
     Task<Stream> ExportPersonalDataAsync(string userId, bool includeLogins = true);

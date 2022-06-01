@@ -88,9 +88,6 @@ app.MapRemoteBffApiEndpoint("/user-sessions", "https://localhost:7003/v1/user-se
 app.MapRemoteBffApiEndpoint("/logs", "https://localhost:7003/v1/logs")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/external-logins", "https://localhost:7003/v1/external-logins")
-    .RequireAccessToken();
-
 app.MapFallbackToFile("index.html");
 
 app.Run();

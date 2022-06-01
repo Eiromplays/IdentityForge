@@ -10,6 +10,7 @@ using Duende.IdentityServer.Stores;
 using Eiromplays.IdentityServer.Application.Common.Configurations;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Application.Common.Security;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Configuration;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
