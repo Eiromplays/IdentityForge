@@ -5,10 +5,8 @@ import { toast } from 'react-toastify';
 import { ExternalLoginsResponse } from '../types';
 
 type RemoveLoginData = {
-  data: {
-    loginProvider: string;
-    providerKey: string;
-  };
+  loginProvider: string;
+  providerKey: string;
 };
 
 export const removeLogin = (data: RemoveLoginData) => {
@@ -30,7 +28,7 @@ export const useRemoveLogin = ({ config }: UseRemoveLoginOptions = {}) => {
       queryClient.setQueryData(
         'external-logins',
         previousExternalLoginResponse?.currentLogins?.filter(
-          (userLogin) => userLogin.providerKey !== removedExternalLogin.data?.providerKey
+          (userLogin) => userLogin.providerKey !== removedExternalLogin.providerKey
         )
       );
 

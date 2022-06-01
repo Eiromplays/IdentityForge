@@ -28,10 +28,8 @@ export const RemoveUserLogin = ({ loginProvider, providerKey }: RemoveUserLoginP
           className="bg-red-600"
           onClick={async () =>
             await removeLoginMutation.mutateAsync({
-              data: {
-                loginProvider: loginProvider,
-                providerKey: providerKey,
-              },
+              loginProvider: loginProvider,
+              providerKey: providerKey,
             })
           }
         >

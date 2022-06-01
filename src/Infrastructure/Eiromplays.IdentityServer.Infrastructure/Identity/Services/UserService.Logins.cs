@@ -59,9 +59,7 @@ internal partial class UserService
         {
             throw new BadRequestException("Failed to remove login.");
         }
-        
-        await _signInManager.RefreshSignInAsync(user);
-        
+
         return string.Format(_t["Login provider {0} removed."], model.LoginProvider);
     }
 }
