@@ -1,4 +1,4 @@
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserSessions.GetUserSessionByKey;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserLogins.GetUserSessionByKey;
 
 public class Models
 {

@@ -16,6 +16,7 @@ import logo from '@/assets/logo.svg';
 import { ConsentRoutes } from '@/features/consent';
 import { GrantsRoutes } from '@/features/grants';
 import { LogsRoutes } from '@/features/logs';
+import { UserLoginsRoutes } from '@/features/user-logins';
 import { UserSessionsRoutes } from '@/features/user-sessions';
 import { ROLES, useAuthorization } from '@/lib/authorization';
 import { identityServerAdminUiUrl, identityServerUrl } from '@/utils/envVariables';
@@ -61,6 +62,7 @@ const App = () => {
           { name: 'Change Password', to: 'change-password', icon: HiOutlineKey },
           { name: 'Grants', to: 'grants', icon: HiOutlineShieldCheck },
           { name: 'User Sessions', to: 'user-sessions', icon: MdOutlineDevicesOther },
+          { name: 'User Logins', to: 'user-logins', icon: MdOutlineDevicesOther },
           { name: 'Logs', to: 'logs', icon: MdOutlineHistory },
           {
             name: 'Discovery Document',
@@ -93,6 +95,7 @@ export const protectedRoutes = [
       { path: '/', element: <Dashboard /> },
       GrantsRoutes,
       UserSessionsRoutes,
+      UserLoginsRoutes,
       LogsRoutes,
       { path: 'profile', element: <Profile /> },
       { path: 'personal-data', element: <PersonalData /> },

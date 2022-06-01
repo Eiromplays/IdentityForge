@@ -1,11 +1,11 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserLogins.DeleteUserSessionByKey;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Personal.SetPassword;
 
 public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
     private readonly IUserService _userService;
-
+    
     public Endpoint(IUserService userService)
     {
         _userService = userService;
@@ -13,10 +13,10 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override void Configure()
     {
-        Delete("/user-sessions/{Key}");
+        Put("/personal/set-password");
         Summary(s =>
         {
-            s.Summary = "Delete a user session.";
+            s.Summary = "Set password for currently logged in user.";
         });
         Version(1);
     }
@@ -28,9 +28,9 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             await SendUnauthorizedAsync(ct);
             return;
         }
-        
-        Response.Message = await _userService.DeleteUserSessionAsync(req.Key, userId, ct);
 
-        await SendAsync(Response, cancellation: ct);
+        Response.Message = await _userService.SetPasswordAsync(req.Data, userId);
+        
+        await SendOkAsync(Response, cancellation: ct);
     }
 }

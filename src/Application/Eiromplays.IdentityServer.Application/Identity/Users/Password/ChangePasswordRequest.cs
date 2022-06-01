@@ -2,6 +2,7 @@ namespace Eiromplays.IdentityServer.Application.Identity.Users.Password;
 
 public class ChangePasswordRequest
 {
+    public string UserId { get; set; } = default!;
     public string Password { get; set; } = default!;
     public string NewPassword { get; set; } = default!;
     public string ConfirmNewPassword { get; set; } = default!;
@@ -9,10 +10,12 @@ public class ChangePasswordRequest
 
 public class ChangePasswordRequestValidator : CustomValidator<ChangePasswordRequest>
 {
-    public ChangePasswordRequestValidator(IStringLocalizer<ChangePasswordRequestValidator> T)
+    public ChangePasswordRequestValidator(IUserService userService, IStringLocalizer<ChangePasswordRequestValidator> T)
     {
         RuleFor(p => p.Password)
-            .NotEmpty();
+            .NotEmpty()
+            .UnlessAsync(async (changePasswordRequest, _, _) =>
+                !await userService.HasPasswordAsync(changePasswordRequest.UserId));
 
         RuleFor(p => p.NewPassword)
             .NotEmpty();

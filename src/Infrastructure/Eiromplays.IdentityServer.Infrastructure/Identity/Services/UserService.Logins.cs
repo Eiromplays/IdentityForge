@@ -1,5 +1,6 @@
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Identity.Users;
+using Eiromplays.IdentityServer.Application.Identity.Users.Logins;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 
@@ -12,7 +13,7 @@ internal partial class UserService
         var user = await _userManager.FindByIdAsync(userId);
 
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
-        
+
         return (await _userManager.GetLoginsAsync(user)).Adapt<List<UserLoginInfoDto>>();
     }
     
@@ -30,5 +31,20 @@ internal partial class UserService
         }
 
         return string.Format(_t["Login {0} added."], login.ProviderDisplayName);
+    }
+
+    public async Task<ExternalLoginsResponse> GetExternalLoginsAsync(string userId)
+    {
+        var response = new ExternalLoginsResponse
+        {
+            CurrentLogins = await GetLoginsAsync(userId),
+            
+        };
+        
+        response.OtherLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync())
+            .Where(auth => response.CurrentLogins.All(ul => auth.Name != ul.LoginProvider)).ToList();
+        response.ShowRemoveButton = response.CurrentLogins.Count > 1 || await HasPasswordAsync(userId);
+        
+        return response;
     }
 }

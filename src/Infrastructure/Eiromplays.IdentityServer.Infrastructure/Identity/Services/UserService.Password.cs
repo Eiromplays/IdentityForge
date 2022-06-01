@@ -47,11 +47,15 @@ internal partial class UserService
             : throw new InternalServerException(_t["An Error has occurred!"]);
     }
 
-    public async Task ChangePasswordAsync(ChangePasswordRequest model, string userId)
+    public async Task<string> ChangePasswordAsync(ChangePasswordRequest model, string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
+
+
+        if (!await HasPasswordAsync(userId))
+            return await SetPasswordAsync(new SetPasswordRequest(model.NewPassword, model.ConfirmNewPassword), userId);
 
         var result = await _userManager.ChangePasswordAsync(user, model.Password, model.NewPassword);
 
@@ -59,5 +63,34 @@ internal partial class UserService
         {
             throw new InternalServerException(_t["Change password failed"], result.GetErrors(_t));
         }
+        
+        return _t["Password Changed Successfully!"];
+    }
+
+    public async Task<string> SetPasswordAsync(SetPasswordRequest model, string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        _ = user ?? throw new NotFoundException(_t["User Not Found."]);
+        
+        var addPasswordResult = await _userManager.AddPasswordAsync(user, model.Password);
+        
+        if (!addPasswordResult.Succeeded)
+        {
+            throw new InternalServerException(_t["Set password failed"], addPasswordResult.GetErrors(_t));
+        }
+
+        await _signInManager.RefreshSignInAsync(user);
+
+        return _t["Password set."];
+    }
+    
+    public async Task<bool> HasPasswordAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        _ = user ?? throw new NotFoundException(_t["User Not Found."]);
+
+        return await _userManager.HasPasswordAsync(user);
     }
 }

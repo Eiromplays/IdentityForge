@@ -2,7 +2,7 @@ using Eiromplays.IdentityServer.Application.Identity.Users;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Personal.ChangePassword;
 
-public class Endpoint : Endpoint<Models.Request>
+public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
     private readonly IUserService _userService;
     
@@ -28,9 +28,13 @@ public class Endpoint : Endpoint<Models.Request>
             await SendUnauthorizedAsync(ct);
             return;
         }
-
-        await _userService.ChangePasswordAsync(req.Data, userId);
         
-        await SendNoContentAsync(cancellation: ct);
+        //TODO: Return unauthorized if request userId is not the same as the logged in user.
+        if (userId != req.Data.UserId)
+            req.Data.UserId = userId;
+
+        Response.Message = await _userService.ChangePasswordAsync(req.Data, userId);
+        
+        await SendAsync(Response, cancellation: ct);
     }
 }

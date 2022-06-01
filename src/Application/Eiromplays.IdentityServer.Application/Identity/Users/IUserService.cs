@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Identity.Sessions;
+using Eiromplays.IdentityServer.Application.Identity.Users.Logins;
 using Eiromplays.IdentityServer.Application.Identity.Users.Password;
 
 namespace Eiromplays.IdentityServer.Application.Identity.Users;
@@ -39,8 +40,13 @@ public interface IUserService : ITransientService
 
     Task<string> ForgotPasswordAsync(ForgotPasswordRequest request, string origin);
     Task<string> ResetPasswordAsync(ResetPasswordRequest request);
-    Task ChangePasswordAsync(ChangePasswordRequest request, string userId);
+    Task<string> ChangePasswordAsync(ChangePasswordRequest request, string userId);
+    Task<string> SetPasswordAsync(SetPasswordRequest model, string userId);
 
+    Task<bool> HasPasswordAsync(string userId);
+
+    Task<ExternalLoginsResponse> GetExternalLoginsAsync(string userId);
+    
     Task<List<UserLoginInfoDto>> GetLoginsAsync(string userId);
 
     Task<string> AddLoginAsync(string userId, UserLoginInfoDto login);

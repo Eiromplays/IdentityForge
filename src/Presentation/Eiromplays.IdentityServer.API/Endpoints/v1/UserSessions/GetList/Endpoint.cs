@@ -1,7 +1,7 @@
 using Eiromplays.IdentityServer.Application.Identity.Sessions;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserSessions.GetList;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserLogins.GetList;
 
 public class Endpoint : EndpointWithoutRequest<List<UserSessionDto>>
 {

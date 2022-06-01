@@ -5,7 +5,7 @@ import { ChangePasswordDTO, useChangePassword } from '../api/changePassword';
 
 const schema = z
   .object({
-    password: z.string().min(1, 'Required'),
+    password: z.string(),
     newPassword: z.string().min(1, 'Required'),
     confirmNewPassword: z.string().min(1, 'Required'),
   })
@@ -13,7 +13,7 @@ const schema = z
     message: "Passwords don't match",
     path: ['confirmNewPassword'],
   })
-  .refine((data) => data.newPassword === data.password, {
+  .refine((data) => data.newPassword !== data.password, {
     message: "New Password can't be the same as the old one",
     path: ['newPassword'],
   });
@@ -39,20 +39,20 @@ export const ChangePasswordForm = ({ onSuccess }: ChangePasswordFormProps) => {
           {({ register, formState }) => (
             <>
               <InputField
-                type="password"
                 label="Current Password"
+                type="password"
                 error={formState.errors['password']}
                 registration={register('password')}
               />
               <InputField
-                type="password"
                 label="New Password"
+                type="password"
                 error={formState.errors['newPassword']}
                 registration={register('newPassword')}
               />
               <InputField
-                type="password"
                 label="Confirm New Password"
+                type="password"
                 error={formState.errors['confirmNewPassword']}
                 registration={register('confirmNewPassword')}
               />

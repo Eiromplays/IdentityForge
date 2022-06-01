@@ -1,11 +1,12 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
+using Eiromplays.IdentityServer.Application.Identity.Users.Logins;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserLogins.DeleteUserSessionByKey;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Personal.GetLogins;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : EndpointWithoutRequest<ExternalLoginsResponse>
 {
     private readonly IUserService _userService;
-
+    
     public Endpoint(IUserService userService)
     {
         _userService = userService;
@@ -13,15 +14,15 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override void Configure()
     {
-        Delete("/user-sessions/{Key}");
+        Get("/personal/external-logins");
         Summary(s =>
         {
-            s.Summary = "Delete a user session.";
+            s.Summary = "Get logins of currently logged in user.";
         });
         Version(1);
     }
 
-    public override async Task HandleAsync(Models.Request req, CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken ct)
     {
         if (User.GetUserId() is not { } userId || string.IsNullOrEmpty(userId))
         {
@@ -29,8 +30,8 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             return;
         }
         
-        Response.Message = await _userService.DeleteUserSessionAsync(req.Key, userId, ct);
-
+        Response = await _userService.GetExternalLoginsAsync(userId);
+        
         await SendAsync(Response, cancellation: ct);
     }
 }
