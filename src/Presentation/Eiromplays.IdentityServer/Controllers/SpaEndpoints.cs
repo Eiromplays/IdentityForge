@@ -159,7 +159,7 @@ public class SpaEndpoints : Controller
                 {
                     if (loginResult.RequiresTwoFactor)
                     {
-                        return RedirectToAction(nameof(LoginWith2Fa), new { model.ReturnUrl, RememberMe = model.RememberMe });
+                        return RedirectToAction(nameof(LoginWith2Fa), new { rememberMe = model.RememberMe, returnUrl = model.ReturnUrl });
                     }
 
                     if (loginResult.IsLockedOut)
@@ -172,14 +172,13 @@ public class SpaEndpoints : Controller
                     response.Error = "Invalid username or password";
                     return BadRequest(response);
                 }
-                    
-                var url = model.ReturnUrl != null ? Uri.UnescapeDataString(model.ReturnUrl) : null;
-                var context = await _interaction.GetAuthorizationContextAsync(url);
+                
+                var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
 
-                if (context != null)
+                if (context is not null)
                 {
                     // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
-                    response.ValidReturnUrl = url;
+                    response.ValidReturnUrl = model.ReturnUrl;
 
                     return Ok(response);
                 }
@@ -269,20 +268,22 @@ public class SpaEndpoints : Controller
             throw new BadRequestException("Error from external provider", new List<string> { remoteError });
             
         var response = new LoginConsentResponse();
-            
+        
         var info = await _signInManager.GetExternalLoginInfoAsync();
         if (info is null)
         {
             return Redirect($"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/login");
         }
-
+        
         // Sign in the user with this external login provider if the user already has a login.
         var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: true);
         if (result.Succeeded)
         {
             var url = returnUrl != null ? Uri.UnescapeDataString(returnUrl) : null;
+            
             return Redirect(url ?? _spaConfiguration.IdentityServerUiBaseUrl);
         }
+        
         response.SignInResult = result;
         if (result.RequiresTwoFactor)
         {
@@ -315,8 +316,6 @@ public class SpaEndpoints : Controller
     {
         if (string.IsNullOrWhiteSpace(provider))
             throw new BadRequestException("Provider is required");
-
-        Console.WriteLine($"Redirect url: {returnUrl}");
 
         // Request a redirect to the external login provider.
         var redirectUrl = Url.Action("ExternalLoginCallback", new { returnUrl });
@@ -461,15 +460,15 @@ public class SpaEndpoints : Controller
     private async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
     {
         var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+        
         if (context?.IdP != null && await _schemeProvider.GetSchemeAsync(context.IdP) != null)
         {
             var local = context.IdP == IdentityServerConstants.LocalIdentityProvider;
-
             // this is meant to short circuit the UI and only trigger the one external IdP
             var vm = new LoginViewModel
             {
                 EnableLocalLogin = local,
-                ReturnUrl = Uri.UnescapeDataString(returnUrl),
+                ReturnUrl = returnUrl,
                 Login = context.LoginHint,
             };
 
@@ -477,7 +476,7 @@ public class SpaEndpoints : Controller
             {
                 vm.ExternalProviders = new[] { new ExternalProvider { AuthenticationScheme = context.IdP } };
             }
-                
+
             return vm;
         }
 

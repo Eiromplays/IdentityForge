@@ -17,22 +17,16 @@ type LoginValues = {
   rememberMe?: boolean;
 };
 
-type LoginFormProps = {
-  onSuccess: () => void;
-};
-
-export const LoginForm = ({ onSuccess }: LoginFormProps) => {
+export const LoginForm = () => {
   const { login, isLoggingIn } = useAuth();
-  const { returnUrl } = useSearch<LocationGenerics>();
+  const { returnUrl, ReturnUrl } = useSearch<LocationGenerics>();
 
   return (
     <div>
       <Form<LoginValues, typeof schema>
         onSubmit={async (values) => {
-          values.returnUrl = returnUrl;
-          const response = await login(values);
-
-          if (response) onSuccess();
+          values.returnUrl = returnUrl || ReturnUrl;
+          await login(values);
         }}
         schema={schema}
       >

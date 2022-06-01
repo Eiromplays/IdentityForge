@@ -11,7 +11,10 @@ import { publicRoutes } from './public';
 export const AppRoutes = (): Route<LocationGenerics>[] => {
   const commonRoutes = [
     { path: '/', element: <Landing /> },
-    { path: '/error', element: <Error /> },
+    {
+      path: 'error',
+      element: <Error />,
+    },
     { path: '*', element: <NotFound /> },
   ];
 

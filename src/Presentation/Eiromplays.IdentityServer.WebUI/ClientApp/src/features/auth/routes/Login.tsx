@@ -9,9 +9,9 @@ import { Layout } from '../components/Layout';
 import { LoginForm } from '../components/LoginForm';
 
 export const Login = () => {
-  const { returnUrl } = useSearch<LocationGenerics>();
+  const { returnUrl, ReturnUrl } = useSearch<LocationGenerics>();
 
-  const loginQuery = useLogin({ returnUrl });
+  const loginQuery = useLogin({ returnUrl: returnUrl || ReturnUrl });
 
   if (loginQuery.isLoading) {
     return (
@@ -25,7 +25,7 @@ export const Login = () => {
 
   return (
     <Layout title="Log in to your account">
-      <LoginForm onSuccess={() => window.location.assign('/bff/login')} />
+      <LoginForm />
       <ExternalLoginProviders
         title="External Login Providers:"
         externalProviders={loginQuery.data.visibleExternalProviders}

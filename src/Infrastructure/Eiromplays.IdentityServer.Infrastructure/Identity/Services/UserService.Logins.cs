@@ -21,9 +21,7 @@ internal partial class UserService
         var user = await _userManager.FindByIdAsync(userId);
 
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
-        
-        Console.WriteLine($"login: {login.LoginProvider} {login.ProviderKey} {login.ProviderDisplayName}");
-        
+
         var result = await _userManager.AddLoginAsync(user, new UserLoginInfo(login.LoginProvider, login.ProviderKey, login.ProviderDisplayName));
         
         if (!result.Succeeded)

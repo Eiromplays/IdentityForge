@@ -13,13 +13,15 @@ export const ExternalLoginProvider = ({
   externalProvider,
   returnUrl,
 }: ExternalLoginProviderProps) => {
+  const url = `${identityServerUrl}/spa/externalLogin?provider=${
+    externalProvider.authenticationScheme
+  }&returnUrl=${encodeURIComponent(returnUrl || '')}`;
+
   return (
     <div>
       <Button
         startIcon={<DynamicIcon iconName={externalProvider.displayName} />}
-        onClick={() =>
-          (window.location.href = `${identityServerUrl}/spa/externalLogin?provider=${externalProvider.authenticationScheme}&returnUrl=${returnUrl}`)
-        }
+        onClick={() => (window.location.href = url)}
       >
         {externalProvider.displayName}
       </Button>

@@ -16,7 +16,7 @@ export const Login2fa = () => {
     <Layout title="Log in to your account with two-factor authentication">
       <Login2faForm
         rememberMe={rememberMeAsBoolean}
-        returnUrl={returnUrl ?? ''}
+        returnUrl={returnUrl || ''}
         onSuccess={() => window.location.assign('/bff/login')}
       />
     </Layout>

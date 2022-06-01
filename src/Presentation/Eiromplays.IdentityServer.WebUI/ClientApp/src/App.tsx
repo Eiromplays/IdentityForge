@@ -36,6 +36,7 @@ export type LocationGenerics = DefaultLocationGenerics & {
   };
   Search: {
     returnUrl: string;
+    ReturnUrl: string;
     errorId: string;
     logoutId: string;
   };

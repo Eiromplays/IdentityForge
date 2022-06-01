@@ -14,7 +14,7 @@ type ExternalProvidersProps = {
 //TODO: fix returnUrl having a capital letter as it is a query param, perhaps add a ReturnUrl search param as well
 
 export const ExternalLoginProviders = ({ title, externalProviders }: ExternalProvidersProps) => {
-  const { returnUrl } = useSearch<LocationGenerics>();
+  const { returnUrl, ReturnUrl } = useSearch<LocationGenerics>();
 
   return (
     <div>
@@ -22,7 +22,10 @@ export const ExternalLoginProviders = ({ title, externalProviders }: ExternalPro
       <div className="flex flex-wrap justify-center items-center">
         {externalProviders.map((externalProvider) => (
           <div key={externalProvider.authenticationScheme}>
-            <ExternalLoginProvider externalProvider={externalProvider} returnUrl={returnUrl} />
+            <ExternalLoginProvider
+              externalProvider={externalProvider}
+              returnUrl={returnUrl || ReturnUrl}
+            />
           </div>
         ))}
       </div>

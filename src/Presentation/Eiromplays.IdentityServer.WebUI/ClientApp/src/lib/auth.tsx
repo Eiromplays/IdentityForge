@@ -21,14 +21,14 @@ export const loginFn = async (data: LoginCredentialsDTO) => {
   const response = await loginWithEmailAndPassword(data);
 
   // TODO: Check if I can handle this, and signInResult better
-
-  if (response?.validReturnUrl) {
-    window.location.href = response.validReturnUrl;
-  }
-
   if (response?.signInResult.succeeded) {
     toast.success('Login successful');
-    window.location.href = '/app';
+  }
+
+  if (response?.validReturnUrl) {
+    window.location.href = response?.validReturnUrl;
+  } else if (response?.signInResult.succeeded) {
+    window.location.href = '/bff/login';
   }
 
   if (response?.signInResult?.isLockedOut) {
@@ -37,10 +37,7 @@ export const loginFn = async (data: LoginCredentialsDTO) => {
   }
 
   const login2faViewModel = response as unknown as Login2faCredentialsDto;
-  if (
-    login2faViewModel?.rememberMe !== undefined &&
-    login2faViewModel?.rememberMachine !== undefined
-  ) {
+  if (login2faViewModel?.rememberMe && login2faViewModel?.rememberMachine) {
     window.location.assign(
       `/auth/login2fa/${login2faViewModel.rememberMe}/${login2faViewModel?.returnUrl ?? ''}`
     );
@@ -57,7 +54,6 @@ export const loginFn = async (data: LoginCredentialsDTO) => {
 
 export const login2faFn = async (data: Login2faCredentialsDto) => {
   const response = await loginWith2fa(data);
-  console.log(response);
 
   return await loadUser();
 };
