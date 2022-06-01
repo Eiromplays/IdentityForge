@@ -17,6 +17,7 @@ import { ConsentRoutes } from '@/features/consent';
 import { GrantsRoutes } from '@/features/grants';
 import { LogsRoutes } from '@/features/logs';
 import { UserSessionsRoutes } from '@/features/user-sessions';
+import { ROLES, useAuthorization } from '@/lib/authorization';
 import { identityServerAdminUiUrl, identityServerUrl } from '@/utils/envVariables';
 const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
 const { Profile } = lazyImport(() => import('@/features/users'), 'Profile');
@@ -28,13 +29,16 @@ const { TwoFactorAuthentication } = lazyImport(
 const { ChangePassword } = lazyImport(() => import('@/features/users'), 'ChangePassword');
 
 const App = () => {
+  const { checkAccess } = useAuthorization();
+  const isAdmin = checkAccess({ allowedRoles: [ROLES.ADMINISTRATOR] });
+
   return (
     <MainLayout
       logo={logo}
       userNavigationProps={{
         items: [{ name: 'Your Profile', to: 'profile' }],
         addProfileItem: false,
-        customButtons: (
+        customButtons: isAdmin && (
           <Button
             className="max-w-xs bg-gray-200 dark:bg-gray-600 p-2 flex items-center text-sm rounded-full
               focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
