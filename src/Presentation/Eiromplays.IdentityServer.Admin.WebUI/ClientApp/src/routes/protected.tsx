@@ -2,6 +2,13 @@ import { Outlet } from '@tanstack/react-location';
 import { lazyImport, MainLayout, NotAllowed, Spinner } from 'eiromplays-ui';
 import { Suspense } from 'react';
 import {
+  AiOutlineShop,
+  AiOutlineTags,
+  BiTargetLock,
+  MdOutlineVerified,
+  MdShopTwo,
+} from 'react-icons/all';
+import {
   HiLockClosed,
   HiOutlineDocumentText,
   HiOutlineHome,
@@ -42,14 +49,14 @@ const App = () => {
           { name: 'Users', to: './users', icon: HiOutlineUsers },
           { name: 'Roles', to: './roles', icon: HiLockClosed },
           { name: 'Clients', to: './clients', icon: MdOutlineDevicesOther },
-          { name: 'Identity Resources', to: './identity-resources', icon: MdOutlineDevicesOther },
-          { name: 'Api Scopes', to: './api-scopes', icon: MdOutlineDevicesOther },
+          { name: 'Identity Resources', to: './identity-resources', icon: AiOutlineTags },
+          { name: 'Api Scopes', to: './api-scopes', icon: BiTargetLock },
           { name: 'Api Resources', to: './api-resources', icon: HiOutlineShieldCheck },
-          { name: 'Persisted Grants', to: './persisted-grants', icon: HiOutlineShieldCheck },
+          { name: 'Persisted Grants', to: './persisted-grants', icon: MdOutlineVerified },
           { name: 'User Sessions', to: './user-sessions', icon: MdOutlineDevicesOther },
           { name: 'Logs', to: './logs', icon: MdOutlineHistory },
-          { name: 'Products', to: './products', icon: MdOutlineHistory },
-          { name: 'Brands', to: './brands', icon: HiLockClosed },
+          { name: 'Products', to: './products', icon: AiOutlineShop },
+          { name: 'Brands', to: './brands', icon: MdShopTwo },
           {
             name: 'Discovery Document',
             to: `${identityServerUrl}/.well-known/openid-configuration`,

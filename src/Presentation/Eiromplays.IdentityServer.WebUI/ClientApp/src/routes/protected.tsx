@@ -9,6 +9,7 @@ import {
   HiOutlineCollection,
   HiOutlineLockClosed,
   HiOutlineKey,
+  HiOutlineLogin,
 } from 'react-icons/hi';
 import { MdOutlineDevicesOther, MdOutlineHistory } from 'react-icons/md';
 
@@ -64,7 +65,7 @@ const App = () => {
           { name: 'Set Password', to: 'set-password', icon: HiOutlineKey },
           { name: 'Grants', to: 'grants', icon: HiOutlineShieldCheck },
           { name: 'User Sessions', to: 'user-sessions', icon: MdOutlineDevicesOther },
-          { name: 'User Logins', to: 'user-logins', icon: MdOutlineDevicesOther },
+          { name: 'User Logins', to: 'user-logins', icon: HiOutlineLogin },
           { name: 'Logs', to: 'logs', icon: MdOutlineHistory },
           {
             name: 'Discovery Document',
