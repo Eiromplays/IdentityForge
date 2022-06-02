@@ -337,3 +337,4 @@ ASALocalRun/
 src/Presentation/Eiromplays.IdentityServer/Logs/
 src/Presentation/Eiromplays.IdentityServer.API/Logs/
 **/appsettings.Development.json
+**/Configurations/**.Development.json
