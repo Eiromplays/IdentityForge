@@ -106,6 +106,12 @@ app.MapRemoteBffApiEndpoint("/api-scopes", "https://localhost:7003/v1/api-scopes
 app.MapRemoteBffApiEndpoint("/api-resources", "https://localhost:7003/v1/api-resources")
     .RequireAccessToken();
 
+app.MapRemoteBffApiEndpoint("/products", "https://localhost:7003/v1/products")
+    .RequireAccessToken();
+
+app.MapRemoteBffApiEndpoint("/brands", "https://localhost:7003/v1/brands")
+    .RequireAccessToken();
+
 app.MapFallbackToFile("index.html");
 
 app.Run();

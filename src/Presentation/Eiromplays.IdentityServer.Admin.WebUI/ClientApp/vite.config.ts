@@ -95,6 +95,16 @@ export default defineConfig({
         changeOrigin: false,
         secure: false,
       },
+      '/products': {
+        target: target,
+        changeOrigin: false,
+        secure: false,
+      },
+      '/brands': {
+        target: target,
+        changeOrigin: false,
+        secure: false,
+      },
     },
   },
 });

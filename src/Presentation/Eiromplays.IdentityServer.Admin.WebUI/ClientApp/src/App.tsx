@@ -22,6 +22,8 @@ export type LocationGenerics = DefaultLocationGenerics & {
     identityResourceId: string;
     apiScopeId: string;
     apiResourceId: string;
+    productId: string;
+    brandId: string;
   };
 };
 

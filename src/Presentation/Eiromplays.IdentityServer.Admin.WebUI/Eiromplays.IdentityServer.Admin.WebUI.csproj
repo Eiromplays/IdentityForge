@@ -42,6 +42,10 @@
         <EmbeddedResource Remove="Controllers\**" />
         <TypeScriptCompile Remove="ClientApp\node_modules\**" />
         <TypeScriptCompile Remove="Controllers\**" />
+        <TypeScriptCompile Include="ClientApp\src\features\brands\api\createBrand.ts" />
+        <TypeScriptCompile Include="ClientApp\src\features\brands\api\deleteBrand.ts" />
+        <TypeScriptCompile Include="ClientApp\src\features\products\api\createProduct.ts" />
+        <TypeScriptCompile Include="ClientApp\src\features\products\api\deleteProduct.ts" />
     </ItemGroup>
 
     <ItemGroup>
