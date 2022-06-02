@@ -43,12 +43,10 @@ type UseUpdateProfileOptions = {
 };
 
 export const useUpdateProfile = ({ config }: UseUpdateProfileOptions = {}) => {
-  const { refetchUser } = useAuth();
-
   const updateProfileMutation = useMutation({
     onSuccess: async () => {
       toast.success('User Updated');
-      await refetchUser();
+      window.location.href = '/';
     },
     onError: (error) => {
       toast.error('Failed to update user');
