@@ -1,0 +1,68 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>12507d26-2a44-4dca-8e2b-655140b4e442</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FastEndpoints" Version="4.3.0-beta6" />
+    <PackageReference Include="FastEndpoints.Swagger" Version="4.3.0-beta6" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
+    <PackageReference Include="Serilog" Version="2.11.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.0.2-dev-00890" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\v1\ApiScopes.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ApiScopes.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\v1\ApiScopes.en.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ApiScopes.en.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Infrastructure\Eiromplays.IdentityServer.Infrastructure\Eiromplays.IdentityServer.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Migrators.PostgreSql\Migrators.PostgreSql.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Files" />
+    <Folder Include="Files\Images\ApplicationUser" />
+    <Folder Include="Logs" />
+    <Folder Include="wwwroot" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Configurations\*.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="Email-Templates\*.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Logs\*" />
+    <None Include="Logs\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Email-Templates\*.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

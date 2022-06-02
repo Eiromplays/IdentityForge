@@ -1,4 +1,14 @@
-﻿<!DOCTYPE html>
+﻿@using Duende.IdentityServer.Extensions
+@using Eiromplays.IdentityServer.Application.Common.Configurations
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.Extensions.Options
+@inject IOptions<SpaConfiguration> SpaConfiguration
+@{
+    if (User.IsAuthenticated() && !string.IsNullOrWhiteSpace(SpaConfiguration.Value.IdentityServerUiBaseUrl))
+        Context.Response.Redirect(SpaConfiguration.Value.IdentityServerUiBaseUrl, true);
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -11,7 +21,6 @@
     <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/lib/font-awesome/css/all.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>

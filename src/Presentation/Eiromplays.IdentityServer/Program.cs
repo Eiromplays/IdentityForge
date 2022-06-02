@@ -1,103 +1,55 @@
-using Eiromplays.IdentityServer.Application.Identity;
-using Eiromplays.IdentityServer.Filters;
-using Eiromplays.IdentityServer.Infrastructure.Identity;
+using Eiromplays.IdentityServer.Application;
+using Eiromplays.IdentityServer.Configurations;
+using Eiromplays.IdentityServer.Domain.Enums;
+using Eiromplays.IdentityServer.Infrastructure;
+using Eiromplays.IdentityServer.Infrastructure.Common;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Versioning;
 using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add custom json configuration files
-
-builder.Configuration.AddJsonFile("identitydata.json", true, true);
-builder.Configuration.AddJsonFile($"identitydata.{builder.Environment.EnvironmentName}.json", true,
-    true);
-
-builder.Configuration.AddJsonFile("identityserverdata.json", true, true);
-builder.Configuration.AddJsonFile($"identityserverdata.{builder.Environment.EnvironmentName}.json", true,
-    true);
-
-// Remove default logging providers
-builder.Logging.ClearProviders();
-
-// Serilog configuration
-var logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .CreateLogger();
-
-// Register Serilog
-builder.Logging.AddSerilog(logger);
-
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-
-builder.Services.AddApplication(builder.Configuration);
-
-builder.Services.AddInfrastructure(builder.Configuration);
-
-builder.Services.AddControllersWithViews(options =>
-        options.Filters.Add<ApiExceptionFilterAttribute>())
-    .AddFluentValidation(x => x.AutomaticValidationEnabled = false);
-
-builder.Services.AddControllers();
-builder.Services.AddApiVersioning(options =>
+try
 {
-    options.AssumeDefaultVersionWhenUnspecified = true;
-    options.DefaultApiVersion = ApiVersion.Default;
-    options.ApiVersionReader = ApiVersionReader.Combine(
-        new UrlSegmentApiVersionReader(),
-        new MediaTypeApiVersionReader("version"),
-        new HeaderApiVersionReader("X-Version")
-    );
+    var builder = WebApplication.CreateBuilder(args);
 
-    options.ReportApiVersions = true;
-});
+    builder.Host.AddConfigurations();
+    builder.Host.UseSerilog((_, config) =>
+    {
+        config.WriteTo.Console()
+            .ReadFrom.Configuration(builder.Configuration);
+    });
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+    builder.Services.AddInfrastructure(builder.Configuration, ProjectType.IdentityServer);
+    
+    builder.Services.AddApplication();
 
-// Customise default API behaviour
-builder.Services.Configure<ApiBehaviorOptions>(options =>
-    options.SuppressModelStateInvalidFilter = true);
+    builder.Services.AddControllersWithViews().AddFluentValidation();
 
-var app = builder.Build();
+    builder.Services.Configure<ApiBehaviorOptions>(options =>
+        options.SuppressModelStateInvalidFilter = true);
 
-await app.Services.ApplyMigrationsAsync(app.Configuration);
+    var app = builder.Build();
+    
+    await app.Services.InitializeDatabasesAsync();
 
-await app.Services.ApplySeedsAsync(app.Configuration);
+    app.UseInfrastructure(builder.Configuration, ProjectType.IdentityServer);
 
-app.UseCookiePolicy();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-    app.UseMigrationsEndPoint();
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapDefaultControllerRoute();
+    });
+    
+    app.MapEndpoints();
+    
+    app.Run();
 }
-else
+catch (Exception ex) when (!ex.GetType().Name.Equals("StopTheHostException", StringComparison.Ordinal))
 {
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    StaticLogger.EnsureInitialized();
+    Log.Fatal(ex, "Unhandled exception");
 }
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+finally
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    StaticLogger.EnsureInitialized();
+    Log.Information("Server Shutting down...");
+    Log.CloseAndFlush();
 }
-app.UseSecurityHeaders(app.Configuration);
-
-app.UseStaticFiles();
-
-app.UseRouting();
-app.UseIdentityServer();
-app.UseAuthorization();
-
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapDefaultControllerRoute();
-});
-
-await app.RunAsync();

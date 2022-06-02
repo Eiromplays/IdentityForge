@@ -1,0 +1,30 @@
+{
+  "IdentityData": {
+    "Roles": [
+      {
+        "Name": "Administrator"
+      },
+      {
+        "Name": "Test"
+      }
+    ],
+    "Users": [
+      {
+        "DisplayName": "Administrator",
+        "Username": "Administrator",
+        "Password": "Administrator1!",
+        "Email": "admin@localhost",
+        "Roles": [
+          "Administrator",
+          "Test"
+        ],
+        "Claims": [
+          {
+            "Type": "name",
+            "Value": "Administrator"
+          }
+        ]
+      }
+    ]
+  }
+}

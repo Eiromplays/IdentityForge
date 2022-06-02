@@ -1,0 +1,11 @@
+{
+  "DatabaseConfiguration": {
+    "DatabaseProvider": "PostgreSql",
+    "ApplyDefaultSeeds": false,
+    "ApplyDatabaseMigrations": true,
+    "ConnectionStringsConfiguration": {
+      "ApplicationDbConnection": "Server=localhost;Database=EiromplaysIdentityServer;User Id=postgres;Password=1234;",
+      "SessionDbConnection": "Server=localhost;Database=EiromplaysIdentityServer;User Id=postgres;Password=1234;"
+    }
+  }
+}

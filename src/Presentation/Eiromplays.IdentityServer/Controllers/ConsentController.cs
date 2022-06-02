@@ -2,13 +2,15 @@
 // See LICENSE in the project root for license information.
 
 // Original file: https://github.com/DuendeSoftware/Samples/blob/main/IdentityServer/v6/Quickstarts
-// Modified by Eirik Sjøløkken
+// Modified by Eirik SjÃ¸lÃ¸kken
 
+using System.Text.Json;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Validation;
+using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Security;
 using Eiromplays.IdentityServer.Configuration;
 using Eiromplays.IdentityServer.Extensions;
@@ -22,7 +24,6 @@ namespace Eiromplays.IdentityServer.Controllers;
 /// </summary>
 [SecurityHeaders]
 [Microsoft.AspNetCore.Authorization.Authorize]
-[ApiVersion("1.0")]
 public class ConsentController : Controller
 {
     private readonly IIdentityServerInteractionService _interaction;
@@ -45,25 +46,24 @@ public class ConsentController : Controller
     /// <param name="returnUrl"></param>
     /// <returns></returns>
     [HttpGet]
-    public async Task<IActionResult> Index(string returnUrl)
+    public async Task<IActionResult> Index(string? returnUrl)
     {
         var vm = await BuildViewModelAsync(returnUrl);
-        return vm != null ? View("Index", vm) : View("Error");
+
+        return vm != null ? Ok(vm) : throw new InternalServerException("Failed to build consent view model");
     }
 
     /// <summary>
     /// Handles the consent screen postback
     /// </summary>
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Index(ConsentInputModel model)
+    public async Task<IActionResult> Index([FromBody] ConsentInputModel model)
     {
         var result = await ProcessConsent(model);
-
         if (result.IsRedirect)
         {
-            var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
-            return context?.IsNativeClient() == true ? this.LoadingPage("Redirect", result.RedirectUri!) : Redirect(result.RedirectUri!);
+            await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+            return Ok(result);
         }
 
         if (result.HasValidationError)
@@ -71,19 +71,20 @@ public class ConsentController : Controller
             ModelState.AddModelError(string.Empty, result.ValidationError!);
         }
 
-        return result.ShowView ? View("Index", result.ViewModel) : View("Error");
+        return result.ShowView ? Ok(result.ViewModel) : throw new InternalServerException("Failed to get consent view");
     }
 
     /*****************************************/
-    /* helper APIs for the ConsentController */
+    /* Helper APIs for the ConsentController */
     /*****************************************/
+    
     private async Task<ProcessConsentResult> ProcessConsent(ConsentInputModel model)
     {
         var result = new ProcessConsentResult();
-
+        
         // validate return url is still valid
         var request = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
-        if (request == null) return result;
+        if (request is null) return result;
 
         ConsentResponse? grantedConsent = null;
 
@@ -114,7 +115,9 @@ public class ConsentController : Controller
                 };
 
                 // emit event
-                await _events.RaiseAsync(new ConsentGrantedEvent(User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues, grantedConsent.ScopesValuesConsented, grantedConsent.RememberConsent));
+                await _events.RaiseAsync(new ConsentGrantedEvent(User.GetSubjectId(), request.Client.ClientId,
+                    request.ValidatedResources.RawScopeValues, grantedConsent.ScopesValuesConsented,
+                    grantedConsent.RememberConsent));
                 break;
             }
             case "yes":
@@ -125,19 +128,20 @@ public class ConsentController : Controller
                 break;
         }
 
-        if (grantedConsent != null)
+        if (grantedConsent is not null)
         {
             // communicate outcome of consent back to identityserver
             await _interaction.GrantConsentAsync(request, grantedConsent);
 
             // indicate that's it ok to redirect back to authorization endpoint
-            result.RedirectUri = model?.ReturnUrl;
+
+            result.RedirectUri = model.ReturnUrl;
             result.Client = request.Client;
         }
         else
         {
             // we need to redisplay the consent UI
-            result.ViewModel = await BuildViewModelAsync(model?.ReturnUrl, model);
+            result.ViewModel = await BuildViewModelAsync(model.ReturnUrl, model);
         }
 
         return result;
@@ -146,14 +150,8 @@ public class ConsentController : Controller
     private async Task<ConsentViewModel?> BuildViewModelAsync(string? returnUrl, ConsentInputModel? model = null)
     {
         var request = await _interaction.GetAuthorizationContextAsync(returnUrl);
-        if (request is not null)
-        {
-            return CreateConsentViewModel(model, returnUrl, request);
-        }
 
-        _logger.LogError("No consent request matching request: {ReturnUrl}", returnUrl);
-
-        return null;
+        return request is not null ? CreateConsentViewModel(model, returnUrl, request) : null;
     }
 
     private ConsentViewModel CreateConsentViewModel(

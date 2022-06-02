@@ -3,22 +3,13 @@
 [Serializable]
 public class ConnectionStringsConfiguration
 {
-    public string? IdentityDbConnection { get; set; }
+    public string ApplicationDbConnection { get; set; } = "";
 
-    public string? ConfigurationDbConnection { get; set; }
-
-    public string? PersistedGrantDbConnection { get; set; }
-
-    public string? DataProtectionDbConnection { get; set; }
-
-    public string? PermissionDbConnection { get; set; }
+    public string SessionDbConnection { get; set; } = "";
 
     public void SetConnections(string commonConnectionString)
     {
-        IdentityDbConnection = commonConnectionString;
-        ConfigurationDbConnection = commonConnectionString;
-        DataProtectionDbConnection = commonConnectionString;
-        PersistedGrantDbConnection = commonConnectionString;
-        PermissionDbConnection = commonConnectionString;
+        ApplicationDbConnection = commonConnectionString;
+        SessionDbConnection = commonConnectionString;
     }
 }

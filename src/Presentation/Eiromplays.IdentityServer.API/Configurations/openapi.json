@@ -1,0 +1,15 @@
+{
+  "SwaggerSettings": {
+    "Enable": true,
+    "FastEndpointsApi": true,
+    "Title": "Eiromplays IdentityServer API",
+    "Version": "v1",
+    "Description": "Eiromplays IdentityServer API documentation",
+    "ContactName": "Eirik Sjøløkken",
+    "ContactEmail": "hello@anything.com",
+    "ContactUrl": "https://www.linkedin.com/in/eirik-sjolokken/",
+    "License": true,
+    "LicenseName": "MIT License",
+    "LicenseUrl": "https://github.com/Eiromplays/IdentityServer.Admin/blob/main/LICENSE"
+  }
+}

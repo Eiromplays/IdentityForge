@@ -2,11 +2,12 @@
 // See LICENSE in the project root for license information.
 
 // Original file: https://github.com/DuendeSoftware/Samples/blob/main/IdentityServer/v6/Quickstarts
-// Modified by Eirik Sjøløkken
+// Modified by Eirik SjÃ¸lÃ¸kken
 
 using Duende.IdentityServer.Models;
 using Eiromplays.IdentityServer.ViewModels.Account;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Eiromplays.IdentityServer.Extensions
 {
@@ -20,14 +21,6 @@ namespace Eiromplays.IdentityServer.Extensions
         {
             return !context.RedirectUri.StartsWith("https", StringComparison.Ordinal)
                 && !context.RedirectUri.StartsWith("http", StringComparison.Ordinal);
-        }
-
-        public static IActionResult LoadingPage(this Controller controller, string viewName, string? redirectUri)
-        {
-            controller.HttpContext.Response.StatusCode = 200;
-            controller.HttpContext.Response.Headers["Location"] = "";
-
-            return controller.View(viewName, new RedirectViewModel { RedirectUrl = redirectUri });
         }
     }
 }

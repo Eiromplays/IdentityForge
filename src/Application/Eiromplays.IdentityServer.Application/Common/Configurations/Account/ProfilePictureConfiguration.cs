@@ -1,12 +1,18 @@
-﻿namespace Eiromplays.IdentityServer.Application.Common.Configurations.Account;
+﻿using Eiromplays.IdentityServer.Domain.Enums;
 
-public class ProfilePictureConfiguration
+namespace Eiromplays.IdentityServer.Application.Common.Configurations.Account;
+
+public  class ProfilePictureConfiguration
 {
-    public bool IsProfilePictureEnabled { get; set; } = true;
+    public bool Enabled { get; set; } = true;
 
-    public bool AutoGenerateProfilePicture { get; set; } = true;
+    public bool AutoGenerate { get; set; } = true;
 
-    public bool AllowUploadingProfilePicture { get; set; } = true;
+    public ProfilePictureUploadType ProfilePictureUploadType { get; set; } = ProfilePictureUploadType.File;
 
-    public string? ProfilePictureGeneratorUrl { get; set; } = "https://avatars.dicebear.com/api/initials/";
+    public List<string> AllowedFileExtensions { get; set; } = new() { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+    
+    public string? BaseUrl { get; set; }
+    
+    public string? DefaultUrl { get; set; } = "https://avatars.dicebear.com/api/initials/";
 }
