@@ -20,6 +20,9 @@ internal static class Startup
     {
         if (projectType is ProjectType.Spa) return services;
         
+        var identityServerOptions = configuration.GetSection(nameof(Duende.IdentityServer.Configuration
+        .IdentityServerOptions)).Get<IdentityServerOptions>() ?? new IdentityServerOptions();
+        
         return services
             .Configure<IdentityOptions>(configuration.GetSection(nameof(IdentityOptions)))
             .AddIdentity<ApplicationUser, ApplicationRole>(options =>
@@ -35,12 +38,18 @@ internal static class Startup
                 {
                     OnRedirectToLogin = x =>
                     {
-                        x.Response.Redirect("https://localhost:3000/auth/login");
+                        x.Response.Redirect(!string.IsNullOrWhiteSpace(
+                            identityServerOptions.UserInteraction.LoginUrl)
+                            ? identityServerOptions.UserInteraction.LoginUrl: 
+                            "https://localhost:3000/auth/login");
                         return Task.CompletedTask;
                     },
                     OnRedirectToLogout = x =>
                     {
-                        x.Response.Redirect("https://localhost:3000/auth/logout");
+                        x.Response.Redirect(!string.IsNullOrWhiteSpace(
+                            identityServerOptions.UserInteraction.LogoutUrl)
+                            ? identityServerOptions.UserInteraction.LogoutUrl: 
+                            "https://localhost:3000/auth/logout");
                         return Task.CompletedTask;
                     }
                 };

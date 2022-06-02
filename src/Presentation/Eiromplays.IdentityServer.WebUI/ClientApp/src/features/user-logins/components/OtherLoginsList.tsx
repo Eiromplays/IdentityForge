@@ -18,6 +18,9 @@ export const OtherLoginsList = () => {
 
   if (!userLoginsQuery.data || !user) return null;
 
+  if (!userLoginsQuery.data.otherLogins || userLoginsQuery.data.otherLogins.length <= 0)
+    return null;
+
   return (
     <Table<AuthenticationScheme>
       data={userLoginsQuery.data.otherLogins}
