@@ -9,12 +9,12 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
 internal partial class UserService
 {
-    private async Task<string> GetEmailVerificationUriAsync(ApplicationUser user, string origin)
+    private async Task<string> GetEmailVerificationUriAsync(ApplicationUser user, string origin, bool isIdentityServer = false) 
     {
         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
         
-        const string route = "v1/users/confirm-email/";
+        var route = !isIdentityServer ? "v1/users/confirm/email" : "spa/ExternalLoginConfirmation";
 
         var endpointUri = new Uri(string.Concat(origin, route));
         var verificationUri = QueryHelpers.AddQueryString(endpointUri.ToString(), QueryStringKeys.UserId, user.Id);

@@ -324,7 +324,26 @@ public class SpaEndpoints : Controller
 
         return Challenge(properties, provider);
     }
+
+    [HttpGet("ExternalLoginConfirmation")]
+    public async Task<IActionResult> GetExternalLoginConfirmation(string userId, string code, string? returnUrl = null)
+    {
+        returnUrl ??= Url.Content("~/");
+     
+        await _userService.ConfirmEmailAsync(userId, code); 
         
+        var url = returnUrl is not null ? Uri.UnescapeDataString(returnUrl) : null;
+        var context = await _interaction.GetAuthorizationContextAsync(url);
+
+        if (context != null && !string.IsNullOrWhiteSpace(url))
+        {
+            // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
+            return Redirect(url);
+        }
+
+        return Url.IsLocalUrl(returnUrl) ? Redirect(returnUrl) : Redirect(url ?? _serverUrls.BaseUrl);
+    }
+    
     [HttpPost("ExternalLoginConfirmation")]
     public async Task<IActionResult> ExternalLoginConfirmation([FromBody]CreateExternalUserRequest request, string? returnUrl = null)
     {
@@ -336,8 +355,8 @@ public class SpaEndpoints : Controller
         {
             return BadRequest(new ExternalLoginConfirmationResponse{Message = "Error loading external login information during confirmation."});
         }
-
-        var createUserResponse = await _userService.CreateExternalAsync(request, Request.GetDisplayUrl());
+        
+        var createUserResponse = await _userService.CreateExternalAsync(request, $"{HttpContext.Request?.Scheme}://{HttpContext.Request?.Host.ToString()}/");
 
         var addLoginMessage = await _userService.AddLoginAsync(createUserResponse.UserId, info.Adapt<UserLoginInfoDto>());
 

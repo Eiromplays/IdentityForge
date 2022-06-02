@@ -193,7 +193,7 @@ internal partial class UserService
         if (_signInManager.Options.SignIn.RequireConfirmedAccount && !string.IsNullOrEmpty(user.Email))
         {
             // send verification email
-            var emailVerificationUri = await GetEmailVerificationUriAsync(user, origin);
+            var emailVerificationUri = await GetEmailVerificationUriAsync(user, origin, true);
             
             var emailModel = new RegisterUserEmailModel
             {

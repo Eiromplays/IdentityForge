@@ -61,7 +61,7 @@ export const Profile = () => {
             )}
             {user.roles.length > 0 && (
               <Entry
-                label={user.roles.length > 1 ? 'ApiScopes' : 'Role'}
+                label={user.roles.length > 1 ? 'Roles' : 'Role'}
                 value={user.roles.join(', ')}
               />
             )}
