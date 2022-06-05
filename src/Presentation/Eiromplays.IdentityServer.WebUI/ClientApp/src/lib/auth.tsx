@@ -11,10 +11,8 @@ import {
   registerWithEmailAndPassword,
 } from '@/features/auth';
 
-export const loadUser = async (): Promise<AuthUser> => {
-  const data = await getUser();
-
-  return data as AuthUser;
+export const loadUser = async (): Promise<AuthUser | null> => {
+  return await getUser();
 };
 
 export const loginFn = async (data: LoginCredentialsDTO) => {
@@ -53,7 +51,7 @@ export const loginFn = async (data: LoginCredentialsDTO) => {
 };
 
 export const login2faFn = async (data: Login2faCredentialsDto) => {
-  const response = await loginWith2fa(data);
+  await loginWith2fa(data);
 
   return await loadUser();
 };

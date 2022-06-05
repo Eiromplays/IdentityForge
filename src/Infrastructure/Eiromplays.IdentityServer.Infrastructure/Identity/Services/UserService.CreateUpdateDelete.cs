@@ -256,7 +256,8 @@ internal partial class UserService
             throw new InternalServerException(_t["Update profile failed"], result.GetErrors(_t));
         }
 
-        await RemoveSessionsAsync(userId, cancellationToken);
+        if (request.RevokeUserSessions)
+            await RemoveSessionsAsync(userId, cancellationToken);
     }
 
     public async Task DeleteAsync(string userId)
