@@ -7,7 +7,7 @@ public class RemoveLoginRequest
     public string ProviderKey { get; set; } = default!;
 }
 
-public class RemoveLoginRequestValidator : CustomValidator<RemoveLoginRequest>
+public class RemoveLoginRequestValidator : Validator<RemoveLoginRequest>
 {
     public RemoveLoginRequestValidator()
     {

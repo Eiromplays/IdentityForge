@@ -1,6 +1,6 @@
 namespace Eiromplays.IdentityServer.Application.Catalog.Products;
 
-public class UpdateProductRequestValidator : CustomValidator<UpdateProductRequest>
+public class UpdateProductRequestValidator : Validator<UpdateProductRequest>
 {
     public UpdateProductRequestValidator(IReadRepository<Product> productRepo, IReadRepository<Brand> brandRepo, IStringLocalizer<UpdateProductRequestValidator> T)
     {

@@ -4,6 +4,8 @@
 // Original file: https://github.com/DuendeSoftware/Samples/blob/main/IdentityServer/v6/Quickstarts
 // Modified by Eirik Sjøløkken
 
+using System.ComponentModel.DataAnnotations;
+
 namespace Eiromplays.IdentityServer.ViewModels.Account;
 
 public class LoginViewModel : LoginInputModel
@@ -16,4 +18,10 @@ public class LoginViewModel : LoginInputModel
 
     public bool IsExternalLoginOnly => !EnableLocalLogin && ExternalProviders.Count() == 1;
     public string? ExternalLoginScheme => IsExternalLoginOnly ? ExternalProviders.SingleOrDefault()?.AuthenticationScheme : null;
+
+    [Required] public string Login { get; set; } = default!;
+
+    [Required] public string Password { get; set; } = default!;
+    public bool RememberLogin { get; set; }
+    public string? ReturnUrl { get; set; }
 }

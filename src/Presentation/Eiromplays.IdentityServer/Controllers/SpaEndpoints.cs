@@ -548,8 +548,7 @@ public class SpaEndpoints : Controller
             ExternalProviders = providers.ToArray()
         };
     }
-        
-        
+
     private async Task<LogoutViewModel> BuildLogoutViewModelAsync(string logoutId)
     {
         var vm = new LogoutViewModel { LogoutId = logoutId, ShowLogoutPrompt = AccountOptions.ShowLogoutPrompt };

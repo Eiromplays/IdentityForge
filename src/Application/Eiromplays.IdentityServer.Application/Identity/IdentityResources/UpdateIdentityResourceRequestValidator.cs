@@ -1,6 +1,6 @@
 namespace Eiromplays.IdentityServer.Application.Identity.IdentityResources;
 
-public class UpdateIdentityResourceRequestValidator : CustomValidator<UpdateIdentityResourceRequest>
+public class UpdateIdentityResourceRequestValidator : Validator<UpdateIdentityResourceRequest>
 {
     public UpdateIdentityResourceRequestValidator(IStringLocalizer<UpdateIdentityResourceRequestValidator> T)
     {

@@ -34,9 +34,7 @@ public class Endpoint : EndpointWithoutRequest<List<UserSessionDto>>
             await SendUnauthorizedAsync(ct);
             return;
         }
-
-        var sessions = await _sessionManagementService.QuerySessionsAsync(new SessionQuery { SubjectId = userId }, ct);
-        sessions.
+        
         Response = await _userService.GetUserSessionsAsync(userId, ct);
         
         await SendAsync(Response, cancellation: ct);

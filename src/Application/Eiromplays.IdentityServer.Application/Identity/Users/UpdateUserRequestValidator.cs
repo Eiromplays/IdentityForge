@@ -1,10 +1,8 @@
-using Eiromplays.IdentityServer.Application.Common.Validation;
-using FluentValidation;
-using Microsoft.Extensions.Localization;
+using FastEndpoints;
 
 namespace Eiromplays.IdentityServer.Application.Identity.Users;
 
-public class UpdateUserRequestValidator : CustomValidator<UpdateUserRequest>
+public class UpdateUserRequestValidator : Validator<UpdateUserRequest>
 {
     public UpdateUserRequestValidator(IUserService userService, IStringLocalizer<UpdateUserRequestValidator> T)
     {

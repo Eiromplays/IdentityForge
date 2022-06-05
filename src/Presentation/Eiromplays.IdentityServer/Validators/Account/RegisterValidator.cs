@@ -1,11 +1,10 @@
 ﻿using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Domain.Constants;
 using Eiromplays.IdentityServer.ViewModels.Account;
-using FluentValidation;
 
 namespace Eiromplays.IdentityServer.Validators.Account;
 
-public class RegisterValidator : AbstractValidator<RegisterViewModel>
+public class RegisterValidator : Validator<RegisterViewModel>
 {
     public RegisterValidator(AccountConfiguration accountConfiguration)
     {

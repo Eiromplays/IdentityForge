@@ -1,6 +1,6 @@
 namespace Eiromplays.IdentityServer.Application.Identity.Clients;
 
-public class UpdateClientRequestValidator : CustomValidator<UpdateClientRequest>
+public class UpdateClientRequestValidator : Validator<UpdateClientRequest>
 {
     public UpdateClientRequestValidator(IClientService clientService, IStringLocalizer<UpdateClientRequestValidator> T)
     {

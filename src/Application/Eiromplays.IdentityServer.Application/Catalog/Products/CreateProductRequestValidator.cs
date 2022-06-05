@@ -1,6 +1,6 @@
 namespace Eiromplays.IdentityServer.Application.Catalog.Products;
 
-public class CreateProductRequestValidator : CustomValidator<CreateProductRequest>
+public class CreateProductRequestValidator : Validator<CreateProductRequest>
 {
     public CreateProductRequestValidator(IReadRepository<Product> productRepo, IReadRepository<Brand> brandRepo, IStringLocalizer<CreateProductRequestValidator> T)
     {

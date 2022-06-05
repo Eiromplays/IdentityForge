@@ -116,7 +116,7 @@ public class AccountController : Controller
         return NoContent();
     }
     
-    [HttpGet]
+    [u8HttpGet]
     public async Task<IActionResult> EnableAuthenticator()
     {
         var user = await _userManager.GetUserAsync(User);
