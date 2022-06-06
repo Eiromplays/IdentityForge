@@ -1,17 +1,17 @@
-using Duende.IdentityServer.Services;
+using Eiromplays.IdentityServer.Application.Identity.Auth;
+using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Login;
+using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Login;
 using Eiromplays.IdentityServer.Configuration;
-using Eiromplays.IdentityServer.Contracts.v1.Requests.Account;
-using Eiromplays.IdentityServer.Contracts.v1.Responses.Account;
 
 namespace Eiromplays.IdentityServer.Endpoints.v1.Account;
 
 public class GetLogoutEndpoint : Endpoint<GetLogoutRequest, GetLogoutResponse>
 {
-    private readonly IIdentityServerInteractionService _interaction;
+    private readonly IAuthService _authService;
 
-    public GetLogoutEndpoint(IIdentityServerInteractionService interaction)
+    public GetLogoutEndpoint(IAuthService authService)
     {
-        _interaction = interaction;
+        _authService = authService;
     }
 
     public override void Configure()
@@ -27,38 +27,16 @@ public class GetLogoutEndpoint : Endpoint<GetLogoutRequest, GetLogoutResponse>
     public override async Task HandleAsync(GetLogoutRequest req, CancellationToken ct)
     {
         // Build a response so the logout page knows what to display
-        Response = await BuildLogoutResponseAsync(req.LogoutId);
+        Response = await _authService.BuildLogoutResponseAsync(req.LogoutId, AccountOptions.ShowLogoutPrompt);
 
         if (Response.ShowLogoutPrompt == false)
         {
             // if the request for logout was properly authenticated from IdentityServer, then
             // we don't need to show the prompt and can just log the user out directly.
-            return await Logout(Response);
+            await _authService.LogoutAsync(new LogoutRequest{ LogoutId = Response.LogoutId }, HttpContext);
+            return;
         }
 
         await SendOkAsync(Response, ct);
-    }
-    
-    private async Task<GetLogoutResponse> BuildLogoutResponseAsync(string logoutId)
-    {
-        var response = new GetLogoutResponse { LogoutId = logoutId, ShowLogoutPrompt = AccountOptions.ShowLogoutPrompt };
-            
-        if (User.Identity?.IsAuthenticated != true)
-        {
-            // if the user is not authenticated, then just show logged out page
-            response.ShowLogoutPrompt = false;
-            return response;
-        }
-
-        var context = await _interaction.GetLogoutContextAsync(logoutId);
-
-        // show the logout prompt. this prevents attacks where the user
-        // is automatically signed out by another malicious web page.
-        if (context?.ShowSignoutPrompt != false)
-            return response;
-
-        // it's safe to automatically sign-out
-        response.ShowLogoutPrompt = false;
-        return response;
     }
 }
