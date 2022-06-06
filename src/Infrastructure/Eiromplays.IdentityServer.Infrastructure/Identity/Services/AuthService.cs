@@ -1,17 +1,17 @@
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Services;
+using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Identity.Auth;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Login;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Login;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
-using IdentityModel;
+using LanguageExt.Common;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Org.BouncyCastle.Ocsp;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
@@ -23,10 +23,12 @@ public class AuthService : IAuthService
     private readonly IAuthenticationHandlerProvider _authenticationHandlerProvider;
     private readonly IEventService _events;
     private readonly LinkGenerator _linkGenerator;
+    private readonly IUserResolver<ApplicationUser> _userResolver;
+    private readonly IServerUrls _serverUrls;
 
     public AuthService(IIdentityServerInteractionService interaction, ICurrentUser currentUser,
         SignInManager<ApplicationUser> signInManager, IAuthenticationHandlerProvider authenticationHandlerProvider,
-        IEventService events, LinkGenerator linkGenerator)
+        IEventService events, LinkGenerator linkGenerator, IUserResolver<ApplicationUser> userResolver, IServerUrls serverUrls)
     {
         _interaction = interaction;
         _currentUser = currentUser;
@@ -34,8 +36,58 @@ public class AuthService : IAuthService
         _authenticationHandlerProvider = authenticationHandlerProvider;
         _events = events;
         _linkGenerator = linkGenerator;
+        _userResolver = userResolver;
+        _serverUrls = serverUrls;
     }
 
+    #region Login
+
+    public async Task<Result<LoginResponse>> LoginAsync(LoginRequest request)
+    {
+        var response = new LoginResponse();
+        
+        var user = await _userResolver.GetUserAsync(request.Login);
+        if (user is null)
+        {
+            var badRequest = new BadRequestException("Invalid username or password");
+            return new Result<LoginResponse>(badRequest);
+        }
+        
+        var loginResult = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, lockoutOnFailure: true);
+        response.SignInResult = loginResult;
+
+        if (!loginResult.Succeeded)
+        {
+            if (loginResult.RequiresTwoFactor)
+            {
+                response.TwoFactorReturnUrl =
+                    $"account/login/2fa?rememberMe={request.RememberMe}&returnUrl={request.ReturnUrl}";
+                return new Result<LoginResponse>(response);
+            }
+
+            if (loginResult.IsLockedOut)
+            {
+                // TODO: Option to send email to user to notify them of their account being locked 
+                return new Result<LoginResponse>(response);
+            }
+
+            response.Error = "Invalid username or password";
+            return response;
+        }
+
+        var context = await _interaction.GetAuthorizationContextAsync(request.ReturnUrl);
+
+        response.ValidReturnUrl = context is not null ? request.ReturnUrl : _serverUrls.BaseUrl;
+        return response;
+    }
+
+    #endregion
+    
+
+    #region Logout
+    
+    #endregion
+    
     public async Task<GetLogoutResponse> BuildLogoutResponseAsync(string logoutId, bool showLogoutPrompt = true)
     {
         var response = new GetLogoutResponse { LogoutId = logoutId, ShowLogoutPrompt = showLogoutPrompt };
@@ -122,6 +174,6 @@ public class AuthService : IAuthService
     }
     
     // Helper methods
-    public virtual SignOutResult SignOut(AuthenticationProperties properties, params string[] authenticationSchemes) =>
+    protected virtual SignOutResult SignOut(AuthenticationProperties properties, params string[] authenticationSchemes) =>
         new(authenticationSchemes, properties);
 }

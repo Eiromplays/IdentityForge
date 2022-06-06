@@ -1,4 +1,4 @@
-namespace Eiromplays.IdentityServer.Contracts.v1.Requests.Account;
+namespace Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Login;
 
 public class Login2FaRequest
 {

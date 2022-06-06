@@ -1,27 +1,17 @@
-using System.Net;
-using Duende.IdentityServer.Services;
-using Eiromplays.IdentityServer.Application.Common.Interfaces;
-using Eiromplays.IdentityServer.Contracts.v1.Requests.Account;
-using Eiromplays.IdentityServer.Contracts.v1.Responses.Account;
-using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
-using Microsoft.AspNetCore.Identity;
+using Eiromplays.IdentityServer.Application.Common.Exceptions;
+using Eiromplays.IdentityServer.Application.Identity.Auth;
+using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Login;
+using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Login;
 
 namespace Eiromplays.IdentityServer.Endpoints.v1.Account;
 
 public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
 {
-    private readonly IUserResolver<ApplicationUser> _userResolver;
-    private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly IIdentityServerInteractionService _interaction;
-    private readonly IServerUrls _serverUrls;
+    private readonly IAuthService _authService;
 
-    public LoginEndpoint(IUserResolver<ApplicationUser> userResolver, SignInManager<ApplicationUser> signInManager,
-        IIdentityServerInteractionService interaction, IServerUrls serverUrls)
+    public LoginEndpoint(IAuthService authService)
     {
-        _userResolver = userResolver;
-        _signInManager = signInManager;
-        _interaction = interaction;
-        _serverUrls = serverUrls;
+        _authService = authService;
     }
 
     public override void Configure()
@@ -36,40 +26,21 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
     
     public override async Task HandleAsync(LoginRequest req, CancellationToken ct)
     {
-        var user = await _userResolver.GetUserAsync(req.Login);
-        if (user is null)
+        var result = await _authService.LoginAsync(req);
+        await result.Match(async x =>
         {
-            ThrowError("Invalid username or password");
-            return;
-        }
-        
-        var loginResult = await _signInManager.PasswordSignInAsync(user, req.Password, req.RememberMe, lockoutOnFailure: true);
-        Response.SignInResult = loginResult;
-
-        if (!loginResult.Succeeded)
+            if (!string.IsNullOrWhiteSpace(x.TwoFactorReturnUrl))
+                await SendRedirectAsync(x.TwoFactorReturnUrl, true, ct);
+            
+            await SendOkAsync(x, cancellation: ct);
+        }, exception =>
         {
-            if (loginResult.RequiresTwoFactor)
+            if (exception is BadRequestException badRequestException)
             {
-                await SendRedirectAsync($"account/login/2fa?rememberMe={req.RememberMe}&returnUrl={req.ReturnUrl}", cancellation: ct);
-                return;
+                ThrowError(badRequestException.Message);
             }
 
-            if (loginResult.IsLockedOut)
-            {
-                // TODO: Option to send email to user to notify them of their account being locked 
-                await SendAsync(Response, (int)HttpStatusCode.BadRequest, ct);
-                return;
-            }
-
-            Response.Error = "Invalid username or password";
-            await SendAsync(Response, (int)HttpStatusCode.BadRequest, ct);
-            return;
-        }
-
-        var context = await _interaction.GetAuthorizationContextAsync(req.ReturnUrl);
-
-        Response.ValidReturnUrl = context is not null ? req.ReturnUrl : _serverUrls.BaseUrl;
-
-        await SendOkAsync(Response, ct);
+            return SendErrorsAsync(cancellation: ct);
+        });
     }
 }

@@ -1,4 +1,4 @@
-namespace Eiromplays.IdentityServer.Contracts.v1.Responses.Account;
+namespace Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Login;
 
 public class GetLogin2FaResponse
 {

@@ -1,5 +1,5 @@
-using Eiromplays.IdentityServer.Contracts.v1.Requests.Account;
-using Eiromplays.IdentityServer.Contracts.v1.Responses.Account;
+using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Login;
+using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Login;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 

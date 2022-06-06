@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace Eiromplays.IdentityServer.Contracts.v1.Responses.Account;
+namespace Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Login;
 
 public class LoginResponse
 {
@@ -9,4 +9,6 @@ public class LoginResponse
     public SignInResult? SignInResult { get; set; }
         
     public string? ValidReturnUrl { get; set; }
+    
+    public string? TwoFactorReturnUrl { get; set; }
 }
