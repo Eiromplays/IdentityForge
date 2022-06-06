@@ -81,6 +81,32 @@ public class AuthService : IAuthService
         return response;
     }
 
+    public async Task<Result<LoginResponse>> Login2FaAsync(Login2FaRequest request)
+    {
+        var response = new LoginResponse();
+        
+        var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+        if (user is null)
+            throw new InvalidOperationException("Unable to get user");
+            
+        var authenticatorCode = request.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
+
+        var result =
+            await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, request.RememberMe, request.RememberMachine);
+
+        if (result.Succeeded)
+        {
+            var url = !string.IsNullOrWhiteSpace(request.ReturnUrl) ? Uri.UnescapeDataString(request.ReturnUrl) : null;
+            
+            if (_interaction.IsValidReturnUrl(url))
+                response.ValidReturnUrl = url ?? _serverUrls.BaseUrl;
+            
+            return new Result<LoginResponse>(response);
+        }
+
+        return new Result<LoginResponse>(new BadRequestException("Invalid authentication code"));
+    }
+
     #endregion
     
 

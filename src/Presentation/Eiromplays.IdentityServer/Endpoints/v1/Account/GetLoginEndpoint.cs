@@ -1,10 +1,10 @@
 using Duende.IdentityServer;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
+using Eiromplays.IdentityServer.Application.Identity.Auth.Requests;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Login;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Login;
 using Eiromplays.IdentityServer.Configuration;
-using Eiromplays.IdentityServer.ViewModels.Account;
 using Microsoft.AspNetCore.Authentication;
 
 namespace Eiromplays.IdentityServer.Endpoints.v1.Account;
