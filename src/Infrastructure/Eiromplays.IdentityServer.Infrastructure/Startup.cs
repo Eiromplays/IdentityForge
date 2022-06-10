@@ -82,11 +82,11 @@ public static class Startup
             .InitializeDatabasesAsync(cancellationToken);
     }
 
-    public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder builder, IConfiguration config, ProjectType projectType)
+    public static WebApplication UseInfrastructure(this WebApplication app, IConfiguration config, ProjectType projectType, Action<Config>? fastEndpointsConfigAction = null)
     {
-        if (projectType is ProjectType.Spa) return builder;
+        if (projectType is ProjectType.Spa) return app;
         
-        return builder
+        app
             .UseRequestLocalization()
             .UseStaticFiles()
             .UseSecurityHeaders(config)
@@ -99,8 +99,13 @@ public static class Startup
             .UseAuthorization()
             .UseCurrentUser()
             .UseRequestLogging(config)
-            .UseHangfireDashboard(config)
-            .UseOpenApiDocumentation(config, projectType);
+            .UseHangfireDashboard(config);
+
+        app.UseFastEndpoints(fastEndpointsConfigAction);
+
+        app.UseOpenApiDocumentation(config, projectType);
+
+        return app;
     }
 
     public static IEndpointRouteBuilder MapEndpoints(this IEndpointRouteBuilder builder)

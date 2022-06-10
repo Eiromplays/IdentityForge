@@ -14,7 +14,7 @@ public interface IAuthService : ITransientService
 
     Task<Result<LoginResponse>> Login2FaAsync(Login2FaRequest request);
 
-    Result<object> ExternalLogin(ExternalLoginRequest request, HttpContext httpContext);
+    Task<Result<object>> ExternalLoginAsync(ExternalLoginRequest request, HttpContext httpContext);
     
     Task<Result<LoginResponse>> ExternalLoginCallbackAsync(
         GetExternalLoginCallbackRequest request);

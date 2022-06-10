@@ -30,9 +30,7 @@ try
     
     await app.Services.InitializeDatabasesAsync();
 
-    app.UseInfrastructure(builder.Configuration, ProjectType.IdentityServer);
-
-    app.UseFastEndpoints(config =>
+    app.UseInfrastructure(builder.Configuration, ProjectType.IdentityServer, config =>
     {
         config.RoutingOptions = options => options.Prefix = "api";
         config.VersioningOptions = options =>
@@ -42,7 +40,7 @@ try
             options.DefaultVersion = 1;
         };
     });
-    
+
     app.MapEndpoints();
     
     app.Run();

@@ -214,7 +214,7 @@ public class AuthService : IAuthService
 
     #region External Login
 
-    public Result<object> ExternalLogin(ExternalLoginRequest request, HttpContext httpContext)
+    public async Task<Result<object>> ExternalLoginAsync(ExternalLoginRequest request, HttpContext httpContext)
     {
         if (string.IsNullOrWhiteSpace(request.Provider))
             return new Result<object>(new BadRequestException("Provider is required"));
@@ -223,6 +223,18 @@ public class AuthService : IAuthService
         var redirectUrl = _linkGenerator.GetUriByName(httpContext, "external-login/callback", new { returnUrl = request.ReturnUrl });
         var properties = _signInManager.ConfigureExternalAuthenticationProperties(request.Provider, redirectUrl);
 
+        var test = Challenge(properties, request.Provider);
+        
+        if (test.AuthenticationSchemes.Count > 0)
+        {
+            foreach (var authenticationScheme in test.AuthenticationSchemes)
+                await httpContext.ChallengeAsync(authenticationScheme, test.Properties);
+        }
+        else
+        {
+            await httpContext.ChallengeAsync(test.Properties);
+        }
+        
         return new Result<object>(Challenge(properties, request.Provider));
     }
 
