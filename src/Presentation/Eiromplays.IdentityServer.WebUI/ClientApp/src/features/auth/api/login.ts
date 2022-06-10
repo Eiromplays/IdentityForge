@@ -14,7 +14,7 @@ export type LoginCredentialsDTO = {
 export const loginWithEmailAndPassword = (
   data: LoginCredentialsDTO
 ): Promise<LoginConsentResponse> => {
-  return axios.post(`${identityServerUrl}/spa/Login`, data);
+  return axios.post(`${identityServerUrl}/api/v1/account/login`, data);
 };
 
 export type Login2faCredentialsDto = {
@@ -26,5 +26,5 @@ export type Login2faCredentialsDto = {
 };
 
 export const loginWith2fa = (data: Login2faCredentialsDto): Promise<LoginConsentResponse> => {
-  return axios.post(`${identityServerUrl}/spa/LoginWith2Fa`, data);
+  return axios.post(`${identityServerUrl}/api/v1/account/login2fa`, data);
 };

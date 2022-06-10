@@ -4,25 +4,18 @@
 // Original file: https://github.com/DuendeSoftware/Samples/blob/main/IdentityServer/v6/Quickstarts
 // Modified by Eirik Sjøløkken
 
-using System.Text.Json;
 using Duende.IdentityServer.Events;
-using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
-using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Validation;
-using Eiromplays.IdentityServer.Application.Common.Exceptions;
-using Eiromplays.IdentityServer.Application.Common.Security;
 using Eiromplays.IdentityServer.Configuration;
-using Eiromplays.IdentityServer.Extensions;
 using Eiromplays.IdentityServer.ViewModels.Consent;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Eiromplays.IdentityServer.Controllers;
 
 /// <summary>
 /// This controller processes the consent UI
 /// </summary>
-[SecurityHeaders]
+/*[SecurityHeaders]
 [Microsoft.AspNetCore.Authorization.Authorize]
 public class ConsentController : Controller
 {
@@ -78,7 +71,8 @@ public class ConsentController : Controller
     /* Helper APIs for the ConsentController */
     /*****************************************/
     
-    private async Task<ProcessConsentResult> ProcessConsent(ConsentInputModel model)
+    /*private async Task<ProcessConsentResult> ProcessConsent(ConsentInputModel model)
+
     {
         var result = new ProcessConsentResult();
         
@@ -231,4 +225,4 @@ public class ConsentController : Controller
             Checked = check
         };
     }
-}
+}*/

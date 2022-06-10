@@ -22,6 +22,7 @@ public class GetLogin2FaEndpoint : Endpoint<GetLogin2FaRequest, GetLogin2FaRespo
         {
             s.Summary = "Get login 2fa";
         });
+        AllowAnonymous();
     }
     
     public override async Task HandleAsync(GetLogin2FaRequest req, CancellationToken ct)

@@ -1,14 +1,15 @@
 {
   "SwaggerSettings": {
     "Enable": true,
-    "Title": ".NET 6.0 WebAPI - Clean Architecture",
+    "FastEndpointsApi": true,
+    "Title": "Eiromplays IdentityServer",
     "Version": "v1",
-    "Description": "Clean Architecture Template for .NET 6.0 WebApi built with Multitenancy Support.",
-    "ContactName": "Mukesh Murugan",
-    "ContactEmail": "hello@codewithmukesh.com",
-    "ContactUrl": "https://linkedin.com/in/iammukeshm",
+    "Description": "Eiromplays IdentityServer documentation",
+    "ContactName": "Eirik Sjøløkken",
+    "ContactEmail": "hello@anything.com",
+    "ContactUrl": "https://www.linkedin.com/in/eirik-sjolokken/",
     "License": true,
     "LicenseName": "MIT License",
-    "LicenseUrl": "https://github.com/fullstackhero/dotnet-webapi-boilerplate/blob/main/LICENSE"
-  },
+    "LicenseUrl": "https://github.com/Eiromplays/IdentityServer.Admin/blob/main/LICENSE"
+  }
 }

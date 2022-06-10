@@ -31,6 +31,7 @@ public class GetLoginEndpoint : Endpoint<GetLoginRequest, GetLoginResponse>
         {
             s.Summary = "Get login information";
         });
+        AllowAnonymous();
     }
     
     public override async Task HandleAsync(GetLoginRequest req, CancellationToken ct)

@@ -22,6 +22,7 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
         {
             s.Summary = "Login with email and password";
         });
+        AllowAnonymous();
     }
     
     public override async Task HandleAsync(LoginRequest req, CancellationToken ct)

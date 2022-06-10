@@ -15,7 +15,7 @@ namespace Eiromplays.IdentityServer.Controllers;
 [Microsoft.AspNetCore.Authorization.Authorize]
 public class ExternalLoginsController : Controller
 {
-    private readonly IUserService _userService;
+    /*private readonly IUserService _userService;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly SpaConfiguration _spaConfiguration;
 
@@ -73,5 +73,5 @@ public class ExternalLoginsController : Controller
         var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl, userId);
         
         return Challenge(properties, provider);
-    }
+    }*/
 }

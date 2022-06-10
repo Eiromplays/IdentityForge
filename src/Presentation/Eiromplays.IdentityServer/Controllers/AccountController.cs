@@ -4,7 +4,7 @@
 // Original file: https://github.com/DuendeSoftware/Samples/blob/main/IdentityServer/v6/Quickstarts
 // Modified by Eirik Sjøløkken
 
-using Duende.IdentityServer.Services;
+/*using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Application.Common.Security;
@@ -238,4 +238,4 @@ public class AccountController : Controller
             _urlEncoder.Encode(email),
             unformattedKey);
     }
-}
+}*/

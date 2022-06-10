@@ -11,4 +11,6 @@ public class LoginResponse
     public string? ValidReturnUrl { get; set; }
     
     public string? TwoFactorReturnUrl { get; set; }
+    
+    public string? ExternalLoginReturnUrl { get; set; }
 }

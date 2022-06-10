@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+/*using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text.Json;
 using Duende.IdentityServer;
@@ -112,6 +112,7 @@ public class SpaEndpoints : Controller
     public async Task<IActionResult> Context(string returnUrl)
     {
         var authzContext = await _interaction.GetAuthorizationContextAsync(returnUrl);
+        
         if (authzContext != null)
         {
             return Ok(new 
@@ -362,7 +363,7 @@ public class SpaEndpoints : Controller
 
         // TODO: Check if user should be logged in automatically
         /*if (_signInManager.CanSignInAsync())
-        await _signInManager.SignInAsync(user, isPersistent: false);*/
+        await _signInManager.SignInAsync(user, isPersistent: false);
 
         var response = new ExternalLoginConfirmationResponse
         {
@@ -605,4 +606,4 @@ public class SpaEndpoints : Controller
 
         return vm;
     }
-}
+}*/

@@ -20,6 +20,7 @@ using Eiromplays.IdentityServer.Infrastructure.OpenApi;
 using Eiromplays.IdentityServer.Infrastructure.Persistence;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Initialization;
 using Eiromplays.IdentityServer.Infrastructure.SecurityHeaders;
+using FastEndpoints;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;

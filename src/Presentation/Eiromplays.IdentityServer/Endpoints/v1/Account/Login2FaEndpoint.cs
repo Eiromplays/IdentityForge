@@ -16,7 +16,7 @@ public class Login2FaEndpoint : Endpoint<Login2FaRequest, LoginResponse>
 
     public override void Configure()
     {
-        Post("/account/login");
+        Post("/account/login2fa");
         Version(1);
         Summary(s =>
         {

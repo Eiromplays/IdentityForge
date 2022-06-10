@@ -20,6 +20,8 @@ try
     builder.Services.AddInfrastructure(builder.Configuration, ProjectType.IdentityServer);
     
     builder.Services.AddApplication();
+
+    builder.Services.AddControllers();
     
     builder.Services.AddFastEndpoints()
         .AddFluentValidation();

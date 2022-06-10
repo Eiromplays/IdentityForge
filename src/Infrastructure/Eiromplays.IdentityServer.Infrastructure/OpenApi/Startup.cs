@@ -16,7 +16,7 @@ internal static class Startup
 {
     internal static IServiceCollection AddOpenApiDocumentation(this IServiceCollection services, IConfiguration config, ProjectType projectType)
     {
-        if (projectType is not ProjectType.Api) return services;
+        if (projectType is not (ProjectType.Api or ProjectType.IdentityServer)) return services;
         
         var settings = config.GetSection(nameof(SwaggerSettings)).Get<SwaggerSettings>();
         if (!settings.Enable) return services;
@@ -166,7 +166,7 @@ internal static class Startup
 
     internal static IApplicationBuilder UseOpenApiDocumentation(this IApplicationBuilder app, IConfiguration config, ProjectType projectType)
     {
-        if (!config.GetValue<bool>("SwaggerSettings:Enable") || projectType is not ProjectType.Api) return app;
+        if (!config.GetValue<bool>("SwaggerSettings:Enable") || projectType is not (ProjectType.Api or ProjectType.IdentityServer)) return app;
 
         app.UseOpenApi();
 

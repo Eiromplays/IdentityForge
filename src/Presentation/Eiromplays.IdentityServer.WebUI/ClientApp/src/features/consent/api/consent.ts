@@ -11,7 +11,7 @@ type ConsentDto = {
 };
 
 export const consent = async ({ data }: ConsentDto): Promise<ProcessConsentResult> => {
-  return axios.post(`${identityServerUrl}/consent`, data);
+  return axios.post(`${identityServerUrl}/api/v1/consent`, data);
 };
 
 type UseConsentOptions = {

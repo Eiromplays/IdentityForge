@@ -36,7 +36,7 @@ public class GrantsController : Controller
         _resources = resources;
         _events = events;
     }
-
+/*
     /// <summary>
     /// Show list of grants
     /// </summary>
@@ -102,5 +102,5 @@ public class GrantsController : Controller
         {
             Grants = list
         };
-    }
+    }*/
 }
