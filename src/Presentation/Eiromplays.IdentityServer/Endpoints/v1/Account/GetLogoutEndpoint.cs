@@ -33,7 +33,7 @@ public class GetLogoutEndpoint : Endpoint<GetLogoutRequest, GetLogoutResponse>
         {
             // if the request for logout was properly authenticated from IdentityServer, then
             // we don't need to show the prompt and can just log the user out directly.
-            await _authService.LogoutAsync(new LogoutRequest{ LogoutId = Response.LogoutId }, HttpContext);
+            await _authService.LogoutAsync<GetLogoutEndpoint>(new LogoutRequest{ LogoutId = Response.LogoutId }, HttpContext);
             return;
         }
 

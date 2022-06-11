@@ -25,7 +25,7 @@ public class LogoutEndpoint : Endpoint<LogoutRequest, dynamic>
     public override async Task HandleAsync(LogoutRequest req, CancellationToken ct)
     {
         // Logout the user
-        Response = await _authService.LogoutAsync(req, HttpContext);
+        Response = await _authService.LogoutAsync<GetLogoutEndpoint>(req, HttpContext);
         
         await SendOkAsync(Response, ct);
     }

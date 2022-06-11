@@ -145,33 +145,36 @@ public class AuthService : IAuthService
             return response;
         }
     
-        public async Task<dynamic> LogoutAsync(LogoutRequest request, HttpContext httpContext)
+    public async Task<LogoutResponse> LogoutAsync<TEndpoint>(LogoutRequest request, HttpContext httpContext) where TEndpoint : IEndpoint
+    {
+        // build a response so the logged out page knows what to display
+        var response = await BuildLoggedOutResponseAsync(request.LogoutId, httpContext);
+    
+        if (_currentUser.IsAuthenticated())
         {
-            // build a response so the logged out page knows what to display
-            var response = await BuildLoggedOutResponseAsync(request.LogoutId, httpContext);
+            // delete local authentication cookie
+            await _signInManager.SignOutAsync();
     
-            if (_currentUser.IsAuthenticated())
-            {
-                // delete local authentication cookie
-                await _signInManager.SignOutAsync();
-    
-                // raise the logout event
-                await _events.RaiseAsync(new UserLogoutSuccessEvent(_currentUser.GetSubjectId(), _currentUser.GetDisplayName()));
-            }
-    
-            // check if we need to trigger sign-out at an upstream identity provider
-            if (!response.TriggerExternalSignout)
-            {
-                return response;
-            }
-            // build a return URL so the upstream provider will redirect back
-            // to us after the user has logged out. this allows us to then
-            // complete our single sign-out processing.
-            var url = _linkGenerator.GetUriByName(httpContext, "Logout", new { logoutId = response.LogoutId });
-    
-            // this triggers a redirect to the external provider for sign-out
-            return SignOut(new AuthenticationProperties { RedirectUri = url }, response.ExternalAuthenticationScheme!);
+            // raise the logout event
+            await _events.RaiseAsync(new UserLogoutSuccessEvent(_currentUser.GetSubjectId(), _currentUser.GetDisplayName()));
         }
+    
+        // check if we need to trigger sign-out at an upstream identity provider
+        if (!response.TriggerExternalSignout)
+        {
+            return response;
+        }
+        // build a return URL so the upstream provider will redirect back
+        // to us after the user has logged out. this allows us to then
+        // complete our single sign-out processing.
+        var url = _linkGenerator.GetUriByName(httpContext, typeof(TEndpoint).EndpointName(), new { logoutId = response.LogoutId });
+    
+        // this triggers a redirect to the external provider for sign-out
+        await httpContext.SignOutAsync(response.ExternalAuthenticationScheme, new AuthenticationProperties { RedirectUri = url });
+
+        await httpContext.Response.CompleteAsync();
+        return response;
+    }
     
         private async Task<LogoutResponse> BuildLoggedOutResponseAsync(string logoutId, HttpContext httpContext, bool automaticRedirectAfterSignOut = true)
         {
