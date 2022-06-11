@@ -21,6 +21,7 @@ public class GetErrorEndpoint : Endpoint<GetErrorRequest, ErrorMessage>
         {
             s.Summary = "Get error information";
         });
+        AllowAnonymous();
     }
     
     public override async Task HandleAsync(GetErrorRequest req, CancellationToken ct)

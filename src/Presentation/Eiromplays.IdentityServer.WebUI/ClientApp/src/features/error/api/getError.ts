@@ -6,7 +6,7 @@ import { identityServerUrl } from '@/utils/envVariables';
 import { ErrorMessage } from '../types';
 
 export const getError = ({ errorId }: { errorId?: string }): Promise<ErrorMessage> => {
-  return axios.get(`${identityServerUrl}/api/v1/error?errorId=${errorId}`);
+  return axios.get(`${identityServerUrl}/api/v1/errors?errorId=${errorId}`);
 };
 
 type QueryFnType = typeof getError;

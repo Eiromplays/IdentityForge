@@ -2,7 +2,7 @@ namespace Eiromplays.IdentityServer.Application.Identity.Auth.Requests.ExternalL
 
 public class GetExternalLoginCallbackRequest
 {
-    [QueryParam] public string ReturnUrl { get; set; } = default!;
+    public string ReturnUrl { get; set; } = default!;
 
     [QueryParam] public string RemoteError { get; set; } = default!;
 }

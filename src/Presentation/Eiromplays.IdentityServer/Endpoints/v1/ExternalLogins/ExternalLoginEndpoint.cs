@@ -1,11 +1,11 @@
-using System.Text.Json;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Identity.Auth;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.ExternalLogins;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Eiromplays.IdentityServer.Endpoints.v1.ExternalLogins;
 
-public class ExternalLoginEndpoint : Endpoint<ExternalLoginRequest, object>
+public class ExternalLoginEndpoint : Endpoint<ExternalLoginRequest, AuthenticationProperties>
 {
     private readonly IAuthService _authService;
 
@@ -28,11 +28,11 @@ public class ExternalLoginEndpoint : Endpoint<ExternalLoginRequest, object>
     
     public override async Task HandleAsync(ExternalLoginRequest req, CancellationToken ct)
     {
-        var result = await _authService.ExternalLoginAsync(req, HttpContext);
+        var result = await _authService.ExternalLoginAsync<GetExternalLoginCallbackEndpoint>(req, HttpContext.Response);
 
-        await result.Match(async x =>
+        await result.Match(async _ =>
         {
-            await SendOkAsync(x, cancellation: ct);
+
         }, exception =>
         {
             if (exception is BadRequestException badRequestException)

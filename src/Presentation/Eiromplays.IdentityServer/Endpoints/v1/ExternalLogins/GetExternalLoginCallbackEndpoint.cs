@@ -21,6 +21,7 @@ public class GetExternalLoginCallbackEndpoint : Endpoint<GetExternalLoginCallbac
         {
             s.Summary = "Get error information";
         });
+        AllowAnonymous();
     }
     
     public override async Task HandleAsync(GetExternalLoginCallbackRequest req, CancellationToken ct)

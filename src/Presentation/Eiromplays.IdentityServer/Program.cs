@@ -4,6 +4,7 @@ using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure;
 using Eiromplays.IdentityServer.Infrastructure.Common;
 using FluentValidation.AspNetCore;
+using Newtonsoft.Json;
 using Serilog;
 
 try

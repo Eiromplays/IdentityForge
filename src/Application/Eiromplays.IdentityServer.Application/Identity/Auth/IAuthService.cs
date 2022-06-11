@@ -1,5 +1,6 @@
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Consent;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.ExternalLogins;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 
 namespace Eiromplays.IdentityServer.Application.Identity.Auth;
@@ -14,7 +15,8 @@ public interface IAuthService : ITransientService
 
     Task<Result<LoginResponse>> Login2FaAsync(Login2FaRequest request);
 
-    Task<Result<object>> ExternalLoginAsync(ExternalLoginRequest request, HttpContext httpContext);
+    Task<Result<AuthenticationProperties>> ExternalLoginAsync<TEndpoint>(ExternalLoginRequest request, HttpResponse rsp)
+        where TEndpoint : IEndpoint;
     
     Task<Result<LoginResponse>> ExternalLoginCallbackAsync(
         GetExternalLoginCallbackRequest request);

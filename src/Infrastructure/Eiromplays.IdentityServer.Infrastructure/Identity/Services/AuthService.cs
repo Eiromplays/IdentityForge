@@ -9,7 +9,9 @@ using Eiromplays.IdentityServer.Application.Identity.Auth;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.ExternalLogins;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Login;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Login;
+using Eiromplays.IdentityServer.Infrastructure.Common.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
+using FastEndpoints;
 using LanguageExt.Common;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -214,28 +216,20 @@ public class AuthService : IAuthService
 
     #region External Login
 
-    public async Task<Result<object>> ExternalLoginAsync(ExternalLoginRequest request, HttpContext httpContext)
+    public async Task<Result<AuthenticationProperties>> ExternalLoginAsync<TEndpoint>(ExternalLoginRequest request, HttpResponse rsp) where TEndpoint : IEndpoint
     {
         if (string.IsNullOrWhiteSpace(request.Provider))
-            return new Result<object>(new BadRequestException("Provider is required"));
+            return new Result<AuthenticationProperties>(new BadRequestException("Provider is required"));
+        
+        var redirectUrl = _linkGenerator.GetUriByName(rsp.HttpContext, typeof(TEndpoint).EndpointName(), new { returnUrl = request.ReturnUrl });
 
-        // Request a redirect to the external login provider.
-        var redirectUrl = _linkGenerator.GetUriByName(httpContext, "external-login/callback", new { returnUrl = request.ReturnUrl });
         var properties = _signInManager.ConfigureExternalAuthenticationProperties(request.Provider, redirectUrl);
-
-        var test = Challenge(properties, request.Provider);
         
-        if (test.AuthenticationSchemes.Count > 0)
-        {
-            foreach (var authenticationScheme in test.AuthenticationSchemes)
-                await httpContext.ChallengeAsync(authenticationScheme, test.Properties);
-        }
-        else
-        {
-            await httpContext.ChallengeAsync(test.Properties);
-        }
+        // Challenge the user with the specified provider
+        await rsp.HttpContext.ChallengeAsync(request.Provider, properties);
+        await rsp.CompleteAsync();
         
-        return new Result<object>(Challenge(properties, request.Provider));
+        return new Result<AuthenticationProperties>(properties);
     }
 
     public async Task<Result<LoginResponse>> ExternalLoginCallbackAsync(
@@ -245,7 +239,7 @@ public class AuthService : IAuthService
             return new Result<LoginResponse>(new BadRequestException("Error from external provider", new List<string> { request.RemoteError }));
 
         var response = new LoginResponse();
-
+        
         var info = await _signInManager.GetExternalLoginInfoAsync();
         if (info is null)
         {
@@ -296,13 +290,6 @@ public class AuthService : IAuthService
         return new Result<LoginResponse>(response);
     }
 
-    protected virtual ChallengeResult Challenge(
-        AuthenticationProperties properties,
-        params string[] authenticationSchemes)
-    {
-        return new ChallengeResult(authenticationSchemes, properties);
-    }
-    
     #endregion
 
     #region Consent
