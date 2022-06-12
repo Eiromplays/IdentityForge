@@ -63,9 +63,7 @@ try
 
     await app.Services.InitializeDatabasesAsync();
 
-    app.UseInfrastructure(builder.Configuration, ProjectType.Api);
-    
-    app.UseFastEndpoints(config =>
+    app.UseInfrastructure(builder.Configuration, ProjectType.Api, config =>
     {
         config.GlobalEndpointOptions = (_, routeHandlerBuilder) =>
         {
@@ -78,7 +76,7 @@ try
             options.DefaultVersion = 1;
         };
     });
-    
+
     app.MapEndpoints();
     
     app.Run();

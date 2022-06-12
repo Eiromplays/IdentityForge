@@ -6,7 +6,7 @@ import { identityServerUrl } from '@/utils/envVariables';
 import { EnableAuthenticatorViewModel } from '../types';
 
 export const getEnableAuthenticator = (): Promise<EnableAuthenticatorViewModel> => {
-  return axios.get(`${identityServerUrl}/account/EnableAuthenticator`);
+  return axios.get(`${identityServerUrl}/api/v1/account/EnableAuthenticator`);
 };
 
 type QueryFnType = typeof getEnableAuthenticator;

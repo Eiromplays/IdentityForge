@@ -3,10 +3,10 @@ import { useQuery } from 'react-query';
 
 import { identityServerUrl } from '@/utils/envVariables';
 
-import { GrantsViewModel } from '../types';
+import { Grant } from '../types';
 
-export const getGrants = (): Promise<GrantsViewModel> => {
-  return axios.get(`${identityServerUrl}/grants`);
+export const getGrants = (): Promise<Grant[]> => {
+  return axios.get(`${identityServerUrl}/api/v1/grants`);
 };
 
 type QueryFnType = typeof getGrants;

@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text.Json;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
@@ -9,10 +10,12 @@ using Eiromplays.IdentityServer.Application.Identity.Auth;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.ExternalLogins;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Login;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Login;
+using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Infrastructure.Common.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using FastEndpoints;
 using LanguageExt.Common;
+using Mapster;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -35,11 +38,12 @@ public class AuthService : IAuthService
     private readonly IUserResolver<ApplicationUser> _userResolver;
     private readonly IServerUrls _serverUrls;
     private readonly SpaConfiguration _spaConfiguration;
+    private readonly IUserService _userService;
 
     public AuthService(IIdentityServerInteractionService interaction, ICurrentUser currentUser,
         SignInManager<ApplicationUser> signInManager, IAuthenticationHandlerProvider authenticationHandlerProvider,
         IEventService events, LinkGenerator linkGenerator, IUserResolver<ApplicationUser> userResolver,
-        IServerUrls serverUrls, IOptions<SpaConfiguration> spaConfiguration)
+        IServerUrls serverUrls, IOptions<SpaConfiguration> spaConfiguration, IUserService userService)
     {
         _interaction = interaction;
         _currentUser = currentUser;
@@ -49,6 +53,7 @@ public class AuthService : IAuthService
         _linkGenerator = linkGenerator;
         _userResolver = userResolver;
         _serverUrls = serverUrls;
+        _userService = userService;
         _spaConfiguration = spaConfiguration.Value;
     }
 
@@ -236,7 +241,7 @@ public class AuthService : IAuthService
     }
 
     public async Task<Result<LoginResponse>> ExternalLoginCallbackAsync(
-        GetExternalLoginCallbackRequest request)
+        ExternalLoginCallbackRequest request)
     {
         if (!string.IsNullOrWhiteSpace(request.RemoteError))
             return new Result<LoginResponse>(new BadRequestException("Error from external provider", new List<string> { request.RemoteError }));
@@ -292,7 +297,45 @@ public class AuthService : IAuthService
             $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/external-login-confirmation/{email}/{userName}/{info.LoginProvider}?returnUrl={request.ReturnUrl}";
         return new Result<LoginResponse>(response);
     }
+    
+    public async Task LinkExternalLoginAsync<TEndpoint>(
+        LinkExternalLoginRequest request, string userId, HttpResponse rsp) where TEndpoint : IEndpoint
+    {
+        // Clear the existing external cookie to ensure a clean login process
+        await rsp.HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
+        // Request a redirect to the external login provider to link a login for the current user
+        var redirectUrl = _linkGenerator.GetUriByName(rsp.HttpContext, typeof(TEndpoint).EndpointName(), new object());
+
+        var properties = _signInManager.ConfigureExternalAuthenticationProperties(request.Provider, redirectUrl, userId);
+        
+        // Challenge the user with the specified provider
+        await rsp.HttpContext.ChallengeAsync(request.Provider, properties);
+        await rsp.CompleteAsync();
+        //await httpContext.Response.StartAsync();
+    }
+
+    public async Task<Result<LoginResponse>> LinkExternalLoginCallbackAsync(string userId, HttpContext httpContext)
+    {
+        var response = new LoginResponse();
+        var info = await _signInManager.GetExternalLoginInfoAsync(userId);
+
+        if (info is null)
+        {
+            response.ExternalLoginReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/login";
+            return new Result<LoginResponse>(response);
+        }
+        
+        await _userService.AddLoginAsync(userId, info.Adapt<UserLoginInfoDto>());
+
+        // Clear the existing external cookie to ensure a clean login process
+        await httpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+
+        response.ExternalLoginReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/app/user-logins";
+        
+        return new Result<LoginResponse>(response);
+    }
+    
     #endregion
 
     #region Consent

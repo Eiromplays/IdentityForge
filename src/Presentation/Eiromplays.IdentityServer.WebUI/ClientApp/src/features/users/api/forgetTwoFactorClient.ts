@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { identityServerUrl } from '@/utils/envVariables';
 
 export const forgetTwoFactorClient = () => {
-  return axios.post(`${identityServerUrl}/account/ForgetTwoFactorClient`);
+  return axios.post(`${identityServerUrl}/api/v1/account/ForgetTwoFactorClient`);
 };
 
 type UseForgetTwoFactorClientOptions = {

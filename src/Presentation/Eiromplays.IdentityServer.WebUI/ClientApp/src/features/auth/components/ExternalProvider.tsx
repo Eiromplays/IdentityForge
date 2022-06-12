@@ -13,7 +13,7 @@ export const ExternalLoginProvider = ({
   externalProvider,
   returnUrl,
 }: ExternalLoginProviderProps) => {
-  const url = `${identityServerUrl}/api/v1/external-logins?provider=${
+  const url = `${identityServerUrl}/api/v1/account/external-logins?provider=${
     externalProvider.authenticationScheme
   }&returnUrl=${encodeURIComponent(returnUrl || '')}`;
 

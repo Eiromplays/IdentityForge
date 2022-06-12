@@ -6,7 +6,7 @@ import { identityServerUrl } from '@/utils/envVariables';
 import { TwoFactorAuthenticationViewModel } from '../types';
 
 export const getTwoFactorAuthentication = (): Promise<TwoFactorAuthenticationViewModel> => {
-  return axios.get(`${identityServerUrl}/account/TwoFactorAuthentication`);
+  return axios.get(`${identityServerUrl}/api/v1/account/TwoFactorAuthentication`);
 };
 
 type QueryFnType = typeof getTwoFactorAuthentication;

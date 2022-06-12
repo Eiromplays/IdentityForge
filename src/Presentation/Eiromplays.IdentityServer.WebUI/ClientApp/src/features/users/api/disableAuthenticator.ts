@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { identityServerUrl } from '@/utils/envVariables';
 
 export const disableAuthenticator = () => {
-  return axios.post(`${identityServerUrl}/account/DisableAuthenticator`);
+  return axios.post(`${identityServerUrl}/api/v1/account/DisableAuthenticator`);
 };
 
 type UseDisableAuthenticatorOptions = {

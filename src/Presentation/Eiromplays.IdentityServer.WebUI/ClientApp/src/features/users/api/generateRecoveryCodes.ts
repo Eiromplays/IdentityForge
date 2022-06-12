@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { identityServerUrl } from '@/utils/envVariables';
 
 export const generateRecoveryCodes = (): Promise<string[]> => {
-  return axios.post(`${identityServerUrl}/account/GenerateRecoveryCodes`);
+  return axios.post(`${identityServerUrl}/api/v1/account/GenerateRecoveryCodes`);
 };
 
 type UseGenerateRecoveryCodesOptions = {

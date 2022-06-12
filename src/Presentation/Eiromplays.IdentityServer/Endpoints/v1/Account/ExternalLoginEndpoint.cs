@@ -3,7 +3,7 @@ using Eiromplays.IdentityServer.Application.Identity.Auth;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.ExternalLogins;
 using Microsoft.AspNetCore.Authentication;
 
-namespace Eiromplays.IdentityServer.Endpoints.v1.ExternalLogins;
+namespace Eiromplays.IdentityServer.Endpoints.v1.Account;
 
 public class ExternalLoginEndpoint : Endpoint<ExternalLoginRequest, AuthenticationProperties>
 {
@@ -17,7 +17,7 @@ public class ExternalLoginEndpoint : Endpoint<ExternalLoginRequest, Authenticati
     public override void Configure()
     {
         Verbs(Http.GET, Http.POST);
-        Routes("/external-logins");
+        Routes("/account/external-logins");
         Version(1);
         Summary(s =>
         {
@@ -28,12 +28,9 @@ public class ExternalLoginEndpoint : Endpoint<ExternalLoginRequest, Authenticati
     
     public override async Task HandleAsync(ExternalLoginRequest req, CancellationToken ct)
     {
-        var result = await _authService.ExternalLoginAsync<GetExternalLoginCallbackEndpoint>(req, HttpContext.Response);
+        var result = await _authService.ExternalLoginAsync<ExternalLoginCallbackEndpoint>(req, HttpContext.Response);
 
-        await result.Match(async _ =>
-        {
-
-        }, exception =>
+        await result.Match(_ => Task.CompletedTask, exception =>
         {
             if (exception is BadRequestException badRequestException)
             {

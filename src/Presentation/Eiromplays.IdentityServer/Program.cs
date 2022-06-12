@@ -22,7 +22,7 @@ try
     
     builder.Services.AddApplication();
 
-    builder.Services.AddControllers();
+    builder.Services.AddControllersWithViews();
     
     builder.Services.AddFastEndpoints()
         .AddFluentValidation();
@@ -42,6 +42,11 @@ try
         };
     });
 
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapDefaultControllerRoute();
+    });
+    
     app.MapEndpoints();
     
     app.Run();

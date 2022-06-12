@@ -7,7 +7,7 @@ import { identityServerUrl } from '@/utils/envVariables';
 import { EnableAuthenticatorViewModel } from '../types';
 
 export const addAuthenticator = (data: EnableAuthenticatorViewModel): Promise<string[]> => {
-  return axios.post(`${identityServerUrl}/account/EnableAuthenticator`, data);
+  return axios.post(`${identityServerUrl}/api/v1/account/EnableAuthenticator`, data);
 };
 
 type UseAddAuthenticatorOptions = {

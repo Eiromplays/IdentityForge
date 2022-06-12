@@ -55,7 +55,7 @@ public static class Startup
             .AddAuth(config, projectType)
             .AddRequestLogging(config)
             .AddRouting(options => options.LowercaseUrls = true)
-            .AddServices();
+            .AddServices(projectType);
     }
 
     private static IServiceCollection AddInfrastructureSpa(this IServiceCollection services, IConfiguration config, ProjectType projectType)

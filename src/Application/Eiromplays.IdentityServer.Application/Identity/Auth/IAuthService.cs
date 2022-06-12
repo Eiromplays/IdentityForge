@@ -20,7 +20,12 @@ public interface IAuthService : ITransientService
         where TEndpoint : IEndpoint;
     
     Task<Result<LoginResponse>> ExternalLoginCallbackAsync(
-        GetExternalLoginCallbackRequest request);
+        ExternalLoginCallbackRequest request);
+
+    Task LinkExternalLoginAsync<TEndpoint>(
+        LinkExternalLoginRequest request, string userId, HttpResponse rsp) where TEndpoint : IEndpoint;
+
+    Task<Result<LoginResponse>> LinkExternalLoginCallbackAsync(string userId, HttpContext httpContext);
 
     Task<Result<LoginResponse>> ConsentAsync(ConsentRequest request);
 }
