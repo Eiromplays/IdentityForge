@@ -32,8 +32,11 @@ public class ExternalLoginCallbackEndpoint : Endpoint<ExternalLoginCallbackReque
         await result.Match(async x =>
         {
             if (!string.IsNullOrWhiteSpace(x.ExternalLoginReturnUrl))
+            {
                 await SendRedirectAsync(x.ExternalLoginReturnUrl, true, ct);
-            
+                return;
+            }
+
             await SendOkAsync(x, cancellation: ct);
         }, exception =>
         {

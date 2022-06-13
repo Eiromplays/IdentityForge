@@ -1,3 +1,4 @@
+using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Identity.Auth;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Login;
 
@@ -14,7 +15,7 @@ public class LinkLoginCallbackEndpoint : EndpointWithoutRequest<LoginResponse>
 
     public override void Configure()
     {
-        Get("/external-logins/link-login-callback");
+        Get("/external-logins/link-login/callback");
         Summary(s =>
         {
             s.Summary = "Callback for linking external logins";
@@ -24,13 +25,31 @@ public class LinkLoginCallbackEndpoint : EndpointWithoutRequest<LoginResponse>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        Console.WriteLine($"Test");
         if (User.GetUserId() is not { } userId || string.IsNullOrEmpty(userId))
         {
             await SendUnauthorizedAsync(ct);
             return;
         }
-        Console.WriteLine($"Test2");
-        await _authService.LinkExternalLoginCallbackAsync(userId, HttpContext);
+
+        var result = await _authService.LinkExternalLoginCallbackAsync(userId, HttpContext);
+        
+        await result.Match(async response =>
+        {
+            if (!string.IsNullOrWhiteSpace(response.ExternalLoginReturnUrl))
+            {
+                await SendRedirectAsync(response.ExternalLoginReturnUrl, cancellation: ct);
+                return;
+            }
+
+            await SendAsync(response, cancellation: ct);
+        }, exception =>
+        {
+            if (exception is BadRequestException badRequestException)
+            {
+                ThrowError(badRequestException.Message);
+            }
+
+            return SendErrorsAsync(cancellation: ct);
+        });
     }
 }

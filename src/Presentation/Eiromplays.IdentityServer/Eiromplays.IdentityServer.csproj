@@ -35,6 +35,7 @@
 
   <ItemGroup>
     <Folder Include="Files" />
+    <Folder Include="Logs" />
     <Folder Include="Summaries" />
   </ItemGroup>
 
