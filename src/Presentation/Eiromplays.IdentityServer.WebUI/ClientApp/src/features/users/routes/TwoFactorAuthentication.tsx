@@ -23,6 +23,24 @@ export const TwoFactorAuthentication = () => {
 
   return (
     <ContentLayout title="Two-factor Authentication (2FA)">
+      {twoFactorAuthenticationQuery.data.recoveryCodesLeft == 0 && (
+        <div className="flex justify-center items-center">
+          <p>You have no recovery codes left.</p>
+          <GenerateRecoveryCodes />
+        </div>
+      )}
+      {twoFactorAuthenticationQuery.data.recoveryCodesLeft == 1 && (
+        <div className="flex justify-center items-center">
+          <p>You have one recovery code left.</p>
+          <GenerateRecoveryCodes />
+        </div>
+      )}
+      {twoFactorAuthenticationQuery.data.recoveryCodesLeft <= 3 && (
+        <div className="flex justify-center items-center">
+          <p>You have {twoFactorAuthenticationQuery.data.recoveryCodesLeft} recovery codes left.</p>
+          <GenerateRecoveryCodes />
+        </div>
+      )}
       {twoFactorAuthenticationQuery.data.hasAuthenticator && (
         <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
           <div className="px-4 py-5 sm:px-6">
