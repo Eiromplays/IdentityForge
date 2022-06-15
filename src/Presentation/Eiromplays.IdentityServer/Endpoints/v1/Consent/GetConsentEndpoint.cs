@@ -1,31 +1,32 @@
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Identity.Auth;
+using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Consent;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Consent;
 
 namespace Eiromplays.IdentityServer.Endpoints.v1.Consent;
 
-public class ConsentEndpoint : Endpoint<ConsentResponse, ProcessConsentResponse>
+public class GetConsentEndpoint : Endpoint<GetConsentRequest, ConsentResponse>
 {
     private readonly IConsentService _consentService;
 
-    public ConsentEndpoint(IConsentService consentService)
+    public GetConsentEndpoint(IConsentService consentService)
     {
         _consentService = consentService;
     }
 
     public override void Configure()
     {
-        Post("/consent");
+        Get("/consent");
         Version(1);
         Summary(s =>
         {
-            s.Summary = "Consent";
+            s.Summary = "Get Consent";
         });
     }
     
-    public override async Task HandleAsync(ConsentResponse req, CancellationToken ct)
+    public override async Task HandleAsync(GetConsentRequest req, CancellationToken ct)
     {
-        var result = await _consentService.ConsentAsync(req, User);
+        var result = await _consentService.GetConsentAsync(req);
         
         await result.Match(async x =>
         {
@@ -36,11 +37,11 @@ public class ConsentEndpoint : Endpoint<ConsentResponse, ProcessConsentResponse>
             {
                 case BadRequestException badRequestException:
                     ThrowError(badRequestException.Message);
-                    break;
+                    return;
                 case InternalServerException internalServerException:
                     AddError(internalServerException.Message);
                     await SendErrorsAsync((int)internalServerException.StatusCode, ct);
-                    break;
+                    return;
             }
 
             await SendErrorsAsync(cancellation: ct);

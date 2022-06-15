@@ -1,95 +1,80 @@
-// Copyright (c) Duende Software. All rights reserved.
-// See LICENSE in the project root for license information.
-
-// Original file: https://github.com/DuendeSoftware/Samples/blob/main/IdentityServer/v6/Quickstarts
-// Modified by Eirik Sjøløkken
-
+using System.Security.Principal;
 using Duende.IdentityServer.Events;
+using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
+using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Validation;
-using Eiromplays.IdentityServer.Configuration;
-using Eiromplays.IdentityServer.ViewModels.Consent;
+using Eiromplays.IdentityServer.Application.Common.Exceptions;
+using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Consent;
+using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Consent;
+using Eiromplays.IdentityServer.Domain.Constants;
+using LanguageExt.Common;
+using Microsoft.Extensions.Logging;
+using ConsentRequest = Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Consent.ConsentRequest;
+using ConsentResponse = Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Consent.ConsentResponse;
+using IConsentService = Eiromplays.IdentityServer.Application.Identity.Auth.IConsentService;
 
-namespace Eiromplays.IdentityServer.Controllers;
+namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
-/// <summary>
-/// This controller processes the consent UI
-/// </summary>
-/*[SecurityHeaders]
-[Microsoft.AspNetCore.Authorization.Authorize]
-public class ConsentController : Controller
+public class ConsentService : IConsentService
 {
     private readonly IIdentityServerInteractionService _interaction;
     private readonly IEventService _events;
-    private readonly ILogger<ConsentController> _logger;
+    private readonly ILogger<ConsentService> _logger;
 
-    public ConsentController(
-        IIdentityServerInteractionService interaction,
-        IEventService events,
-        ILogger<ConsentController> logger)
+    #region Methods
+
+    public async Task<Result<ConsentResponse>> GetConsentAsync(GetConsentRequest request)
+    {
+        var consentResponse = await BuildResponseAsync(request.ReturnUrl);
+
+        return consentResponse != null ? new Result<ConsentResponse>(consentResponse) : new Result<ConsentResponse>(new InternalServerException("Failed to build consent view model"));
+    }
+
+    public async Task<Result<ProcessConsentResponse>> ConsentAsync(ConsentRequest request, IPrincipal user)
+    {
+        var response = await ProcessConsent(request, user);
+        if (response.IsRedirect)
+        {
+            await _interaction.GetAuthorizationContextAsync(request.ReturnUrl);
+            return new Result<ProcessConsentResponse>(response);
+        }
+
+        if (response.HasValidationError)
+            return new Result<ProcessConsentResponse>(new BadRequestException(response.ValidationError));
+
+        return response.ShowResponse ? new Result<ProcessConsentResponse>(response) : new Result<ProcessConsentResponse>(new InternalServerException("Failed to get consent response"));
+    }
+
+    #endregion
+    
+    #region Helper Methods
+
+    public ConsentService(IIdentityServerInteractionService interaction, IEventService events, ILogger<ConsentService> logger)
     {
         _interaction = interaction;
         _events = events;
         _logger = logger;
     }
 
-    /// <summary>
-    /// Shows the consent screen
-    /// </summary>
-    /// <param name="returnUrl"></param>
-    /// <returns></returns>
-    [HttpGet]
-    public async Task<IActionResult> Index(string? returnUrl)
+    private async Task<ProcessConsentResponse> ProcessConsent(ConsentRequest model, IPrincipal user)
     {
-        var vm = await BuildViewModelAsync(returnUrl);
-
-        return vm != null ? Ok(vm) : throw new InternalServerException("Failed to build consent view model");
-    }
-
-    /// <summary>
-    /// Handles the consent screen postback
-    /// </summary>
-    [HttpPost]
-    public async Task<IActionResult> Index([FromBody] ConsentInputModel model)
-    {
-        var result = await ProcessConsent(model);
-        if (result.IsRedirect)
-        {
-            await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
-            return Ok(result);
-        }
-
-        if (result.HasValidationError)
-        {
-            ModelState.AddModelError(string.Empty, result.ValidationError!);
-        }
-
-        return result.ShowView ? Ok(result.ViewModel) : throw new InternalServerException("Failed to get consent view");
-    }
-
-    /*****************************************/
-    /* Helper APIs for the ConsentController */
-    /*****************************************/
-    
-    /*private async Task<ProcessConsentResult> ProcessConsent(ConsentInputModel model)
-
-    {
-        var result = new ProcessConsentResult();
+        var result = new ProcessConsentResponse();
         
         // validate return url is still valid
         var request = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
         if (request is null) return result;
 
-        ConsentResponse? grantedConsent = null;
+        Duende.IdentityServer.Models.ConsentResponse? grantedConsent = null;
 
         switch (model.Button)
         {
             // user clicked 'no' - send back the standard 'access_denied' response
             case "no":
-                grantedConsent = new ConsentResponse { Error = AuthorizationError.AccessDenied };
+                grantedConsent = new Duende.IdentityServer.Models.ConsentResponse { Error = AuthorizationError.AccessDenied };
 
                 // emit event
-                await _events.RaiseAsync(new ConsentDeniedEvent(User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues));
+                await _events.RaiseAsync(new ConsentDeniedEvent(user.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues));
                 break;
             // user clicked 'yes' - validate the data
             // if the user consented to some scope, build the response model
@@ -101,7 +86,7 @@ public class ConsentController : Controller
                     scopes = scopes.Where(x => x != Duende.IdentityServer.IdentityServerConstants.StandardScopes.OfflineAccess);
                 }
 
-                grantedConsent = new ConsentResponse
+                grantedConsent = new Duende.IdentityServer.Models.ConsentResponse
                 {
                     RememberConsent = model.RememberConsent,
                     ScopesValuesConsented = scopes.ToArray(),
@@ -109,7 +94,7 @@ public class ConsentController : Controller
                 };
 
                 // emit event
-                await _events.RaiseAsync(new ConsentGrantedEvent(User.GetSubjectId(), request.Client.ClientId,
+                await _events.RaiseAsync(new ConsentGrantedEvent(user.GetSubjectId(), request.Client.ClientId,
                     request.ValidatedResources.RawScopeValues, grantedConsent.ScopesValuesConsented,
                     grantedConsent.RememberConsent));
                 break;
@@ -135,24 +120,24 @@ public class ConsentController : Controller
         else
         {
             // we need to redisplay the consent UI
-            result.ViewModel = await BuildViewModelAsync(model.ReturnUrl, model);
+            result.Response = await BuildResponseAsync(model.ReturnUrl, model);
         }
 
         return result;
     }
 
-    private async Task<ConsentViewModel?> BuildViewModelAsync(string? returnUrl, ConsentInputModel? model = null)
+    private async Task<ConsentResponse?> BuildResponseAsync(string? returnUrl, ConsentRequest? model = null)
     {
         var request = await _interaction.GetAuthorizationContextAsync(returnUrl);
 
-        return request is not null ? CreateConsentViewModel(model, returnUrl, request) : null;
+        return request is not null ? CreateConsentResponse(model, returnUrl, request) : null;
     }
 
-    private ConsentViewModel CreateConsentViewModel(
-        ConsentInputModel? model, string? returnUrl,
+    private ConsentResponse CreateConsentResponse(
+        ConsentRequest? model, string? returnUrl,
         AuthorizationRequest request)
     {
-        var vm = new ConsentViewModel
+        var response = new ConsentResponse
         {
             RememberConsent = model?.RememberConsent ?? true,
             ScopesConsented = model?.ScopesConsented ?? Enumerable.Empty<string>(),
@@ -166,25 +151,25 @@ public class ConsentController : Controller
             AllowRememberConsent = request.Client.AllowRememberConsent
         };
 
-        vm.IdentityScopes = request.ValidatedResources.Resources.IdentityResources.Select(x => CreateScopeViewModel(x, vm.ScopesConsented.Contains(x.Name) || model is null)).ToArray();
+        response.IdentityScopes = request.ValidatedResources.Resources.IdentityResources.Select(x => CreateScopeResponse(x, response.ScopesConsented.Contains(x.Name) || model is null)).ToArray();
 
         var apiScopes = (from parsedScope in request.ValidatedResources.ParsedScopes
             let apiScope = request.ValidatedResources.Resources.FindApiScope(parsedScope.ParsedName)
             where apiScope is not null
-            select CreateScopeViewModel(parsedScope, apiScope,
-                vm.ScopesConsented.Contains(parsedScope.RawValue) || model is null)).ToList();
+            select CreateScopeResponse(parsedScope, apiScope,
+                response.ScopesConsented.Contains(parsedScope.RawValue) || model is null)).ToList();
         if (ConsentOptions.EnableOfflineAccess && request.ValidatedResources.Resources.OfflineAccess)
         {
-            apiScopes.Add(GetOfflineAccessScope(vm.ScopesConsented.Contains(Duende.IdentityServer.IdentityServerConstants.StandardScopes.OfflineAccess) || model is null));
+            apiScopes.Add(GetOfflineAccessScope(response.ScopesConsented.Contains(Duende.IdentityServer.IdentityServerConstants.StandardScopes.OfflineAccess) || model is null));
         }
-        vm.ApiScopes = apiScopes;
+        response.ApiScopes = apiScopes;
 
-        return vm;
+        return response;
     }
 
-    private static ScopeViewModel CreateScopeViewModel(IdentityResource identity, bool check)
+    private static ScopeResponse CreateScopeResponse(IdentityResource identity, bool check)
     {
-        return new ScopeViewModel
+        return new ScopeResponse
         {
             Value = identity.Name,
             DisplayName = identity.DisplayName ?? identity.Name,
@@ -195,7 +180,7 @@ public class ConsentController : Controller
         };
     }
 
-    public ScopeViewModel CreateScopeViewModel(ParsedScopeValue parsedScopeValue, ApiScope apiScope, bool check)
+    public ScopeResponse CreateScopeResponse(ParsedScopeValue parsedScopeValue, ApiScope apiScope, bool check)
     {
         var displayName = apiScope.DisplayName ?? apiScope.Name;
         if (!string.IsNullOrWhiteSpace(parsedScopeValue.ParsedParameter))
@@ -203,7 +188,7 @@ public class ConsentController : Controller
             displayName += $":{parsedScopeValue.ParsedParameter}";
         }
 
-        return new ScopeViewModel
+        return new ScopeResponse
         {
             Value = parsedScopeValue.RawValue,
             DisplayName = displayName,
@@ -214,9 +199,9 @@ public class ConsentController : Controller
         };
     }
 
-    private static ScopeViewModel GetOfflineAccessScope(bool check)
+    private static ScopeResponse GetOfflineAccessScope(bool check)
     {
-        return new ScopeViewModel
+        return new ScopeResponse
         {
             Value = Duende.IdentityServer.IdentityServerConstants.StandardScopes.OfflineAccess,
             DisplayName = ConsentOptions.OfflineAccessDisplayName,
@@ -225,4 +210,6 @@ public class ConsentController : Controller
             Checked = check
         };
     }
-}*/
+
+    #endregion
+}

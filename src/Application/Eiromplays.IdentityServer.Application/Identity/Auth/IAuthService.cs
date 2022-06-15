@@ -1,4 +1,3 @@
-using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Consent;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.ExternalLogins;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -26,6 +25,4 @@ public interface IAuthService : ITransientService
         LinkExternalLoginRequest request, string userId, HttpResponse rsp) where TEndpoint : IEndpoint;
 
     Task<Result<LoginResponse>> LinkExternalLoginCallbackAsync(string userId, HttpContext httpContext);
-
-    Task<Result<LoginResponse>> ConsentAsync(ConsentRequest request);
 }

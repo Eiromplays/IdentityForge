@@ -2,19 +2,22 @@ namespace Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Consent;
 
 public class ConsentRequest
 {
-    public bool Deny { get; set; }
+    public string Button { get; set; } = default!;
     
-    public bool Remember { get; set; }
-
-    public string ReturnUrl { get; set; } = default!;
+    public IEnumerable<string> ScopesConsented { get; set; } = Enumerable.Empty<string>();
+    
+    public bool RememberConsent { get; set; }
+    
+    public string? ReturnUrl { get; set; } = default!;
+    
+    public string? Description { get; set; } = default!;
 }
 
-public class ConsentRequestValidator : Validator<ConsentRequest>
+public class ConsentRequestRequestValidator : Validator<ConsentRequest>
 {
-    public ConsentRequestValidator()
+    public ConsentRequestRequestValidator()
     {
-        RuleFor(x => x.ReturnUrl)
-            .NotEmpty()
-            .MaximumLength(2000);
+        RuleFor(x => x.ReturnUrl).NotEmpty();
+        RuleFor(x => x.Button).NotEmpty();
     }
 }

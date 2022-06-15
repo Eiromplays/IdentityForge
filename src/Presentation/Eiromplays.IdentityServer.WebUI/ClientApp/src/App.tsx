@@ -46,7 +46,7 @@ const location = new ReactLocation<LocationGenerics>();
 
 axios.defaults.withCredentials = true;
 AxiosAddDataToRequestIgnoreUrls.push(
-  `/consent`,
+  `/api/v1/consent`,
   `/api/v1/account/login`,
   `/api/v1/account/externalLoginConfirmation`,
   `/api/v1/account/register`,

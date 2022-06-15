@@ -4,7 +4,7 @@
 // Original file: https://github.com/DuendeSoftware/Samples/blob/main/IdentityServer/v6/Quickstarts
 // Modified by Eirik Sjøløkken
 
-namespace Eiromplays.IdentityServer.Configuration;
+namespace Eiromplays.IdentityServer.Domain.Constants;
 
 public class ConsentOptions
 {

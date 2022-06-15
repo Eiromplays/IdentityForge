@@ -1,7 +1,7 @@
 using Eiromplays.IdentityServer.Application.Identity.Auth;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Login;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Login;
-using Eiromplays.IdentityServer.Configuration;
+using Eiromplays.IdentityServer.Domain.Constants;
 
 namespace Eiromplays.IdentityServer.Endpoints.v1.Account;
 

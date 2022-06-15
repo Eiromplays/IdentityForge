@@ -1,7 +1,5 @@
 using System.Security.Claims;
-using System.Text.Json;
 using Duende.IdentityServer.Events;
-using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Eiromplays.IdentityServer.Application.Common.Configurations;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
@@ -22,7 +20,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Options;
-using ConsentRequest = Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Consent.ConsentRequest;
 using LogoutRequest = Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Login.LogoutRequest;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
@@ -326,52 +323,16 @@ public class AuthService : IAuthService
             return new Result<LoginResponse>(response);
         }
         
-        await _userService.AddLoginAsync(userId, info.Adapt<UserLoginInfoDto>());
+        var responseMessage = await _userService.AddLoginAsync(userId, info.Adapt<UserLoginInfoDto>());
 
         // Clear the existing external cookie to ensure a clean login process
         await httpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
         response.ExternalLoginReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/app/user-logins";
+        response.Message = responseMessage;
         
         return new Result<LoginResponse>(response);
     }
     
-    #endregion
-
-    #region Consent
-
-    public async Task<Result<LoginResponse>> ConsentAsync(ConsentRequest request)
-    {
-        var response = new LoginResponse();
-
-        var url = Uri.UnescapeDataString(request.ReturnUrl);
-
-        var authzContext = await _interaction.GetAuthorizationContextAsync(url);
-        if (authzContext != null)
-        {
-            response.ValidReturnUrl = url;
-
-            if (request.Deny)
-            {
-                await _interaction.DenyAuthorizationAsync(authzContext, AuthorizationError.AccessDenied);
-            }
-            else
-            {
-                await _interaction.GrantConsentAsync(authzContext,
-                    new ConsentResponse
-                    {
-                        RememberConsent = request.Remember,
-                        ScopesValuesConsented = authzContext.ValidatedResources.RawScopeValues
-                    });
-            }
-                    
-            return new Result<LoginResponse>(response);
-        }
-        
-        response.Error = "Invalid return URL";
-        
-        return new Result<LoginResponse>(new BadRequestException(response.Error));
-    }
-
     #endregion
 }
