@@ -2,7 +2,6 @@ using Eiromplays.IdentityServer.API.Configurations;
 using Eiromplays.IdentityServer.Application;
 using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure;
-using FastEndpoints;
 using FluentValidation.AspNetCore;
 using Serilog;
 using Eiromplays.IdentityServer.Infrastructure.Common;
@@ -34,8 +33,8 @@ try
         {
             options.Authority = "https://localhost:7001";
             options.Audience = "api";
-
             options.MapInboundClaims = false;
+            options.RequireHttpsMetadata = false;
         });
     
     builder.Services.AddAuthorization(options =>

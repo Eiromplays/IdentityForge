@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Eiromplays.IdentityServer.Application.Identity.Sessions;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 

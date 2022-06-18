@@ -1,4 +1,4 @@
-import { Button, Form, InputField } from 'eiromplays-ui';
+import { Button, ConfirmationDialog, Form, InputField, useAuth } from 'eiromplays-ui';
 import * as z from 'zod';
 
 import { ChangePasswordDTO, useChangePassword } from '../api/changePassword';
@@ -23,13 +23,16 @@ type ChangePasswordFormProps = {
 };
 
 export const ChangePasswordForm = ({ onSuccess }: ChangePasswordFormProps) => {
+  const { user } = useAuth();
   const changePasswordMutation = useChangePassword();
 
   return (
     <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
       <div className="flex flex-column flex-wrap gap-5 pl-5 pb-5">
         <Form<ChangePasswordDTO['data'], typeof schema>
+          id="change-password"
           onSubmit={async (values) => {
+            values.userId = user?.id;
             await changePasswordMutation.mutateAsync({ data: values });
 
             onSuccess();
@@ -56,14 +59,29 @@ export const ChangePasswordForm = ({ onSuccess }: ChangePasswordFormProps) => {
                 error={formState.errors['confirmNewPassword']}
                 registration={register('confirmNewPassword')}
               />
-              <div>
-                <Button
-                  isLoading={changePasswordMutation.isLoading}
-                  type="submit"
-                  className="w-full mt-4"
-                >
-                  Change Password
-                </Button>
+              <div className="mt-4">
+                <ConfirmationDialog
+                  icon="warning"
+                  title="Change Password"
+                  body="Are you sure you want to update your password? This will log you out."
+                  triggerButton={
+                    <Button size="sm" isLoading={changePasswordMutation.isLoading}>
+                      Change Password
+                    </Button>
+                  }
+                  confirmButton={
+                    <Button
+                      form="change-password"
+                      type="submit"
+                      className="mt-2"
+                      variant="warning"
+                      size="sm"
+                      isLoading={changePasswordMutation.isLoading}
+                    >
+                      Submit
+                    </Button>
+                  }
+                />
               </div>
             </>
           )}

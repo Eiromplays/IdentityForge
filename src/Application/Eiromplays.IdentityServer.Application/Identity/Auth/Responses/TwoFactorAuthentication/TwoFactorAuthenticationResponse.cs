@@ -1,6 +1,6 @@
-namespace Eiromplays.IdentityServer.ViewModels;
+namespace Eiromplays.IdentityServer.Application.Identity.Auth.Responses.TwoFactorAuthentication;
 
-public class TwoFactorAuthenticationViewModel
+public class TwoFactorAuthenticationResponse
 {
     public bool HasAuthenticator { get; set; }
 

@@ -1,11 +1,10 @@
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Identity.Auth;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Login;
-using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Login;
 
 namespace Eiromplays.IdentityServer.Endpoints.v1.Account;
 
-public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
+public class LoginEndpoint : Endpoint<LoginRequest, object>
 {
     private readonly IAuthService _authService;
 
@@ -30,9 +29,6 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
         var result = await _authService.LoginAsync(req);
         await result.Match(async x =>
         {
-            if (!string.IsNullOrWhiteSpace(x.TwoFactorReturnUrl))
-                await SendRedirectAsync(x.TwoFactorReturnUrl, true, ct);
-            
             await SendOkAsync(x, cancellation: ct);
         }, exception =>
         {

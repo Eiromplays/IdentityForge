@@ -6,6 +6,7 @@ import {
   DefaultLocationGenerics,
   initializeAuth,
   Spinner,
+  UseAxiosInterceptors,
 } from 'eiromplays-ui';
 import React from 'react';
 import { ReactQueryDevtools } from 'react-query/devtools';

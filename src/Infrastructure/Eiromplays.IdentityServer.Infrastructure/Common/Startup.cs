@@ -30,7 +30,7 @@ internal static class Startup
         {
             if (projectType is not ProjectType.IdentityServer)
             {
-                if (type.Service?.Name == "IAuthService") continue;
+                if (type.Service?.Name is "IAuthService" or "IConsentService") continue;
             }
             services.AddService(type.Service!, type.Implementation, lifetime);
         }

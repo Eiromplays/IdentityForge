@@ -2,6 +2,7 @@ import { AuthUser, getUser } from 'eiromplays-ui';
 import { toast } from 'react-toastify';
 
 import {
+  GetLogin2FaResponse,
   Login2faCredentialsDto,
   LoginCredentialsDTO,
   loginWith2fa,
@@ -12,20 +13,28 @@ import {
 } from '@/features/auth';
 
 export const loadUser = async (): Promise<AuthUser | null> => {
-  return await getUser();
+  return await getUser({
+    authenticatedProps: {
+      useAuthenticated: false,
+      isAuthenticatedUrl: 'https://localhost:7001/api/v1/account/is-authenticated',
+    },
+    silentLoginProps: {
+      useSilentLogin: true,
+    },
+  });
 };
 
 export const loginFn = async (data: LoginCredentialsDTO) => {
   const response = await loginWithEmailAndPassword(data);
-
+  console.log(response);
   // TODO: Check if I can handle this, and signInResult better
-  if (response?.signInResult.succeeded) {
+  if (response?.signInResult?.succeeded) {
     toast.success('Login successful');
   }
 
   if (response?.validReturnUrl) {
     window.location.href = response?.validReturnUrl;
-  } else if (response?.signInResult.succeeded) {
+  } else if (response?.signInResult?.succeeded) {
     window.location.href = '/bff/login';
   }
 
@@ -34,8 +43,8 @@ export const loginFn = async (data: LoginCredentialsDTO) => {
     return null;
   }
 
-  const login2faViewModel = response as unknown as Login2faCredentialsDto;
-  if (login2faViewModel?.rememberMe && login2faViewModel?.rememberMachine) {
+  const login2faViewModel = response as unknown as GetLogin2FaResponse;
+  if (login2faViewModel?.rememberMe) {
     window.location.assign(
       `/auth/login2fa/${login2faViewModel.rememberMe}/${login2faViewModel?.returnUrl ?? ''}`
     );

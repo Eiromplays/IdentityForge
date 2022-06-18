@@ -11,7 +11,7 @@ public interface IAuthService : ITransientService
     Task<LogoutResponse> LogoutAsync<TEndpoint>(LogoutRequest request, HttpContext httpContext)
         where TEndpoint : IEndpoint;
 
-    Task<Result<LoginResponse>> LoginAsync(LoginRequest request);
+    Task<Result<object>> LoginAsync(LoginRequest request);
 
     Task<Result<LoginResponse>> Login2FaAsync(Login2FaRequest request);
 

@@ -17,11 +17,11 @@ public class GetLogin2FaEndpoint : Endpoint<GetLogin2FaRequest, GetLogin2FaRespo
     public override void Configure()
     {
         Get("/account/login2fa");
-        Version(1);
         Summary(s =>
         {
             s.Summary = "Get login 2fa";
         });
+        Version(1);
         AllowAnonymous();
     }
     
@@ -32,7 +32,9 @@ public class GetLogin2FaEndpoint : Endpoint<GetLogin2FaRequest, GetLogin2FaRespo
 
         if (user is null)
         {
-            throw new InvalidOperationException("Unable to get user");
+            AddError("Unable to get user");
+            await SendErrorsAsync(cancellation: ct);
+            return;
         }
 
         Response = new GetLogin2FaResponse

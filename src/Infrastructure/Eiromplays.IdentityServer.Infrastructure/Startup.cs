@@ -49,7 +49,7 @@ public static class Startup
             .AddMailing(config)
             .AddMediatR(Assembly.GetExecutingAssembly())
             .AddNotifications(config)
-            .AddOpenApiDocumentation(config, projectType)
+            .AddOpenApiDocumentation(config)
             .AddPersistence(config, projectType)
             .AddDataProtection().Services
             .AddAuth(config, projectType)
@@ -103,7 +103,7 @@ public static class Startup
 
         app.UseFastEndpoints(fastEndpointsConfigAction);
 
-        app.UseOpenApiDocumentation(config, projectType);
+        app.UseOpenApiDocumentation(config);
 
         return app;
     }

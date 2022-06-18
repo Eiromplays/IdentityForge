@@ -1,7 +1,6 @@
 {
   "SwaggerSettings": {
     "Enable": true,
-    "FastEndpointsApi": true,
     "Title": "Eiromplays IdentityServer",
     "Version": "v1",
     "Description": "Eiromplays IdentityServer documentation",

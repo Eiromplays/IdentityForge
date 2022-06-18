@@ -25,6 +25,11 @@ export type Login2faCredentialsDto = {
   error?: string;
 };
 
+export type GetLogin2FaResponse = {
+  returnUrl: string;
+  rememberMe: boolean;
+};
+
 export const loginWith2fa = (data: Login2faCredentialsDto): Promise<LoginConsentResponse> => {
   return axios.post(`${identityServerUrl}/api/v1/account/login2fa`, data);
 };
