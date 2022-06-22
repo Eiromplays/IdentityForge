@@ -26,7 +26,12 @@ export const loadUser = async (): Promise<AuthUser | null> => {
 
 export const loginFn = async (data: LoginCredentialsDTO) => {
   const response = await loginWithEmailAndPassword(data);
-  console.log(response);
+
+  if (response?.twoFactorReturnUrl){
+    window.location.href = response.twoFactorReturnUrl;
+    return;
+  }
+
   // TODO: Check if I can handle this, and signInResult better
   if (response?.signInResult?.succeeded) {
     toast.success('Login successful');
@@ -43,14 +48,6 @@ export const loginFn = async (data: LoginCredentialsDTO) => {
     return null;
   }
 
-  const login2faViewModel = response as unknown as GetLogin2FaResponse;
-  if (login2faViewModel?.rememberMe) {
-    window.location.assign(
-      `/auth/login2fa/${login2faViewModel.rememberMe}/${login2faViewModel?.returnUrl ?? ''}`
-    );
-    return null;
-  }
-
   if (response?.signInResult?.isNotAllowed) {
     window.location.assign('/auth/not-allowed');
     return null;
@@ -60,7 +57,27 @@ export const loginFn = async (data: LoginCredentialsDTO) => {
 };
 
 export const login2faFn = async (data: Login2faCredentialsDto) => {
-  await loginWith2fa(data);
+  const response = await loginWith2fa(data);
+
+  if (response?.signInResult?.succeeded) {
+    toast.success('Login successful');
+  }
+
+  if (response?.validReturnUrl) {
+    window.location.href = response?.validReturnUrl;
+  } else if (response?.signInResult?.succeeded) {
+    window.location.href = '/bff/login';
+  }
+
+  if (response?.signInResult?.isLockedOut) {
+    window.location.assign('/auth/lockout');
+    return null;
+  }
+
+  if (response?.signInResult?.isNotAllowed) {
+    window.location.assign('/auth/not-allowed');
+    return null;
+  }
 
   return await loadUser();
 };

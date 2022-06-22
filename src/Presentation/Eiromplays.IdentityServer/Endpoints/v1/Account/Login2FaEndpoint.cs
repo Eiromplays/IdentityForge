@@ -22,6 +22,7 @@ public class Login2FaEndpoint : Endpoint<Login2FaRequest, LoginResponse>
         {
             s.Summary = "Login with email and password";
         });
+        AllowAnonymous();
     }
     
     public override async Task HandleAsync(Login2FaRequest req, CancellationToken ct)

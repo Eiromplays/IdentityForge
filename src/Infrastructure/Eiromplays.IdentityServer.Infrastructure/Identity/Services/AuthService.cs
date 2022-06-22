@@ -58,7 +58,7 @@ public class AuthService : IAuthService
 
     #region Login
 
-    public async Task<Result<object>> LoginAsync(LoginRequest request)
+    public async Task<Result<LoginResponse>> LoginAsync(LoginRequest request)
     {
         var response = new LoginResponse();
         
@@ -76,7 +76,8 @@ public class AuthService : IAuthService
         {
             if (loginResult.RequiresTwoFactor)
             {
-                return await GetLogin2FaAsync(request.RememberMe, request.ReturnUrl ?? _serverUrls.BaseUrl);
+                response.TwoFactorReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/login2fa/{request.RememberMe}/{request.ReturnUrl}";
+                return new Result<LoginResponse>(response);
             }
 
             if (loginResult.IsLockedOut)
@@ -95,21 +96,6 @@ public class AuthService : IAuthService
         return response;
     }
 
-    public async Task<GetLogin2FaResponse> GetLogin2FaAsync(bool rememberMe, string returnUrl)
-    {
-        // Ensure the user has gone through the username & password screen first
-        var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-
-        if (user is not null)
-            return new GetLogin2FaResponse
-            {
-                ReturnUrl = returnUrl,
-                RememberMe = rememberMe
-            };
-
-        throw new InternalServerException("Unable to get user");
-    }
-
     public async Task<Result<LoginResponse>> Login2FaAsync(Login2FaRequest request)
     {
         var response = new LoginResponse();
@@ -124,6 +110,8 @@ public class AuthService : IAuthService
             await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, request.RememberMe, request.RememberMachine);
 
         if (!result.Succeeded) return new Result<LoginResponse>(new BadRequestException("Invalid authentication code"));
+
+        response.SignInResult = result;
         
         var url = !string.IsNullOrWhiteSpace(request.ReturnUrl) ? Uri.UnescapeDataString(request.ReturnUrl) : null;
             
