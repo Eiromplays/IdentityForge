@@ -3,7 +3,7 @@ using Eiromplays.IdentityServer.Application.Identity.Users;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.Search;
 
-public class Endpoint : Endpoint<Models.Request, PaginationResponse<UserDetailsDto>>
+public class Endpoint : Endpoint<UserListFilter, PaginationResponse<UserDetailsDto>>
 {
     private readonly IUserService _userService;
     
@@ -23,9 +23,9 @@ public class Endpoint : Endpoint<Models.Request, PaginationResponse<UserDetailsD
         Policies(EIAPermission.NameFor(EIAAction.Search, EIAResource.Users));
     }
     
-    public override async Task HandleAsync(Models.Request request, CancellationToken ct)
+    public override async Task HandleAsync(UserListFilter request, CancellationToken ct)
     {
-        Response = await _userService.SearchAsync(request.Data, ct);
+        Response = await _userService.SearchAsync(request, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

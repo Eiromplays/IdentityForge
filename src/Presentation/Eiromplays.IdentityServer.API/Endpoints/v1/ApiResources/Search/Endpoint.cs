@@ -4,7 +4,7 @@ using Eiromplays.IdentityServer.Application.Identity.ApiResources;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.ApiResources.Search;
 
-public class Endpoint : Endpoint<Models.Request, PaginationResponse<ApiResourceDto>>
+public class Endpoint : Endpoint<ApiResourceListFilter, PaginationResponse<ApiResourceDto>>
 {
     private readonly IApiResourceService _apiResourceService;
     
@@ -24,9 +24,9 @@ public class Endpoint : Endpoint<Models.Request, PaginationResponse<ApiResourceD
         Policies(EIAPermission.NameFor(EIAAction.Search, EIAResource.ApiResources));
     }
 
-    public override async Task HandleAsync(Models.Request request, CancellationToken ct)
+    public override async Task HandleAsync(ApiResourceListFilter request, CancellationToken ct)
     {
-        Response = await _apiResourceService.SearchAsync(request.Data, ct);
+        Response = await _apiResourceService.SearchAsync(request, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

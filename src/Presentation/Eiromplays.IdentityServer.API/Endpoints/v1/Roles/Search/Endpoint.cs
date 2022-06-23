@@ -3,7 +3,7 @@ using Eiromplays.IdentityServer.Application.Identity.Roles;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.Search;
 
-public class Endpoint : Endpoint<Models.Request, PaginationResponse<RoleDto>>
+public class Endpoint : Endpoint<RoleListFilter, PaginationResponse<RoleDto>>
 {
     private readonly IRoleService _roleService;
     
@@ -23,9 +23,9 @@ public class Endpoint : Endpoint<Models.Request, PaginationResponse<RoleDto>>
         Policies(EIAPermission.NameFor(EIAAction.Search, EIAResource.Roles));
     }
     
-    public override async Task HandleAsync(Models.Request request, CancellationToken ct)
+    public override async Task HandleAsync(RoleListFilter request, CancellationToken ct)
     {
-        Response = await _roleService.SearchAsync(request.Data, ct);
+        Response = await _roleService.SearchAsync(request, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

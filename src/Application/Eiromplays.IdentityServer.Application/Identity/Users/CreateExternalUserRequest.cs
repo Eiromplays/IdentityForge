@@ -2,6 +2,8 @@ namespace Eiromplays.IdentityServer.Application.Identity.Users;
 
 public class CreateExternalUserRequest
 {
+    public string ReturnUrl { get; set; } = default!;
+    
     public string FirstName { get; set; } = default!;
     public string LastName { get; set; } = default!;
     public string Email { get; set; } = default!;

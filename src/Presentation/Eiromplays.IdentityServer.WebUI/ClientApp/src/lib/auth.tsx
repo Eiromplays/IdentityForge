@@ -12,24 +12,21 @@ import {
   registerWithEmailAndPassword,
 } from '@/features/auth';
 
-export const loadUser = async (): Promise<AuthUser | null> => {
+export const loadUser = async () => {
   return await getUser({
     authenticatedProps: {
       useAuthenticated: false,
       isAuthenticatedUrl: 'https://localhost:7001/api/v1/account/is-authenticated',
     },
-    silentLoginProps: {
-      useSilentLogin: true,
-    },
   });
 };
 
-export const loginFn = async (data: LoginCredentialsDTO) => {
+export const loginFn = async (data: LoginCredentialsDTO): Promise<AuthUser | null> => {
   const response = await loginWithEmailAndPassword(data);
 
   if (response?.twoFactorReturnUrl){
     window.location.href = response.twoFactorReturnUrl;
-    return;
+    return null;
   }
 
   // TODO: Check if I can handle this, and signInResult better
@@ -56,7 +53,7 @@ export const loginFn = async (data: LoginCredentialsDTO) => {
   return await loadUser();
 };
 
-export const login2faFn = async (data: Login2faCredentialsDto) => {
+export const login2faFn = async (data: Login2faCredentialsDto): Promise<AuthUser | null> => {
   const response = await loginWith2fa(data);
 
   if (response?.signInResult?.succeeded) {
@@ -82,7 +79,7 @@ export const login2faFn = async (data: Login2faCredentialsDto) => {
   return await loadUser();
 };
 
-export const registerFn = async (data: RegisterCredentialsDTO) => {
+export const registerFn = async (data: RegisterCredentialsDTO): Promise<AuthUser | null> => {
   const response = await registerWithEmailAndPassword(data);
 
   if (response.message) toast.success(response.message);

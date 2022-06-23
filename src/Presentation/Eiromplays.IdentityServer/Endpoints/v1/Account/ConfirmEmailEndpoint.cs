@@ -1,19 +1,19 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.ConfirmEmail;
+namespace Eiromplays.IdentityServer.Endpoints.v1.Account;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class ConfirmEmailEndpoint : Endpoint<ConfirmEmailRequest, ConfirmEmailResponse>
 {
     private readonly IUserService _userService;
     
-    public Endpoint(IUserService userService)
+    public ConfirmEmailEndpoint(IUserService userService)
     {
         _userService = userService;
     }
 
     public override void Configure()
     {
-        Get("/users/confirm-email");
+        Get("/account/confirm-email");
         Summary(s =>
         {
             s.Summary = "Confirm email address for a user.";
@@ -22,7 +22,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(Models.Request req, CancellationToken ct)
+    public override async Task HandleAsync(ConfirmEmailRequest req, CancellationToken ct)
     {
         Response.Message = await _userService.ConfirmEmailAsync(req.UserId, req.Code, ct);
         

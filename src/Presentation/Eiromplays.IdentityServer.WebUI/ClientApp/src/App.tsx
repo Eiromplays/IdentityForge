@@ -2,11 +2,9 @@ import { ReactLocation } from '@tanstack/react-location';
 import {
   AppProvider,
   axios,
-  AxiosAddDataToRequestIgnoreUrls,
   DefaultLocationGenerics,
   initializeAuth,
   Spinner,
-  UseAxiosInterceptors,
 } from 'eiromplays-ui';
 import React from 'react';
 import { ReactQueryDevtools } from 'react-query/devtools';
@@ -46,13 +44,6 @@ export type LocationGenerics = DefaultLocationGenerics & {
 const location = new ReactLocation<LocationGenerics>();
 
 axios.defaults.withCredentials = true;
-AxiosAddDataToRequestIgnoreUrls.push(
-  `/api/v1/consent`,
-  `/api/v1/account/login`,
-  `/api/v1/account/externalLoginConfirmation`,
-  `/api/v1/account/register`,
-  `/api/v1/account/logout`
-);
 
 const { AuthProvider } = initializeAuth<
   AuthUser,

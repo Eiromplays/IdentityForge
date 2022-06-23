@@ -4,7 +4,7 @@ using Eiromplays.IdentityServer.Application.Identity.Users;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserSessions.Search;
 
-public class Endpoint : Endpoint<Models.Request, PaginationResponse<UserSessionDto>>
+public class Endpoint : Endpoint<UserSessionListFilter, PaginationResponse<UserSessionDto>>
 {
     private readonly IUserService _userService;
     
@@ -24,9 +24,9 @@ public class Endpoint : Endpoint<Models.Request, PaginationResponse<UserSessionD
         Policies(EIAPermission.NameFor(EIAAction.Search, EIAResource.PersistedGrants));
     }
 
-    public override async Task HandleAsync(Models.Request request, CancellationToken ct)
+    public override async Task HandleAsync(UserSessionListFilter request, CancellationToken ct)
     {
-        Response = await _userService.SearchSessionsAsync(request.Data, ct);
+        Response = await _userService.SearchSessionsAsync(request, ct);
 
         await SendAsync(Response, cancellation: ct);
     }
