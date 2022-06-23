@@ -2,7 +2,7 @@ using Eiromplays.IdentityServer.Application.Identity.ApiScopes;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.ApiScopes.Create;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : Endpoint<CreateApiScopeRequest, Models.Response>
 {
     private readonly IApiScopeService _apiScopeService;
     
@@ -20,11 +20,12 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         });
         Version(1);
         Policies(EIAPermission.NameFor(EIAAction.Create, EIAResource.ApiScopes));
+        ScopedValidator();
     }
 
-    public override async Task HandleAsync(Models.Request req, CancellationToken ct)
+    public override async Task HandleAsync(CreateApiScopeRequest req, CancellationToken ct)
     {
-        Response.Message = await _apiScopeService.CreateAsync(req.Data, ct);
+        Response.Message = await _apiScopeService.CreateAsync(req, ct);
 
         await SendOkAsync(Response, cancellation: ct);
     }

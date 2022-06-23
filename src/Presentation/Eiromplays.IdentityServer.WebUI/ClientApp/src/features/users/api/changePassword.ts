@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 
 export type ChangePasswordDTO = {
   data: {
+    userId?: string;
     password?: string;
     newPassword: string;
     confirmNewPassword: string;
@@ -19,13 +20,13 @@ type UseChangePasswordOptions = {
 };
 
 export const useChangePassword = ({ config }: UseChangePasswordOptions = {}) => {
-  const { refetchUser } = useAuth();
+  const { logout } = useAuth();
 
   return useMutation({
     onSuccess: async (response) => {
       toast.success('Password Updated');
       toast.success(response.message);
-      await refetchUser();
+      await logout();
     },
     onError: (error) => {
       toast.error('Failed to update password');

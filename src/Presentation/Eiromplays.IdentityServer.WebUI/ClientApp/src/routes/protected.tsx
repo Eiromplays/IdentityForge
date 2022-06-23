@@ -1,5 +1,5 @@
 import { Outlet } from '@tanstack/react-location';
-import { Spinner, MainLayout, lazyImport, Button } from 'eiromplays-ui';
+import {Spinner, MainLayout, lazyImport, Button, useAuth, NotLoggedIn} from 'eiromplays-ui';
 import { Suspense } from 'react';
 import {
   HiOutlineHome,
@@ -19,7 +19,7 @@ import { GrantsRoutes } from '@/features/grants';
 import { LogsRoutes } from '@/features/logs';
 import { UserLoginsRoutes } from '@/features/user-logins';
 import { UserSessionsRoutes } from '@/features/user-sessions';
-import { ROLES, useAuthorization } from '@/lib/authorization';
+import { ROLES, useAuthorization } from 'eiromplays-ui';
 import { identityServerAdminUiUrl, identityServerUrl } from '@/utils/envVariables';
 const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
 const { Profile } = lazyImport(() => import('@/features/users'), 'Profile');
@@ -32,8 +32,14 @@ const { ChangePassword } = lazyImport(() => import('@/features/users'), 'ChangeP
 const { SetPassword } = lazyImport(() => import('@/features/users'), 'SetPassword');
 
 const App = () => {
+  const { user } = useAuth();
   const { checkAccess } = useAuthorization();
   const isAdmin = checkAccess({ allowedRoles: [ROLES.ADMINISTRATOR] });
+
+  if (!user) {
+    window.location.href = "/";
+    return null;
+  }
 
   return (
     <MainLayout

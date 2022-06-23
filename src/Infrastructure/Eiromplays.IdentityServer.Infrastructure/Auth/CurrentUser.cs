@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Shared.Authorization;
+using PrincipalExtensions = Duende.IdentityServer.Extensions.PrincipalExtensions;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Auth;
 
@@ -16,6 +17,21 @@ public class CurrentUser : ICurrentUser, ICurrentUserInitializer
         IsAuthenticated()
             ? _user?.GetUserId() ?? ""
             : _userId;
+    
+    public string GetSubjectId() =>
+        IsAuthenticated()
+            ? PrincipalExtensions.GetSubjectId(_user) ?? ""
+            : _userId;
+    
+    public string GetDisplayName() =>
+        IsAuthenticated()
+            ?  PrincipalExtensions.GetDisplayName(_user)
+            : string.Empty;
+    
+    public string GetIdentityProvider() =>
+        IsAuthenticated()
+            ? PrincipalExtensions.GetIdentityProvider(_user)
+            : string.Empty;
 
     public string? GetUserEmail() =>
         IsAuthenticated()

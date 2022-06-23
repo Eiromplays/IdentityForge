@@ -1,6 +1,8 @@
+using FastEndpoints;
+
 namespace Eiromplays.IdentityServer.Application.Identity.Clients;
 
-public class CreateClientRequestValidator : CustomValidator<CreateClientRequest>
+public class CreateClientRequestValidator : Validator<CreateClientRequest>
 {
     public CreateClientRequestValidator(IClientService clientService, IStringLocalizer<CreateClientRequestValidator> T)
     {

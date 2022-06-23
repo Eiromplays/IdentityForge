@@ -1,6 +1,6 @@
 namespace Eiromplays.IdentityServer.Application.Identity.Users;
 
-public class CreateExternalUserRequestValidator : CustomValidator<CreateExternalUserRequest>
+public class CreateExternalUserRequestValidator : Validator<CreateExternalUserRequest>
 {
     //TODO: FIX using GetAwaiter().GetResult() to wait for async calls
     //Related issue: https://github.com/fullstackhero/dotnet-webapi-boilerplate/issues/639#issuecomment-1118324086

@@ -1,8 +1,9 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
+using Eiromplays.IdentityServer.Application.Identity.Users.Password;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.ForgotPassword;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : Endpoint<ForgotPasswordRequest, Models.Response>
 {
     private readonly IUserService _userService;
     
@@ -22,9 +23,9 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(Models.Request req, CancellationToken ct)
+    public override async Task HandleAsync(ForgotPasswordRequest req, CancellationToken ct)
     {
-        Response.Message = await _userService.ForgotPasswordAsync(req.Data, BaseURL);
+        Response.Message = await _userService.ForgotPasswordAsync(req, BaseURL);
 
         await SendAsync(Response, cancellation: ct);
     }

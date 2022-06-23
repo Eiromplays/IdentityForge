@@ -22,6 +22,9 @@ internal static class Startup
         if (corsSettings.React is not null)
             origins.AddRange(corsSettings.React.Split(';', StringSplitOptions.RemoveEmptyEntries));
 
+        if (corsSettings.Other is not null)
+            origins.AddRange(corsSettings.Other.Split(';', StringSplitOptions.RemoveEmptyEntries));
+        
         return services.AddCors(opt =>
             opt.AddPolicy(CorsPolicy, policy =>
                 policy.AllowAnyHeader()

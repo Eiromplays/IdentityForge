@@ -1,12 +1,10 @@
-using Eiromplays.IdentityServer.Application.Common.Validation;
-using FluentValidation;
-using Microsoft.Extensions.Localization;
+using FastEndpoints;
 
 namespace Eiromplays.IdentityServer.Application.Identity.Users;
 
-public class UpdateUserRequestValidator : CustomValidator<UpdateUserRequest>
+public class UpdateUserRequestValidator : Validator<UpdateUserRequest>
 {
-    public UpdateUserRequestValidator(IUserService userService, IStringLocalizer<UpdateUserRequestValidator> T)
+    public UpdateUserRequestValidator(IUserService userService, IStringLocalizer<UpdateUserRequestValidator> T, IValidator<FileUploadRequest?> fileUploadRequestValidator)
     {
         RuleFor(p => p.Id)
             .NotEmpty();
@@ -25,9 +23,9 @@ public class UpdateUserRequestValidator : CustomValidator<UpdateUserRequest>
                 .WithMessage(T["Invalid Email Address."])
             .MustAsync(async (user, email, _) => !await userService.ExistsWithEmailAsync(email, user.Id))
                 .WithMessage((_, email) => string.Format(T["Email {0} is already registered."], email));
-
+        
         RuleFor(p => p.Image)
-            .InjectValidator();
+            .SetValidator(fileUploadRequestValidator);
 
         RuleFor(u => u.PhoneNumber).Cascade(CascadeMode.Stop)
             .MustAsync(async (user, phone, _) => !await userService.ExistsWithPhoneNumberAsync(phone!, user.Id))

@@ -1,4 +1,3 @@
-using Duende.Bff;
 using Duende.Bff.EntityFramework;
 using Duende.IdentityServer.EntityFramework.Storage;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Database;
@@ -46,7 +45,7 @@ internal static class Startup
             .AddTransient<SessionDbInitializer>()
             .AddTransient<ApplicationDbSeeder>()
 
-            .AddServices(typeof(ICustomSeeder), ServiceLifetime.Transient)
+            .AddServices(typeof(ICustomSeeder), ServiceLifetime.Transient, projectType)
             .AddTransient<CustomSeederRunner>()
 
             .AddTransient<IConnectionStringSecurer, ConnectionStringSecurer>()
@@ -73,7 +72,6 @@ internal static class Startup
             .Configure<DatabaseConfiguration>(configuration.GetSection(nameof(DatabaseConfiguration)))
             .AddTransient<IDatabaseInitializer, DatabaseInitializer>()
             .AddTransient<SessionDbInitializer>()
-            
             .AddTransient<IConnectionStringSecurer, ConnectionStringSecurer>()
             .AddTransient<IConnectionStringValidator, ConnectionStringValidator>();
 

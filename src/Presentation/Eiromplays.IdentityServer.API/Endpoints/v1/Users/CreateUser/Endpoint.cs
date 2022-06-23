@@ -2,7 +2,7 @@ using Eiromplays.IdentityServer.Application.Identity.Users;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.CreateUser;
 
-public class Endpoint : Endpoint<Models.Request, CreateUserResponse>
+public class Endpoint : Endpoint<CreateUserRequest, CreateUserResponse>
 {
     private readonly IUserService _userService;
     
@@ -20,14 +20,15 @@ public class Endpoint : Endpoint<Models.Request, CreateUserResponse>
         });
         Version(1);
         Policies(EIAPermission.NameFor(EIAAction.Create, EIAResource.Users));
+        ScopedValidator();
     }
 
-    public override async Task HandleAsync(Models.Request req, CancellationToken ct)
+    public override async Task HandleAsync(CreateUserRequest req, CancellationToken ct)
     {
         // TODO: Add a option to allow anonymous users to create users
         // Returns Unauthorized if it is disabled
         // TODO: Add some more protection, like a captcha or something
-        Response = await _userService.CreateAsync(req.Data, BaseURL);
+        Response = await _userService.CreateAsync(req, BaseURL);
 
         await SendOkAsync(Response, cancellation: ct);
     }

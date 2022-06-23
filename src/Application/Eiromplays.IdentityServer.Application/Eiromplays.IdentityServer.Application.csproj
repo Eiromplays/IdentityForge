@@ -14,11 +14,13 @@
     <PackageReference Include="Ardalis.Specification" Version="6.0.1" />
     <PackageReference Include="Duende.IdentityServer" Version="6.1.0" />
     <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.1.0" />
+    <PackageReference Include="FastEndpoints" Version="4.3.0-beta9" />
     <PackageReference Include="FluentEmail.Graph" Version="1.4.0" />
     <PackageReference Include="FluentEmail.Mailgun" Version="3.0.2" />
     <PackageReference Include="FluentEmail.MailKit" Version="3.0.2" />
-    <PackageReference Include="FluentValidation" Version="11.0.1" />
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.0.1" />
+    <PackageReference Include="FluentValidation" Version="11.0.2" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.0.2" />
+    <PackageReference Include="LanguageExt.Core" Version="4.2.1" />
     <PackageReference Include="Mapster" Version="7.3.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.5" />

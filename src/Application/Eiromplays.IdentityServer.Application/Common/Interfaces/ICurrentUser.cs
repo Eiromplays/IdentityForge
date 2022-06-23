@@ -8,6 +8,12 @@ public interface ICurrentUser
 
     string GetUserId();
 
+    string GetSubjectId();
+
+    string GetDisplayName();
+
+    string GetIdentityProvider();
+
     string? GetUserEmail();
 
     string? GetTenant();

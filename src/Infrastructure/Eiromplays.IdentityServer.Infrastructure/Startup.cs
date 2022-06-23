@@ -20,6 +20,7 @@ using Eiromplays.IdentityServer.Infrastructure.OpenApi;
 using Eiromplays.IdentityServer.Infrastructure.Persistence;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Initialization;
 using Eiromplays.IdentityServer.Infrastructure.SecurityHeaders;
+using FastEndpoints;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
@@ -48,13 +49,13 @@ public static class Startup
             .AddMailing(config)
             .AddMediatR(Assembly.GetExecutingAssembly())
             .AddNotifications(config)
-            .AddOpenApiDocumentation(config, projectType)
+            .AddOpenApiDocumentation(config)
             .AddPersistence(config, projectType)
             .AddDataProtection().Services
             .AddAuth(config, projectType)
             .AddRequestLogging(config)
             .AddRouting(options => options.LowercaseUrls = true)
-            .AddServices();
+            .AddServices(projectType);
     }
 
     private static IServiceCollection AddInfrastructureSpa(this IServiceCollection services, IConfiguration config, ProjectType projectType)
@@ -81,11 +82,11 @@ public static class Startup
             .InitializeDatabasesAsync(cancellationToken);
     }
 
-    public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder builder, IConfiguration config, ProjectType projectType)
+    public static WebApplication UseInfrastructure(this WebApplication app, IConfiguration config, ProjectType projectType, Action<Config>? fastEndpointsConfigAction = null)
     {
-        if (projectType is ProjectType.Spa) return builder;
+        if (projectType is ProjectType.Spa) return app;
         
-        return builder
+        app
             .UseRequestLocalization()
             .UseStaticFiles()
             .UseSecurityHeaders(config)
@@ -98,8 +99,13 @@ public static class Startup
             .UseAuthorization()
             .UseCurrentUser()
             .UseRequestLogging(config)
-            .UseHangfireDashboard(config)
-            .UseOpenApiDocumentation(config, projectType);
+            .UseHangfireDashboard(config);
+
+        app.UseFastEndpoints(fastEndpointsConfigAction);
+
+        app.UseOpenApiDocumentation(config);
+
+        return app;
     }
 
     public static IEndpointRouteBuilder MapEndpoints(this IEndpointRouteBuilder builder)

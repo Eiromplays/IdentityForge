@@ -3,7 +3,7 @@ using Eiromplays.IdentityServer.Application.Identity.IdentityResources;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.IdentityResources.Search;
 
-public class Endpoint : Endpoint<Models.Request, PaginationResponse<IdentityResourceDto>>
+public class Endpoint : Endpoint<IdentityResourceListFilter, PaginationResponse<IdentityResourceDto>>
 {
     private readonly IIdentityResourceService _identityResourceService;
     
@@ -23,9 +23,9 @@ public class Endpoint : Endpoint<Models.Request, PaginationResponse<IdentityReso
         Policies(EIAPermission.NameFor(EIAAction.Search, EIAResource.ApiScopes));
     }
 
-    public override async Task HandleAsync(Models.Request request, CancellationToken ct)
+    public override async Task HandleAsync(IdentityResourceListFilter request, CancellationToken ct)
     {
-        Response = await _identityResourceService.SearchAsync(request.Data, ct);
+        Response = await _identityResourceService.SearchAsync(request, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

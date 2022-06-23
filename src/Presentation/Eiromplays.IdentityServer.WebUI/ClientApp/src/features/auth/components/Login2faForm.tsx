@@ -16,7 +16,7 @@ type LoginValues = {
 type LoginFormProps = {
   returnUrl?: string;
   rememberMe: boolean;
-  onSuccess: () => void;
+  onSuccess?: () => void;
 };
 
 export const Login2faForm = ({ rememberMe, returnUrl, onSuccess }: LoginFormProps) => {
@@ -30,7 +30,7 @@ export const Login2faForm = ({ rememberMe, returnUrl, onSuccess }: LoginFormProp
           values.rememberMe = rememberMe;
           const response = await login2fa(values);
 
-          if (response) onSuccess();
+          if (response) onSuccess?.();
         }}
         schema={schema}
       >

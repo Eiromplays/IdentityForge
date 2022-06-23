@@ -7,11 +7,15 @@ export const Landing = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
+  console.log(user);
+
   const handleStart = () => {
     if (user) {
-      navigate({ to: '/app' });
+      navigate({ to: '/app', replace: true });
+      console.log('navigate to /app');
     } else {
       window.location.assign('/bff/login');
+      console.log('navigate to /bff/login');
     }
   };
 

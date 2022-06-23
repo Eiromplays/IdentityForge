@@ -3,7 +3,7 @@ using Eiromplays.IdentityServer.Application.Common.Models;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Logs.Search;
 
-public class Endpoint : Endpoint<Models.Request, PaginationResponse<AuditDto>>
+public class Endpoint : Endpoint<AuditLogListFilter, PaginationResponse<AuditDto>>
 {
     private readonly IAuditService _auditService;
     
@@ -23,9 +23,9 @@ public class Endpoint : Endpoint<Models.Request, PaginationResponse<AuditDto>>
         Policies(EIAPermission.NameFor(EIAAction.Search, EIAResource.AuditLog));
     }
 
-    public override async Task HandleAsync(Models.Request request, CancellationToken ct)
+    public override async Task HandleAsync(AuditLogListFilter request, CancellationToken ct)
     {
-        Response = await _auditService.SearchAsync(request.Data, ct);
+        Response = await _auditService.SearchAsync(request, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

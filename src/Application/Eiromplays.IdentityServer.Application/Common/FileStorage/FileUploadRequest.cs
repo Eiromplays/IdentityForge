@@ -7,10 +7,13 @@ public class FileUploadRequest
     public string Data { get; set; } = default!;
 }
 
-public class FileUploadRequestValidator : CustomValidator<FileUploadRequest>
+public class FileUploadRequestValidator : Validator<FileUploadRequest>
 {
-    public FileUploadRequestValidator(IStringLocalizer<FileUploadRequestValidator> T)
+    public FileUploadRequestValidator()
     {
+        var T = TryResolve<IStringLocalizer<FileUploadRequestValidator>>() ??
+                new StringLocalizer<FileUploadRequestValidator>(Resolve<IStringLocalizerFactory>());
+
         RuleFor(p => p.Name)
             .NotEmpty()
                 .WithMessage(T["Image Name cannot be empty!"])

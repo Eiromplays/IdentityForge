@@ -2,7 +2,7 @@ using Eiromplays.IdentityServer.Application.Identity.Roles;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.CreateOrUpdateRole;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : Endpoint<CreateOrUpdateRoleRequest, Models.Response>
 {
     private readonly IRoleService _roleService;
     
@@ -20,13 +20,14 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         });
         Version(1);
         Policies(EIAPermission.NameFor(EIAAction.Create, EIAResource.Roles));
+        ScopedValidator();
     }
 
-    public override async Task HandleAsync(Models.Request req, CancellationToken ct)
+    public override async Task HandleAsync(CreateOrUpdateRoleRequest req, CancellationToken ct)
     {
-        Response.Message = await _roleService.CreateOrUpdateAsync(req.Data);
+        Response.Message = await _roleService.CreateOrUpdateAsync(req);
 
-        await SendCreatedAtAsync<GetRoleById.Endpoint>(new { Id = req.Data.Id }, Response,
+        await SendCreatedAtAsync<GetRoleById.Endpoint>(new { Id = req.Id }, Response,
             generateAbsoluteUrl: true, cancellation: ct);
     }
 }
