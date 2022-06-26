@@ -1,6 +1,6 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Personal.UpdateProfile;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Personal.UpdateUser;
 
 public class Endpoint : Endpoint<UpdateUserRequest>
 {

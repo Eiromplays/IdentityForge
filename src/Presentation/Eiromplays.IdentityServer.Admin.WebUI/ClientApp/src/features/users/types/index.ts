@@ -1,15 +1,19 @@
 export type User = {
   id: string;
   userName: string;
+  displayName: string;
   firstName: string;
   lastName: string;
-  profilePicture: string;
   phoneNumber: string;
   email: string;
   gravatarEmail?: string;
-  roles: string[];
-  updated_at: number;
-  created_at: number;
+  emailConfirmed: boolean;
+  phoneNumberConfirmed: boolean;
+  twoFactorEnabled: boolean;
+  lockoutEnabled: boolean;
+  isActive: boolean;
+  profilePicture: string;
+  created_at: string;
 };
 
 export type UserRole = {

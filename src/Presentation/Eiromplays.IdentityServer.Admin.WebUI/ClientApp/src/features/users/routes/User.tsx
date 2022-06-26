@@ -4,7 +4,7 @@ import { ContentLayout, Spinner } from 'eiromplays-ui';
 import { LocationGenerics } from '@/App';
 
 import { useUser } from '../api/getUser';
-import { UpdateProfile } from '../components/UpdateProfile';
+import { UpdateUser } from '../components/UpdateUser';
 
 type EntryProps = {
   label: string;
@@ -44,14 +44,14 @@ export const User = () => {
   if (!userQuery.data) return null;
 
   return (
-    <ContentLayout title="Profile">
+    <ContentLayout title={`User ${userQuery.data?.userName}`}>
       <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
         <div className="px-4 py-5 sm:px-6">
           <div className="flex justify-between">
             <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
               User Information
             </h3>
-            <UpdateProfile id={userId} />
+            <UpdateUser id={userId} />
           </div>
           <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-white">
             Personal details of the user.
@@ -65,23 +65,11 @@ export const User = () => {
             <Entry label="Last Name" value={userQuery.data.lastName} />
             <Entry label="Email Address" value={userQuery.data.email} />
             <Entry label="Phone Number" value={userQuery.data.phoneNumber} />
-            {userQuery.data.updated_at && (
-              <Entry label="Last updated at" value={userQuery.data.updated_at.toString()} />
-            )}
-            {userQuery.data.created_at && (
-              <Entry label="Created at" value={userQuery.data.created_at.toString()} />
-            )}
             {userQuery.data.gravatarEmail && (
               <Entry label="Gravatar Email Address" value={userQuery.data.gravatarEmail} />
             )}
             {userQuery.data.profilePicture && (
               <PictureEntry label={'Profile Picture'} value={userQuery.data.profilePicture} />
-            )}
-            {userQuery.data.roles?.length > 0 && (
-              <Entry
-                label={userQuery.data.roles.length > 1 ? 'Roles' : 'Role'}
-                value={userQuery.data.roles.join(', ')}
-              />
             )}
           </dl>
         </div>

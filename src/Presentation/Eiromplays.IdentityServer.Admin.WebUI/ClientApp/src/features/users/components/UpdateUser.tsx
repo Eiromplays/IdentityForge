@@ -11,23 +11,24 @@ import { HiOutlinePencil } from 'react-icons/hi';
 import * as z from 'zod';
 
 import { useUser } from '../api/getUser';
-import { UpdateProfileDTO, useUpdateProfile } from '../api/updateProfile';
+import { UpdateUserDTO, useUpdateUser } from '../api/updateUser';
 
 const schema = z.object({
   username: z.string().min(1, 'Required'),
   firstName: z.string().min(1, 'Required'),
   lastName: z.string().min(1, 'Required'),
   email: z.string().min(1, 'Required'),
+  gravatarEmail: z.string().optional(),
   deleteCurrentImage: z.boolean(),
 });
 
-type UpdateProfileProps = {
+type UpdateUserProps = {
   id: string;
 };
 
-export const UpdateProfile = ({ id }: UpdateProfileProps) => {
+export const UpdateUser = ({ id }: UpdateUserProps) => {
   const userQuery = useUser({ userId: id || '' });
-  const { updateProfileMutation } = useUpdateProfile();
+  const { updateUserMutation } = useUpdateUser();
 
   if (userQuery.isLoading) {
     return (
@@ -45,20 +46,20 @@ export const UpdateProfile = ({ id }: UpdateProfileProps) => {
   return (
     <>
       <FormDrawer
-        isDone={updateProfileMutation.isSuccess}
+        isDone={updateUserMutation.isSuccess}
         triggerButton={
           <Button startIcon={<HiOutlinePencil className="h-4 w-4" />} size="sm">
             Update Profile
           </Button>
         }
-        title="Update Profile"
+        title={`Update ${userQuery.data?.userName}'s Profile`}
         submitButton={
           <ConfirmationDialog
             icon="warning"
-            title="Update Profile"
-            body="Are you sure you want to update this profile? This will log them out of all sessions."
+            title="Update User"
+            body="Are you sure you want to update this user? This will log them out of all sessions."
             triggerButton={
-              <Button size="sm" isLoading={updateProfileMutation.isLoading}>
+              <Button size="sm" isLoading={updateUserMutation.isLoading}>
                 Submit
               </Button>
             }
@@ -69,28 +70,35 @@ export const UpdateProfile = ({ id }: UpdateProfileProps) => {
                 className="mt-2"
                 variant="warning"
                 size="sm"
-                isLoading={updateProfileMutation.isLoading}
+                isLoading={updateUserMutation.isLoading}
               >
-                Update Profile
+                Update User
               </Button>
             }
           />
         }
       >
-        <Form<UpdateProfileDTO['data'], typeof schema>
+        <Form<UpdateUserDTO['data'], typeof schema>
           id="update-profile"
           onSubmit={async (values) => {
             values.image = profilePicture;
-            await updateProfileMutation.mutateAsync({ userId: id, data: values });
+            await updateUserMutation.mutateAsync({ userId: id, data: values });
           }}
           options={{
             defaultValues: {
+              displayName: userQuery.data?.displayName,
               username: userQuery.data?.userName,
               firstName: userQuery.data?.firstName,
               lastName: userQuery.data?.lastName,
               email: userQuery.data?.email,
               gravatarEmail: userQuery.data?.gravatarEmail,
               deleteCurrentImage: false,
+              revokeUserSessions: true,
+              emailConfirmed: userQuery.data?.emailConfirmed,
+              phoneNumberConfirmed: userQuery.data?.phoneNumberConfirmed,
+              twoFactorEnabled: userQuery.data?.twoFactorEnabled,
+              lockoutEnabled: userQuery.data?.lockoutEnabled,
+              isActive: userQuery.data?.isActive,
             },
           }}
           schema={schema}
@@ -104,6 +112,11 @@ export const UpdateProfile = ({ id }: UpdateProfileProps) => {
                 registration={register('username')}
               />
               <InputField
+                label="Display Name"
+                error={formState.errors['displayName']}
+                registration={register('displayName')}
+              />
+              <InputField
                 label="First Name"
                 error={formState.errors['firstName']}
                 registration={register('firstName')}
@@ -112,6 +125,11 @@ export const UpdateProfile = ({ id }: UpdateProfileProps) => {
                 label="Last Name"
                 error={formState.errors['lastName']}
                 registration={register('lastName')}
+              />
+              <InputField
+                label="Phone Number"
+                error={formState.errors['phoneNumber']}
+                registration={register('phoneNumber')}
               />
               <InputField
                 label="Email Address"
@@ -155,6 +173,42 @@ export const UpdateProfile = ({ id }: UpdateProfileProps) => {
                   </div>
                 </>
               )}
+              <InputField
+                label="Revoke User Session(s)"
+                type="checkbox"
+                error={formState.errors['revokeUserSessions']}
+                registration={register('revokeUserSessions')}
+              />
+              <InputField
+                label="Email Confirmed"
+                type="checkbox"
+                error={formState.errors['emailConfirmed']}
+                registration={register('emailConfirmed')}
+              />
+              <InputField
+                label="Phone Number Confirmed"
+                type="checkbox"
+                error={formState.errors['phoneNumberConfirmed']}
+                registration={register('phoneNumberConfirmed')}
+              />
+              <InputField
+                label="Two Factor Enabled"
+                type="checkbox"
+                error={formState.errors['twoFactorEnabled']}
+                registration={register('twoFactorEnabled')}
+              />
+              <InputField
+                label="Lockout Enabled"
+                type="checkbox"
+                error={formState.errors['lockoutEnabled']}
+                registration={register('lockoutEnabled')}
+              />
+              <InputField
+                label="Is Active"
+                type="checkbox"
+                error={formState.errors['isActive']}
+                registration={register('isActive')}
+              />
             </>
           )}
         </Form>

@@ -235,10 +235,16 @@ internal partial class UserService
                 _fileStorage.Remove(Path.Combine(root, currentImage));
             }
         }
-
+        
+        user.DisplayName = request.DisplayName;
         user.FirstName = request.FirstName;
         user.LastName = request.LastName;
         user.PhoneNumber = request.PhoneNumber;
+        user.PhoneNumberConfirmed = request.PhoneNumberConfirmed;
+        user.EmailConfirmed = request.EmailConfirmed;
+        user.IsActive = request.IsActive;
+        user.TwoFactorEnabled = request.TwoFactorEnabled;
+        user.LockoutEnabled = request.LockoutEnabled;
 
         var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
         
@@ -246,6 +252,9 @@ internal partial class UserService
         {
             await _userManager.SetPhoneNumberAsync(user, request.PhoneNumber);
         }
+
+        if (user.GravatarEmail != request.GravatarEmail)
+            user.GravatarEmail = request.GravatarEmail;
 
         var result = await _userManager.UpdateAsync(user);
 

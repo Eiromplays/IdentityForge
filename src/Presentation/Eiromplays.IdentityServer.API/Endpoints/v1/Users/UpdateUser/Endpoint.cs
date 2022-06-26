@@ -24,7 +24,9 @@ public class Endpoint : Endpoint<Models.Request>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        await _userService.UpdateAsync(req.Data, req.Id, ct);
+        if (User.GetUserId() == req.Id) ThrowError("You cannot update your own user.");
+
+        await _userService.UpdateAsync(req.UpdateUserRequest, req.Id, ct);
         
         await SendNoContentAsync(cancellation: ct);
     }

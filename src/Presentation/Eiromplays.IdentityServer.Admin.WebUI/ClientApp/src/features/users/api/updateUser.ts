@@ -1,17 +1,25 @@
-import { axios, MutationConfig, useAuth } from 'eiromplays-ui';
+import { axios, MutationConfig, queryClient } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
-export type UpdateProfileDTO = {
+export type UpdateUserDTO = {
   userId: string;
   data: {
     username: string;
+    displayName: string;
     firstName: string;
     lastName: string;
+    phoneNumber: string;
     email: string;
     gravatarEmail: string;
     image: any;
     deleteCurrentImage?: boolean;
+    revokeUserSessions?: boolean;
+    emailConfirmed?: boolean;
+    phoneNumberConfirmed?: boolean;
+    twoFactorEnabled?: boolean;
+    lockoutEnabled?: boolean;
+    isActive?: boolean;
   };
 };
 
@@ -24,7 +32,7 @@ const toBase64 = (file: File) =>
     reader.onerror = (error) => reject(error);
   });
 
-export const updateProfile = async ({ userId, data }: UpdateProfileDTO) => {
+export const updateUser = async ({ userId, data }: UpdateUserDTO) => {
   if (data.image instanceof File) {
     const fileExtension = `.${data.image.name.slice(
       ((data.image.name.lastIndexOf('.') - 1) >>> 0) + 2
@@ -37,28 +45,26 @@ export const updateProfile = async ({ userId, data }: UpdateProfileDTO) => {
     data.deleteCurrentImage = data.image ? true : data.deleteCurrentImage;
   }
 
-  return axios.put(`/users/${userId}`, data);
+  return axios.put(`/users/${userId}`, { UpdateUserRequest: data });
 };
 
 type UseUpdateProfileOptions = {
-  config?: MutationConfig<typeof updateProfile>;
+  config?: MutationConfig<typeof updateUser>;
 };
 
-export const useUpdateProfile = ({ config }: UseUpdateProfileOptions = {}) => {
-  const { refetchUser } = useAuth();
-
+export const useUpdateUser = ({ config }: UseUpdateProfileOptions = {}) => {
   const updateProfileMutation = useMutation({
-    onSuccess: async () => {
-      toast.success('User Updated');
-      await refetchUser();
+    onSuccess: async (_, variables) => {
+      await queryClient.refetchQueries(['user', variables.userId]);
+      toast.success(`${variables.data?.username} has been updated successfully`);
     },
     onError: (error) => {
       toast.error('Failed to update user');
       toast.error(error.response?.data);
     },
     ...config,
-    mutationFn: updateProfile,
+    mutationFn: updateUser,
   });
 
-  return { updateProfileMutation };
+  return { updateUserMutation: updateProfileMutation };
 };
