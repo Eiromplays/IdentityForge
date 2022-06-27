@@ -26,11 +26,15 @@ public class UserDetailsDto
     
     public bool TwoFactorEnabled { get; set; }
     
-    public bool LockoutEnabled { get; set; }
+    public bool LockoutEnabled { get; set; } 
 
     public string? ProfilePicture { get; set; }
     
     public double Credits { get; set; }
     
     public string? DiscordId { get; set; }
+    
+    public DateTime CreatedOn { get; set; }
+    
+    public DateTime? LastModifiedOn { get; set; }
 }

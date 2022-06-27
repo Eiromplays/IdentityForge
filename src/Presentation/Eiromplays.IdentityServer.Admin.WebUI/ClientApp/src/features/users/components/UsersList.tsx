@@ -43,10 +43,17 @@ export const UsersList = () => {
           field: 'email',
         },
         {
-          title: 'Created At',
-          field: 'created_at',
-          Cell({ entry: { created_at } }) {
-            return <span>{formatDate(created_at)}</span>;
+          title: 'Created',
+          field: 'createdOn',
+          Cell({ entry: { createdOn } }) {
+            return <span>{formatDate(createdOn)}</span>;
+          },
+        },
+        {
+          title: 'Last Modified',
+          field: 'lastModifiedOn',
+          Cell({ entry: { lastModifiedOn } }) {
+            return <span>{formatDate(lastModifiedOn)}</span>;
           },
         },
         {

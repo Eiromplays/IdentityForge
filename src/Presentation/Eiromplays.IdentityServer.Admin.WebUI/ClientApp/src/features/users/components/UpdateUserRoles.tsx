@@ -29,11 +29,11 @@ const schema = z.object({
   lockoutEnabled: z.boolean(),
 });
 
-type UpdateUserProps = {
+type UpdateUserRolesProps = {
   id: string;
 };
 
-export const UpdateUser = ({ id }: UpdateUserProps) => {
+export const UpdateUserRoles = ({ id }: UpdateUserRolesProps) => {
   const userQuery = useUser({ userId: id || '' });
   const { updateUserMutation } = useUpdateUser();
 
@@ -46,9 +46,6 @@ export const UpdateUser = ({ id }: UpdateUserProps) => {
   }
 
   if (!userQuery.data) return null;
-
-  let files: FileList[] = [];
-  let profilePicture: File;
 
   return (
     <>
@@ -165,56 +162,11 @@ export const UpdateUser = ({ id }: UpdateUserProps) => {
                   registration={register('deleteCurrentImage')}
                 />
               )}
-              {files && files.length > 0 && files[0].length > 0 && (
-                <>
-                  <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <ImageCropper
-                      cropLabel="Crop:"
-                      previewLabel="Preview:"
-                      imgSrc={URL.createObjectURL(files[0][0])}
-                      fileName={files[0][0].name}
-                      onFileCreated={(file: File) => {
-                        profilePicture = file;
-                      }}
-                    />
-                  </div>
-                </>
-              )}
               <InputField
                 label="Revoke User Session(s)"
                 type="checkbox"
                 error={formState.errors['revokeUserSessions']}
                 registration={register('revokeUserSessions')}
-              />
-              <InputField
-                label="Email Confirmed"
-                type="checkbox"
-                error={formState.errors['emailConfirmed']}
-                registration={register('emailConfirmed')}
-              />
-              <InputField
-                label="Phone Number Confirmed"
-                type="checkbox"
-                error={formState.errors['phoneNumberConfirmed']}
-                registration={register('phoneNumberConfirmed')}
-              />
-              <InputField
-                label="Two Factor Enabled"
-                type="checkbox"
-                error={formState.errors['twoFactorEnabled']}
-                registration={register('twoFactorEnabled')}
-              />
-              <InputField
-                label="Lockout Enabled"
-                type="checkbox"
-                error={formState.errors['lockoutEnabled']}
-                registration={register('lockoutEnabled')}
-              />
-              <InputField
-                label="Is Active"
-                type="checkbox"
-                error={formState.errors['isActive']}
-                registration={register('isActive')}
               />
             </>
           )}

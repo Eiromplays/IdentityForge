@@ -13,7 +13,8 @@ export type User = {
   lockoutEnabled: boolean;
   isActive: boolean;
   profilePicture: string;
-  created_at: string;
+  createdOn: number;
+  lastModifiedOn: number;
 };
 
 export type UserRole = {

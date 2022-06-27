@@ -61,6 +61,7 @@ export const User = () => {
           <dl className="sm:divide-y sm:divide-gray-200">
             <Entry label="Id" value={userQuery.data.id} />
             <Entry label="Username" value={userQuery.data.userName} />
+            <Entry label="Display Name" value={userQuery.data.displayName} />
             <Entry label="First Name" value={userQuery.data.firstName} />
             <Entry label="Last Name" value={userQuery.data.lastName} />
             <Entry label="Email Address" value={userQuery.data.email} />
@@ -71,6 +72,14 @@ export const User = () => {
             {userQuery.data.profilePicture && (
               <PictureEntry label={'Profile Picture'} value={userQuery.data.profilePicture} />
             )}
+            <Entry label="Email Confirmed" value={userQuery.data.emailConfirmed.toString()} />
+            <Entry label="Is Active" value={userQuery.data.isActive.toString()} />
+            <Entry
+              label="Phone Number Confirmed"
+              value={userQuery.data.phoneNumberConfirmed.toString()}
+            />
+            <Entry label="Lockout Enabled" value={userQuery.data.lockoutEnabled.toString()} />
+            <Entry label="Two-factor Enabled" value={userQuery.data.twoFactorEnabled.toString()} />
           </dl>
         </div>
       </div>
