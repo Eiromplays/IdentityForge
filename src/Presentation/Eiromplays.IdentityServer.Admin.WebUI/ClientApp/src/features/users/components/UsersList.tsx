@@ -6,6 +6,7 @@ import {
   Link,
   PaginatedTable,
   Spinner,
+  useAuth,
 } from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
@@ -16,6 +17,7 @@ import { User } from '../types';
 import { DeleteUser } from './DeleteUser';
 
 export const UsersList = () => {
+  const { user } = useAuth();
   const search = useSearch<LocationGenerics>();
   const page = search.pagination?.index || defaultPageIndex;
   const pageSize = search.pagination?.size || defaultPageSize;
@@ -83,7 +85,7 @@ export const UsersList = () => {
           title: '',
           field: 'id',
           Cell({ entry: { id } }) {
-            return (
+            return user.id !== id ? (
               <Link to={id} search={search} className="block">
                 <pre className={`text-sm`}>
                   View{' '}
@@ -92,6 +94,8 @@ export const UsersList = () => {
                   </MatchRoute>
                 </pre>
               </Link>
+            ) : (
+              <></>
             );
           },
         },

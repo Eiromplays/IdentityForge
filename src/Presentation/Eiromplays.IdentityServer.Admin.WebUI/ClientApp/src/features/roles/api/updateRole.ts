@@ -1,4 +1,4 @@
-import {MutationConfig, queryClient, axios, MessageResponse} from 'eiromplays-ui';
+import { MutationConfig, queryClient, axios, MessageResponse } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 

@@ -1,173 +1,91 @@
-import {
-  Button,
-  ConfirmationDialog,
-  Spinner,
-  Form,
-  FormDrawer,
-  InputField,
-  ImageCropper,
-} from 'eiromplays-ui';
+import { Button, ConfirmationDialog, Form, FormDrawer, InputField } from 'eiromplays-ui';
 import { HiOutlinePencil } from 'react-icons/hi';
 import * as z from 'zod';
 
-import { useUser } from '../api/getUser';
-import { UpdateUserDTO, useUpdateUser } from '../api/updateUser';
+import { UserRole } from '@/features/users';
+
+import { UpdateUserRolesDTO, useUpdateUserRoles } from '../api/updateUserRoles';
+
+const userRoleSchema = z.object({
+  roleId: z.string().min(1, 'RoleId must be provided'),
+  roleName: z.string().min(1, 'Role Name must be provided'),
+  description: z.string().optional(),
+  enabled: z.boolean(),
+});
 
 const schema = z.object({
-  username: z.string().min(1, 'Required'),
-  displayName: z.string().min(1, 'Required'),
-  firstName: z.string().min(1, 'Required'),
-  lastName: z.string().min(1, 'Required'),
-  email: z.string().min(1, 'Required'),
-  gravatarEmail: z.string().optional(),
-  deleteCurrentImage: z.boolean(),
-  revokeUserSessions: z.boolean(),
-  emailConfirmed: z.boolean(),
-  phoneNumberConfirmed: z.boolean(),
-  isActive: z.boolean(),
-  twoFactorEnabled: z.boolean(),
-  lockoutEnabled: z.boolean(),
+  userRoles: z.array(userRoleSchema),
 });
 
 type UpdateUserRolesProps = {
   id: string;
+  roles: UserRole[];
 };
 
-export const UpdateUserRoles = ({ id }: UpdateUserRolesProps) => {
-  const userQuery = useUser({ userId: id || '' });
-  const { updateUserMutation } = useUpdateUser();
+export const UpdateUserRoles = ({ id, roles }: UpdateUserRolesProps) => {
+  const updateUserRolesMutation = useUpdateUserRoles();
 
-  if (userQuery.isLoading) {
-    return (
-      <div className="w-full h-48 flex justify-center items-center">
-        <Spinner size="lg" />
-      </div>
-    );
-  }
-
-  if (!userQuery.data) return null;
+  if (!roles) return null;
 
   return (
     <>
       <FormDrawer
-        isDone={updateUserMutation.isSuccess}
+        isDone={updateUserRolesMutation.isSuccess}
         triggerButton={
           <Button startIcon={<HiOutlinePencil className="h-4 w-4" />} size="sm">
-            Update Profile
+            Update User Roles
           </Button>
         }
-        title={`Update ${userQuery.data?.userName}'s Profile`}
+        title={`Update Roles`}
         submitButton={
           <ConfirmationDialog
             icon="warning"
-            title="Update User"
-            body="Are you sure you want to update this user? This will log them out of all sessions."
+            title="Update User Roles"
+            body="Are you sure you want to update this users roles? This will log them out of all sessions."
             triggerButton={
-              <Button size="sm" isLoading={updateUserMutation.isLoading}>
+              <Button size="sm" isLoading={updateUserRolesMutation.isLoading}>
                 Submit
               </Button>
             }
             confirmButton={
               <Button
-                form="update-profile"
+                form="update-user-roles"
                 type="submit"
                 className="mt-2"
                 variant="warning"
                 size="sm"
-                isLoading={updateUserMutation.isLoading}
+                isLoading={updateUserRolesMutation.isLoading}
               >
-                Update User
+                Update User Roles
               </Button>
             }
           />
         }
       >
-        <Form<UpdateUserDTO['data'], typeof schema>
-          id="update-profile"
+        <Form<UpdateUserRolesDTO['data'], typeof schema>
+          id="update-user-roles"
           onSubmit={async (values) => {
-            values.image = profilePicture;
-            await updateUserMutation.mutateAsync({ userId: id, data: values });
+            await updateUserRolesMutation.mutateAsync({ userId: id, data: values });
           }}
           options={{
             defaultValues: {
-              displayName: userQuery.data?.displayName,
-              username: userQuery.data?.userName,
-              firstName: userQuery.data?.firstName,
-              lastName: userQuery.data?.lastName,
-              email: userQuery.data?.email,
-              gravatarEmail: userQuery.data?.gravatarEmail,
-              deleteCurrentImage: false,
-              revokeUserSessions: true,
-              emailConfirmed: userQuery.data?.emailConfirmed,
-              phoneNumberConfirmed: userQuery.data?.phoneNumberConfirmed,
-              twoFactorEnabled: userQuery.data?.twoFactorEnabled,
-              lockoutEnabled: userQuery.data?.lockoutEnabled,
-              isActive: userQuery.data?.isActive,
+              userRoles: roles,
             },
           }}
           schema={schema}
-          onChange={(_, file) => (files = file)}
         >
           {({ register, formState }) => (
             <>
-              <InputField
-                label="Username"
-                error={formState.errors['username']}
-                registration={register('username')}
-              />
-              <InputField
-                label="Display Name"
-                error={formState.errors['displayName']}
-                registration={register('displayName')}
-              />
-              <InputField
-                label="First Name"
-                error={formState.errors['firstName']}
-                registration={register('firstName')}
-              />
-              <InputField
-                label="Last Name"
-                error={formState.errors['lastName']}
-                registration={register('lastName')}
-              />
-              <InputField
-                label="Phone Number"
-                error={formState.errors['phoneNumber']}
-                registration={register('phoneNumber')}
-              />
-              <InputField
-                label="Email Address"
-                type="email"
-                error={formState.errors['email']}
-                registration={register('email')}
-              />
-              <InputField
-                label="Gravatar Email Address"
-                type="email"
-                error={formState.errors['gravatarEmail']}
-                registration={register('gravatarEmail')}
-              />
-              <InputField
-                label="Profile Picture"
-                type="file"
-                accept={'image/*'}
-                error={formState.errors['image']}
-                registration={register('image')}
-              />
-              {userQuery.data?.profilePicture && (
+              {console.log(formState.errors)}
+              {roles.map((role, index) => (
                 <InputField
-                  label="Delete profile picture"
+                  key={role.roleId}
+                  label={role.roleName}
                   type="checkbox"
-                  error={formState.errors['deleteCurrentImage']}
-                  registration={register('deleteCurrentImage')}
+                  registration={register(`userRoles.${index}.enabled`)}
+                  error={formState.errors.userRoles && formState.errors.userRoles[index].roleId}
                 />
-              )}
-              <InputField
-                label="Revoke User Session(s)"
-                type="checkbox"
-                error={formState.errors['revokeUserSessions']}
-                registration={register('revokeUserSessions')}
-              />
+              ))}
             </>
           )}
         </Form>

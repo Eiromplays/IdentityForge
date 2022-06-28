@@ -1,6 +1,7 @@
 import { Spinner, Table } from 'eiromplays-ui';
 
 import { useUserRoles } from '../api/getUserRoles';
+import { UpdateUserRoles } from '../components/UpdateUserRoles';
 import { UserRole } from '../types';
 
 type UserRolesListProps = {
@@ -21,33 +22,36 @@ export const UserRolesList = ({ id }: UserRolesListProps) => {
   if (!userRolesQuery.data) return null;
 
   return (
-    <Table<UserRole>
-      data={userRolesQuery.data}
-      columns={[
-        {
-          title: 'Id',
-          field: 'roleId',
-        },
-        {
-          title: 'Name',
-          field: 'roleName',
-        },
-        {
-          title: 'Description',
-          field: 'description',
-        },
-        {
-          title: 'Enabled',
-          field: 'enabled',
-          Cell({ entry: { enabled } }) {
-            return (
-              <span className={enabled ? 'text-green-500' : 'text-red-500'}>
-                {enabled.toString()}
-              </span>
-            );
+    <>
+      <Table<UserRole>
+        data={userRolesQuery.data}
+        columns={[
+          {
+            title: 'Id',
+            field: 'roleId',
           },
-        },
-      ]}
-    />
+          {
+            title: 'Name',
+            field: 'roleName',
+          },
+          {
+            title: 'Description',
+            field: 'description',
+          },
+          {
+            title: 'Enabled',
+            field: 'enabled',
+            Cell({ entry: { enabled } }) {
+              return (
+                <span className={enabled ? 'text-green-500' : 'text-red-500'}>
+                  {enabled.toString()}
+                </span>
+              );
+            },
+          },
+        ]}
+      />
+      <UpdateUserRoles id={id} roles={userRolesQuery.data} />
+    </>
   );
 };

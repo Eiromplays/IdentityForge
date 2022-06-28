@@ -24,7 +24,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        Response.Message = await _userService.AssignRolesAsync(req.Id, req.Data, ct);
+        Response.Message = await _userService.AssignRolesAsync(req.Id, req.UserRolesRequest, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

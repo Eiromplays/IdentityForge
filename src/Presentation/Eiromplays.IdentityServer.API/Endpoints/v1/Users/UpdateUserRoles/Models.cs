@@ -8,7 +8,7 @@ public class Models
     {
         public string Id { get; set; } = default!;
 
-        public UserRolesRequest Data { get; set; } = default!;
+        public UserRolesRequest UserRolesRequest { get; set; } = default!;
     }
     
     public class Response

@@ -1,5 +1,5 @@
 import { useMatch } from '@tanstack/react-location';
-import { ContentLayout, Spinner } from 'eiromplays-ui';
+import { ContentLayout, Spinner, useAuth } from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
@@ -28,11 +28,19 @@ const PictureEntry = ({ label, value }: EntryProps) => (
 );
 
 export const User = () => {
+  const { user } = useAuth();
+
   const {
     params: { userId },
   } = useMatch<LocationGenerics>();
 
   const userQuery = useUser({ userId: userId });
+
+  //TODO: Find a better way to do this
+  if (user.id === userId) {
+    window.location.href = window.location.href.replace(userId, '');
+    return;
+  }
 
   if (userQuery.isLoading) {
     return (

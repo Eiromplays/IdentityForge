@@ -48,11 +48,11 @@ export const updateUser = async ({ userId, data }: UpdateUserDTO) => {
   return axios.put(`/users/${userId}`, { UpdateUserRequest: data });
 };
 
-type UseUpdateProfileOptions = {
+type UseUpdateUserOptions = {
   config?: MutationConfig<typeof updateUser>;
 };
 
-export const useUpdateUser = ({ config }: UseUpdateProfileOptions = {}) => {
+export const useUpdateUser = ({ config }: UseUpdateUserOptions = {}) => {
   const updateProfileMutation = useMutation({
     onSuccess: async (_, variables) => {
       await queryClient.refetchQueries(['user', variables.userId]);

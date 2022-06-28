@@ -24,15 +24,8 @@ export const UsersRoutes: Route<LocationGenerics> = {
           pagination?.size ?? 10,
         ]) ??
         queryClient
-          .fetchQuery(
-            [
-              'search-users',
-              pagination?.index ?? 1,
-              pagination?.size ?? 10,
-              pagination?.size ?? 10,
-            ],
-            () =>
-              searchUsers({ pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 })
+          .fetchQuery(['search-users', pagination?.index ?? 1, pagination?.size ?? 10], () =>
+            searchUsers({ pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 })
           )
           .then(() => ({})),
     },

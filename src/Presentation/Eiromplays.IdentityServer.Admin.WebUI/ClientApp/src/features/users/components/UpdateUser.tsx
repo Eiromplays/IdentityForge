@@ -19,7 +19,7 @@ const schema = z.object({
   firstName: z.string().min(1, 'Required'),
   lastName: z.string().min(1, 'Required'),
   email: z.string().min(1, 'Required'),
-  gravatarEmail: z.string().optional(),
+  gravatarEmail: z.string().nullable(),
   deleteCurrentImage: z.boolean(),
   revokeUserSessions: z.boolean(),
   emailConfirmed: z.boolean(),
@@ -56,7 +56,7 @@ export const UpdateUser = ({ id }: UpdateUserProps) => {
         isDone={updateUserMutation.isSuccess}
         triggerButton={
           <Button startIcon={<HiOutlinePencil className="h-4 w-4" />} size="sm">
-            Update Profile
+            Update User
           </Button>
         }
         title={`Update ${userQuery.data?.userName}'s Profile`}
@@ -72,7 +72,7 @@ export const UpdateUser = ({ id }: UpdateUserProps) => {
             }
             confirmButton={
               <Button
-                form="update-profile"
+                form="update-user"
                 type="submit"
                 className="mt-2"
                 variant="warning"
@@ -86,7 +86,7 @@ export const UpdateUser = ({ id }: UpdateUserProps) => {
         }
       >
         <Form<UpdateUserDTO['data'], typeof schema>
-          id="update-profile"
+          id="update-user"
           onSubmit={async (values) => {
             values.image = profilePicture;
             await updateUserMutation.mutateAsync({ userId: id, data: values });
