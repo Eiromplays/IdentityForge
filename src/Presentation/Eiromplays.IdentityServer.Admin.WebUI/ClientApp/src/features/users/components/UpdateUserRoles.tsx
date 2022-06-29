@@ -76,7 +76,6 @@ export const UpdateUserRoles = ({ id, roles }: UpdateUserRolesProps) => {
         >
           {({ register, formState }) => (
             <>
-              {console.log(formState.errors)}
               {roles.map((role, index) => (
                 <InputField
                   key={role.roleId}
