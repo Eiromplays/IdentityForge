@@ -39,7 +39,7 @@ export const User = () => {
   //TODO: Find a better way to do this
   if (user.id === userId) {
     window.location.href = window.location.href.replace(userId, '');
-    return;
+    return null;
   }
 
   if (userQuery.isLoading) {

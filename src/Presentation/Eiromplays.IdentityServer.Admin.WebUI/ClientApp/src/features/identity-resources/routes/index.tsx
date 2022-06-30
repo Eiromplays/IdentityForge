@@ -1,10 +1,9 @@
 import { Navigate, Route } from '@tanstack/react-location';
-import { queryClient } from 'eiromplays-ui';
+import { queryClient, searchPagination } from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
 import { getIdentityResource } from '../api/getIdentityResource';
-import { searchIdentityResources } from '../api/searchIdentityResources';
 
 import { IdentityResourceInfo } from './IdentityResourceInfo';
 import { IdentityResources } from './IdentityResources';
@@ -15,7 +14,7 @@ export const IdentityResourcesRoutes: Route<LocationGenerics> = {
     {
       path: '/',
       element: <IdentityResources />,
-      loader: async ({ search: { pagination } }) =>
+      loader: async ({ search: { pagination, searchFilter } }) =>
         queryClient.getQueryData([
           'identity-resources',
           pagination?.index ?? 1,
@@ -23,7 +22,11 @@ export const IdentityResourcesRoutes: Route<LocationGenerics> = {
         ]) ??
         queryClient
           .fetchQuery(['identity-resources', pagination?.index ?? 1, pagination?.size ?? 10], () =>
-            searchIdentityResources({ pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 })
+            searchPagination(
+              '/identity-resources/search',
+              { pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 },
+              searchFilter
+            )
           )
           .then(() => ({})),
     },

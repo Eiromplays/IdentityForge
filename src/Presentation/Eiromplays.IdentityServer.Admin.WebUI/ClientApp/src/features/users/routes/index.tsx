@@ -1,11 +1,10 @@
 import { Navigate, Route } from '@tanstack/react-location';
-import { queryClient } from 'eiromplays-ui';
+import { queryClient, searchPagination } from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
 import { getUser } from '../api/getUser';
 import { getUserRoles } from '../api/getUserRoles';
-import { searchUsers } from '../api/searchUsers';
 
 import { User } from './User';
 import { UserRoles } from './UserRoles';
@@ -17,17 +16,24 @@ export const UsersRoutes: Route<LocationGenerics> = {
     {
       path: '/',
       element: <Users />,
-      loader: async ({ search: { pagination } }) =>
-        queryClient.getQueryData([
-          'search-users',
-          pagination?.index ?? 1,
-          pagination?.size ?? 10,
-        ]) ??
-        queryClient
-          .fetchQuery(['search-users', pagination?.index ?? 1, pagination?.size ?? 10], () =>
-            searchUsers({ pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 })
-          )
-          .then(() => ({})),
+      loader: async ({ search: { pagination, searchFilter } }) => {
+        return (
+          queryClient.getQueryData([
+            'search-users',
+            pagination?.index ?? 1,
+            pagination?.size ?? 10,
+          ]) ??
+          queryClient
+            .fetchQuery(['search-users', pagination?.index ?? 1, pagination?.size ?? 10], () =>
+              searchPagination(
+                '/users/search',
+                { pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 },
+                searchFilter
+              )
+            )
+            .then(() => ({}))
+        );
+      },
     },
     {
       path: ':userId/roles',

@@ -1,10 +1,9 @@
 import { Navigate, Route } from '@tanstack/react-location';
-import { queryClient } from 'eiromplays-ui';
+import { queryClient, searchPagination } from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
 import { getUserSession } from '../api/getUserSession';
-import { searchUserSessions } from '../api/searchUserSessions';
 
 import { UserSession } from './UserSession';
 import { UserSessions } from './UserSessions';
@@ -15,7 +14,7 @@ export const UserSessionsRoutes: Route<LocationGenerics> = {
     {
       path: '/',
       element: <UserSessions />,
-      loader: async ({ search: { pagination } }) =>
+      loader: async ({ search: { pagination, searchFilter } }) =>
         queryClient.getQueryData([
           'user-sessions',
           pagination?.index ?? 1,
@@ -23,10 +22,11 @@ export const UserSessionsRoutes: Route<LocationGenerics> = {
         ]) ??
         queryClient
           .fetchQuery(['user-sessions', pagination?.index ?? 1, pagination?.size ?? 10], () =>
-            searchUserSessions({
-              pageNumber: pagination?.index ?? 1,
-              pageSize: pagination?.size ?? 10,
-            })
+            searchPagination(
+              '/user-sessions/search',
+              { pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 },
+              searchFilter
+            )
           )
           .then(() => ({})),
     },

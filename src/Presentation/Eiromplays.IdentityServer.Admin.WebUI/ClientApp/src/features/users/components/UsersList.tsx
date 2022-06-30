@@ -1,6 +1,5 @@
 import { useSearch, MatchRoute } from '@tanstack/react-location';
 import {
-  Button,
   defaultPageIndex,
   defaultPageSize,
   formatDate,
@@ -8,11 +7,11 @@ import {
   PaginatedTable,
   Spinner,
   useAuth,
+  SearchFilter,
 } from 'eiromplays-ui';
 import React from 'react';
 
 import { LocationGenerics } from '@/App';
-import { SearchFilter } from '@/features/users/components/SearchFilter';
 
 import { SearchUserDTO } from '../api/searchUsers';
 import { User } from '../types';
@@ -25,11 +24,8 @@ export const UsersList = () => {
   const page = search.pagination?.index || defaultPageIndex;
   const pageSize = search.pagination?.size || defaultPageSize;
 
-  console.log(search.searchFilter);
-
-  const searchData: SearchUserDTO = { pageNumber: page, pageSize: pageSize };
-  const filter: SearchFilter = {
-    customFilters: [{ name: 'isActive', value: false, formType: 'checkbox' }],
+  const searchFilter: SearchFilter = {
+    customProperties: [{ name: 'isActive', value: true, type: 'checkbox' }],
     orderBy: ['userName'],
     advancedSearch: {
       fields: ['userName', 'email'],
@@ -37,13 +33,14 @@ export const UsersList = () => {
     },
     keyword: '',
   };
+
   return (
     <>
-      <SearchFilter filter={filter} />
       <PaginatedTable<SearchUserDTO, User>
         url="/users/search"
         queryKeyName="search-users"
-        searchData={searchData}
+        searchData={{ pageNumber: page, pageSize: pageSize }}
+        searchFilter={searchFilter}
         columns={[
           {
             title: 'Username',

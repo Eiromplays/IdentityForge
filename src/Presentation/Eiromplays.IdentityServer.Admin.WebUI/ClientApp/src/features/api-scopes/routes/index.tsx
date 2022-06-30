@@ -1,10 +1,9 @@
 import { Navigate, Route } from '@tanstack/react-location';
-import { queryClient } from 'eiromplays-ui';
+import { queryClient, searchPagination } from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
 import { getApiScope } from '../api/getApiScope';
-import { searchApiScopes } from '../api/searchApiScopes';
 
 import { ApiScopeInfo } from './ApiScopeInfo';
 import { ApiScopes } from './ApiScopes';
@@ -15,14 +14,15 @@ export const ApiScopesRoutes: Route<LocationGenerics> = {
     {
       path: '/',
       element: <ApiScopes />,
-      loader: async ({ search: { pagination } }) =>
+      loader: async ({ search: { pagination, searchFilter } }) =>
         queryClient.getQueryData(['api-scopes', pagination?.index ?? 1, pagination?.size ?? 10]) ??
         queryClient
           .fetchQuery(['api-scopes', pagination?.index ?? 1, pagination?.size ?? 10], () =>
-            searchApiScopes({
-              pageNumber: pagination?.index ?? 1,
-              pageSize: pagination?.size ?? 10,
-            })
+            searchPagination(
+              '/api-scopes/search',
+              { pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 },
+              searchFilter
+            )
           )
           .then(() => ({})),
     },

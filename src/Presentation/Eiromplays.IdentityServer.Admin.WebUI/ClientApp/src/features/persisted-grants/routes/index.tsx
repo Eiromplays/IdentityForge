@@ -1,10 +1,9 @@
 import { Navigate, Route } from '@tanstack/react-location';
-import { queryClient } from 'eiromplays-ui';
+import { queryClient, searchPagination } from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
 import { getPersistedGrant } from '../api/getPersistedGrant';
-import { searchPersistedGrants } from '../api/searchPersistedGrants';
 
 import { PersistedGrant } from './PersistedGrant';
 import { PersistedGrants } from './PersistedGrants';
@@ -15,7 +14,7 @@ export const PersistedGrantsRoutes: Route<LocationGenerics> = {
     {
       path: '/',
       element: <PersistedGrants />,
-      loader: async ({ search: { pagination } }) =>
+      loader: async ({ search: { pagination, searchFilter } }) =>
         queryClient.getQueryData([
           'search-persisted-grants',
           pagination?.index ?? 1,
@@ -25,10 +24,11 @@ export const PersistedGrantsRoutes: Route<LocationGenerics> = {
           .fetchQuery(
             ['search-persisted-grants', pagination?.index ?? 1, pagination?.size ?? 10],
             () =>
-              searchPersistedGrants({
-                pageNumber: pagination?.index ?? 1,
-                pageSize: pagination?.size ?? 10,
-              })
+              searchPagination(
+                '/persisted-grants/search',
+                { pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 },
+                searchFilter
+              )
           )
           .then(() => ({})),
     },

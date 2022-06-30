@@ -1,10 +1,9 @@
 import { Navigate, Route } from '@tanstack/react-location';
-import { queryClient } from 'eiromplays-ui';
+import { queryClient, searchPagination } from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
 import { getApiResource } from '../api/getApiResource';
-import { searchApiResources } from '../api/searchApiResources';
 
 import { ApiResourceInfo } from './ApiResourceInfo';
 import { ApiResources } from './ApiResources';
@@ -15,7 +14,7 @@ export const ApiResourcesRoutes: Route<LocationGenerics> = {
     {
       path: '/',
       element: <ApiResources />,
-      loader: async ({ search: { pagination } }) =>
+      loader: async ({ search: { pagination, searchFilter } }) =>
         queryClient.getQueryData([
           'api-resources',
           pagination?.index ?? 1,
@@ -23,10 +22,11 @@ export const ApiResourcesRoutes: Route<LocationGenerics> = {
         ]) ??
         queryClient
           .fetchQuery(['api-resources', pagination?.index ?? 1, pagination?.size ?? 10], () =>
-            searchApiResources({
-              pageNumber: pagination?.index ?? 1,
-              pageSize: pagination?.size ?? 10,
-            })
+            searchPagination(
+              '/api-resources/search',
+              { pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 },
+              searchFilter
+            )
           )
           .then(() => ({})),
     },

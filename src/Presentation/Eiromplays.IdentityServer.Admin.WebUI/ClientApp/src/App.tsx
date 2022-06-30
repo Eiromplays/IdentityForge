@@ -6,11 +6,8 @@ import {
   defaultAuthConfig,
   DefaultLocationGenerics,
   initializeAuth,
-  SearchPagination,
 } from 'eiromplays-ui';
 import { ReactQueryDevtools } from 'react-query/devtools';
-
-import { SearchFilter } from '@/features/users/components/SearchFilter';
 
 import { AppRoutes } from './routes';
 
@@ -27,13 +24,6 @@ export type LocationGenerics = DefaultLocationGenerics & {
     apiResourceId: string;
     productId: string;
     brandId: string;
-  };
-  Search: {
-    pagination: SearchPagination;
-    returnUrl: string;
-    errorId: string;
-    logoutId: string;
-    searchFilter: SearchFilter;
   };
 };
 
