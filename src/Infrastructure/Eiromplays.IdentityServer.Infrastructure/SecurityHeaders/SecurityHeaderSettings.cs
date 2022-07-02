@@ -29,7 +29,7 @@ public class SecurityHeaderSettings
     /// <summary>
     /// X-XSS-Protection.
     /// </summary>
-    public string? XXSSProtection { get; set; }
+    public string? XxssProtection { get; set; }
 
     ///// <summary>
     ///// TODO

@@ -30,6 +30,6 @@ public class NotificationHub : Hub, ITransientService
 
         await base.OnDisconnectedAsync(exception);
 
-        _logger.LogInformation("A client disconnected from NotificationHub: {connectionId}", Context.ConnectionId);
+        _logger.LogInformation("A client disconnected from NotificationHub: {ConnectionId}", Context.ConnectionId);
     }
 }

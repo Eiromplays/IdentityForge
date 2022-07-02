@@ -1,5 +1,12 @@
 import { useSearch, MatchRoute } from '@tanstack/react-location';
-import { Spinner, PaginatedTable, Link, defaultPageIndex, defaultPageSize } from 'eiromplays-ui';
+import {
+  Spinner,
+  PaginatedTable,
+  Link,
+  defaultPageIndex,
+  defaultPageSize,
+  SearchFilter,
+} from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
@@ -12,11 +19,22 @@ export const ClientsList = () => {
   const page = search.pagination?.index || defaultPageIndex;
   const pageSize = search.pagination?.size || defaultPageSize;
 
+  const searchFilter: SearchFilter = {
+    customProperties: [],
+    orderBy: ['id', 'enabled', 'clientId', 'clientName'],
+    advancedSearch: {
+      fields: ['id', 'enabled', 'clientId', 'clientName'],
+      keyword: '',
+    },
+    keyword: '',
+  };
+
   return (
     <PaginatedTable<SearchClientDTO, Client>
       url="/clients/search"
       queryKeyName="search-clients"
       searchData={{ pageNumber: page, pageSize: pageSize }}
+      searchFilter={searchFilter}
       columns={[
         {
           title: 'Id',

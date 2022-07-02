@@ -15,7 +15,7 @@ internal static class Startup
     internal static IServiceCollection AddRequestLogging(this IServiceCollection services, IConfiguration config)
     {
         if (!GetMiddlewareSettings(config).EnableHttpsLogging) return services;
-        
+
         services.AddSingleton<RequestLoggingMiddleware>();
         services.AddScoped<ResponseLoggingMiddleware>();
 
@@ -25,7 +25,7 @@ internal static class Startup
     internal static IApplicationBuilder UseRequestLogging(this IApplicationBuilder app, IConfiguration config)
     {
         if (!GetMiddlewareSettings(config).EnableHttpsLogging) return app;
-        
+
         app.UseMiddleware<RequestLoggingMiddleware>();
         app.UseMiddleware<ResponseLoggingMiddleware>();
 

@@ -32,17 +32,17 @@ internal class ExceptionMiddleware : IMiddleware
         }
         catch (Exception exception)
         {
-            var email = _currentUser.GetUserEmail() is { } userEmail ? userEmail : "Anonymous";
-            var userId = _currentUser.GetUserId();
-            var tenant = _currentUser.GetTenant() ?? string.Empty;
-            
+            string email = _currentUser.GetUserEmail() ?? "Anonymous";
+            string userId = _currentUser.GetUserId();
+            string tenant = _currentUser.GetTenant() ?? string.Empty;
+
             if (!string.IsNullOrWhiteSpace(userId)) LogContext.PushProperty("UserId", userId);
             LogContext.PushProperty("UserEmail", email);
-            
+
             if (!string.IsNullOrEmpty(tenant)) LogContext.PushProperty("Tenant", tenant);
-            
-            var errorId = Guid.NewGuid().ToString();
-            
+
+            string errorId = Guid.NewGuid().ToString();
+
             LogContext.PushProperty("ErrorId", errorId);
             LogContext.PushProperty("StackTrace", exception.StackTrace);
 
@@ -53,9 +53,9 @@ internal class ExceptionMiddleware : IMiddleware
                 ErrorId = errorId,
                 SupportMessage = _t["Provide the ErrorId {0} to the support team for further analysis.", errorId]
             };
-            
+
             errorResult.Messages.Add(exception.Message);
-            
+
             if (exception is not CustomException && exception.InnerException is not null)
             {
                 while (exception.InnerException is not null)
@@ -86,15 +86,17 @@ internal class ExceptionMiddleware : IMiddleware
 
             Log.Error(
                 "{Exception} Request failed with Status Code {StatusCode} and Error Id {ErrorId}",
-                errorResult.Exception, context.Response.StatusCode, errorId);
-            
+                errorResult.Exception,
+                context.Response.StatusCode,
+                errorId);
+
             var response = context.Response;
-            
+
             if (!response.HasStarted)
             {
                 response.ContentType = "application/json";
                 response.StatusCode = errorResult.StatusCode;
-                
+
                 await response.WriteAsync(_jsonSerializer.Serialize(errorResult));
             }
             else

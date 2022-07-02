@@ -7,13 +7,13 @@ using Shared.Authorization;
 
 namespace Eiromplays.IdentityServer.Infrastructure.BackgroundJobs;
 
-public class EIAJobFilter : IClientFilter
+public class EiaJobFilter : IClientFilter
 {
     private static readonly ILog Logger = LogProvider.GetCurrentClassLogger();
 
     private readonly IServiceProvider _services;
 
-    public EIAJobFilter(IServiceProvider services) => _services = services;
+    public EiaJobFilter(IServiceProvider services) => _services = services;
 
     public void OnCreating(CreatingContext context)
     {
@@ -26,7 +26,7 @@ public class EIAJobFilter : IClientFilter
         var httpContext = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
         _ = httpContext ?? throw new InvalidOperationException("Can't create a TenantJob without HttpContext.");
 
-        var userId = httpContext.User.GetUserId();
+        string? userId = httpContext.User.GetUserId();
         context.SetJobParameter(QueryStringKeys.UserId, userId);
     }
 

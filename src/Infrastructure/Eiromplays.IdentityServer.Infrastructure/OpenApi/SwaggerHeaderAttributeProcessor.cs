@@ -10,13 +10,16 @@ public class SwaggerHeaderAttributeProcessor : IOperationProcessor
     public bool Process(OperationProcessorContext context)
     {
         if (context.MethodInfo?.GetCustomAttribute(typeof(SwaggerHeaderAttribute)) is not SwaggerHeaderAttribute
-            attribute) return true;
-        
+            attribute)
+        {
+            return true;
+        }
+
         var parameters = context.OperationDescription.Operation.Parameters;
 
         var existingParam = parameters.FirstOrDefault(p =>
             p.Kind == OpenApiParameterKind.Header && p.Name == attribute.HeaderName);
-        
+
         if (existingParam is not null)
         {
             parameters.Remove(existingParam);

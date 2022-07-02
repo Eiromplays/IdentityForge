@@ -1,6 +1,6 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserLogins.DeleteUserSessionByKey;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserSessions.DeleteUserSessionByKey;
 
 public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
@@ -28,7 +28,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             await SendUnauthorizedAsync(ct);
             return;
         }
-        
+
         Response.Message = await _userService.DeleteUserSessionAsync(req.Key, userId, ct);
 
         await SendAsync(Response, cancellation: ct);

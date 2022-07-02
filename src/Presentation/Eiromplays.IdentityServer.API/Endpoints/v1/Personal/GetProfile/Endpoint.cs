@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Personal.GetProfile;
 public class Endpoint : EndpointWithoutRequest<UserDetailsDto>
 {
     private readonly IUserService _userService;
-    
+
     public Endpoint(IUserService userService)
     {
         _userService = userService;
@@ -30,7 +30,7 @@ public class Endpoint : EndpointWithoutRequest<UserDetailsDto>
         }
 
         Response = await _userService.GetAsync(userId, ct);
-        
+
         await SendOkAsync(Response, cancellation: ct);
     }
 }

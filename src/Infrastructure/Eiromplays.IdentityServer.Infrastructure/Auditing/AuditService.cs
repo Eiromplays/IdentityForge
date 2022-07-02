@@ -20,7 +20,7 @@ public class AuditService : IAuditService
         _context = context;
         _t = t;
     }
-    
+
     public async Task<PaginationResponse<AuditDto>> SearchAsync(AuditLogListFilter filter, CancellationToken cancellationToken)
     {
         var spec = new EntitiesByPaginationFilterSpec<Trail>(filter);
@@ -29,13 +29,13 @@ public class AuditService : IAuditService
             .WithSpecification(spec)
             .ProjectToType<AuditDto>()
             .ToListAsync(cancellationToken);
-        
-        var count = await _context.AuditTrails
+
+        int count = await _context.AuditTrails
             .CountAsync(cancellationToken);
 
         return new PaginationResponse<AuditDto>(trails, count, filter.PageNumber, filter.PageSize);
     }
-    
+
     public async Task<List<AuditDto>> GetUserTrailsAsync(string userId, CancellationToken cancellationToken)
     {
         var trails = await _context.AuditTrails
@@ -47,7 +47,7 @@ public class AuditService : IAuditService
 
         return trails;
     }
-    
+
     public async Task<AuditDto> GetTrailAsync(string id, CancellationToken cancellationToken)
     {
         var trail = await _context.AuditTrails
@@ -55,10 +55,10 @@ public class AuditService : IAuditService
             .FirstOrDefaultAsync(cancellationToken);
 
         _ = trail ?? throw new NotFoundException(_t["Trail Not Found."]);
-        
+
         return trail.Adapt<AuditDto>();
     }
-    
+
     public async Task<List<AuditDto>> GetListAsync(CancellationToken cancellationToken)
     {
         var trails = await _context.AuditTrails.OrderByDescending(a => a.DateTime).ToListAsync(cancellationToken);

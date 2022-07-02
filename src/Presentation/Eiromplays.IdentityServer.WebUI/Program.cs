@@ -36,7 +36,7 @@ builder.Services.AddAuthentication(options =>
     options.Scope.Add("offline_access");
     options.Scope.Add("roles");
     options.Scope.Add("email");
-    
+
     options.ClaimActions.MapJsonKey("role", "role", "role");
     options.ClaimActions.MapJsonKey("picture", "picture", "picture");
     options.ClaimActions.MapJsonKey("gravatar_email", "gravatar_email", "gravatar_email");
@@ -57,6 +57,7 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error");
+
     // The default HSTS0+ value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }

@@ -2,7 +2,6 @@ import { ReactLocation } from '@tanstack/react-location';
 import {
   AppProvider,
   axios,
-  AxiosAddDataToRequestIgnoreUrls,
   DefaultLocationGenerics,
   initializeAuth,
   Spinner,
@@ -45,7 +44,6 @@ export type LocationGenerics = DefaultLocationGenerics & {
 const location = new ReactLocation<LocationGenerics>();
 
 axios.defaults.withCredentials = true;
-AxiosAddDataToRequestIgnoreUrls.push(`/consent`, `/spa/Login`, `/spa/externalLoginConfirmation`);
 
 const { AuthProvider } = initializeAuth<
   AuthUser,

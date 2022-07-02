@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Clients.UpdateClient;
 public class Endpoint : Endpoint<Models.Request>
 {
     private readonly IClientService _clientService;
-    
+
     public Endpoint(IClientService clientService)
     {
         _clientService = clientService;
@@ -19,13 +19,13 @@ public class Endpoint : Endpoint<Models.Request>
             s.Summary = "Update a client.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Update, EIAResource.Clients));
+        Policies(EiaPermission.NameFor(EiaAction.Update, EiaResource.Clients));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
         await _clientService.UpdateAsync(req.Data, req.Id, ct);
-        
+
         await SendNoContentAsync(cancellation: ct);
     }
 }

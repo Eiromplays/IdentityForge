@@ -2,6 +2,7 @@ import { AuthUser, getUser } from 'eiromplays-ui';
 import { toast } from 'react-toastify';
 
 import {
+  GetLogin2FaResponse,
   Login2faCredentialsDto,
   LoginCredentialsDTO,
   loginWith2fa,
@@ -11,34 +12,36 @@ import {
   registerWithEmailAndPassword,
 } from '@/features/auth';
 
-export const loadUser = async (): Promise<AuthUser | null> => {
-  return await getUser();
+export const loadUser = async () => {
+  return await getUser({
+    authenticatedProps: {
+      useAuthenticated: false,
+      isAuthenticatedUrl: 'https://localhost:7001/api/v1/account/is-authenticated',
+    },
+  });
 };
 
-export const loginFn = async (data: LoginCredentialsDTO) => {
+export const loginFn = async (data: LoginCredentialsDTO): Promise<AuthUser | null> => {
   const response = await loginWithEmailAndPassword(data);
 
+  if (response?.twoFactorReturnUrl){
+    window.location.href = response.twoFactorReturnUrl;
+    return null;
+  }
+
   // TODO: Check if I can handle this, and signInResult better
-  if (response?.signInResult.succeeded) {
+  if (response?.signInResult?.succeeded) {
     toast.success('Login successful');
   }
 
   if (response?.validReturnUrl) {
     window.location.href = response?.validReturnUrl;
-  } else if (response?.signInResult.succeeded) {
+  } else if (response?.signInResult?.succeeded) {
     window.location.href = '/bff/login';
   }
 
   if (response?.signInResult?.isLockedOut) {
     window.location.assign('/auth/lockout');
-    return null;
-  }
-
-  const login2faViewModel = response as unknown as Login2faCredentialsDto;
-  if (login2faViewModel?.rememberMe && login2faViewModel?.rememberMachine) {
-    window.location.assign(
-      `/auth/login2fa/${login2faViewModel.rememberMe}/${login2faViewModel?.returnUrl ?? ''}`
-    );
     return null;
   }
 
@@ -50,13 +53,33 @@ export const loginFn = async (data: LoginCredentialsDTO) => {
   return await loadUser();
 };
 
-export const login2faFn = async (data: Login2faCredentialsDto) => {
-  await loginWith2fa(data);
+export const login2faFn = async (data: Login2faCredentialsDto): Promise<AuthUser | null> => {
+  const response = await loginWith2fa(data);
+
+  if (response?.signInResult?.succeeded) {
+    toast.success('Login successful');
+  }
+
+  if (response?.validReturnUrl) {
+    window.location.href = response?.validReturnUrl;
+  } else if (response?.signInResult?.succeeded) {
+    window.location.href = '/bff/login';
+  }
+
+  if (response?.signInResult?.isLockedOut) {
+    window.location.assign('/auth/lockout');
+    return null;
+  }
+
+  if (response?.signInResult?.isNotAllowed) {
+    window.location.assign('/auth/not-allowed');
+    return null;
+  }
 
   return await loadUser();
 };
 
-export const registerFn = async (data: RegisterCredentialsDTO) => {
+export const registerFn = async (data: RegisterCredentialsDTO): Promise<AuthUser | null> => {
   const response = await registerWithEmailAndPassword(data);
 
   if (response.message) toast.success(response.message);

@@ -19,14 +19,16 @@ public class SendEventNotificationToClientsHandler<TNotification> : INotificatio
     public Task Handle(TNotification notification, CancellationToken cancellationToken)
     {
         var notificationType = typeof(TNotification);
-        
+
         if (!notificationType.IsGenericType ||
             notificationType.GetGenericTypeDefinition() != typeof(EventNotification<>) ||
             notificationType.GetGenericArguments()[0] is not { } eventType ||
-            !eventType.IsAssignableTo(typeof(INotificationMessage))) return Task.CompletedTask;
-        
+            !eventType.IsAssignableTo(typeof(INotificationMessage)))
+        {
+            return Task.CompletedTask;
+        }
+
         INotificationMessage notificationMessage = ((dynamic)notification).Event;
         return _notifications.SendToAllAsync(notificationMessage, cancellationToken);
-
     }
 }

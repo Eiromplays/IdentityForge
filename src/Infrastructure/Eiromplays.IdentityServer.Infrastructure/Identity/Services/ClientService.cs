@@ -10,26 +10,22 @@ using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
-internal partial class ClientService : IClientService
+internal class ClientService : IClientService
 {
     private readonly ApplicationDbContext _db;
     private readonly IStringLocalizer _t;
-    private readonly ILogger _logger;
     private readonly IEventPublisher _events;
 
-    public ClientService(ApplicationDbContext db, IStringLocalizer<ClientService> t, ILogger<ClientService> logger,
-        IEventPublisher events)
+    public ClientService(ApplicationDbContext db, IStringLocalizer<ClientService> t, IEventPublisher events)
     {
         _db = db;
         _t = t;
-        _logger = logger;
         _events = events;
     }
-    
+
     public async Task<PaginationResponse<ClientDto>> SearchAsync(ClientListFilter filter, CancellationToken cancellationToken)
     {
         var spec = new EntitiesByPaginationFilterSpec<Client>(filter);
@@ -39,16 +35,16 @@ internal partial class ClientService : IClientService
             .ProjectToType<ClientDto>()
             .ToListAsync(cancellationToken);
 
-        var count = await _db.Clients
+        int count = await _db.Clients
             .CountAsync(cancellationToken);
 
         return new PaginationResponse<ClientDto>(clients, count, filter.PageNumber, filter.PageSize);
     }
-    
+
     public async Task<ClientDto> GetAsync(int clientId, CancellationToken cancellationToken)
     {
         var client = await FindClientByIdAsync(clientId, cancellationToken);
-        
+
         return client.Adapt<ClientDto>();
     }
 
@@ -64,35 +60,35 @@ internal partial class ClientService : IClientService
         client.RequireConsent = request.RequireConsent;
         client.AllowRememberConsent = request.AllowRememberConsent;
         client.Enabled = request.Enabled;
-        
+
         _db.Clients.Update(client);
 
-        var success = await _db.SaveChangesAsync(cancellationToken) > 0;
+        bool success = await _db.SaveChangesAsync(cancellationToken) > 0;
 
         await _events.PublishAsync(new ClientUpdatedEvent(client.Id));
-        
+
         if (!success)
         {
-            throw new InternalServerException(_t["Update client failed"], new List<string>{ "Failed to update client" });
+            throw new InternalServerException(_t["Update client failed"], new List<string> { "Failed to update client" });
         }
     }
-    
+
     public async Task DeleteAsync(int clientId, CancellationToken cancellationToken)
     {
         var client = await FindClientByIdAsync(clientId, cancellationToken);
 
         _db.Clients.Remove(client);
 
-        var success = await _db.SaveChangesAsync(cancellationToken) > 0;
+        bool success = await _db.SaveChangesAsync(cancellationToken) > 0;
 
         await _events.PublishAsync(new ClientDeletedEvent(client.Id));
-        
+
         if (!success)
         {
-            throw new InternalServerException(_t["Delete client failed"], new List<string>{ "Failed to delete client" });
+            throw new InternalServerException(_t["Delete client failed"], new List<string> { "Failed to delete client" });
         }
     }
-    
+
     public async Task<string> CreateAsync(CreateClientRequest request, CancellationToken cancellationToken)
     {
         var client = new Client
@@ -106,20 +102,20 @@ internal partial class ClientService : IClientService
             RequireConsent = request.RequireConsent,
             AllowRememberConsent = request.AllowRememberConsent
         };
-        
+
         await _db.Clients.AddAsync(client, cancellationToken);
 
-        var success = await _db.SaveChangesAsync(cancellationToken) > 0;
-        
-        if (!success) throw new InternalServerException(_t["Create client failed"], new List<string>{ "Failed to create client" });
-        
+        bool success = await _db.SaveChangesAsync(cancellationToken) > 0;
+
+        if (!success) throw new InternalServerException(_t["Create client failed"], new List<string> { "Failed to create client" });
+
         await _events.PublishAsync(new ClientCreatedEvent(client.Id));
 
         return string.Format(_t["Client {0} Registered."], client.Id);
     }
 
     #region Entity Queries
-    
+
     public async Task<bool> ExistsWithClientIdAsync(string clientId, CancellationToken cancellationToken, int? exceptId = null)
     {
         return await _db.Clients

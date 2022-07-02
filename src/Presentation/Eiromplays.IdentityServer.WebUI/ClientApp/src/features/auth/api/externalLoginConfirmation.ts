@@ -24,7 +24,7 @@ export const externalLoginConfirmation = ({
   returnUrl?: string;
 }): Promise<ExternalLoginConfirmationResponse> => {
   return axios.post(
-    `${identityServerUrl}/spa/externalLoginConfirmation?returnUrl=${returnUrl}`,
+    `${identityServerUrl}/api/v1/account/external-logins/confirmation?returnUrl=${returnUrl}`,
     data
   );
 };

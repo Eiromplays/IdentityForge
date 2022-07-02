@@ -6,7 +6,7 @@ import { identityServerUrl } from '@/utils/envVariables';
 import { ExternalLoginsResponse } from '../types';
 
 export const getLogins = (): Promise<ExternalLoginsResponse> => {
-  return axios.get(`${identityServerUrl}/ExternalLogins`);
+  return axios.get(`${identityServerUrl}/api/v1/external-logins`);
 };
 
 type QueryFnType = typeof getLogins;

@@ -4,6 +4,8 @@ public class EntitiesByPaginationFilterSpec<T, TResult> : EntitiesByBaseFilterSp
 {
     public EntitiesByPaginationFilterSpec(PaginationFilter filter)
         : base(filter) =>
+
+        // ReSharper disable once VirtualMemberCallInConstructor
         Query.PaginateBy(filter);
 }
 
@@ -11,5 +13,7 @@ public class EntitiesByPaginationFilterSpec<T> : EntitiesByBaseFilterSpec<T>
 {
     public EntitiesByPaginationFilterSpec(PaginationFilter filter)
         : base(filter) =>
+
+        // ReSharper disable once VirtualMemberCallInConstructor
         Query.PaginateBy(filter);
 }

@@ -43,7 +43,7 @@ const data = [
 
 export const Dashboard = () => {
   const { user } = useAuth();
-  user.id;
+
   const dashboardStatsQuery = useDashboardStats();
 
   if (dashboardStatsQuery.isLoading) {

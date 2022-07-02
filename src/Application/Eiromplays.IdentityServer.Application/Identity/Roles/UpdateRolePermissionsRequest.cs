@@ -1,6 +1,3 @@
-using Eiromplays.IdentityServer.Application.Common.Validation;
-using FluentValidation;
-
 namespace Eiromplays.IdentityServer.Application.Identity.Roles;
 
 public class UpdateRolePermissionsRequest
@@ -9,7 +6,7 @@ public class UpdateRolePermissionsRequest
     public List<string> Permissions { get; set; } = default!;
 }
 
-public class UpdateRolePermissionsRequestValidator : CustomValidator<UpdateRolePermissionsRequest>
+public class UpdateRolePermissionsRequestValidator : Validator<UpdateRolePermissionsRequest>
 {
     public UpdateRolePermissionsRequestValidator()
     {

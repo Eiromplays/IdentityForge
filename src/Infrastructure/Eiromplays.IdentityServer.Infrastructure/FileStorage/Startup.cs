@@ -8,12 +8,12 @@ internal static class Startup
 {
     internal static IApplicationBuilder UseFileStorage(this IApplicationBuilder app)
     {
-        var staticFilesPath = Path.Combine(Directory.GetCurrentDirectory(), "Files");
+        string staticFilesPath = Path.Combine(Directory.GetCurrentDirectory(), "Files");
         if (!Directory.Exists(staticFilesPath))
         {
             Directory.CreateDirectory(staticFilesPath);
         }
-        
+
         return app.UseStaticFiles(new StaticFileOptions
         {
             FileProvider = new PhysicalFileProvider(staticFilesPath),

@@ -1,11 +1,12 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
+using Eiromplays.IdentityServer.Application.Identity.Users.Password;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.ResetPassword;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : Endpoint<ResetPasswordRequest, Models.Response>
 {
     private readonly IUserService _userService;
-    
+
     public Endpoint(IUserService userService)
     {
         _userService = userService;
@@ -22,9 +23,9 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(Models.Request req, CancellationToken ct)
+    public override async Task HandleAsync(ResetPasswordRequest req, CancellationToken ct)
     {
-        Response.Message = await _userService.ResetPasswordAsync(req.Data);
+        Response.Message = await _userService.ResetPasswordAsync(req);
 
         await SendAsync(Response, cancellation: ct);
     }

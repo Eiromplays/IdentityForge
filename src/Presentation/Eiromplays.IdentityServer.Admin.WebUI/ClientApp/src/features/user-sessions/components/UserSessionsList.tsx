@@ -5,6 +5,7 @@ import {
   formatDate,
   Link,
   PaginatedTable,
+  SearchFilter,
   Spinner,
   useAuth,
 } from 'eiromplays-ui';
@@ -24,11 +25,22 @@ export const UserSessionsList = () => {
 
   if (!user) return null;
 
+  const searchFilter: SearchFilter = {
+    customProperties: [],
+    orderBy: ['id', 'subjectId', 'sessionId', 'applicationName'],
+    advancedSearch: {
+      fields: ['id', 'subjectId', 'sessionId', 'applicationName'],
+      keyword: '',
+    },
+    keyword: '',
+  };
+
   return (
     <PaginatedTable<SearchUserSessionDTO, UserSession>
       url="/user-sessions/search"
       queryKeyName="search-user-sessions"
       searchData={{ pageNumber: page, pageSize: pageSize }}
+      searchFilter={searchFilter}
       columns={[
         {
           title: 'Session Id',

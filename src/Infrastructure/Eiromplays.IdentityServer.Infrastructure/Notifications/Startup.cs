@@ -36,7 +36,7 @@ internal static class Startup
                     throw new InvalidOperationException($"SignalR backplane Provider {backplaneSettings.Provider} is not supported.");
             }
 
-            logger.Information($"SignalR Backplane Current Provider: {backplaneSettings.Provider}");
+            logger.Information("SignalR Backplane Current Provider: {BackplaneSettingsProvider}", backplaneSettings.Provider);
         }
 
         return services;
