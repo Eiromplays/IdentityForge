@@ -7,7 +7,7 @@ using Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration; 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -19,10 +19,9 @@ internal static class Startup
     internal static IServiceCollection AddIdentity(this IServiceCollection services, IConfiguration configuration, ProjectType projectType)
     {
         if (projectType is ProjectType.Spa) return services;
-        
-        var identityServerOptions = configuration.GetSection(nameof(Duende.IdentityServer.Configuration
-        .IdentityServerOptions)).Get<IdentityServerOptions>() ?? new IdentityServerOptions();
-        
+
+        var identityServerOptions = configuration.GetSection(nameof(IdentityServerOptions)).Get<IdentityServerOptions>() ?? new IdentityServerOptions();
+
         return services
             .Configure<IdentityOptions>(configuration.GetSection(nameof(IdentityOptions)))
             .AddIdentity<ApplicationUser, ApplicationRole>(options =>
@@ -30,7 +29,7 @@ internal static class Startup
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders()
             .Services
-                
+
             // This is required to redirect the user to the correct page for login
             .ConfigureApplicationCookie(options =>
             {
@@ -40,7 +39,7 @@ internal static class Startup
                     {
                         x.Response.Redirect(!string.IsNullOrWhiteSpace(
                             identityServerOptions.UserInteraction.LoginUrl)
-                            ? identityServerOptions.UserInteraction.LoginUrl: 
+                            ? identityServerOptions.UserInteraction.LoginUrl :
                             "https://localhost:3000/auth/login");
                         return Task.CompletedTask;
                     },
@@ -48,7 +47,7 @@ internal static class Startup
                     {
                         x.Response.Redirect(!string.IsNullOrWhiteSpace(
                             identityServerOptions.UserInteraction.LogoutUrl)
-                            ? identityServerOptions.UserInteraction.LogoutUrl: 
+                            ? identityServerOptions.UserInteraction.LogoutUrl :
                             "https://localhost:3000/auth/logout");
                         return Task.CompletedTask;
                     }
@@ -78,7 +77,8 @@ internal static class Startup
             .AddOpenTelemetryTracing(projectType);
     }
 
-    internal static IServiceCollection AddOpenTelemetryTracing(this IServiceCollection services,
+    internal static IServiceCollection AddOpenTelemetryTracing(
+        this IServiceCollection services,
         ProjectType projectType)
     {
         if (projectType != ProjectType.Spa) return services;
@@ -93,14 +93,14 @@ internal static class Startup
                     .AddSource(IdentityServerConstants.Tracing.Services)
                     .AddSource(IdentityServerConstants.Tracing.Stores)
                     .AddSource(IdentityServerConstants.Tracing.Validation)
-                
+
                     .SetResourceBuilder(
                         ResourceBuilder.CreateDefault()
                             .AddService("IdentityServer"))
                     .AddHttpClientInstrumentation()
                     .AddAspNetCoreInstrumentation()
                     .AddSqlClientInstrumentation()
-                    
+
                     .AddJaegerExporter(options =>
                     {
                         options.AgentHost = "localhost";
@@ -112,7 +112,7 @@ internal static class Startup
                         options.Targets = ConsoleExporterOutputTargets.Console;
                     });
             });*/
-        
+
         return services
                 .AddOpenTelemetryTracing(builder =>
                 {
@@ -129,7 +129,7 @@ internal static class Startup
                         .AddHttpClientInstrumentation()
                         .AddAspNetCoreInstrumentation()
                         .AddSqlClientInstrumentation()
-                        
+
                         .AddConsoleExporter();
                 });
     }
@@ -137,13 +137,13 @@ internal static class Startup
     internal static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration, ProjectType projectType)
     {
         if (projectType is not ProjectType.IdentityServer) return services;
-        
+
         var authenticationBuilder = services.AddAuthentication();
 
         // TODO: Find a better way to register external providers
         var externalProviderConfiguration = configuration.GetSection(nameof(ExternalProvidersConfiguration))
             .Get<ExternalProvidersConfiguration>();
-        
+
         if (externalProviderConfiguration.UseGoogleProvider &&
             !string.IsNullOrWhiteSpace(externalProviderConfiguration.GoogleClientId) &&
             !string.IsNullOrWhiteSpace(externalProviderConfiguration.GoogleClientSecret))

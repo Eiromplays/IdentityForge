@@ -7,7 +7,8 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
 internal partial class UserService
 {
-    public async Task<List<PersistedGrantDto>> GetPersistedGrantsAsync(string userId,
+    public async Task<List<PersistedGrantDto>> GetPersistedGrantsAsync(
+        string userId,
         CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(userId);

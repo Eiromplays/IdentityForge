@@ -17,11 +17,9 @@ public class ApiScopeCreatedEvent : ApiScopeEvent
 
 public class ApiScopeUpdatedEvent : ApiScopeEvent
 {
-
     public ApiScopeUpdatedEvent(int apiScopeId)
         : base(apiScopeId)
     {
-        
     }
 }
 
@@ -30,6 +28,5 @@ public class ApiScopeDeletedEvent : ApiScopeEvent
     public ApiScopeDeletedEvent(int apiScopeId)
         : base(apiScopeId)
     {
-        
     }
 }

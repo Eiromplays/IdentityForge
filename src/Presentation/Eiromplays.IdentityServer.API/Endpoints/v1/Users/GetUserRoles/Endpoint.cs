@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.GetUserRoles;
 public class Endpoint : Endpoint<Models.Request, List<UserRoleDto>>
 {
     private readonly IUserService _userService;
-    
+
     public Endpoint(IUserService userService)
     {
         _userService = userService;
@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Models.Request, List<UserRoleDto>>
             s.Summary = "Get a user's roles.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.UserRoles));
+        Policies(EiaPermission.NameFor(EiaAction.View, EiaResource.UserRoles));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)

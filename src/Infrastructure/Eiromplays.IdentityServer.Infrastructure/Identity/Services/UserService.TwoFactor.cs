@@ -7,7 +7,7 @@ internal partial class UserService
     public async Task<string> DisableTwoFactorAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        
+
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
 
         var result = await _userManager.SetTwoFactorEnabledAsync(user, false);

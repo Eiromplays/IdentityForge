@@ -155,6 +155,84 @@
           "email",
           "gravatar_email"
         ]
+      },
+      {
+        "ClientId": "blazor_spa",
+        "ClientName": "blazor_spa",
+        "ClientUri": "https://localhost:5002",
+        "AllowedGrantTypes": [
+          "authorization_code",
+          "client_credentials"
+        ],
+        "RequireClientSecret": false,
+        "RedirectUris": [
+          "https://localhost:5002/signin-oidc"
+        ],
+        "FrontChannelLogoutUri": "https://localhost:5002/signout-oidc",
+        "BackChannelLogoutUri": "https://localhost:5002/bff/backchannel",
+        "PostLogoutRedirectUris": [
+          "https://localhost:5002/signout-callback-oidc"
+        ],
+        "AllowedCorsOrigins": [
+          "https://localhost:5002"
+        ],
+        "AllowOfflineAccess": true,
+        "AllowedScopes": [
+          "openid",
+          "profile",
+          "api",
+          "roles",
+          "email",
+          "gravatar_email"
+        ]
+      },
+      {
+        "ClientId": "react_bff_client",
+        "ClientName": "react_bff_client",
+        "ClientUri": "https://localhost:44447",
+        "AllowedGrantTypes": [
+          "authorization_code",
+          "client_credentials"
+        ],
+        "RequireClientSecret": false,
+        "RedirectUris": [
+          "https://localhost:44447/signin-oidc"
+        ],
+        "FrontChannelLogoutUri": "https://localhost:44447/signout-oidc",
+        "BackChannelLogoutUri": "https://localhost:44447/bff/backchannel",
+        "PostLogoutRedirectUris": [
+          "https://localhost:44447/signout-callback-oidc"
+        ],
+        "AllowedCorsOrigins": [
+          "https://localhost:44447"
+        ],
+        "AllowOfflineAccess": true,
+        "AllowedScopes": [
+          "openid",
+          "profile",
+          "api",
+          "roles",
+          "email",
+          "gravatar_email"
+        ]
+      },
+      {
+        "ClientId": "eiromplays_identityserver_api",
+        "ClientName": "eiromplays_identityserver_api",
+        "AllowedGrantTypes": [
+          "authorization_code"
+        ],
+        "RequireClientSecret": false,
+        "RequirePkce": true,
+        "RedirectUris": [
+          "https://localhost:7003/swagger/oauth2-redirect.html"
+        ],
+        "AllowedScopes": [
+          "api"
+        ],
+        "AllowedCorsOrigins": [
+          "https://localhost:7003"
+        ]
       }
     ]
   }

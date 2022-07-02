@@ -13,11 +13,10 @@ internal partial class UserService
         var userRoles = new List<UserRoleDto>();
 
         var user = await _userManager.FindByIdAsync(userId);
-        
+
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
-        
         var roles = await _roleManager.Roles.AsNoTracking().ToListAsync(cancellationToken);
-        
+
         foreach (var role in roles)
         {
             userRoles.Add(new UserRoleDto
@@ -45,7 +44,7 @@ internal partial class UserService
             && request.UserRoles.Any(a => !a.Enabled && a.RoleName == EIARoles.Administrator))
         {
             // Get count of users in Admin Role
-            var adminCount = (await _userManager.GetUsersInRoleAsync(EIARoles.Administrator)).Count;
+            int adminCount = (await _userManager.GetUsersInRoleAsync(EIARoles.Administrator)).Count;
 
             if (adminCount <= 2)
             {
@@ -57,7 +56,7 @@ internal partial class UserService
         {
             // Check if Role Exists
             if (await _roleManager.FindByNameAsync(userRole.RoleName) is null) continue;
-            
+
             if (userRole.Enabled)
             {
                 if (!await _userManager.IsInRoleAsync(user, userRole.RoleName))

@@ -1,4 +1,3 @@
-using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Shared.Events;
 
 namespace Eiromplays.IdentityServer.Application.Common.Events;

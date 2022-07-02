@@ -1,5 +1,7 @@
 import { axios } from 'eiromplays-ui';
 
+import { identityServerUrl } from '@/utils/envVariables';
+
 export type RegisterCredentialsDTO = {
   firstName: string;
   lastName: string;
@@ -16,5 +18,5 @@ export type RegisterResponse = {
 export const registerWithEmailAndPassword = (
   data: RegisterCredentialsDTO
 ): Promise<RegisterResponse> => {
-  return axios.post('/users/self-register', data);
+  return axios.post(`${identityServerUrl}/api/v1/account/register`, data);
 };

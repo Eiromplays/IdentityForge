@@ -8,10 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FastEndpoints" Version="4.3.0-beta6" />
-    <PackageReference Include="FastEndpoints.Swagger" Version="4.3.0-beta6" />
-    <PackageReference Include="FluentValidation.AspNetCore" Version="11.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.5" />
+    <PackageReference Include="FastEndpoints" Version="4.3.0" />
+    <PackageReference Include="FastEndpoints.Swagger" Version="4.3.0" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
     <PackageReference Include="Serilog" Version="2.11.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
@@ -53,6 +53,12 @@
     <None Include="Email-Templates\*.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Content Update="Configurations\database.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Configurations\mail.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Logs\*" />

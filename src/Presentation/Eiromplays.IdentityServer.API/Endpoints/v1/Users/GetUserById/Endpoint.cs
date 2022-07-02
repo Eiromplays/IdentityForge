@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.GetUserById;
 public class Endpoint : Endpoint<Models.Request, UserDetailsDto>
 {
     private readonly IUserService _userService;
-    
+
     public Endpoint(IUserService userService)
     {
         _userService = userService;
@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Models.Request, UserDetailsDto>
             s.Summary = "Get a user's details";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.Users));
+        Policies(EiaPermission.NameFor(EiaAction.View, EiaResource.Users));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)

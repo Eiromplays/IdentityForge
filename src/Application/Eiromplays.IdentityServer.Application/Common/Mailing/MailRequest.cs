@@ -2,9 +2,17 @@ namespace Eiromplays.IdentityServer.Application.Common.Mailing;
 
 public class MailRequest
 {
-    public MailRequest(List<string> to, string subject, string? body = null, string? from = null,
-        string? displayName = null, string? replyTo = null, string? replyToName = null, List<string>? bcc = null,
-        List<string>? cc = null, IDictionary<string, byte[]>? attachmentData = null,
+    public MailRequest(
+        List<string> to,
+        string subject,
+        string? body = null,
+        string? from = null,
+        string? displayName = null,
+        string? replyTo = null,
+        string? replyToName = null,
+        List<string>? bcc = null,
+        List<string>? cc = null,
+        IDictionary<string, byte[]>? attachmentData = null,
         IDictionary<string, string>? headers = null)
     {
         To = to;

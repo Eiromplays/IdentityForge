@@ -16,11 +16,11 @@ export const GrantsList = () => {
     );
   }
 
-  if (!grantsQuery.data?.grants) return null;
+  if (!grantsQuery?.data) return null;
 
   return (
     <Table<Grant>
-      data={grantsQuery.data.grants}
+      data={grantsQuery.data}
       columns={[
         {
           title: 'Client Id',

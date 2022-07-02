@@ -48,9 +48,9 @@ export const Grant = () => {
                     <MDPreview value={`Description: ${grantQuery.data.description}`} />
                   )}
                   <MDPreview
-                    value={`Identity Grants: ${grantQuery.data.identityGrantNames.join(', ')}`}
+                    value={`Identity Grants: ${grantQuery.data.identityGrantNames?.join(', ')}`}
                   />
-                  <MDPreview value={`API Grants: ${grantQuery.data.apiGrantNames.join(', ')}`} />
+                  <MDPreview value={`API Grants: ${grantQuery.data.apiGrantNames?.join(', ')}`} />
                 </div>
               </div>
             </div>

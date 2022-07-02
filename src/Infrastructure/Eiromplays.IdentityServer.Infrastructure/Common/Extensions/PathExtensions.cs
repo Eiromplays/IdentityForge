@@ -25,7 +25,7 @@ public class PathExtensions
             return other;
         }
 
-        var index = path.LastIndexOfAny(PathSeparators);
+        int index = path.LastIndexOfAny(PathSeparators);
 
         if (index != path.Length - 1)
         {
@@ -60,7 +60,7 @@ public class PathExtensions
         }
 
         var tokenizer = new StringTokenizer(pathSegment, PathSeparators);
-        var requiresResolution = tokenizer.Any(segment => segment.Length == 0 || segment.Equals(ParentDirectoryToken) || segment.Equals(CurrentDirectoryToken));
+        bool requiresResolution = tokenizer.Any(segment => segment.Length == 0 || segment.Equals(ParentDirectoryToken) || segment.Equals(CurrentDirectoryToken));
 
         if (!requiresResolution)
         {

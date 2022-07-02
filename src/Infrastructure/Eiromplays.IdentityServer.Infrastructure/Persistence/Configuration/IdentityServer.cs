@@ -1,4 +1,3 @@
-using Duende.Bff.EntityFramework;
 using Duende.IdentityServer.EntityFramework.Entities;
 using Eiromplays.IdentityServer.Domain.Constants;
 using Microsoft.EntityFrameworkCore;

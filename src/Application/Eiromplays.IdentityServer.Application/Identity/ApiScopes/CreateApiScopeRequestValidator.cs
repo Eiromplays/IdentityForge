@@ -1,6 +1,6 @@
 namespace Eiromplays.IdentityServer.Application.Identity.ApiScopes;
 
-public class CreateApiScopeRequestValidator : CustomValidator<CreateApiScopeRequest>
+public class CreateApiScopeRequestValidator : Validator<CreateApiScopeRequest>
 {
     public CreateApiScopeRequestValidator()
     {

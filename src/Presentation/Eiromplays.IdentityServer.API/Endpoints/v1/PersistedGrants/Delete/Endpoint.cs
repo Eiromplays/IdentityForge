@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             s.Summary = "Delete a persisted grant.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Delete, EIAResource.PersistedGrants));
+        Policies(EiaPermission.NameFor(EiaAction.Delete, EiaResource.PersistedGrants));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)

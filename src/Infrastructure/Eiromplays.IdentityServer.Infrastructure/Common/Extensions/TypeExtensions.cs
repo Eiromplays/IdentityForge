@@ -20,8 +20,8 @@ public static class TypeExtensions
         var values = new List<string>();
         foreach (var prop in type.GetNestedTypes().SelectMany(c => c.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)))
         {
-            var propertyValue = prop.GetValue(null);
-            if (propertyValue?.ToString() is string propertyString)
+            object? propertyValue = prop.GetValue(null);
+            if (propertyValue?.ToString() is { } propertyString)
             {
                 values.Add(propertyString);
             }

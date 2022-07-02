@@ -17,11 +17,9 @@ public class ApiResourceCreatedEvent : ApiResourceEvent
 
 public class ApiResourceUpdatedEvent : ApiResourceEvent
 {
-
     public ApiResourceUpdatedEvent(int apiResourceId)
         : base(apiResourceId)
     {
-        
     }
 }
 
@@ -30,6 +28,5 @@ public class ApiResourceDeletedEvent : ApiResourceEvent
     public ApiResourceDeletedEvent(int apiResourceId)
         : base(apiResourceId)
     {
-        
     }
 }

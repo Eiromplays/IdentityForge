@@ -2,10 +2,10 @@ using Eiromplays.IdentityServer.Application.Identity.Clients;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Clients.CreateClient;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : Endpoint<CreateClientRequest, Models.Response>
 {
     private readonly IClientService _clientService;
-    
+
     public Endpoint(IClientService clientService)
     {
         _clientService = clientService;
@@ -19,12 +19,13 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             s.Summary = "Creates a new client.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Create, EIAResource.Clients));
+        Policies(EiaPermission.NameFor(EiaAction.Create, EiaResource.Clients));
+        ScopedValidator();
     }
 
-    public override async Task HandleAsync(Models.Request req, CancellationToken ct)
+    public override async Task HandleAsync(CreateClientRequest req, CancellationToken ct)
     {
-        Response.Message = await _clientService.CreateAsync(req.Data, ct);
+        Response.Message = await _clientService.CreateAsync(req, ct);
 
         await SendOkAsync(Response, cancellation: ct);
     }

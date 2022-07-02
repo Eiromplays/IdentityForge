@@ -1,5 +1,12 @@
 import { useSearch, MatchRoute } from '@tanstack/react-location';
-import { Spinner, PaginatedTable, Link, defaultPageIndex, defaultPageSize } from 'eiromplays-ui';
+import {
+  Spinner,
+  PaginatedTable,
+  Link,
+  defaultPageIndex,
+  defaultPageSize,
+  SearchFilter,
+} from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
@@ -13,11 +20,22 @@ export const RolesList = () => {
   const page = search.pagination?.index || defaultPageIndex;
   const pageSize = search.pagination?.size || defaultPageSize;
 
+  const searchFilter: SearchFilter = {
+    customProperties: [],
+    orderBy: ['id', 'name', 'description', 'permissions'],
+    advancedSearch: {
+      fields: ['id', 'name', 'description', 'permissions'],
+      keyword: '',
+    },
+    keyword: '',
+  };
+
   return (
     <PaginatedTable<SearchRoleDTO, Role>
       url="/roles/search"
       queryKeyName="search-roles"
       searchData={{ pageNumber: page, pageSize: pageSize }}
+      searchFilter={searchFilter}
       columns={[
         {
           title: 'Id',

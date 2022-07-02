@@ -3,31 +3,25 @@ using Eiromplays.IdentityServer.Application.Identity.Resources;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
-internal partial class ResourceService : IResourceService
+internal class ResourceService : IResourceService
 {
     private readonly ApplicationDbContext _db;
-    private readonly IStringLocalizer _t;
-    private readonly ILogger _logger;
 
-    public ResourceService(ApplicationDbContext db, IStringLocalizer<ResourceService> t, ILogger<ResourceService> logger)
+    public ResourceService(ApplicationDbContext db)
     {
         _db = db;
-        _t = t;
-        _logger = logger;
     }
-    
+
     public async Task<List<ApiResourceDto>> FindApiResourcesByNameAsync(IEnumerable<string> apiResourceNames, CancellationToken cancellationToken)
     {
         var query =
             from apiResource in _db.ApiResources
             where apiResourceNames.Contains(apiResource.Name)
             select apiResource;
-            
+
         var apis = await query
             .Include(x => x.Secrets)
             .Include(x => x.Scopes)
@@ -39,7 +33,7 @@ internal partial class ResourceService : IResourceService
 
         return apis.Adapt<List<ApiResourceDto>>();
     }
-    
+
     public async Task<List<ApiResourceDto>> FindApiResourcesByScopeNameAsync(IEnumerable<string> scopeNames, CancellationToken cancellationToken)
     {
         var query =
@@ -55,10 +49,10 @@ internal partial class ResourceService : IResourceService
             .AsNoTracking()
             .Where(api => api.Scopes.Any(x => scopeNames.Contains(x.Scope)))
             .ToListAsync(cancellationToken);
-        
+
         return apis.Adapt<List<ApiResourceDto>>();
     }
-    
+
     public async Task<List<IdentityResourceDto>> FindIdentityResourcesByScopeNameAsync(IEnumerable<string> scopeNames, CancellationToken cancellationToken)
     {
         var query =
@@ -75,7 +69,6 @@ internal partial class ResourceService : IResourceService
 
         return resources.Adapt<List<IdentityResourceDto>>();
     }
-    
 
     public async Task<List<ApiScopeDto>> FindApiScopesByNameAsync(IEnumerable<string> scopeNames, CancellationToken cancellationToken)
     {
@@ -108,5 +101,4 @@ internal partial class ResourceService : IResourceService
 
         return resources;
     }
-
 }

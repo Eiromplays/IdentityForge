@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.DeleteUser;
 public class Endpoint : Endpoint<Models.Request>
 {
     private readonly IUserService _userService;
-    
+
     public Endpoint(IUserService userService)
     {
         _userService = userService;
@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Models.Request>
             s.Summary = "Delete a user.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Delete, EIAResource.Users));
+        Policies(EiaPermission.NameFor(EiaAction.Delete, EiaResource.Users));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
