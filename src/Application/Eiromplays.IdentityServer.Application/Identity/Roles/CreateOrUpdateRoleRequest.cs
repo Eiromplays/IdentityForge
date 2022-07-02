@@ -7,7 +7,7 @@ public class CreateOrUpdateRoleRequest
     public string? Description { get; set; }
 }
 
-public class CreateOrUpdateRoleRequestValidator : CustomValidator<CreateOrUpdateRoleRequest>
+public class CreateOrUpdateRoleRequestValidator : Validator<CreateOrUpdateRoleRequest>
 {
     public CreateOrUpdateRoleRequestValidator(IRoleService roleService, IStringLocalizer<CreateOrUpdateRoleRequestValidator> T) =>
         RuleFor(r => r.Name)

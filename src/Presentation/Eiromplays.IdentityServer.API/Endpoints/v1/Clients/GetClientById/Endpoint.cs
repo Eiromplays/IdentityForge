@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Clients.GetClientById;
 public class Endpoint : Endpoint<Models.Request, ClientDto>
 {
     private readonly IClientService _clientService;
-    
+
     public Endpoint(IClientService clientService)
     {
         _clientService = clientService;
@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Models.Request, ClientDto>
             s.Summary = "Get client details.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.Clients));
+        Policies(EiaPermission.NameFor(EiaAction.View, EiaResource.Clients));
     }
 
     public override async Task HandleAsync(Models.Request request, CancellationToken ct)

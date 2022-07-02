@@ -1,8 +1,8 @@
 namespace Eiromplays.IdentityServer.Application.Identity.IdentityResources;
 
-public class CreateIdentityResourceRequestValidator : CustomValidator<CreateIdentityResourceRequest>
+public class CreateIdentityResourceRequestValidator : Validator<CreateIdentityResourceRequest>
 {
-    public CreateIdentityResourceRequestValidator(IStringLocalizer<CreateIdentityResourceRequestValidator> T)
+    public CreateIdentityResourceRequestValidator()
     {
         RuleFor(p => p.Name)
             .NotEmpty();

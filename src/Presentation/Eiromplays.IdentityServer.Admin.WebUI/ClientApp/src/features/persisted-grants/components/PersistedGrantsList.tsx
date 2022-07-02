@@ -5,6 +5,7 @@ import {
   formatDate,
   Link,
   PaginatedTable,
+  SearchFilter,
   Spinner,
 } from 'eiromplays-ui';
 
@@ -20,11 +21,22 @@ export const PersistedGrantsList = () => {
   const page = search.pagination?.index || defaultPageIndex;
   const pageSize = search.pagination?.size || defaultPageSize;
 
+  const searchFilter: SearchFilter = {
+    customProperties: [],
+    orderBy: ['subjectId', 'sessionId', 'clientId', 'creationTime'],
+    advancedSearch: {
+      fields: ['subjectId', 'sessionId', 'clientId', 'creationTime'],
+      keyword: '',
+    },
+    keyword: '',
+  };
+
   return (
     <PaginatedTable<SearchPersistedGrantDTO, PersistedGrant>
       url="/persisted-grants/search"
       queryKeyName="search-persisted-grants"
       searchData={{ pageNumber: page, pageSize: pageSize }}
+      searchFilter={searchFilter}
       columns={[
         {
           title: 'Type',

@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Clients.DeleteClient;
 public class Endpoint : Endpoint<Models.Request>
 {
     private readonly IClientService _clientService;
-    
+
     public Endpoint(IClientService clientService)
     {
         _clientService = clientService;
@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Models.Request>
             s.Summary = "Delete a client.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Delete, EIAResource.Clients));
+        Policies(EiaPermission.NameFor(EiaAction.Delete, EiaResource.Clients));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)

@@ -2,7 +2,7 @@
 
 public abstract class ApplicationUserEvent : DomainEvent
 {
-    public string UserId { get; set; } = default!;
+    public string UserId { get; set; }
 
     protected ApplicationUserEvent(string userId) => UserId = userId;
 }
@@ -29,6 +29,5 @@ public class ApplicationUserDeletedEvent : ApplicationUserEvent
     public ApplicationUserDeletedEvent(string userId)
         : base(userId)
     {
-        
     }
 }

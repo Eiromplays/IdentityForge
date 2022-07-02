@@ -1,8 +1,8 @@
 namespace Eiromplays.IdentityServer.Application.Identity.ApiResources;
 
-public class UpdateApiResourceRequestValidator : CustomValidator<UpdateApiResourceRequest>
+public class UpdateApiResourceRequestValidator : Validator<UpdateApiResourceRequest>
 {
-    public UpdateApiResourceRequestValidator(IStringLocalizer<UpdateApiResourceRequestValidator> T)
+    public UpdateApiResourceRequestValidator()
     {
         RuleFor(p => p.Id)
             .NotEmpty();

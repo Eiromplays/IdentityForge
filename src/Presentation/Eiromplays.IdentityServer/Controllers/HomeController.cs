@@ -14,7 +14,7 @@ namespace Eiromplays.IdentityServer.Controllers;
 [AllowAnonymous]
 public class HomeController : Controller
 {
-    [HttpGet]
+    [Microsoft.AspNetCore.Mvc.HttpGet]
     public IActionResult Index()
     {
         return View();

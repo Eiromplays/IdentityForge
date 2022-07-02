@@ -1,4 +1,3 @@
-using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Application.Identity.Users.Logins;
@@ -17,7 +16,7 @@ internal partial class UserService
 
         return (await _userManager.GetLoginsAsync(user)).Adapt<List<UserLoginInfoDto>>();
     }
-    
+
     public async Task<string> AddLoginAsync(string userId, UserLoginInfoDto login)
     {
         var user = await _userManager.FindByIdAsync(userId);
@@ -25,7 +24,7 @@ internal partial class UserService
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
 
         var result = await _userManager.AddLoginAsync(user, new UserLoginInfo(login.LoginProvider, login.ProviderKey, login.ProviderDisplayName));
-        
+
         if (!result.Succeeded)
         {
             throw new BadRequestException(string.Join(",", result.Errors.Select(e => e.Description)));
@@ -40,11 +39,11 @@ internal partial class UserService
         {
             CurrentLogins = await GetLoginsAsync(userId),
         };
-        
+
         response.OtherLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync())
             .Where(auth => response.CurrentLogins.All(ul => auth.Name != ul.LoginProvider)).ToList().Adapt<List<AuthenticationSchemeDto>>();
         response.ShowRemoveButton = response.CurrentLogins.Count > 1 || await HasPasswordAsync(userId);
-        
+
         return response;
     }
 
@@ -53,7 +52,7 @@ internal partial class UserService
         var user = await _userManager.FindByIdAsync(userId);
 
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
-        
+
         var result = await _userManager.RemoveLoginAsync(user, model.LoginProvider, model.ProviderKey);
         if (!result.Succeeded)
         {

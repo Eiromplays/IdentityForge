@@ -5,7 +5,7 @@ public class ResourcesDto
     public ResourcesDto()
     {
     }
-    
+
     public ResourcesDto(ResourcesDto other)
         : this(other.IdentityResources, other.ApiResources, other.ApiScopes)
     {
@@ -18,19 +18,24 @@ public class ResourcesDto
     /// <param name="identityResources">The identity resources.</param>
     /// <param name="apiResources">The API resources.</param>
     /// <param name="apiScopes">The API scopes.</param>
-    public ResourcesDto(IEnumerable<IdentityResourceDto> identityResources, IEnumerable<ApiResourceDto> apiResources, IEnumerable<ApiScopeDto> apiScopes)
+    public ResourcesDto(IEnumerable<IdentityResourceDto>? identityResources, IEnumerable<ApiResourceDto>? apiResources, IEnumerable<ApiScopeDto>? apiScopes)
     {
-        if (identityResources?.Any() == true)
+        var identityResourcesList = identityResources?.ToList();
+        if (identityResourcesList?.Any() == true)
         {
-            IdentityResources = new HashSet<IdentityResourceDto>(identityResources.ToArray());
+            IdentityResources = new HashSet<IdentityResourceDto>(identityResourcesList);
         }
-        if (apiResources?.Any() == true)
+
+        var apiResourcesList = apiResources?.ToList();
+        if (apiResourcesList?.Any() == true)
         {
-            ApiResources = new HashSet<ApiResourceDto>(apiResources.ToArray());
+            ApiResources = new HashSet<ApiResourceDto>(apiResourcesList);
         }
-        if (apiScopes?.Any() == true)
+
+        var apiScopesList = apiScopes?.ToList();
+        if (apiScopesList?.Any() == true)
         {
-            ApiScopes = new HashSet<ApiScopeDto>(apiScopes.ToArray());
+            ApiScopes = new HashSet<ApiScopeDto>(apiScopesList.ToArray());
         }
     }
 
@@ -51,7 +56,7 @@ public class ResourcesDto
     /// Gets or sets the API resources.
     /// </summary>
     public ICollection<ApiResourceDto> ApiResources { get; set; } = new HashSet<ApiResourceDto>();
-        
+
     /// <summary>
     /// Gets or sets the API scopes.
     /// </summary>

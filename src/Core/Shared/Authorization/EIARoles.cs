@@ -1,6 +1,6 @@
-namespace Shared.Authorization;
-
 using System.Collections.ObjectModel;
+
+namespace Shared.Authorization;
 
 // ReSharper disable once InconsistentNaming
 public static class EIARoles

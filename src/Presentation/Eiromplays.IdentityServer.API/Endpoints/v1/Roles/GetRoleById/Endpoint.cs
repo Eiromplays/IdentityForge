@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.GetRoleById;
 public class Endpoint : Endpoint<Models.Request, RoleDto>
 {
     private readonly IRoleService _roleService;
-    
+
     public Endpoint(IRoleService roleService)
     {
         _roleService = roleService;
@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Models.Request, RoleDto>
             s.Summary = "Get role details.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.Roles));
+        Policies(EiaPermission.NameFor(EiaAction.View, EiaResource.Roles));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)

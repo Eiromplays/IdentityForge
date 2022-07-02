@@ -5,7 +5,6 @@ using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Common.Specification;
 using Eiromplays.IdentityServer.Application.Identity.Roles;
-using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Domain.Identity;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
@@ -50,13 +49,13 @@ internal class RoleService : IRoleService
             .WithSpecification(spec)
             .ProjectToType<RoleDto>()
             .ToListAsync(cancellationToken);
-        
-        var count = await _roleManager.Roles
+
+        int count = await _roleManager.Roles
             .CountAsync(cancellationToken);
 
         return new PaginationResponse<RoleDto>(roles, count, filter.PageNumber, filter.PageSize);
     }
-    
+
     public async Task<List<RoleDto>> GetListAsync(CancellationToken cancellationToken) =>
         (await _roleManager.Roles.ToListAsync(cancellationToken))
             .Adapt<List<RoleDto>>();
@@ -79,7 +78,7 @@ internal class RoleService : IRoleService
         var role = await GetByIdAsync(roleId);
 
         role.Permissions = await _db.RoleClaims
-            .Where(c => c.RoleId == roleId && c.ClaimType == EIAClaims.Permission)
+            .Where(c => c.RoleId == roleId && c.ClaimType == EiaClaims.Permission)
             .Select(c => c.ClaimValue)
             .ToListAsync(cancellationToken);
 
@@ -134,9 +133,9 @@ internal class RoleService : IRoleService
     public async Task<string> UpdatePermissionsAsync(UpdateRolePermissionsRequest request, CancellationToken cancellationToken)
     {
         var role = await _roleManager.FindByIdAsync(request.RoleId);
-        
+
         _ = role ?? throw new NotFoundException(_t["Role Not Found"]);
-        
+
         if (role.Name == EIARoles.Administrator)
         {
             throw new ConflictException(_t["Not allowed to modify Permissions for this Role."]);
@@ -155,13 +154,13 @@ internal class RoleService : IRoleService
         }
 
         // Add all permissions that were not previously selected
-        foreach (var permission in request.Permissions.Where(c => currentClaims.All(p => p.Value != c)))
+        foreach (string permission in request.Permissions.Where(c => currentClaims.All(p => p.Value != c)))
         {
             if (string.IsNullOrEmpty(permission)) continue;
             _db.RoleClaims.Add(new ApplicationRoleClaim
             {
                 RoleId = role.Id,
-                ClaimType = EIAClaims.Permission,
+                ClaimType = EiaClaims.Permission,
                 ClaimValue = permission,
                 CreatedBy = _currentUser.GetUserId()
             });

@@ -8,7 +8,7 @@ public static class PaginationResponseExtensions
         where TDestination : class, IDto
     {
         var list = await repository.ListAsync(spec, cancellationToken);
-        var count = await repository.CountAsync(spec, cancellationToken);
+        int count = await repository.CountAsync(spec, cancellationToken);
 
         return new PaginationResponse<TDestination>(list, count, pageNumber, pageSize);
     }

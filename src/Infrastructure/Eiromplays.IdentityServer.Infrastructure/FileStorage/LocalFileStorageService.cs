@@ -3,7 +3,6 @@ using System.Text.RegularExpressions;
 using Eiromplays.IdentityServer.Application.Common.FileStorage;
 using Eiromplays.IdentityServer.Domain.Common;
 using Eiromplays.IdentityServer.Infrastructure.Common.Extensions;
-using Microsoft.AspNetCore.Http;
 
 namespace Eiromplays.IdentityServer.Infrastructure.FileStorage;
 
@@ -19,40 +18,40 @@ public class LocalFileStorageService : IFileStorageService
 
         if (!supportedFileType.GetDescriptionList().Contains(request.Extension.ToLower()))
             throw new InvalidOperationException("File Format Not Supported.");
-        
+
         if (request.Name is null)
             throw new InvalidOperationException("Name is required.");
 
-        var base64Data = Regex.Match(request.Data, "data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
+        string base64Data = Regex.Match(request.Data, "data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
 
         var streamData = new MemoryStream(Convert.FromBase64String(base64Data));
 
         if (streamData.Length <= 0) return string.Empty;
-        
-        var folder = typeof(T).Name;
-            
+
+        string folder = typeof(T).Name;
+
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
             folder = folder.Replace(@"\", "/");
         }
 
-        var folderName = supportedFileType switch
+        string folderName = supportedFileType switch
         {
             FileType.Image => Path.Combine("Files", "Images", folder),
             _ => Path.Combine("Files", "Others", folder),
         };
-            
-        var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+
+        string pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
         Directory.CreateDirectory(pathToSave);
 
-        var fileName = request.Name.Trim('"');
+        string fileName = request.Name.Trim('"');
         fileName = RemoveSpecialCharacters(fileName);
         fileName = fileName.ReplaceWhitespace("-");
         fileName += request.Extension.Trim();
-            
-        var fullPath = Path.Combine(pathToSave, fileName);
-        var dbPath = Path.Combine(folderName, fileName);
-            
+
+        string fullPath = Path.Combine(pathToSave, fileName);
+        string dbPath = Path.Combine(folderName, fileName);
+
         if (File.Exists(dbPath))
         {
             dbPath = NextAvailableFilename(dbPath);
@@ -60,9 +59,9 @@ public class LocalFileStorageService : IFileStorageService
         }
 
         await using var stream = new FileStream(fullPath, FileMode.Create);
-            
+
         await streamData.CopyToAsync(stream, cancellationToken);
-            
+
         return dbPath.Replace("\\", "/");
     }
 
@@ -89,14 +88,15 @@ public class LocalFileStorageService : IFileStorageService
         }
 
         return Path.HasExtension(path)
-            ? GetNextFilename(path.Insert(path.LastIndexOf(Path.GetExtension(path), StringComparison.Ordinal),
+            ? GetNextFilename(path.Insert(
+                path.LastIndexOf(Path.GetExtension(path), StringComparison.Ordinal),
                 NumberPattern))
             : GetNextFilename(path + NumberPattern);
     }
 
     private static string GetNextFilename(string pattern)
     {
-        var tmp = string.Format(pattern, 1);
+        string tmp = string.Format(pattern, 1);
 
         if (!File.Exists(tmp))
         {
@@ -113,8 +113,8 @@ public class LocalFileStorageService : IFileStorageService
 
         while (max != min + 1)
         {
-            var pivot = (max + min) / 2;
-            
+            int pivot = (max + min) / 2;
+
             if (File.Exists(string.Format(pattern, pivot)))
             {
                 min = pivot;

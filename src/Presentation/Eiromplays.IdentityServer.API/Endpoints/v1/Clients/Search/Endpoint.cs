@@ -3,10 +3,10 @@ using Eiromplays.IdentityServer.Application.Identity.Clients;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Clients.Search;
 
-public class Endpoint : Endpoint<Models.Request, PaginationResponse<ClientDto>>
+public class Endpoint : Endpoint<ClientListFilter, PaginationResponse<ClientDto>>
 {
     private readonly IClientService _clientService;
-    
+
     public Endpoint(IClientService clientService)
     {
         _clientService = clientService;
@@ -20,12 +20,12 @@ public class Endpoint : Endpoint<Models.Request, PaginationResponse<ClientDto>>
             s.Summary = "Search clients using available filters.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Search, EIAResource.Clients));
+        Policies(EiaPermission.NameFor(EiaAction.Search, EiaResource.Clients));
     }
 
-    public override async Task HandleAsync(Models.Request request, CancellationToken ct)
+    public override async Task HandleAsync(ClientListFilter request, CancellationToken ct)
     {
-        Response = await _clientService.SearchAsync(request.Data, ct);
+        Response = await _clientService.SearchAsync(request, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

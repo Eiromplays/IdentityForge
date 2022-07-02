@@ -60,6 +60,7 @@ public class DistributedCacheService : ICacheService
         }
         catch
         {
+            // ignored
         }
     }
 
@@ -72,6 +73,7 @@ public class DistributedCacheService : ICacheService
         }
         catch
         {
+            // ignored
         }
     }
 
@@ -83,6 +85,7 @@ public class DistributedCacheService : ICacheService
         }
         catch
         {
+            // ignored
         }
     }
 
@@ -94,6 +97,7 @@ public class DistributedCacheService : ICacheService
         }
         catch
         {
+            // ignored
         }
     }
 
@@ -109,6 +113,7 @@ public class DistributedCacheService : ICacheService
         }
         catch
         {
+            // ignored
         }
     }
 
@@ -124,6 +129,7 @@ public class DistributedCacheService : ICacheService
         }
         catch
         {
+            // ignored
         }
     }
 

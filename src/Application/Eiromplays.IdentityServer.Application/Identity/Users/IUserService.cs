@@ -1,6 +1,4 @@
 using System.Security.Claims;
-using Eiromplays.IdentityServer.Application.Common.Interfaces;
-using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Identity.Sessions;
 using Eiromplays.IdentityServer.Application.Identity.Users.Logins;
 using Eiromplays.IdentityServer.Application.Identity.Users.Password;
@@ -46,11 +44,11 @@ public interface IUserService : ITransientService
     Task<bool> HasPasswordAsync(string userId);
 
     Task<ExternalLoginsResponse> GetExternalLoginsAsync(string userId);
-    
+
     Task<List<UserLoginInfoDto>> GetLoginsAsync(string userId);
 
     Task<string> RemoveLoginAsync(RemoveLoginRequest model, string userId);
-    
+
     Task<string> AddLoginAsync(string userId, UserLoginInfoDto login);
 
     Task<Stream> ExportPersonalDataAsync(string userId, bool includeLogins = true);
@@ -61,9 +59,9 @@ public interface IUserService : ITransientService
     Task<List<UserSessionDto>> GetUserSessionsAsync(string userId, CancellationToken cancellationToken = default);
     Task<UserSessionDto> GetUserSessionAsync(string key, string? userId = default, CancellationToken cancellationToken = default);
     Task<string> DeleteUserSessionAsync(string key, string? userId = default,  CancellationToken cancellationToken = default);
-    
+
     Task<PaginationResponse<UserSessionDto>> SearchSessionsAsync(UserSessionListFilter filter, CancellationToken cancellationToken = default);
-    
+
     Task DeleteAsync(string userId);
 
     Task<string> DisableTwoFactorAsync(string userId);

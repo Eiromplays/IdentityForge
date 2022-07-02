@@ -25,10 +25,32 @@ public class EventAddingRepositoryDecorator<T> : IRepositoryWithEvents<T>
         return _decorated.AddAsync(entity, cancellationToken);
     }
 
+    public Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
+    {
+        var entitiesList = entities.ToList();
+        foreach (var entity in entitiesList)
+        {
+            entity.DomainEvents.Add(EntityCreatedEvent.WithEntity(entity));
+        }
+
+        return _decorated.AddRangeAsync(entitiesList, cancellationToken);
+    }
+
     public Task UpdateAsync(T entity, CancellationToken cancellationToken = default)
     {
         entity.DomainEvents.Add(EntityUpdatedEvent.WithEntity(entity));
         return _decorated.UpdateAsync(entity, cancellationToken);
+    }
+
+    public Task UpdateRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
+    {
+        var entitiesList = entities.ToList();
+        foreach (var entity in entitiesList)
+        {
+            entity.DomainEvents.Add(EntityUpdatedEvent.WithEntity(entity));
+        }
+
+        return _decorated.UpdateRangeAsync(entitiesList, cancellationToken);
     }
 
     public Task DeleteAsync(T entity, CancellationToken cancellationToken = default)
@@ -39,12 +61,13 @@ public class EventAddingRepositoryDecorator<T> : IRepositoryWithEvents<T>
 
     public Task DeleteRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
     {
-        foreach (var entity in entities)
+        var entitiesList = entities.ToList();
+        foreach (var entity in entitiesList)
         {
             entity.DomainEvents.Add(EntityDeletedEvent.WithEntity(entity));
         }
 
-        return _decorated.DeleteRangeAsync(entities, cancellationToken);
+        return _decorated.DeleteRangeAsync(entitiesList, cancellationToken);
     }
 
     // The rest of the methods are simply forwarded.
@@ -53,11 +76,36 @@ public class EventAddingRepositoryDecorator<T> : IRepositoryWithEvents<T>
     public Task<T?> GetByIdAsync<TId>(TId id, CancellationToken cancellationToken = default)
         where TId : notnull =>
         _decorated.GetByIdAsync(id, cancellationToken);
-    public Task<T?> GetBySpecAsync<TSpec>(TSpec specification, CancellationToken cancellationToken = default)
-        where TSpec : ISingleResultSpecification, ISpecification<T> =>
-        _decorated.GetBySpecAsync(specification, cancellationToken);
-    public Task<TResult?> GetBySpecAsync<TResult>(ISpecification<T, TResult> specification, CancellationToken cancellationToken = default) =>
-        _decorated.GetBySpecAsync(specification, cancellationToken);
+
+    [Obsolete("Use SingleOrDefaultAsync or FirstOrDefaultAsync instead")]
+    public Task<T?> GetBySpecAsync(ISpecification<T> specification, CancellationToken cancellationToken = default)
+        => _decorated.GetBySpecAsync(specification, cancellationToken);
+
+    [Obsolete("Use SingleOrDefaultAsync or FirstOrDefaultAsync instead")]
+    public Task<TResult?> GetBySpecAsync<TResult>(
+        ISpecification<T, TResult> specification,
+        CancellationToken cancellationToken = default)
+        => _decorated.GetBySpecAsync(specification, cancellationToken);
+
+    public Task<T?>
+        FirstOrDefaultAsync(ISpecification<T> specification, CancellationToken cancellationToken = default) =>
+        _decorated.FirstOrDefaultAsync(specification, cancellationToken);
+
+    public Task<TResult?> FirstOrDefaultAsync<TResult>(
+        ISpecification<T, TResult> specification,
+        CancellationToken cancellationToken = default) =>
+        _decorated.FirstOrDefaultAsync(specification, cancellationToken);
+
+    public Task<T?> SingleOrDefaultAsync(
+        ISingleResultSpecification<T> specification,
+        CancellationToken cancellationToken = default) =>
+        _decorated.SingleOrDefaultAsync(specification, cancellationToken);
+
+    public Task<TResult?> SingleOrDefaultAsync<TResult>(
+        ISingleResultSpecification<T, TResult> specification,
+        CancellationToken cancellationToken = default) =>
+        _decorated.SingleOrDefaultAsync(specification, cancellationToken);
+
     public Task<List<T>> ListAsync(CancellationToken cancellationToken = default) =>
         _decorated.ListAsync(cancellationToken);
     public Task<List<T>> ListAsync(ISpecification<T> specification, CancellationToken cancellationToken = default) =>

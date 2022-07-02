@@ -9,9 +9,9 @@ public class EmailConfiguration
 {
     public EmailProvider EmailProvider { get; set; } = EmailProvider.MailKit;
 
-    public string From { get; set; } = "";
+    public string From { get; set; } = string.Empty;
 
-    public string DefaultFromName { get; set; } = "";
+    public string DefaultFromName { get; set; } = string.Empty;
 
     public SmtpEmailConfiguration? SmtpEmailConfiguration { get; set; }
 
@@ -28,11 +28,11 @@ public class EmailConfiguration
 
 public class SmtpEmailConfiguration
 {
-    public string Host { get; set; } = "";
+    public string Host { get; set; } = string.Empty;
 
-    public string Login { get; set; } = "";
+    public string Login { get; set; } = string.Empty;
 
-    public string Password { get; set; } = "";
+    public string Password { get; set; } = string.Empty;
 
     public int Port { get; set; } = 587; // The default SMTP port
 
@@ -41,27 +41,27 @@ public class SmtpEmailConfiguration
 
 public class SendGridConfiguration
 {
-    public string ApiKey { get; set; } = "";
+    public string ApiKey { get; set; } = string.Empty;
 
     public bool SandboxMode { get; set; } = false;
 }
 
 public class MailgunConfiguration
 {
-    public string DomainName { get; set; }  = "";
+    public string DomainName { get; set; } = string.Empty;
 
-    public string ApiKey { get; set; }  = "";
+    public string ApiKey { get; set; } = string.Empty;
 
     public MailGunRegion Region { get; set; } = MailGunRegion.EU;
 }
 
 public class MailtrapConfiguration
 {
-    public string UserName { get; set; }  = "";
+    public string UserName { get; set; } = string.Empty;
 
-    public string Password { get; set; }  = "";
+    public string Password { get; set; } = string.Empty;
 
-    public string Host { get; set; }  = "";
+    public string Host { get; set; } = string.Empty;
 
     public int Port { get; set; }
 }

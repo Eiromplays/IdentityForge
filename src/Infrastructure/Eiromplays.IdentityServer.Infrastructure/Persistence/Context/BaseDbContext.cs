@@ -22,18 +22,20 @@ public class BaseDbContext : IdentityDbContext<ApplicationUser, ApplicationRole,
 {
     private readonly ICurrentUser _currentUser;
     private readonly ISerializerService _serializer;
-    private readonly DatabaseConfiguration _databaseConfiguration;
     private readonly IEventPublisher _events;
     private readonly IWebHostEnvironment _webHostEnvironment;
 
-
-    protected BaseDbContext(DbContextOptions options, ICurrentUser currentUser,
-        ISerializerService serializer, IOptions<DatabaseConfiguration> databaseConfiguration,
-        IEventPublisher events, IWebHostEnvironment webHostEnvironment) : base(options)
+    protected BaseDbContext(
+        DbContextOptions options,
+        ICurrentUser currentUser,
+        ISerializerService serializer,
+        IOptions<DatabaseConfiguration> databaseConfiguration,
+        IEventPublisher events,
+        IWebHostEnvironment webHostEnvironment)
+        : base(options)
     {
         _currentUser = currentUser;
         _serializer = serializer;
-        _databaseConfiguration = databaseConfiguration.Value;
         _events = events;
         _webHostEnvironment = webHostEnvironment;
     }
@@ -50,24 +52,20 @@ public class BaseDbContext : IdentityDbContext<ApplicationUser, ApplicationRole,
 
     // Used by Dapper
     public IDbConnection Connection => Database.GetDbConnection();
-    
+
     public DbSet<Trail> AuditTrails => Set<Trail>();
-    
+
     public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
 
     public DbSet<PersistedGrant> PersistedGrants { get; set; } = null!;
-    
 
     public DbSet<DeviceFlowCodes> DeviceFlowCodes { get; set; } = null!;
-    
 
     public DbSet<Key> Keys { get; set; } = null!;
-    
 
     public DbSet<ServerSideSession> ServerSideSessions { get; set; } = null!;
 
     public DbSet<Client> Clients { get; set; } = null!;
-    
 
     public DbSet<ClientCorsOrigin> ClientCorsOrigins { get; set; } = null!;
 
@@ -75,9 +73,9 @@ public class BaseDbContext : IdentityDbContext<ApplicationUser, ApplicationRole,
 
     public DbSet<ApiResource> ApiResources { get; set; } = null!;
 
-    public DbSet<ApiScope> ApiScopes  { get; set; } = null!;
+    public DbSet<ApiScope> ApiScopes { get; set; } = null!;
 
-    public DbSet<IdentityProvider> IdentityProviders  { get; set; } = null!;
+    public DbSet<IdentityProvider> IdentityProviders { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -97,7 +95,7 @@ public class BaseDbContext : IdentityDbContext<ApplicationUser, ApplicationRole,
     {
         var auditEntries = HandleAuditingBeforeSaveChanges(_currentUser.GetUserId());
 
-        var result = await base.SaveChangesAsync(cancellationToken);
+        int result = await base.SaveChangesAsync(cancellationToken);
 
         await HandleAuditingAfterSaveChangesAsync(auditEntries, cancellationToken);
 
@@ -155,7 +153,7 @@ public class BaseDbContext : IdentityDbContext<ApplicationUser, ApplicationRole,
                     continue;
                 }
 
-                var propertyName = property.Metadata.Name;
+                string propertyName = property.Metadata.Name;
                 if (property.Metadata.IsPrimaryKey())
                 {
                     trailEntry.KeyValues[propertyName] = property.CurrentValue;
@@ -204,7 +202,7 @@ public class BaseDbContext : IdentityDbContext<ApplicationUser, ApplicationRole,
         return trailEntries.Where(e => e.HasTemporaryProperties).ToList();
     }
 
-    private Task HandleAuditingAfterSaveChangesAsync(List<AuditTrail> trailEntries, CancellationToken cancellationToken = new())
+    private Task HandleAuditingAfterSaveChangesAsync(List<AuditTrail>? trailEntries, CancellationToken cancellationToken = new())
     {
         if (trailEntries == null || trailEntries.Count == 0)
         {

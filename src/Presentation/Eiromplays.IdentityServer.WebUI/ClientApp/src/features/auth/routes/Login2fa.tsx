@@ -17,7 +17,6 @@ export const Login2fa = () => {
       <Login2faForm
         rememberMe={rememberMeAsBoolean}
         returnUrl={returnUrl || ''}
-        onSuccess={() => window.location.assign('/bff/login')}
       />
     </Layout>
   );

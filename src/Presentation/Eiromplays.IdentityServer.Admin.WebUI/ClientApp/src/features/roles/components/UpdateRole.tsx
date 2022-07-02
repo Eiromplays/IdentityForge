@@ -7,7 +7,7 @@ import { UpdateRoleDTO, useUpdateRole } from '../api/updateRole';
 
 const schema = z.object({
   name: z.string().min(1, 'Required'),
-  description: z.string().min(1, 'Required'),
+  description: z.string().optional(),
 });
 
 type UpdateRoleProps = {

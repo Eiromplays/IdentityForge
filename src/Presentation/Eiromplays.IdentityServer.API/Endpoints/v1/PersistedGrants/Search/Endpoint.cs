@@ -3,10 +3,10 @@ using Eiromplays.IdentityServer.Application.Identity.PersistedGrants;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.PersistedGrants.Search;
 
-public class Endpoint : Endpoint<Models.Request, PaginationResponse<PersistedGrantDto>>
+public class Endpoint : Endpoint<PersistedGrantListFilter, PaginationResponse<PersistedGrantDto>>
 {
     private readonly IPersistedGrantService _persistedGrantService;
-    
+
     public Endpoint(IPersistedGrantService persistedGrantService)
     {
         _persistedGrantService = persistedGrantService;
@@ -20,12 +20,12 @@ public class Endpoint : Endpoint<Models.Request, PaginationResponse<PersistedGra
             s.Summary = "Search persisted grants using available filters.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Search, EIAResource.PersistedGrants));
+        Policies(EiaPermission.NameFor(EiaAction.Search, EiaResource.PersistedGrants));
     }
 
-    public override async Task HandleAsync(Models.Request request, CancellationToken ct)
+    public override async Task HandleAsync(PersistedGrantListFilter request, CancellationToken ct)
     {
-        Response = await _persistedGrantService.SearchAsync(request.Data, ct);
+        Response = await _persistedGrantService.SearchAsync(request, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

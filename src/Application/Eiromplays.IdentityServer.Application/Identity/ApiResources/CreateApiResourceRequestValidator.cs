@@ -1,6 +1,6 @@
 namespace Eiromplays.IdentityServer.Application.Identity.ApiResources;
 
-public class CreateApiResourceRequestRequestValidator : CustomValidator<CreateApiResourceRequest>
+public class CreateApiResourceRequestRequestValidator : Validator<CreateApiResourceRequest>
 {
     public CreateApiResourceRequestRequestValidator()
     {

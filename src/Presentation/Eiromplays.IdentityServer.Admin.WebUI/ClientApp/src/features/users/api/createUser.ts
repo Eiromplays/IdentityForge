@@ -1,6 +1,9 @@
-import { axios, MessageResponse, MutationConfig } from 'eiromplays-ui';
+import { useSearch } from '@tanstack/react-location';
+import { axios, MessageResponse, MutationConfig, queryClient } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
+
+import { LocationGenerics } from '@/App';
 
 export type CreateUserDTO = {
   data: {
@@ -24,8 +27,15 @@ type UseCreateUserOptions = {
 };
 
 export const useCreateUser = ({ config }: UseCreateUserOptions = {}) => {
+  const { pagination } = useSearch<LocationGenerics>();
+
   return useMutation({
     onSuccess: async (response) => {
+      await queryClient.refetchQueries([
+        'search-users',
+        pagination?.index ?? 1,
+        pagination?.size ?? 10,
+      ]);
       toast.success('User Created');
       toast.success(response.message);
     },

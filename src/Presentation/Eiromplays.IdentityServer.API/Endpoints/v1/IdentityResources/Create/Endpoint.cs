@@ -2,10 +2,10 @@ using Eiromplays.IdentityServer.Application.Identity.IdentityResources;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.IdentityResources.Create;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class Endpoint : Endpoint<CreateIdentityResourceRequest, Models.Response>
 {
     private readonly IIdentityResourceService _identityResourceService;
-    
+
     public Endpoint(IIdentityResourceService identityResource)
     {
         _identityResourceService = identityResource;
@@ -19,12 +19,12 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             s.Summary = "Creates a new IdentityResource.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Create, EIAResource.IdentityResources));
+        Policies(EiaPermission.NameFor(EiaAction.Create, EiaResource.IdentityResources));
     }
 
-    public override async Task HandleAsync(Models.Request req, CancellationToken ct)
+    public override async Task HandleAsync(CreateIdentityResourceRequest req, CancellationToken ct)
     {
-        Response.Message = await _identityResourceService.CreateAsync(req.Data, ct);
+        Response.Message = await _identityResourceService.CreateAsync(req, ct);
 
         await SendOkAsync(Response, cancellation: ct);
     }

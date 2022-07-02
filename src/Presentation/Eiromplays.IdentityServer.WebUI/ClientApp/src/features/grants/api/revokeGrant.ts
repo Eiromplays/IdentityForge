@@ -4,10 +4,10 @@ import { toast } from 'react-toastify';
 
 import { identityServerUrl } from '@/utils/envVariables';
 
-import { GrantsViewModel } from '../types';
+import { Grant } from '../types';
 
 export const revokeGrant = ({ clientId }: { clientId: string }) => {
-  return axios.delete(`${identityServerUrl}/grants/revoke/${clientId}`);
+  return axios.delete(`${identityServerUrl}/api/v1/grants/${clientId}`);
 };
 
 type UseRevokeGrantOptions = {
@@ -19,18 +19,18 @@ export const useRevokeGrant = ({ config }: UseRevokeGrantOptions = {}) => {
     onMutate: async (revokedGrant) => {
       await queryClient.cancelQueries('grants');
 
-      const previousGrants = queryClient.getQueryData<GrantsViewModel>('grants');
+      const previousGrants = queryClient.getQueryData<Grant[]>('grants');
 
       queryClient.setQueryData(
         'grants',
-        previousGrants?.grants?.filter((grant) => grant.clientId !== revokedGrant.clientId)
+        previousGrants?.filter((grant) => grant.clientId !== revokedGrant.clientId)
       );
 
       return { previousGrants };
     },
     onError: (_, __, context: any) => {
-      if (context?.previousDiscussions) {
-        queryClient.setQueryData('grants', context.previousDiscussions);
+      if (context?.previousGrants) {
+        queryClient.setQueryData('grants', context.previousGrants);
       }
     },
     onSuccess: async () => {
