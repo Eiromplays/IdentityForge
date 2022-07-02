@@ -36,7 +36,7 @@ public static class Startup
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config, ProjectType projectType)
     {
         if (projectType is ProjectType.Spa) return services.AddInfrastructureSpa(config, projectType);
-        
+
         MapsterSettings.Configure();
         return services
             .AddConfigurations(config)
@@ -45,7 +45,7 @@ public static class Startup
             .AddCorsPolicy(config)
             .AddExceptionMiddleware()
             .AddHealthCheck()
-            .AddPOLocalization(config)
+            .AddPoLocalization(config)
             .AddMailing(config)
             .AddMediatR(Assembly.GetExecutingAssembly())
             .AddNotifications(config)
@@ -69,7 +69,7 @@ public static class Startup
 
         return services;
     }
-    
+
     private static IServiceCollection AddHealthCheck(this IServiceCollection services) =>
         services.AddHealthChecks().Services;
 
@@ -85,7 +85,7 @@ public static class Startup
     public static WebApplication UseInfrastructure(this WebApplication app, IConfiguration config, ProjectType projectType, Action<Config>? fastEndpointsConfigAction = null)
     {
         if (projectType is ProjectType.Spa) return app;
-        
+
         app
             .UseRequestLocalization()
             .UseStaticFiles()
@@ -116,13 +116,14 @@ public static class Startup
         return builder;
     }
 
+    // ReSharper disable once UnusedMethodReturnValue.Local
     private static IEndpointConventionBuilder MapHealthCheck(this IEndpointRouteBuilder endpoints) =>
         endpoints.MapHealthChecks("/api/health").RequireAuthorization();
-    
+
     /*
         Configures custom classes for config files, so they can be retrieved from DI using IOptions<T>
         Information:
-        Account Configuration: 
+        Account Configuration:
         Profile Picture Configuration:
         Find more avatar styles here: https://avatars.dicebear.com/styles/
         You can also use a custom provider

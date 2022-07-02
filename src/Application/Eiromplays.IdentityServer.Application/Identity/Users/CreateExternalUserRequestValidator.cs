@@ -2,11 +2,11 @@ namespace Eiromplays.IdentityServer.Application.Identity.Users;
 
 public class CreateExternalUserRequestValidator : Validator<CreateExternalUserRequest>
 {
-    //TODO: FIX using GetAwaiter().GetResult() to wait for async calls
-    //Related issue: https://github.com/fullstackhero/dotnet-webapi-boilerplate/issues/639#issuecomment-1118324086
-    //This is a workaround for the issue above.
-    //Will be fixed once the IdentityServer project uses FastEndpoints, instead of Controllers.
-    
+    // TODO: FIX using GetAwaiter().GetResult() to wait for async calls
+    // Related issue: https://github.com/fullstackhero/dotnet-webapi-boilerplate/issues/639#issuecomment-1118324086
+    // This is a workaround for the issue above.
+    // Will be fixed once the IdentityServer project uses FastEndpoints, instead of Controllers.
+
     public CreateExternalUserRequestValidator(IUserService userService, IStringLocalizer<CreateExternalUserRequestValidator> T)
     {
         RuleFor(u => u.Email).Cascade(CascadeMode.Stop)

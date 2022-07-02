@@ -14,8 +14,7 @@ public class ExternalLoginConfirmationEndpoint : Endpoint<CreateExternalUserRequ
     private readonly IServerUrls _serverUrls;
     private readonly IIdentityServerInteractionService _interaction;
 
-    public ExternalLoginConfirmationEndpoint(IUserService userService, SignInManager<ApplicationUser> signInManager,
-        IIdentityServerInteractionService interaction, IServerUrls serverUrls)
+    public ExternalLoginConfirmationEndpoint(IUserService userService, SignInManager<ApplicationUser> signInManager, IIdentityServerInteractionService interaction, IServerUrls serverUrls)
     {
         _userService = userService;
         _signInManager = signInManager;
@@ -34,7 +33,7 @@ public class ExternalLoginConfirmationEndpoint : Endpoint<CreateExternalUserRequ
         AllowAnonymous();
         ScopedValidator();
     }
-    
+
     public override async Task HandleAsync(CreateExternalUserRequest req, CancellationToken ct)
     {
         // Get the information about the user from the external login provider
@@ -44,10 +43,10 @@ public class ExternalLoginConfirmationEndpoint : Endpoint<CreateExternalUserRequ
             ThrowError("Error loading external login information during confirmation.");
             return;
         }
-        
+
         var createUserResponse = await _userService.CreateExternalAsync(req, BaseURL);
 
-        var addLoginMessage = await _userService.AddLoginAsync(createUserResponse.UserId, info.Adapt<UserLoginInfoDto>());
+        string addLoginMessage = await _userService.AddLoginAsync(createUserResponse.UserId, info.Adapt<UserLoginInfoDto>());
 
         // TODO: Check if user should be logged in automatically
         /*if (_signInManager.CanSignInAsync())
@@ -57,8 +56,8 @@ public class ExternalLoginConfirmationEndpoint : Endpoint<CreateExternalUserRequ
         {
             Message = string.Join(Environment.NewLine, new List<string> { createUserResponse.Message, addLoginMessage })
         };
-        
-        var url = !string.IsNullOrWhiteSpace(req.ReturnUrl) ? Uri.UnescapeDataString(req.ReturnUrl) : null;
+
+        string? url = !string.IsNullOrWhiteSpace(req.ReturnUrl) ? Uri.UnescapeDataString(req.ReturnUrl) : null;
         var context = await _interaction.GetAuthorizationContextAsync(url);
 
         if (context != null && !string.IsNullOrWhiteSpace(url))
@@ -69,7 +68,7 @@ public class ExternalLoginConfirmationEndpoint : Endpoint<CreateExternalUserRequ
             await SendOkAsync(response, ct);
             return;
         }
-        
+
         if (string.IsNullOrEmpty(req.ReturnUrl))
         {
             response.ReturnUrl = _serverUrls.BaseUrl;

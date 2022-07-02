@@ -1,8 +1,6 @@
 using System.Globalization;
 using System.Security.Claims;
-using System.Text.Json;
 using Duende.IdentityServer.AspNetIdentity;
-using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Infrastructure.Common.Helpers;
@@ -19,23 +17,27 @@ public class CustomProfileService : ProfileService<ApplicationUser>
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly AccountConfiguration _accountConfiguration;
 
-    public CustomProfileService(UserManager<ApplicationUser> userManager,
+    public CustomProfileService(
+        UserManager<ApplicationUser> userManager,
         IUserClaimsPrincipalFactory<ApplicationUser> claimsFactory,
-        IOptions<AccountConfiguration> accountConfigurationOptions) : base(userManager, claimsFactory)
+        IOptions<AccountConfiguration> accountConfigurationOptions)
+        : base(userManager, claimsFactory)
     {
         _userManager = userManager;
         _accountConfiguration = accountConfigurationOptions.Value;
     }
 
-    public CustomProfileService(UserManager<ApplicationUser> userManager,
-        IUserClaimsPrincipalFactory<ApplicationUser> claimsFactory, ILogger<CustomProfileService> logger,
-        IOptions<AccountConfiguration> accountConfigurationOptions) :
-        base(userManager, claimsFactory, logger)
+    public CustomProfileService(
+        UserManager<ApplicationUser> userManager,
+        IUserClaimsPrincipalFactory<ApplicationUser> claimsFactory,
+        ILogger<CustomProfileService> logger,
+        IOptions<AccountConfiguration> accountConfigurationOptions)
+        : base(userManager, claimsFactory, logger)
     {
         _userManager = userManager;
         _accountConfiguration = accountConfigurationOptions.Value;
     }
-    
+
     public override async Task GetProfileDataAsync(ProfileDataRequestContext context)
     {
         await base.GetProfileDataAsync(context);
@@ -44,14 +46,14 @@ public class CustomProfileService : ProfileService<ApplicationUser>
 
         var claims = new List<Claim>();
 
-        var profilePicture = ProfilePictureHelper.GetProfilePicture(user, _accountConfiguration);
-        
+        string profilePicture = ProfilePictureHelper.GetProfilePicture(user, _accountConfiguration);
+
         if (!string.IsNullOrEmpty(user.FirstName))
             claims.Add(new Claim(JwtClaimTypes.GivenName, user.FirstName));
-        
+
         if (!string.IsNullOrEmpty(user.LastName))
             claims.Add(new Claim(JwtClaimTypes.FamilyName, user.LastName));
-        
+
         if (!string.IsNullOrWhiteSpace(profilePicture))
             claims.Add(new Claim(JwtClaimTypes.Picture, profilePicture));
 
@@ -60,7 +62,7 @@ public class CustomProfileService : ProfileService<ApplicationUser>
 
         if (user.LastModifiedOn is not null)
             claims.Add(new Claim("updated_at", user.LastModifiedOn.Value.ToString(CultureInfo.InvariantCulture)));
-        
+
         claims.Add(new Claim("created_at", user.CreatedOn.ToString(CultureInfo.InvariantCulture)));
 
         context.IssuedClaims.AddRange(claims);

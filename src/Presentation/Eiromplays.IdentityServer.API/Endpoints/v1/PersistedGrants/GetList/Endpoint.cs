@@ -19,13 +19,13 @@ public class Endpoint : EndpointWithoutRequest<List<PersistedGrantDto>>
             s.Summary = "Get list of all persisted grants.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.PersistedGrants));
+        Policies(EiaPermission.NameFor(EiaAction.View, EiaResource.PersistedGrants));
     }
 
     public override async Task HandleAsync(CancellationToken ct)
     {
         Response = await _persistedGrantService.GetListAsync(ct);
-        
+
         await SendOkAsync(Response, cancellation: ct);
     }
 }

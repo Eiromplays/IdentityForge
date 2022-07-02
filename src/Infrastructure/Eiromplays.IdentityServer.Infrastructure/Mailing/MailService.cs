@@ -21,23 +21,23 @@ public class MailService : IMailService
         {
             if (!string.IsNullOrWhiteSpace(request.Subject))
                 _fluentEmail.Subject(request.Subject);
-                
+
             if (!string.IsNullOrWhiteSpace(request.From))
                 _fluentEmail.SetFrom(request.From, request.DisplayName);
-            
+
             if (!string.IsNullOrWhiteSpace(request.ReplyTo))
                 _fluentEmail.ReplyTo(request.ReplyTo);
-            
+
             // To
-            foreach (var to in request.To)
+            foreach (string to in request.To)
                 _fluentEmail.To(to);
 
             // Bcc
-            foreach (var address in request.Bcc.Where(bccValue => !string.IsNullOrWhiteSpace(bccValue)))
+            foreach (string address in request.Bcc.Where(bccValue => !string.IsNullOrWhiteSpace(bccValue)))
                 _fluentEmail.BCC(address.Trim());
 
             // Cc
-            foreach (var address in request.Cc.Where(ccValue => !string.IsNullOrWhiteSpace(ccValue)))
+            foreach (string address in request.Cc.Where(ccValue => !string.IsNullOrWhiteSpace(ccValue)))
                 _fluentEmail.CC(address.Trim());
 
             // Headers
@@ -46,7 +46,7 @@ public class MailService : IMailService
 
             _fluentEmail.Body(request.Body, true);
 
-            //TODO: Implement file attachments
+            // TODO: Implement file attachments
             // Create the file attachments for this e-mail message
             /*foreach (var attachmentInfo in request.AttachmentData)
                 email.Attach(new Attachment { Filename = attachmentInfo.Key, Data = attachmentInfo.Value });*/
@@ -55,7 +55,7 @@ public class MailService : IMailService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            _logger.LogError(ex, "{Message}", ex.Message);
         }
     }
 }

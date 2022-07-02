@@ -12,8 +12,7 @@ public class GetGrantEndpoint : Endpoint<GetGrantRequest, GrantResponse>
     private readonly IClientStore _clients;
     private readonly IResourceStore _resources;
 
-    public GetGrantEndpoint(IIdentityServerInteractionService interaction, IClientStore clients,
-        IResourceStore resources)
+    public GetGrantEndpoint(IIdentityServerInteractionService interaction, IClientStore clients, IResourceStore resources)
     {
         _interaction = interaction;
         _clients = clients;
@@ -29,7 +28,7 @@ public class GetGrantEndpoint : Endpoint<GetGrantRequest, GrantResponse>
             s.Summary = "Get a grant";
         });
     }
-    
+
     public override async Task HandleAsync(GetGrantRequest req, CancellationToken ct)
     {
         var grants = await _interaction.GetAllUserGrantsAsync();
@@ -55,12 +54,12 @@ public class GetGrantEndpoint : Endpoint<GetGrantRequest, GrantResponse>
                 IdentityGrantNames = resources.IdentityResources.Select(x => x.DisplayName ?? x.Name).ToArray(),
                 ApiGrantNames = resources.ApiScopes.Select(x => x.DisplayName ?? x.Name).ToArray()
             };
-            
+
             items.Add(item);
         }
 
         var selectedGrant = items.FirstOrDefault(x => x.ClientId == req.ClientId);
-        
+
         if (selectedGrant is null)
             throw new NotFoundException($"Grant with client id {req.ClientId} not found");
 

@@ -1,5 +1,3 @@
-using System.Text.Json;
-using Eiromplays.IdentityServer.Domain.Enums;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -8,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NJsonSchema.Generation.TypeMappers;
 using NSwag;
 using NSwag.AspNetCore;
+using NSwag.Generation;
 using NSwag.Generation.Processors.Security;
 using ZymLabs.NSwag.FluentValidation;
 
@@ -21,9 +20,9 @@ internal static class Startup
         if (!settings.Enable) return services;
 
         services
-                .AddSwaggerDoc(maxEndpointVersion: 1, settings: s =>
-                {
-                    s.PostProcess = doc =>
+            .AddSwaggerDoc(maxEndpointVersion: 1, settings: s =>
+            {
+                s.PostProcess = doc =>
                     {
                         doc.Info.Title = settings.Title;
                         doc.Info.Version = settings.Version;
@@ -40,30 +39,13 @@ internal static class Startup
                             Url = settings.LicenseUrl
                         };
                     };
-                    
-                    s.AddSecurity(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
-                    {
-                        Type = OpenApiSecuritySchemeType.OAuth2,
-                        Flow = OpenApiOAuth2Flow.AccessCode,
-                        Description = "OAuth2.0 Auth Code with PKCE",
-                        Flows = new OpenApiOAuthFlows
-                        {
-                            AuthorizationCode = new OpenApiOAuthFlow
-                            {
-                                AuthorizationUrl = config["SecuritySettings:Swagger:AuthorizationUrl"],
-                                TokenUrl = config["SecuritySettings:Swagger:TokenUrl"],
-                                Scopes = new Dictionary<string, string>
-                                {
-                                    { config["SecuritySettings:Swagger:ApiScope"], "access the api" }
-                                }
-                            }
-                        }
-                    });
 
-                    s.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor());
-                    s.OperationProcessors.Add(new SwaggerGlobalAuthProcessor());
+                s.AddOpenApiDocumentationSecurity(config);
 
-                    s.TypeMappers.Add(new PrimitiveTypeMapper(typeof(TimeSpan), schema =>
+                s.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor());
+                s.OperationProcessors.Add(new SwaggerGlobalAuthProcessor());
+
+                s.TypeMappers.Add(new PrimitiveTypeMapper(typeof(TimeSpan), schema =>
                     {
                         schema.Type = NJsonSchema.JsonObjectType.String;
                         schema.IsNullableRaw = true;
@@ -71,15 +53,41 @@ internal static class Startup
                         schema.Example = "02:00:00";
                     }));
 
-                    s.OperationProcessors.Add(new SwaggerHeaderAttributeProcessor());
+                s.OperationProcessors.Add(new SwaggerHeaderAttributeProcessor());
 
-                    var fluentValidationSchemaProcessor = services.BuildServiceProvider().CreateScope().ServiceProvider.GetService<FluentValidationSchemaProcessor>();
-                    s.SchemaProcessors.Add(fluentValidationSchemaProcessor);
-                });
-            
-            services.AddScoped<FluentValidationSchemaProcessor>();
-            
-            return services;
+                /*var fluentValidationSchemaProcessor = services.BuildServiceProvider().CreateScope().ServiceProvider.GetService<FluentValidationSchemaProcessor>();
+                Console.WriteLine(fluentValidationSchemaProcessor != null);
+                s.SchemaProcessors.Add(fluentValidationSchemaProcessor);*/
+            });
+
+        // services.AddScoped<FluentValidationSchemaProcessor>();
+
+        return services;
+    }
+
+    internal static OpenApiDocumentGeneratorSettings AddOpenApiDocumentationSecurity(
+        this OpenApiDocumentGeneratorSettings settings,
+        IConfiguration config)
+    {
+        settings.AddSecurity(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+        {
+            Type = OpenApiSecuritySchemeType.OAuth2,
+            Flow = OpenApiOAuth2Flow.AccessCode,
+            Description = "OAuth2.0 Auth Code with PKCE",
+            Flows = new OpenApiOAuthFlows
+            {
+                AuthorizationCode = new OpenApiOAuthFlow
+                {
+                    AuthorizationUrl = config["SecuritySettings:Swagger:AuthorizationUrl"],
+                    TokenUrl = config["SecuritySettings:Swagger:TokenUrl"],
+                    Scopes = new Dictionary<string, string>
+                    {
+                        { config["SecuritySettings:Swagger:ApiScope"], "access the api" }
+                    }
+                }
+            }
+        });
+        return settings;
     }
 
     internal static IApplicationBuilder UseOpenApiDocumentation(this IApplicationBuilder app, IConfiguration config)
@@ -98,10 +106,10 @@ internal static class Startup
 
                 if (swaggerUiSettings?.OAuth2Client is not null)
                     options.OAuth2Client = swaggerUiSettings.OAuth2Client;
-                
+
                 options.AdditionalSettings.Add("persistAuthorization", "true");
             });
-        
+
         return app;
     }
 }

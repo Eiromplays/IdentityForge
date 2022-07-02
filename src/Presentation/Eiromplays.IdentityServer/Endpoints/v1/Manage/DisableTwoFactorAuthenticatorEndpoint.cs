@@ -24,7 +24,7 @@ public class DisableTwoFactorAuthenticatorEndpoint : EndpointWithoutRequest<Disa
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var userId = User.GetUserId();
+        string? userId = User.GetUserId();
 
         if (string.IsNullOrWhiteSpace(userId))
         {

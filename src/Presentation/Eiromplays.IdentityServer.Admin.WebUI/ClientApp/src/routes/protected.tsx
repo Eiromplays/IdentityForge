@@ -1,13 +1,7 @@
 import { Outlet } from '@tanstack/react-location';
 import { lazyImport, MainLayout, NotAllowed, Spinner } from 'eiromplays-ui';
 import { Suspense } from 'react';
-import {
-  AiOutlineShop,
-  AiOutlineTags,
-  BiTargetLock,
-  MdOutlineVerified,
-  MdShopTwo,
-} from 'react-icons/all';
+import { AiOutlineTags, BiTargetLock, MdOutlineVerified } from 'react-icons/all';
 import {
   HiLockClosed,
   HiOutlineDocumentText,
@@ -20,12 +14,10 @@ import { MdOutlineDevicesOther, MdOutlineHistory } from 'react-icons/md';
 import logo from '@/assets/logo.svg';
 import { ApiResourcesRoutes } from '@/features/api-resources';
 import { ApiScopesRoutes } from '@/features/api-scopes';
-import { BrandsRoutes } from '@/features/brands';
 import { ClientsRoutes } from '@/features/clients';
 import { IdentityResourcesRoutes } from '@/features/identity-resources';
 import { LogsRoutes } from '@/features/logs';
 import { PersistedGrantsRoutes } from '@/features/persisted-grants';
-import { ProductsRoutes } from '@/features/products';
 import { RolesRoutes } from '@/features/roles';
 import { UserSessionsRoutes } from '@/features/user-sessions';
 import { UsersRoutes } from '@/features/users';
@@ -55,8 +47,6 @@ const App = () => {
           { name: 'Persisted Grants', to: './persisted-grants', icon: MdOutlineVerified },
           { name: 'User Sessions', to: './user-sessions', icon: MdOutlineDevicesOther },
           { name: 'Logs', to: './logs', icon: MdOutlineHistory },
-          { name: 'Products', to: './products', icon: AiOutlineShop },
-          { name: 'Brands', to: './brands', icon: MdShopTwo },
           {
             name: 'Discovery Document',
             to: `${identityServerUrl}/.well-known/openid-configuration`,
@@ -95,8 +85,6 @@ export const protectedRoutes = [
       IdentityResourcesRoutes,
       ApiScopesRoutes,
       ApiResourcesRoutes,
-      ProductsRoutes,
-      BrandsRoutes,
       { path: '*', element: <Dashboard /> },
     ],
   },

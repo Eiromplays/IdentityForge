@@ -1,4 +1,3 @@
-using MediatR;
 using Shared.Events;
 
 namespace Eiromplays.IdentityServer.Application.Common.Events;

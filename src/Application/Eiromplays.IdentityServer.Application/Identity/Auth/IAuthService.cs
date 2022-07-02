@@ -17,12 +17,13 @@ public interface IAuthService : ITransientService
 
     Task<Result<AuthenticationProperties>> ExternalLoginAsync<TEndpoint>(ExternalLoginRequest request, HttpResponse rsp)
         where TEndpoint : IEndpoint;
-    
+
     Task<Result<LoginResponse>> ExternalLoginCallbackAsync(
         ExternalLoginCallbackRequest request);
 
     Task LinkExternalLoginAsync<TEndpoint>(
-        LinkExternalLoginRequest request, string userId, HttpResponse rsp) where TEndpoint : IEndpoint;
+        LinkExternalLoginRequest request, string userId, HttpResponse rsp)
+        where TEndpoint : IEndpoint;
 
     Task<Result<LoginResponse>> LinkExternalLoginCallbackAsync(string userId, HttpContext httpContext);
 }

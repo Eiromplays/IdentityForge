@@ -6,7 +6,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Personal.RemoveLogin;
 public class Endpoint : Endpoint<RemoveLoginRequest, Models.Response>
 {
     private readonly IUserService _userService;
-    
+
     public Endpoint(IUserService userService)
     {
         _userService = userService;
@@ -29,9 +29,9 @@ public class Endpoint : Endpoint<RemoveLoginRequest, Models.Response>
             await SendUnauthorizedAsync(ct);
             return;
         }
-        
+
         Response.Message = await _userService.RemoveLoginAsync(req, userId);
-        
+
         await SendAsync(Response, cancellation: ct);
     }
 }

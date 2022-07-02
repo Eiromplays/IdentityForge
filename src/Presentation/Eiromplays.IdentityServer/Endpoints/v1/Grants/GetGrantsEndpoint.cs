@@ -10,8 +10,7 @@ public class GetGrantsEndpoint : EndpointWithoutRequest<List<GrantResponse>>
     private readonly IClientStore _clients;
     private readonly IResourceStore _resources;
 
-    public GetGrantsEndpoint(IIdentityServerInteractionService interaction, IClientStore clients,
-        IResourceStore resources)
+    public GetGrantsEndpoint(IIdentityServerInteractionService interaction, IClientStore clients, IResourceStore resources)
     {
         _interaction = interaction;
         _clients = clients;
@@ -27,11 +26,11 @@ public class GetGrantsEndpoint : EndpointWithoutRequest<List<GrantResponse>>
             s.Summary = "Get all grants for logged in user";
         });
     }
-    
+
     public override async Task HandleAsync(CancellationToken ct)
     {
         var grants = await _interaction.GetAllUserGrantsAsync();
-        
+
         foreach(var grant in grants)
         {
             var client = await _clients.FindClientByIdAsync(grant.ClientId);

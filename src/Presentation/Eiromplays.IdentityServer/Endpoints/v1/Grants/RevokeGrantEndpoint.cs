@@ -26,7 +26,7 @@ public class RevokeGrantEndpoint : Endpoint<RevokeGrantRequest, GrantResponse>
             s.Summary = "Revoke a grant";
         });
     }
-    
+
     public override async Task HandleAsync(RevokeGrantRequest req, CancellationToken ct)
     {
         await _interaction.RevokeUserConsentAsync(req.ClientId);

@@ -65,9 +65,10 @@ registerRoute(
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener('message', async (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    await self.skipWaiting();
-  }
+    if (event.origin === self.location.origin || event.origin === 'https://localhost:3000') {
+        if (event.data && event.data.type === 'SKIP_WAITING')
+            await self.skipWaiting();
+    }
 });
 
 // Any other custom service worker logic can go here.

@@ -32,12 +32,14 @@ internal static class Startup
             {
                 if (type.Service?.Name is "IAuthService" or "IConsentService") continue;
             }
+
             services.AddService(type.Service!, type.Implementation, lifetime);
         }
 
         return services;
     }
 
+    // ReSharper disable once UnusedMethodReturnValue.Local
     private static IServiceCollection AddService(this IServiceCollection services, Type serviceType, Type implementationType, ServiceLifetime lifetime) =>
         lifetime switch
         {

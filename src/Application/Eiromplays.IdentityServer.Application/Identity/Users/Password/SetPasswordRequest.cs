@@ -10,8 +10,10 @@ public class SetPasswordRequest
         Password = password;
         ConfirmPassword = confirmPassword;
     }
-    
-    public SetPasswordRequest () { }
+
+    public SetPasswordRequest()
+    {
+    }
 }
 
 public class SetPasswordRequestValidator : Validator<SetPasswordRequest>

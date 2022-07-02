@@ -2,7 +2,7 @@ namespace Eiromplays.IdentityServer.Application.Identity.ApiScopes;
 
 public class UpdateApiScopeRequestValidator : Validator<UpdateApiScopeRequest>
 {
-    public UpdateApiScopeRequestValidator(IStringLocalizer<UpdateApiScopeRequestValidator> T)
+    public UpdateApiScopeRequestValidator()
     {
         RuleFor(p => p.Id)
             .NotEmpty();

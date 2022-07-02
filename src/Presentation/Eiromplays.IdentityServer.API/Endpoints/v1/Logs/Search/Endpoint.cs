@@ -6,7 +6,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Logs.Search;
 public class Endpoint : Endpoint<AuditLogListFilter, PaginationResponse<AuditDto>>
 {
     private readonly IAuditService _auditService;
-    
+
     public Endpoint(IAuditService auditService)
     {
         _auditService = auditService;
@@ -20,7 +20,7 @@ public class Endpoint : Endpoint<AuditLogListFilter, PaginationResponse<AuditDto
             s.Summary = "Search logs using available filters.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Search, EIAResource.AuditLog));
+        Policies(EiaPermission.NameFor(EiaAction.Search, EiaResource.AuditLog));
     }
 
     public override async Task HandleAsync(AuditLogListFilter request, CancellationToken ct)

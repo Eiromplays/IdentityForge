@@ -6,7 +6,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserSessions.GetUserSession
 public class Endpoint : Endpoint<Models.Request, UserSessionDto>
 {
     private readonly IUserService _userService;
-    
+
     public Endpoint(IUserService userService)
     {
         _userService = userService;
@@ -29,7 +29,7 @@ public class Endpoint : Endpoint<Models.Request, UserSessionDto>
             await SendUnauthorizedAsync(ct);
             return;
         }
-        
+
         Response = await _userService.GetUserSessionAsync(req.Key, userId, ct);
 
         await SendAsync(Response, cancellation: ct);

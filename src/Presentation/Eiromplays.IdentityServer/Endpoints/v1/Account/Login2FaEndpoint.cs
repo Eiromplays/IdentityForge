@@ -24,7 +24,7 @@ public class Login2FaEndpoint : Endpoint<Login2FaRequest, LoginResponse>
         });
         AllowAnonymous();
     }
-    
+
     public override async Task HandleAsync(Login2FaRequest req, CancellationToken ct)
     {
         var result = await _authService.Login2FaAsync(req);

@@ -6,7 +6,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.ForgotPassword;
 public class Endpoint : Endpoint<ForgotPasswordRequest, Models.Response>
 {
     private readonly IUserService _userService;
-    
+
     public Endpoint(IUserService userService)
     {
         _userService = userService;

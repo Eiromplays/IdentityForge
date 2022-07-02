@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.CreateUser;
 public class Endpoint : Endpoint<CreateUserRequest, CreateUserResponse>
 {
     private readonly IUserService _userService;
-    
+
     public Endpoint(IUserService userService)
     {
         _userService = userService;
@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<CreateUserRequest, CreateUserResponse>
             s.Summary = "Creates a new user.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Create, EIAResource.Users));
+        Policies(EiaPermission.NameFor(EiaAction.Create, EiaResource.Users));
         ScopedValidator();
     }
 

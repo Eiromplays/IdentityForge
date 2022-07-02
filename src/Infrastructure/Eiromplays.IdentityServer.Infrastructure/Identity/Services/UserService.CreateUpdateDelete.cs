@@ -25,7 +25,7 @@ internal partial class UserService
     /// </summary>
     public async Task<string> GetOrCreateFromPrincipalAsync(ClaimsPrincipal principal)
     {
-        var objectId = ClaimsPrincipalExtensions.GetObjectId(principal);
+        string? objectId = ClaimsPrincipalExtensions.GetObjectId(principal);
         if (string.IsNullOrWhiteSpace(objectId))
         {
             throw new InternalServerException(_t["Invalid objectId"]);
@@ -46,9 +46,9 @@ internal partial class UserService
 
     private async Task<ApplicationUser> CreateOrUpdateFromPrincipalAsync(ClaimsPrincipal principal)
     {
-        var email = principal.FindFirstValue(ClaimTypes.Upn);
-        var username = principal.GetDisplayName();
-        
+        string? email = principal.FindFirstValue(ClaimTypes.Upn);
+        string? username = principal.GetDisplayName();
+
         if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(username))
         {
             throw new InternalServerException(string.Format(_t["Username or Email not valid."]));
@@ -108,7 +108,7 @@ internal partial class UserService
     public async Task<CreateUserResponse> CreateAsync(CreateUserRequest request, string origin)
     {
         if (_accountConfiguration.RegisterConfiguration is { Enabled: false }) throw new InternalServerException(_t["Registration is disabled."]);
-        
+
         var user = new ApplicationUser
         {
             Email = request.Email,
@@ -119,7 +119,7 @@ internal partial class UserService
             PhoneNumber = request.PhoneNumber,
             IsActive = true
         };
-        
+
         if (_accountConfiguration.ProfilePictureConfiguration is { Enabled: true, AutoGenerate: true })
             user.ProfilePicture = $"{_accountConfiguration.ProfilePictureConfiguration.DefaultUrl}{user.UserName}.svg";
 
@@ -137,22 +137,22 @@ internal partial class UserService
         if (_signInManager.Options.SignIn.RequireConfirmedAccount && !string.IsNullOrEmpty(user.Email))
         {
             // send verification email
-            var emailVerificationUri = await GetEmailVerificationUriAsync(user, origin);
-            
+            string emailVerificationUri = await GetEmailVerificationUriAsync(user, origin);
+
             var emailModel = new RegisterUserEmailModel
             {
                 Email = user.Email,
                 UserName = user.UserName,
                 Url = emailVerificationUri
             };
-            
+
             var mailRequest = new MailRequest(
                 new List<string> { user.Email },
                 _t["Confirm Registration"],
                 _templateService.GenerateEmailTemplate("email-confirmation", emailModel));
-            
+
             _jobService.Enqueue(() => _mailService.SendAsync(mailRequest, CancellationToken.None));
-            
+
             messages.Add(_t[$"Please check {user.Email} to verify your account!"]);
         }
 
@@ -164,7 +164,7 @@ internal partial class UserService
     public async Task<CreateUserResponse> CreateExternalAsync(CreateExternalUserRequest request, string origin)
     {
         if (_accountConfiguration.RegisterConfiguration is { Enabled: false }) throw new InternalServerException(_t["Registration is disabled."]);
-        
+
         var user = new ApplicationUser
         {
             Email = request.Email,
@@ -175,7 +175,7 @@ internal partial class UserService
             PhoneNumber = request.PhoneNumber,
             IsActive = true
         };
-        
+
         if (_accountConfiguration.ProfilePictureConfiguration is { Enabled: true, AutoGenerate: true })
             user.ProfilePicture = $"{_accountConfiguration.ProfilePictureConfiguration.DefaultUrl}{user.UserName}.svg";
 
@@ -193,22 +193,22 @@ internal partial class UserService
         if (_signInManager.Options.SignIn.RequireConfirmedAccount && !string.IsNullOrEmpty(user.Email))
         {
             // send verification email
-            var emailVerificationUri = await GetEmailVerificationUriAsync(user, origin);
-            
+            string emailVerificationUri = await GetEmailVerificationUriAsync(user, origin);
+
             var emailModel = new RegisterUserEmailModel
             {
                 Email = user.Email,
                 UserName = user.UserName,
                 Url = emailVerificationUri
             };
-            
+
             var mailRequest = new MailRequest(
                 new List<string> { user.Email },
                 _t["Confirm Registration"],
                 _templateService.GenerateEmailTemplate("email-confirmation", emailModel));
-            
+
             _jobService.Enqueue(() => _mailService.SendAsync(mailRequest, CancellationToken.None));
-            
+
             messages.Add(_t[$"Please check {user.Email} to verify your account!"]);
         }
 
@@ -216,41 +216,50 @@ internal partial class UserService
 
         return new CreateUserResponse(user.Id, string.Join(Environment.NewLine, messages));
     }
-    
+
     // TODO: Add support for changing email
     public async Task UpdateAsync(UpdateUserRequest request, string userId, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
-        
-        var currentImage = user.ProfilePicture ?? string.Empty;
+
+        string currentImage = user.ProfilePicture ?? string.Empty;
         if (request.Image is not null || request.DeleteCurrentImage)
         {
             user.ProfilePicture =
                 await _fileStorage.UploadAsync<ApplicationUser>(request.Image, FileType.Image, cancellationToken);
             if (request.DeleteCurrentImage && !string.IsNullOrEmpty(currentImage))
             {
-                var root = Directory.GetCurrentDirectory();
+                string root = Directory.GetCurrentDirectory();
                 _fileStorage.Remove(Path.Combine(root, currentImage));
             }
         }
 
+        user.DisplayName = request.DisplayName;
         user.FirstName = request.FirstName;
         user.LastName = request.LastName;
         user.PhoneNumber = request.PhoneNumber;
+        user.PhoneNumberConfirmed = request.PhoneNumberConfirmed;
+        user.EmailConfirmed = request.EmailConfirmed;
+        user.IsActive = request.IsActive;
+        user.TwoFactorEnabled = request.TwoFactorEnabled;
+        user.LockoutEnabled = request.LockoutEnabled;
 
-        var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-        
+        string? phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+
         if (request.PhoneNumber != phoneNumber)
         {
             await _userManager.SetPhoneNumberAsync(user, request.PhoneNumber);
         }
 
+        if (user.GravatarEmail != request.GravatarEmail)
+            user.GravatarEmail = request.GravatarEmail;
+
         var result = await _userManager.UpdateAsync(user);
 
         await _events.PublishAsync(new ApplicationUserUpdatedEvent(user.Id));
-        
+
         if (!result.Succeeded)
         {
             throw new InternalServerException(_t["Update profile failed"], result.GetErrors(_t));
@@ -265,22 +274,22 @@ internal partial class UserService
         var user = await _userManager.FindByIdAsync(userId);
 
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
-        
-        var isAdmin = await _userManager.IsInRoleAsync(user, EIARoles.Administrator);
+
+        bool isAdmin = await _userManager.IsInRoleAsync(user, EIARoles.Administrator);
         if (isAdmin)
         {
             throw new ConflictException(_t["Administrators Profile's cannot be deleted"]);
         }
-        
+
         var result = await _userManager.DeleteAsync(user);
 
         if (!result.Succeeded)
         {
             throw new InternalServerException(_t["Delete user failed"], result.GetErrors(_t));
         }
-        
+
         await _signInManager.SignOutAsync();
-        
+
         await _events.PublishAsync(new ApplicationUserDeletedEvent(user.Id));
     }
 }

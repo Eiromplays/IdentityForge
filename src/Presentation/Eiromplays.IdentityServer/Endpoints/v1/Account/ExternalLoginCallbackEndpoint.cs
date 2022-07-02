@@ -24,12 +24,13 @@ public class ExternalLoginCallbackEndpoint : Endpoint<ExternalLoginCallbackReque
         });
         AllowAnonymous();
     }
-    
+
     public override async Task HandleAsync(ExternalLoginCallbackRequest req, CancellationToken ct)
     {
-        var result =  await _authService.ExternalLoginCallbackAsync(req);
-        
-        await result.Match(async x =>
+        var result = await _authService.ExternalLoginCallbackAsync(req);
+
+        await result.Match(
+            async x =>
         {
             if (!string.IsNullOrWhiteSpace(x.ExternalLoginReturnUrl))
             {
@@ -38,7 +39,8 @@ public class ExternalLoginCallbackEndpoint : Endpoint<ExternalLoginCallbackReque
             }
 
             await SendOkAsync(x, cancellation: ct);
-        }, exception =>
+        },
+            exception =>
         {
             if (exception is BadRequestException badRequestException)
             {

@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.IdentityResources.Delete;
 public class Endpoint : Endpoint<Models.Request>
 {
     private readonly IIdentityResourceService _identityResourceService;
-    
+
     public Endpoint(IIdentityResourceService identityResourceService)
     {
         _identityResourceService = identityResourceService;
@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Models.Request>
             s.Summary = "Delete a IdentityResource.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Delete, EIAResource.ApiScopes));
+        Policies(EiaPermission.NameFor(EiaAction.Delete, EiaResource.ApiScopes));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)

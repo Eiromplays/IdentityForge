@@ -32,8 +32,9 @@ public class LinkLoginCallbackEndpoint : EndpointWithoutRequest<LoginResponse>
         }
 
         var result = await _authService.LinkExternalLoginCallbackAsync(userId, HttpContext);
-        
-        await result.Match(async response =>
+
+        await result.Match(
+            async response =>
         {
             if (!string.IsNullOrWhiteSpace(response.ExternalLoginReturnUrl))
             {
@@ -42,7 +43,8 @@ public class LinkLoginCallbackEndpoint : EndpointWithoutRequest<LoginResponse>
             }
 
             await SendAsync(response, cancellation: ct);
-        }, exception =>
+        },
+            exception =>
         {
             if (exception is BadRequestException badRequestException)
             {

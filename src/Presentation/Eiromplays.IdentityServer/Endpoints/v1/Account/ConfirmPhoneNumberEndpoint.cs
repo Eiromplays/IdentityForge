@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.Endpoints.v1.Account;
 public class ConfirmPhoneNumberEndpoint : Endpoint<ConfirmPhoneNumberRequest, ConfirmPhoneNumberResponse>
 {
     private readonly IUserService _userService;
-    
+
     public ConfirmPhoneNumberEndpoint(IUserService userService)
     {
         _userService = userService;

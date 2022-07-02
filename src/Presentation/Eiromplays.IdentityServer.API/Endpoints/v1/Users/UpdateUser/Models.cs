@@ -7,6 +7,6 @@ public class Models
     public class Request
     {
         public string Id { get; set; } = default!;
-        public UpdateUserRequest Data { get; set; } = default!;
+        public UpdateUserRequest UpdateUserRequest { get; set; } = default!;
     }
 }

@@ -18,11 +18,10 @@ try
     });
 
     builder.Services.AddControllers();
-    
+
     builder.Services.AddInfrastructure(builder.Configuration, ProjectType.Api);
-    
+
     builder.Services.AddApplication();
-    
     builder.Services.AddAuthentication(options =>
         {
             options.DefaultScheme = "token";
@@ -36,7 +35,7 @@ try
             options.MapInboundClaims = false;
             options.RequireHttpsMetadata = false;
         });
-    
+
     builder.Services.AddAuthorization(options =>
     {
         options.AddPolicy("ApiCaller", policy =>
@@ -48,7 +47,7 @@ try
         {
             policy.RequireClaim("sub");
         });
-    
+
         options.AddPolicy("RequireAdministrator", policy =>
         {
             policy.RequireClaim("role", "Administrator");
@@ -77,7 +76,7 @@ try
     });
 
     app.MapEndpoints();
-    
+
     app.Run();
 }
 catch (Exception ex) when (!ex.GetType().Name.Equals("StopTheHostException", StringComparison.Ordinal))

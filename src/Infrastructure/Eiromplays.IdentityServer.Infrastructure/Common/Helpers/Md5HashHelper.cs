@@ -8,16 +8,16 @@ public static class Md5HashHelper
     public static string GetMd5Hash(string? input)
     {
         if (string.IsNullOrWhiteSpace(input))
-            return "";
-        
+            return string.Empty;
+
         using var md5 = MD5.Create();
-        var result = md5.ComputeHash(Encoding.UTF8.GetBytes(input));
-        
+        byte[] result = md5.ComputeHash(Encoding.UTF8.GetBytes(input));
+
         var stringBuilder = new StringBuilder();
-        
-        foreach (var t in result)
+
+        foreach (byte t in result)
             stringBuilder.Append(t.ToString("x2"));
-        
+
         return stringBuilder.ToString();
     }
 }

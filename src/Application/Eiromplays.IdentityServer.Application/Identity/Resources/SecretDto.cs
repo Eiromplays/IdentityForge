@@ -12,7 +12,7 @@ public class SecretDto
     /// <value>
     /// The value.
     /// </value>
-    public string? Value { get; set; }
+    public string? Value { get; }
 
     /// <summary>
     /// Gets or sets the expiration.
@@ -28,21 +28,20 @@ public class SecretDto
     /// <value>
     /// The type of the client secret.
     /// </value>
-    public string Type { get; set; }
-
+    public string Type { get; }
 
     public SecretDto()
     {
         Type = IdentityServerConstants.SecretTypes.SharedSecret;
     }
-    
+
     public SecretDto(string value, DateTime? expiration = null)
         : this()
     {
         Value = value;
         Expiration = expiration;
     }
-    
+
     public SecretDto(string value, string description, DateTime? expiration = null)
         : this()
     {
@@ -55,26 +54,26 @@ public class SecretDto
     /// Returns a hash code for this instance.
     /// </summary>
     /// <returns>
-    /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+    /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
     /// </returns>
     public override int GetHashCode()
     {
         unchecked
         {
-            var hash = 17;
-            hash = hash * 23 + (Value?.GetHashCode() ?? 0);
-            hash = hash * 23 + (Type?.GetHashCode() ?? 0);
+            int hash = 17;
+            hash = (hash * 23) + (Value?.GetHashCode() ?? 0);
+            hash = (hash * 23) + Type.GetHashCode();
 
             return hash;
         }
     }
-    
+
     public override bool Equals(object? obj)
     {
         if (obj is not SecretDto other) return false;
         if (ReferenceEquals(other, this)) return true;
 
-        return string.Equals(other.Type, Type, StringComparison.Ordinal) && 
+        return string.Equals(other.Type, Type, StringComparison.Ordinal) &&
                string.Equals(other.Value, Value, StringComparison.Ordinal);
     }
 }

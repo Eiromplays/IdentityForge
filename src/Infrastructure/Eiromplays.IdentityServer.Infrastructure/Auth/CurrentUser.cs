@@ -11,23 +11,23 @@ public class CurrentUser : ICurrentUser, ICurrentUserInitializer
 
     public string? Name => _user?.Identity?.Name;
 
-    private string _userId = "";
+    private string _userId = string.Empty;
 
     public string GetUserId() =>
         IsAuthenticated()
-            ? _user?.GetUserId() ?? ""
+            ? _user?.GetUserId() ?? string.Empty
             : _userId;
-    
+
     public string GetSubjectId() =>
         IsAuthenticated()
-            ? PrincipalExtensions.GetSubjectId(_user) ?? ""
+            ? PrincipalExtensions.GetSubjectId(_user) ?? string.Empty
             : _userId;
-    
+
     public string GetDisplayName() =>
         IsAuthenticated()
-            ?  PrincipalExtensions.GetDisplayName(_user)
+            ? PrincipalExtensions.GetDisplayName(_user)
             : string.Empty;
-    
+
     public string GetIdentityProvider() =>
         IsAuthenticated()
             ? PrincipalExtensions.GetIdentityProvider(_user)

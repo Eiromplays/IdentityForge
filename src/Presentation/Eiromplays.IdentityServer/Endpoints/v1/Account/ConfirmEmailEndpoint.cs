@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.Endpoints.v1.Account;
 public class ConfirmEmailEndpoint : Endpoint<ConfirmEmailRequest, ConfirmEmailResponse>
 {
     private readonly IUserService _userService;
-    
+
     public ConfirmEmailEndpoint(IUserService userService)
     {
         _userService = userService;
@@ -25,7 +25,7 @@ public class ConfirmEmailEndpoint : Endpoint<ConfirmEmailRequest, ConfirmEmailRe
     public override async Task HandleAsync(ConfirmEmailRequest req, CancellationToken ct)
     {
         Response.Message = await _userService.ConfirmEmailAsync(req.UserId, req.Code, ct);
-        
+
         if (!string.IsNullOrWhiteSpace(req.ReturnUrl))
         {
             await SendRedirectAsync(req.ReturnUrl, true, ct);

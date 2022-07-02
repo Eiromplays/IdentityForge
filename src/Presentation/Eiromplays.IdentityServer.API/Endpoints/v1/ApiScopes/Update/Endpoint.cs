@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.ApiScopes.Update;
 public class Endpoint : Endpoint<Models.Request>
 {
     private readonly IApiScopeService _apiScopeService;
-    
+
     public Endpoint(IApiScopeService apiScopeService)
     {
         _apiScopeService = apiScopeService;
@@ -19,13 +19,13 @@ public class Endpoint : Endpoint<Models.Request>
             s.Summary = "Update a ApiScope.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Update, EIAResource.ApiScopes));
+        Policies(EiaPermission.NameFor(EiaAction.Update, EiaResource.ApiScopes));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
         await _apiScopeService.UpdateAsync(req.Data, req.Id, ct);
-        
+
         await SendNoContentAsync(cancellation: ct);
     }
 }

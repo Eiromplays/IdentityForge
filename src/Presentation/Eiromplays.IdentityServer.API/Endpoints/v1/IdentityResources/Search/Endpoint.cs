@@ -6,7 +6,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.IdentityResources.Search;
 public class Endpoint : Endpoint<IdentityResourceListFilter, PaginationResponse<IdentityResourceDto>>
 {
     private readonly IIdentityResourceService _identityResourceService;
-    
+
     public Endpoint(IIdentityResourceService identityResourceService)
     {
         _identityResourceService = identityResourceService;
@@ -20,7 +20,7 @@ public class Endpoint : Endpoint<IdentityResourceListFilter, PaginationResponse<
             s.Summary = "Search ApiScopes using available filters.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Search, EIAResource.ApiScopes));
+        Policies(EiaPermission.NameFor(EiaAction.Search, EiaResource.ApiScopes));
     }
 
     public override async Task HandleAsync(IdentityResourceListFilter request, CancellationToken ct)
