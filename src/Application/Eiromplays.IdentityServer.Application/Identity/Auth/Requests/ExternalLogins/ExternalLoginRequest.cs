@@ -2,7 +2,9 @@ namespace Eiromplays.IdentityServer.Application.Identity.Auth.Requests.ExternalL
 
 public class ExternalLoginRequest
 {
-    [QueryParam] public string Provider { get; set; } = default!;
-    
-    [QueryParam] public string ReturnUrl { get; set; } = default!;
+    [QueryParam]
+    public string Provider { get; set; } = default!;
+
+    [QueryParam]
+    public string ReturnUrl { get; set; } = default!;
 }

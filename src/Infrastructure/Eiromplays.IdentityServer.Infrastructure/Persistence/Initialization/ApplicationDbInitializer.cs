@@ -26,7 +26,7 @@ internal class ApplicationDbInitializer
                 _logger.LogInformation("Applying Migrations");
                 await _dbContext.Database.MigrateAsync(cancellationToken);
             }
-            
+
             if (await _dbContext.Database.CanConnectAsync(cancellationToken))
             {
                 _logger.LogInformation("Connection to Database Succeeded");

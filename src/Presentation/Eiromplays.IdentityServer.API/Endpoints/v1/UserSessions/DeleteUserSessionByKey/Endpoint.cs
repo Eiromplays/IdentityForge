@@ -28,7 +28,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             await SendUnauthorizedAsync(ct);
             return;
         }
-        
+
         Response.Message = await _userService.DeleteUserSessionAsync(req.Key, userId, ct);
 
         await SendAsync(Response, cancellation: ct);

@@ -11,21 +11,21 @@ public class FileUploadRequestValidator : Validator<FileUploadRequest>
 {
     public FileUploadRequestValidator()
     {
-        var T = TryResolve<IStringLocalizer<FileUploadRequestValidator>>() ??
+        var t = TryResolve<IStringLocalizer<FileUploadRequestValidator>>() ??
                 new StringLocalizer<FileUploadRequestValidator>(Resolve<IStringLocalizerFactory>());
 
         RuleFor(p => p.Name)
             .NotEmpty()
-                .WithMessage(T["Image Name cannot be empty!"])
+                .WithMessage(t["Image Name cannot be empty!"])
             .MaximumLength(150);
 
         RuleFor(p => p.Extension)
             .NotEmpty()
-                .WithMessage(T["Image Extension cannot be empty!"])
+                .WithMessage(t["Image Extension cannot be empty!"])
             .MaximumLength(5);
 
         RuleFor(p => p.Data)
             .NotEmpty()
-                .WithMessage(T["Image Data cannot be empty!"]);
+                .WithMessage(t["Image Data cannot be empty!"]);
     }
 }

@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.CreateOrUpdateRole;
 public class Endpoint : Endpoint<CreateOrUpdateRoleRequest, Models.Response>
 {
     private readonly IRoleService _roleService;
-    
+
     public Endpoint(IRoleService roleService)
     {
         _roleService = roleService;
@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<CreateOrUpdateRoleRequest, Models.Response>
             s.Summary = "Create or update a role.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Create, EIAResource.Roles));
+        Policies(EiaPermission.NameFor(EiaAction.Create, EiaResource.Roles));
         ScopedValidator();
     }
 
@@ -27,7 +27,6 @@ public class Endpoint : Endpoint<CreateOrUpdateRoleRequest, Models.Response>
     {
         Response.Message = await _roleService.CreateOrUpdateAsync(req);
 
-        await SendCreatedAtAsync<GetRoleById.Endpoint>(new { Id = req.Id }, Response,
-            generateAbsoluteUrl: true, cancellation: ct);
+        await SendCreatedAtAsync<GetRoleById.Endpoint>(new { req.Id }, Response, generateAbsoluteUrl: true, cancellation: ct);
     }
 }

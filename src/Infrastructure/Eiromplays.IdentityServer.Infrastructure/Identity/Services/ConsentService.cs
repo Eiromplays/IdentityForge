@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Principal;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
@@ -9,7 +10,6 @@ using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Consent;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Consent;
 using Eiromplays.IdentityServer.Domain.Constants;
 using LanguageExt.Common;
-using Microsoft.Extensions.Logging;
 using ConsentRequest = Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Consent.ConsentRequest;
 using ConsentResponse = Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Consent.ConsentResponse;
 using IConsentService = Eiromplays.IdentityServer.Application.Identity.Auth.IConsentService;
@@ -20,7 +20,6 @@ public class ConsentService : IConsentService
 {
     private readonly IIdentityServerInteractionService _interaction;
     private readonly IEventService _events;
-    private readonly ILogger<ConsentService> _logger;
 
     #region Methods
 
@@ -47,20 +46,20 @@ public class ConsentService : IConsentService
     }
 
     #endregion
-    
+
     #region Helper Methods
 
-    public ConsentService(IIdentityServerInteractionService interaction, IEventService events, ILogger<ConsentService> logger)
+    public ConsentService(IIdentityServerInteractionService interaction, IEventService events)
     {
         _interaction = interaction;
         _events = events;
-        _logger = logger;
     }
 
+    [SuppressMessage("ReSharper", "HeuristicUnreachableCode")]
     private async Task<ProcessConsentResponse> ProcessConsent(ConsentRequest model, IPrincipal user)
     {
         var result = new ProcessConsentResponse();
-        
+
         // validate return url is still valid
         var request = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
         if (request is null) return result;
@@ -76,15 +75,18 @@ public class ConsentService : IConsentService
                 // emit event
                 await _events.RaiseAsync(new ConsentDeniedEvent(user.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues));
                 break;
+
             // user clicked 'yes' - validate the data
             // if the user consented to some scope, build the response model
             case "yes" when model.ScopesConsented.Any():
-            {
                 var scopes = model.ScopesConsented;
+
                 if (!ConsentOptions.EnableOfflineAccess)
+#pragma warning disable CS0162
                 {
                     scopes = scopes.Where(x => x != Duende.IdentityServer.IdentityServerConstants.StandardScopes.OfflineAccess);
                 }
+#pragma warning restore CS0162
 
                 grantedConsent = new Duende.IdentityServer.Models.ConsentResponse
                 {
@@ -94,11 +96,14 @@ public class ConsentService : IConsentService
                 };
 
                 // emit event
-                await _events.RaiseAsync(new ConsentGrantedEvent(user.GetSubjectId(), request.Client.ClientId,
-                    request.ValidatedResources.RawScopeValues, grantedConsent.ScopesValuesConsented,
+                await _events.RaiseAsync(new ConsentGrantedEvent(
+                    user.GetSubjectId(),
+                    request.Client.ClientId,
+                    request.ValidatedResources.RawScopeValues,
+                    grantedConsent.ScopesValuesConsented,
                     grantedConsent.RememberConsent));
                 break;
-            }
+
             case "yes":
                 result.ValidationError = ConsentOptions.MustChooseOneErrorMessage;
                 break;
@@ -134,7 +139,8 @@ public class ConsentService : IConsentService
     }
 
     private ConsentResponse CreateConsentResponse(
-        ConsentRequest? model, string? returnUrl,
+        ConsentRequest? model,
+        string? returnUrl,
         AuthorizationRequest request)
     {
         var response = new ConsentResponse
@@ -156,12 +162,12 @@ public class ConsentService : IConsentService
         var apiScopes = (from parsedScope in request.ValidatedResources.ParsedScopes
             let apiScope = request.ValidatedResources.Resources.FindApiScope(parsedScope.ParsedName)
             where apiScope is not null
-            select CreateScopeResponse(parsedScope, apiScope,
-                response.ScopesConsented.Contains(parsedScope.RawValue) || model is null)).ToList();
+            select CreateScopeResponse(parsedScope, apiScope, response.ScopesConsented.Contains(parsedScope.RawValue) || model is null)).ToList();
         if (ConsentOptions.EnableOfflineAccess && request.ValidatedResources.Resources.OfflineAccess)
         {
             apiScopes.Add(GetOfflineAccessScope(response.ScopesConsented.Contains(Duende.IdentityServer.IdentityServerConstants.StandardScopes.OfflineAccess) || model is null));
         }
+
         response.ApiScopes = apiScopes;
 
         return response;
@@ -182,7 +188,8 @@ public class ConsentService : IConsentService
 
     public ScopeResponse CreateScopeResponse(ParsedScopeValue parsedScopeValue, ApiScope apiScope, bool check)
     {
-        var displayName = apiScope.DisplayName ?? apiScope.Name;
+        string? displayName = apiScope.DisplayName ?? apiScope.Name;
+
         if (!string.IsNullOrWhiteSpace(parsedScopeValue.ParsedParameter))
         {
             displayName += $":{parsedScopeValue.ParsedParameter}";

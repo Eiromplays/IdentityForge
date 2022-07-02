@@ -19,14 +19,13 @@ public class Endpoint : Endpoint<Models.Request>
             s.Summary = "Export data for user.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.Users));
+        Policies(EiaPermission.NameFor(EiaAction.View, EiaResource.Users));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
         var result = await _userService.ExportPersonalDataAsync(req.Id);
 
-        await SendStreamAsync(result, "PersonalData.csv", result.Length, contentType: "application/octet-stream",
-            cancellation: ct);
+        await SendStreamAsync(result, "PersonalData.csv", result.Length, contentType: "application/octet-stream", cancellation: ct);
     }
 }

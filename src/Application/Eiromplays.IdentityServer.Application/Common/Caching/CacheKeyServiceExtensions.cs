@@ -1,6 +1,4 @@
-﻿using Eiromplays.IdentityServer.Domain.Common.Contracts;
-
-namespace Eiromplays.IdentityServer.Application.Common.Caching;
+﻿namespace Eiromplays.IdentityServer.Application.Common.Caching;
 
 public static class CacheKeyServiceExtensions
 {

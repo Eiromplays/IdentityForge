@@ -1,11 +1,11 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Personal.UpdateUser;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Personal.UpdateProfile;
 
 public class Endpoint : Endpoint<UpdateUserRequest>
 {
     private readonly IUserService _userService;
-    
+
     public Endpoint(IUserService userService)
     {
         _userService = userService;
@@ -31,7 +31,7 @@ public class Endpoint : Endpoint<UpdateUserRequest>
         }
 
         await _userService.UpdateAsync(req, userId, ct);
-        
+
         await SendNoContentAsync(cancellation: ct);
     }
 }

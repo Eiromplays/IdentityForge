@@ -6,7 +6,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.PersistedGrants.Search;
 public class Endpoint : Endpoint<PersistedGrantListFilter, PaginationResponse<PersistedGrantDto>>
 {
     private readonly IPersistedGrantService _persistedGrantService;
-    
+
     public Endpoint(IPersistedGrantService persistedGrantService)
     {
         _persistedGrantService = persistedGrantService;
@@ -20,7 +20,7 @@ public class Endpoint : Endpoint<PersistedGrantListFilter, PaginationResponse<Pe
             s.Summary = "Search persisted grants using available filters.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Search, EIAResource.PersistedGrants));
+        Policies(EiaPermission.NameFor(EiaAction.Search, EiaResource.PersistedGrants));
     }
 
     public override async Task HandleAsync(PersistedGrantListFilter request, CancellationToken ct)

@@ -1,6 +1,4 @@
-﻿using Shared.Notifications;
-
-namespace Eiromplays.IdentityServer.Application.Common.Interfaces;
+﻿namespace Eiromplays.IdentityServer.Application.Common.Interfaces;
 
 public interface INotificationSender : ITransientService
 {

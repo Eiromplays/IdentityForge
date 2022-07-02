@@ -14,12 +14,14 @@ public class JsonSerializerService : ISerializerService
     public string Serialize<T>(T obj)
     {
         var type = typeof(T);
-        return JsonSerializer.Serialize(obj, type,
-            new JsonSerializerOptions
+        return JsonSerializer.Serialize(obj, type, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+                Converters =
+                {
+                    new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+                }
             });
     }
 

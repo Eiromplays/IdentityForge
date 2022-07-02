@@ -16,11 +16,11 @@ internal static class Startup
             {
                 services.AddStackExchangeRedisCache(options =>
                 {
-                    options.Configuration = settings.RedisURL;
+                    options.Configuration = settings.RedisUrl;
                     options.ConfigurationOptions = new StackExchange.Redis.ConfigurationOptions()
                     {
                         AbortOnConnectFail = true,
-                        EndPoints = { settings.RedisURL }
+                        EndPoints = { settings.RedisUrl }
                     };
                 });
             }

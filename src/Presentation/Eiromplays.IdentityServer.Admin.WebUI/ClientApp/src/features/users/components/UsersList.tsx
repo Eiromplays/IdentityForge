@@ -26,7 +26,7 @@ export const UsersList = () => {
 
   const searchFilter: SearchFilter = {
     customProperties: [{ name: 'isActive', value: true, type: 'checkbox' }],
-    orderBy: ['userName'],
+    orderBy: ['userName', 'lastModifiedOn Desc'],
     advancedSearch: {
       fields: ['userName', 'email'],
       keyword: '',

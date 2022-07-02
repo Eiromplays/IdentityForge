@@ -6,11 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Eiromplays.IdentityServer.Infrastructure.BackgroundJobs;
 
-public class EIAJobActivator : JobActivator
+public class EiaJobActivator : JobActivator
 {
     private readonly IServiceScopeFactory _scopeFactory;
 
-    public EIAJobActivator(IServiceScopeFactory scopeFactory) =>
+    public EiaJobActivator(IServiceScopeFactory scopeFactory) =>
         _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
 
     public override JobActivatorScope BeginScope(PerformContext context) =>
@@ -31,7 +31,7 @@ public class EIAJobActivator : JobActivator
 
         private void ReceiveParameters()
         {
-            var userId = _context.GetJobParameter<string>(QueryStringKeys.UserId);
+            string? userId = _context.GetJobParameter<string>(QueryStringKeys.UserId);
             if (!string.IsNullOrEmpty(userId))
             {
                 _scope.ServiceProvider.GetRequiredService<ICurrentUserInitializer>()

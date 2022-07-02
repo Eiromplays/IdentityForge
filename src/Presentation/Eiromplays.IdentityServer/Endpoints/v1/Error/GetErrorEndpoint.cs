@@ -23,7 +23,7 @@ public class GetErrorEndpoint : Endpoint<GetErrorRequest, ErrorMessage>
         });
         AllowAnonymous();
     }
-    
+
     public override async Task HandleAsync(GetErrorRequest req, CancellationToken ct)
     {
         Response = await _interaction.GetErrorContextAsync(req.ErrorId);

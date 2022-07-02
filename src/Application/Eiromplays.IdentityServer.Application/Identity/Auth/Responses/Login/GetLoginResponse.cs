@@ -12,7 +12,7 @@ public class GetLoginResponse
 
     public bool IsExternalLoginOnly => !EnableLocalLogin && ExternalProviders.Count() == 1;
     public string? ExternalLoginScheme => IsExternalLoginOnly ? ExternalProviders.SingleOrDefault()?.AuthenticationScheme : null;
-    
+
     public string? Login { get; set; }
 
     public string ReturnUrl { get; set; } = default!;

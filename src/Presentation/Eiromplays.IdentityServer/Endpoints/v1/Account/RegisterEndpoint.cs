@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.Endpoints.v1.Account;
 public class RegisterEndpoint : Endpoint<CreateUserRequest, CreateUserResponse>
 {
     private readonly IUserService _userService;
-    
+
     public RegisterEndpoint(IUserService userService)
     {
         _userService = userService;

@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Personal.GetPermissions;
 public class Endpoint : EndpointWithoutRequest<List<string>>
 {
     private readonly IUserService _userService;
-    
+
     public Endpoint(IUserService userService)
     {
         _userService = userService;
@@ -30,7 +30,7 @@ public class Endpoint : EndpointWithoutRequest<List<string>>
         }
 
         Response = await _userService.GetPermissionsAsync(userId, ct);
-        
+
         await SendOkAsync(Response, cancellation: ct);
     }
 }

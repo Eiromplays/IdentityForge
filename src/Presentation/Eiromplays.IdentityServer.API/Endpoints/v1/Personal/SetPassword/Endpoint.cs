@@ -6,7 +6,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Personal.SetPassword;
 public class Endpoint : Endpoint<SetPasswordRequest, Models.Response>
 {
     private readonly IUserService _userService;
-    
+
     public Endpoint(IUserService userService)
     {
         _userService = userService;
@@ -31,7 +31,7 @@ public class Endpoint : Endpoint<SetPasswordRequest, Models.Response>
         }
 
         Response.Message = await _userService.SetPasswordAsync(req, userId);
-        
+
         await SendOkAsync(Response, cancellation: ct);
     }
 }

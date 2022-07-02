@@ -6,12 +6,12 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.Search;
 public class Endpoint : Endpoint<RoleListFilter, PaginationResponse<RoleDto>>
 {
     private readonly IRoleService _roleService;
-    
+
     public Endpoint(IRoleService roleService)
     {
         _roleService = roleService;
     }
-    
+
     public override void Configure()
     {
         Post("/roles/search");
@@ -20,9 +20,9 @@ public class Endpoint : Endpoint<RoleListFilter, PaginationResponse<RoleDto>>
             s.Summary = "Search roles using available filters.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Search, EIAResource.Roles));
+        Policies(EiaPermission.NameFor(EiaAction.Search, EiaResource.Roles));
     }
-    
+
     public override async Task HandleAsync(RoleListFilter request, CancellationToken ct)
     {
         Response = await _roleService.SearchAsync(request, ct);

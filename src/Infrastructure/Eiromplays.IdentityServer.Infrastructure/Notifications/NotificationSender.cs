@@ -10,7 +10,7 @@ public class NotificationSender : INotificationSender
     private readonly IHubContext<NotificationHub> _notificationHubContext;
 
     public NotificationSender(IHubContext<NotificationHub> notificationHubContext) =>
-        (_notificationHubContext) = (notificationHubContext);
+        _notificationHubContext = notificationHubContext;
 
     public Task BroadcastAsync(INotificationMessage notification, CancellationToken cancellationToken) =>
         _notificationHubContext.Clients.All

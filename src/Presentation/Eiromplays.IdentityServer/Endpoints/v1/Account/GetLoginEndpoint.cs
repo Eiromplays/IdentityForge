@@ -15,8 +15,7 @@ public class GetLoginEndpoint : Endpoint<GetLoginRequest, GetLoginResponse>
     private readonly IAuthenticationSchemeProvider _schemeProvider;
     private readonly IClientStore _clientStore;
 
-    public GetLoginEndpoint(IIdentityServerInteractionService interaction, IAuthenticationSchemeProvider schemeProvider,
-        IClientStore clientStore)
+    public GetLoginEndpoint(IIdentityServerInteractionService interaction, IAuthenticationSchemeProvider schemeProvider, IClientStore clientStore)
     {
         _interaction = interaction;
         _schemeProvider = schemeProvider;
@@ -33,21 +32,22 @@ public class GetLoginEndpoint : Endpoint<GetLoginRequest, GetLoginResponse>
         });
         AllowAnonymous();
     }
-    
+
     public override async Task HandleAsync(GetLoginRequest req, CancellationToken ct)
     {
         Response = await BuildLoginResponseAsync(req.ReturnUrl);
 
         await SendOkAsync(Response, cancellation: ct);
     }
-    
+
     private async Task<GetLoginResponse> BuildLoginResponseAsync(string returnUrl)
     {
         var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
-        
+
         if (context?.IdP != null && await _schemeProvider.GetSchemeAsync(context.IdP) != null)
         {
-            var local = context.IdP == IdentityServerConstants.LocalIdentityProvider;
+            bool local = context.IdP == IdentityServerConstants.LocalIdentityProvider;
+
             // this is meant to short circuit the UI and only trigger the one external IdP
             var response = new GetLoginResponse
             {
@@ -74,8 +74,9 @@ public class GetLoginEndpoint : Endpoint<GetLoginRequest, GetLoginResponse>
                 AuthenticationScheme = x.Name
             }).ToList();
 
-        var allowLocal = true;
+        bool allowLocal = true;
         if (context?.Client.ClientId is null)
+        {
             return new GetLoginResponse
             {
                 AllowRememberLogin = AccountOptions.AllowRememberLogin,
@@ -84,9 +85,11 @@ public class GetLoginEndpoint : Endpoint<GetLoginRequest, GetLoginResponse>
                 Login = context?.LoginHint,
                 ExternalProviders = providers.ToArray()
             };
-            
+        }
+
         var client = await _clientStore.FindEnabledClientByIdAsync(context.Client.ClientId);
         if (client is null)
+        {
             return new GetLoginResponse
             {
                 AllowRememberLogin = AccountOptions.AllowRememberLogin,
@@ -95,7 +98,8 @@ public class GetLoginEndpoint : Endpoint<GetLoginRequest, GetLoginResponse>
                 Login = context.LoginHint,
                 ExternalProviders = providers.ToArray()
             };
-            
+        }
+
         allowLocal = client.EnableLocalLogin;
 
         if (client.IdentityProviderRestrictions is not null && client.IdentityProviderRestrictions.Any())

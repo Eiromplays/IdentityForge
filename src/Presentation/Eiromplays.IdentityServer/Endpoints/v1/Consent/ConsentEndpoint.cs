@@ -22,15 +22,17 @@ public class ConsentEndpoint : Endpoint<ConsentResponse, ProcessConsentResponse>
             s.Summary = "Consent";
         });
     }
-    
+
     public override async Task HandleAsync(ConsentResponse req, CancellationToken ct)
     {
         var result = await _consentService.ConsentAsync(req, User);
-        
-        await result.Match(async x =>
+
+        await result.Match(
+            async x =>
         {
             await SendOkAsync(x, cancellation: ct);
-        }, async exception =>
+        },
+            async exception =>
         {
             switch (exception)
             {

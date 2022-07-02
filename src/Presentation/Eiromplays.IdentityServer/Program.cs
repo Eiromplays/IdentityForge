@@ -18,16 +18,16 @@ try
     });
 
     builder.Services.AddInfrastructure(builder.Configuration, ProjectType.IdentityServer);
-    
+
     builder.Services.AddApplication();
 
     builder.Services.AddControllersWithViews();
-    
+
     builder.Services.AddFastEndpoints()
         .AddFluentValidation();
 
     var app = builder.Build();
-    
+
     await app.Services.InitializeDatabasesAsync();
 
     app.UseInfrastructure(builder.Configuration, ProjectType.IdentityServer, config =>
@@ -45,9 +45,9 @@ try
     {
         endpoints.MapDefaultControllerRoute();
     });
-    
+
     app.MapEndpoints();
-    
+
     app.Run();
 }
 catch (Exception ex) when (!ex.GetType().Name.Equals("StopTheHostException", StringComparison.Ordinal))

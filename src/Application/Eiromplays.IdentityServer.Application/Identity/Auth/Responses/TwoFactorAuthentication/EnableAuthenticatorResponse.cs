@@ -3,9 +3,9 @@ namespace Eiromplays.IdentityServer.Application.Identity.Auth.Responses.TwoFacto
 public class EnableAuthenticator
 {
     public string Code { get; set; } = default!;
-    
+
     public string? SharedKey { get; set; }
-    
+
     public string? AuthenticatorUri { get; set; }
 }
 

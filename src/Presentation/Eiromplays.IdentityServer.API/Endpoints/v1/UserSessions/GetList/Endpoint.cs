@@ -6,7 +6,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserSessions.GetList;
 public class Endpoint : EndpointWithoutRequest<List<UserSessionDto>>
 {
     private readonly IUserService _userService;
-    
+
     public Endpoint(IUserService userService)
     {
         _userService = userService;
@@ -20,13 +20,13 @@ public class Endpoint : EndpointWithoutRequest<List<UserSessionDto>>
             s.Summary = "Get a list of all user sessions.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.Users));
+        Policies(EiaPermission.NameFor(EiaAction.View, EiaResource.Users));
     }
 
     public override async Task HandleAsync(CancellationToken ct)
     {
         Response = await _userService.GetAllUserSessions(ct);
-        
+
         await SendAsync(Response, cancellation: ct);
     }
 }

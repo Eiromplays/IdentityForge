@@ -15,20 +15,19 @@ export const IdentityResourcesRoutes: Route<LocationGenerics> = {
       path: '/',
       element: <IdentityResources />,
       loader: async ({ search: { pagination, searchFilter } }) =>
-        queryClient.getQueryData([
+        await queryClient.getQueryData([
           'identity-resources',
           pagination?.index ?? 1,
           pagination?.size ?? 10,
         ]) ??
-        queryClient
+        await queryClient
           .fetchQuery(['identity-resources', pagination?.index ?? 1, pagination?.size ?? 10], () =>
             searchPagination(
               '/identity-resources/search',
               { pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 },
               searchFilter
             )
-          )
-          .then(() => ({})),
+          ),
     },
     {
       path: ':identityResourceId',

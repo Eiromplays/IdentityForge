@@ -3,9 +3,9 @@
 [Serializable]
 public class ConnectionStringsConfiguration
 {
-    public string ApplicationDbConnection { get; set; } = "";
+    public string ApplicationDbConnection { get; set; } = string.Empty;
 
-    public string SessionDbConnection { get; set; } = "";
+    public string SessionDbConnection { get; set; } = string.Empty;
 
     public void SetConnections(string commonConnectionString)
     {

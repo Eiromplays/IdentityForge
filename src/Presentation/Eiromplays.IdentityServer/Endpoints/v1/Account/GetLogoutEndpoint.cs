@@ -23,17 +23,17 @@ public class GetLogoutEndpoint : Endpoint<GetLogoutRequest, GetLogoutResponse>
             s.Summary = "Get logout information";
         });
     }
-    
+
     public override async Task HandleAsync(GetLogoutRequest req, CancellationToken ct)
     {
         // Build a response so the logout page knows what to display
         Response = await _authService.BuildLogoutResponseAsync(req.LogoutId, AccountOptions.ShowLogoutPrompt);
 
-        if (Response.ShowLogoutPrompt == false)
+        if (!Response.ShowLogoutPrompt)
         {
             // if the request for logout was properly authenticated from IdentityServer, then
             // we don't need to show the prompt and can just log the user out directly.
-            await _authService.LogoutAsync<GetLogoutEndpoint>(new LogoutRequest{ LogoutId = Response.LogoutId }, HttpContext);
+            await _authService.LogoutAsync<GetLogoutEndpoint>(new LogoutRequest { LogoutId = Response.LogoutId }, HttpContext);
             return;
         }
 

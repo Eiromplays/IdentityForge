@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.IdentityResources.GetById;
 public class Endpoint : Endpoint<Models.Request, IdentityResourceDto>
 {
     private readonly IIdentityResourceService _identityResourceService;
-    
+
     public Endpoint(IIdentityResourceService identityResourceService)
     {
         _identityResourceService = identityResourceService;
@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Models.Request, IdentityResourceDto>
             s.Summary = "Get IdentityResource details.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.ApiScopes));
+        Policies(EiaPermission.NameFor(EiaAction.View, EiaResource.ApiScopes));
     }
 
     public override async Task HandleAsync(Models.Request request, CancellationToken ct)

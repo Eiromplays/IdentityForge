@@ -24,14 +24,16 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
         });
         AllowAnonymous();
     }
-    
+
     public override async Task HandleAsync(LoginRequest req, CancellationToken ct)
     {
         var result = await _authService.LoginAsync(req);
-        await result.Match(async x =>
+        await result.Match(
+            async x =>
         {
             await SendOkAsync(x, cancellation: ct);
-        }, exception =>
+        },
+            exception =>
         {
             if (exception is BadRequestException badRequestException)
             {

@@ -15,16 +15,15 @@ export const ApiScopesRoutes: Route<LocationGenerics> = {
       path: '/',
       element: <ApiScopes />,
       loader: async ({ search: { pagination, searchFilter } }) =>
-        queryClient.getQueryData(['api-scopes', pagination?.index ?? 1, pagination?.size ?? 10]) ??
-        queryClient
+        await queryClient.getQueryData(['api-scopes', pagination?.index ?? 1, pagination?.size ?? 10]) ??
+        await queryClient
           .fetchQuery(['api-scopes', pagination?.index ?? 1, pagination?.size ?? 10], () =>
             searchPagination(
               '/api-scopes/search',
               { pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 },
               searchFilter
             )
-          )
-          .then(() => ({})),
+          ),
     },
     {
       path: ':apiScopeId',

@@ -17,11 +17,9 @@ public class IdentityResourceCreatedEvent : IdentityResourceEvent
 
 public class IdentityResourceUpdatedEvent : IdentityResourceEvent
 {
-
     public IdentityResourceUpdatedEvent(int identityResourceId)
         : base(identityResourceId)
     {
-        
     }
 }
 
@@ -30,6 +28,5 @@ public class IdentityResourceDeletedEvent : IdentityResourceEvent
     public IdentityResourceDeletedEvent(int identityResourceId)
         : base(identityResourceId)
     {
-        
     }
 }

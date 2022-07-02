@@ -6,7 +6,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Personal.GetLogins;
 public class Endpoint : EndpointWithoutRequest<ExternalLoginsResponse>
 {
     private readonly IUserService _userService;
-    
+
     public Endpoint(IUserService userService)
     {
         _userService = userService;
@@ -29,9 +29,9 @@ public class Endpoint : EndpointWithoutRequest<ExternalLoginsResponse>
             await SendUnauthorizedAsync(ct);
             return;
         }
-        
+
         Response = await _userService.GetExternalLoginsAsync(userId);
-        
+
         await SendAsync(Response, cancellation: ct);
     }
 }

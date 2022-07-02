@@ -10,8 +10,8 @@ public class EnableAuthenticatorEndpoint : Endpoint<EnableAuthenticator, List<st
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly UrlEncoder _urlEncoder;
-    
-    private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
+
+    public const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
 
     public EnableAuthenticatorEndpoint(UserManager<ApplicationUser> userManager, UrlEncoder urlEncoder)
     {
@@ -39,35 +39,35 @@ public class EnableAuthenticatorEndpoint : Endpoint<EnableAuthenticator, List<st
             return;
         }
 
-        var verificationCode = req.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
+        string verificationCode = req.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
 
-            var is2FaTokenValid = await _userManager.VerifyTwoFactorTokenAsync(
+        bool is2FaTokenValid = await _userManager.VerifyTwoFactorTokenAsync(
                 user, _userManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode);
 
-            if (!is2FaTokenValid)
-            {
-                await LoadSharedKeyAndQrCodeUriAsync(user, req);
-                AddError("Verification code is invalid");
-                await SendErrorsAsync((int)HttpStatusCode.BadRequest, ct);
-                return;
-            }
+        if (!is2FaTokenValid)
+        {
+            await LoadSharedKeyAndQrCodeUriAsync(user, req);
+            AddError("Verification code is invalid");
+            await SendErrorsAsync((int)HttpStatusCode.BadRequest, ct);
+            return;
+        }
 
-            await _userManager.SetTwoFactorEnabledAsync(user, true);
+        await _userManager.SetTwoFactorEnabledAsync(user, true);
 
-            if (await _userManager.CountRecoveryCodesAsync(user) != 0)
-            {
-                await SendNoContentAsync(ct);
-                return;
-            }
-        
-            var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
+        if (await _userManager.CountRecoveryCodesAsync(user) != 0)
+        {
+            await SendNoContentAsync(ct);
+            return;
+        }
 
-            await SendOkAsync(recoveryCodes.ToList(), ct);
+        var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
+
+        await SendOkAsync(recoveryCodes.ToList(), ct);
     }
 
     private async Task LoadSharedKeyAndQrCodeUriAsync(ApplicationUser user, EnableAuthenticator response)
     {
-        var sharedKey = await _userManager.GetAuthenticatorKeyAsync(user);
+        string? sharedKey = await _userManager.GetAuthenticatorKeyAsync(user);
         if (string.IsNullOrEmpty(sharedKey))
         {
             await _userManager.ResetAuthenticatorKeyAsync(user);
@@ -75,10 +75,10 @@ public class EnableAuthenticatorEndpoint : Endpoint<EnableAuthenticator, List<st
         }
 
         response.SharedKey = sharedKey;
-        if (!string.IsNullOrWhiteSpace(user.Email)) 
+        if (!string.IsNullOrWhiteSpace(user.Email))
             response.AuthenticatorUri = GenerateQrCodeUri(user.Email, sharedKey);
     }
-    
+
     private string GenerateQrCodeUri(string email, string unformattedKey)
     {
         return string.Format(

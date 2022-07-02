@@ -3,7 +3,7 @@
 public static class TableConsts
 {
     public const string AuditTrails = "AuditTrails";
-    
+
     public const string IdentityRoles = "Roles";
     public const string IdentityRoleClaims = "RoleClaims";
     public const string IdentityUserRoles = "UserRoles";
@@ -39,6 +39,6 @@ public static class TableConsts
     public const string IdentityServerClientProperties = "ClientProperties";
     public const string IdentityServerClientRedirectUris = "ClientRedirectUris";
     public const string IdentityServerServerSideSessions = "ServerSideSessions";
-    
+
     public const string BffUserSessions = "UserSessions";
 }

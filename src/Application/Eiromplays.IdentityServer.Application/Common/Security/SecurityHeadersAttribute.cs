@@ -15,6 +15,7 @@ public class SecurityHeadersAttribute : ActionFilterAttribute
     {
         var result = context.Result;
         if (result is not ViewResult) return;
+
         // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options
         if (!context.HttpContext.Response.Headers.ContainsKey("X-Content-Type-Options"))
         {
@@ -29,8 +30,9 @@ public class SecurityHeadersAttribute : ActionFilterAttribute
 
         // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
         const string csp = "default-src 'self'; object-src 'none'; frame-ancestors 'none'; sandbox allow-forms allow-same-origin allow-scripts; base-uri 'self';";
+
         // also consider adding upgrade-insecure-requests once you have HTTPS in place for production
-        //csp += "upgrade-insecure-requests;";
+        // csp += "upgrade-insecure-requests;";
         // also an example if you need client images to be displayed from twitter
         // csp += "img-src 'self' https://pbs.twimg.com;";
 
@@ -39,6 +41,7 @@ public class SecurityHeadersAttribute : ActionFilterAttribute
         {
             context.HttpContext.Response.Headers.Add("Content-Security-Policy", csp);
         }
+
         // and once again for IE
         if (!context.HttpContext.Response.Headers.ContainsKey("X-Content-Security-Policy"))
         {

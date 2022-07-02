@@ -22,11 +22,11 @@ public class GetExternalLoginsEndpoint : EndpointWithoutRequest<ExternalLoginsRe
             s.Description = "Get external logins";
         });
     }
-    
+
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var userId = User.GetSubjectId();
-        
+        string? userId = User.GetSubjectId();
+
         if (string.IsNullOrWhiteSpace(userId))
             ThrowError("UserId is required");
 

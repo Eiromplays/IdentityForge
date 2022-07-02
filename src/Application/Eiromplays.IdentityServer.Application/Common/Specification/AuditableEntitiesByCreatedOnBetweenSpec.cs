@@ -1,6 +1,6 @@
 ﻿namespace Eiromplays.IdentityServer.Application.Common.Specification;
 
-public class AuditableEntitiesByCreatedOnBetweenSpec<T> : Specification<T>
+public sealed class AuditableEntitiesByCreatedOnBetweenSpec<T> : Specification<T>
     where T : AuditableEntity
 {
     public AuditableEntitiesByCreatedOnBetweenSpec(DateTime from, DateTime until) =>

@@ -9,13 +9,13 @@ namespace Eiromplays.IdentityServer.Infrastructure.Localization;
 
 internal static class Startup
 {
-    internal static IServiceCollection AddPOLocalization(this IServiceCollection services, IConfiguration config)
+    internal static IServiceCollection AddPoLocalization(this IServiceCollection services, IConfiguration config)
     {
         var localizationSettings = config.GetSection(nameof(LocalizationSettings)).Get<LocalizationSettings>();
 
         if (localizationSettings?.EnableLocalization is not true || localizationSettings.ResourcesPath is null)
             return services;
-        
+
         services.AddPortableObjectLocalization(options => options.ResourcesPath = localizationSettings.ResourcesPath);
 
         services.Configure<RequestLocalizationOptions>(options =>
@@ -33,7 +33,7 @@ internal static class Startup
             options.FallBackToParentUICultures = localizationSettings.FallbackToParent ?? true;
         });
 
-        services.AddSingleton<ILocalizationFileLocationProvider, EIAPoFileLocationProvider>();
+        services.AddSingleton<ILocalizationFileLocationProvider, EiaPoFileLocationProvider>();
 
         return services;
     }

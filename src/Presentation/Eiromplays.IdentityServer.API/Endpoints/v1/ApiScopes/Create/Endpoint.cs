@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.ApiScopes.Create;
 public class Endpoint : Endpoint<CreateApiScopeRequest, Models.Response>
 {
     private readonly IApiScopeService _apiScopeService;
-    
+
     public Endpoint(IApiScopeService apiScopeService)
     {
         _apiScopeService = apiScopeService;
@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<CreateApiScopeRequest, Models.Response>
             s.Summary = "Creates a new ApiScopes.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Create, EIAResource.ApiScopes));
+        Policies(EiaPermission.NameFor(EiaAction.Create, EiaResource.ApiScopes));
         ScopedValidator();
     }
 

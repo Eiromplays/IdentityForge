@@ -4,5 +4,6 @@ public class ExternalLoginCallbackRequest
 {
     public string ReturnUrl { get; set; } = default!;
 
-    [QueryParam] public string RemoteError { get; set; } = default!;
+    [QueryParam]
+    public string RemoteError { get; set; } = default!;
 }

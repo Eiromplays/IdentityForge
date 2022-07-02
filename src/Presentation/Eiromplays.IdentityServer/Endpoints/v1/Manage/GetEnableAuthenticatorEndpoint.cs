@@ -10,8 +10,6 @@ public class GetEnableAuthenticatorEndpoint : EndpointWithoutRequest<EnableAuthe
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly UrlEncoder _urlEncoder;
-    
-    private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
 
     public GetEnableAuthenticatorEndpoint(UserManager<ApplicationUser> userManager, UrlEncoder urlEncoder)
     {
@@ -44,10 +42,10 @@ public class GetEnableAuthenticatorEndpoint : EndpointWithoutRequest<EnableAuthe
 
         await SendOkAsync(response, ct);
     }
-    
+
     private async Task LoadSharedKeyAndQrCodeUriAsync(ApplicationUser user, EnableAuthenticator response)
     {
-        var sharedKey = await _userManager.GetAuthenticatorKeyAsync(user);
+        string? sharedKey = await _userManager.GetAuthenticatorKeyAsync(user);
         if (string.IsNullOrEmpty(sharedKey))
         {
             await _userManager.ResetAuthenticatorKeyAsync(user);
@@ -55,14 +53,14 @@ public class GetEnableAuthenticatorEndpoint : EndpointWithoutRequest<EnableAuthe
         }
 
         response.SharedKey = sharedKey;
-        if (!string.IsNullOrWhiteSpace(user.Email)) 
+        if (!string.IsNullOrWhiteSpace(user.Email))
             response.AuthenticatorUri = GenerateQrCodeUri(user.Email, sharedKey);
     }
-    
+
     private string GenerateQrCodeUri(string email, string unformattedKey)
     {
         return string.Format(
-            AuthenticatorUriFormat,
+            EnableAuthenticatorEndpoint.AuthenticatorUriFormat,
             _urlEncoder.Encode("Eiromplays.IdentityServer.Admin"),
             _urlEncoder.Encode(email),
             unformattedKey);

@@ -10,7 +10,6 @@ global using Eiromplays.IdentityServer.Application.Common.Persistence;
 global using Eiromplays.IdentityServer.Application.Common.Specification;
 global using Eiromplays.IdentityServer.Domain.Common;
 global using Eiromplays.IdentityServer.Domain.Common.Contracts;
-global using Eiromplays.IdentityServer.Domain.Catalog;
 global using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Login;
 global using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Login;
 global using Shared.Notifications;

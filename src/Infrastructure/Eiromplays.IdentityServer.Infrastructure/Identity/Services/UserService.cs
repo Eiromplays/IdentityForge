@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Ardalis.Specification.EntityFrameworkCore;
 using Duende.Bff.EntityFramework;
 using Eiromplays.IdentityServer.Application.Common.Caching;
@@ -11,7 +10,6 @@ using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Common.Mailing;
 using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Common.Specification;
-using Eiromplays.IdentityServer.Application.Identity.Sessions;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Domain.Identity;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
@@ -44,12 +42,22 @@ internal partial class UserService : IUserService
     private readonly IEmailTemplateService _templateService;
     private readonly SpaConfiguration _spaConfiguration;
 
-    public UserService(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager,
-        RoleManager<ApplicationRole> roleManager, ApplicationDbContext db, IStringLocalizer<UserService> t, IJobService jobService,
-        IEventPublisher events, ICacheService cache,
-        ICacheKeyService cacheKeys, IFileStorageService fileStorage, IMailService mailService,
-        SessionDbContext sessionDbContext, IExcelWriter excelWriter,
-        IOptions<AccountConfiguration> accountConfiguration, IEmailTemplateService templateService,
+    public UserService(
+        SignInManager<ApplicationUser> signInManager,
+        UserManager<ApplicationUser> userManager,
+        RoleManager<ApplicationRole> roleManager,
+        ApplicationDbContext db,
+        IStringLocalizer<UserService> t,
+        IJobService jobService,
+        IEventPublisher events,
+        ICacheService cache,
+        ICacheKeyService cacheKeys,
+        IFileStorageService fileStorage,
+        IMailService mailService,
+        SessionDbContext sessionDbContext,
+        IExcelWriter excelWriter,
+        IOptions<AccountConfiguration> accountConfiguration,
+        IEmailTemplateService templateService,
         IOptions<SpaConfiguration> spaConfiguration)
     {
         _signInManager = signInManager;
@@ -69,7 +77,7 @@ internal partial class UserService : IUserService
         _spaConfiguration = spaConfiguration.Value;
         _accountConfiguration = accountConfiguration.Value;
     }
-    
+
     public async Task<PaginationResponse<UserDetailsDto>> SearchAsync(UserListFilter filter, CancellationToken cancellationToken)
     {
         var spec = new EntitiesByPaginationFilterSpec<ApplicationUser>(filter);
@@ -78,8 +86,8 @@ internal partial class UserService : IUserService
             .WithSpecification(spec)
             .ProjectToType<UserDetailsDto>()
             .ToListAsync(cancellationToken);
-        
-        var count = await _userManager.Users
+
+        int count = await _userManager.Users
             .CountAsync(cancellationToken);
 
         return new PaginationResponse<UserDetailsDto>(users, count, filter.PageNumber, filter.PageSize);
@@ -127,7 +135,7 @@ internal partial class UserService : IUserService
 
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
 
-        var isAdmin = await _userManager.IsInRoleAsync(user, EIARoles.Administrator);
+        bool isAdmin = await _userManager.IsInRoleAsync(user, EIARoles.Administrator);
         if (isAdmin)
         {
             throw new ConflictException(_t["Administrators Profile's Status cannot be toggled"]);

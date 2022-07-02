@@ -2,8 +2,8 @@
 
 public abstract class ApplicationRoleEvent : DomainEvent
 {
-    public string RoleId { get; set; } = default!;
-    public string RoleName { get; set; } = default!;
+    public string RoleId { get; set; }
+    public string RoleName { get; set; }
     protected ApplicationRoleEvent(string roleId, string roleName) =>
         (RoleId, RoleName) = (roleId, roleName);
 }

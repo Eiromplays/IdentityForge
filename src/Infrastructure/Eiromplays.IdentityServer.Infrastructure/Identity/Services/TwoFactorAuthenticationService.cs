@@ -3,7 +3,6 @@ using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Identity.Auth;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.TwoFactorAuthentication;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
-using LanguageExt.ClassInstances;
 using LanguageExt.Common;
 using Microsoft.AspNetCore.Identity;
 
@@ -13,8 +12,6 @@ public class TwoFactorAuthenticationService : ITwoFactorAuthenticationService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
-
-    private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
 
     public TwoFactorAuthenticationService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
     {

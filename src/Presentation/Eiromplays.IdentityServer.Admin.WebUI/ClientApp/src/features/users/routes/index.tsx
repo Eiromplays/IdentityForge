@@ -18,12 +18,12 @@ export const UsersRoutes: Route<LocationGenerics> = {
       element: <Users />,
       loader: async ({ search: { pagination, searchFilter } }) => {
         return (
-          queryClient.getQueryData([
+          await queryClient.getQueryData([
             'search-users',
             pagination?.index ?? 1,
             pagination?.size ?? 10,
           ]) ??
-          queryClient
+          await queryClient
             .fetchQuery(['search-users', pagination?.index ?? 1, pagination?.size ?? 10], () =>
               searchPagination(
                 '/users/search',
@@ -31,7 +31,6 @@ export const UsersRoutes: Route<LocationGenerics> = {
                 searchFilter
               )
             )
-            .then(() => ({}))
         );
       },
     },

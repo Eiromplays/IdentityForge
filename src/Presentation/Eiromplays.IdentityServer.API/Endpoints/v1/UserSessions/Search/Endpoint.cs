@@ -7,13 +7,13 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserSessions.Search;
 public class Endpoint : Endpoint<UserSessionListFilter, PaginationResponse<UserSessionDto>>
 {
     private readonly IUserService _userService;
-    
+
     public Endpoint(IUserService userService)
     {
         _userService = userService;
     }
 
-    public override void Configure() 
+    public override void Configure()
     {
         Post("/user-sessions/search");
         Summary(s =>
@@ -21,7 +21,7 @@ public class Endpoint : Endpoint<UserSessionListFilter, PaginationResponse<UserS
             s.Summary = "Search user sessions using available filters.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Search, EIAResource.PersistedGrants));
+        Policies(EiaPermission.NameFor(EiaAction.Search, EiaResource.PersistedGrants));
     }
 
     public override async Task HandleAsync(UserSessionListFilter request, CancellationToken ct)

@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.IdentityResources.Update;
 public class Endpoint : Endpoint<Models.Request>
 {
     private readonly IIdentityResourceService _identityResourceService;
-    
+
     public Endpoint(IIdentityResourceService identityResourceService)
     {
         _identityResourceService = identityResourceService;
@@ -19,13 +19,13 @@ public class Endpoint : Endpoint<Models.Request>
             s.Summary = "Update a IdentityResource.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Update, EIAResource.ApiScopes));
+        Policies(EiaPermission.NameFor(EiaAction.Update, EiaResource.ApiScopes));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
         await _identityResourceService.UpdateAsync(req.Data, req.Id, ct);
-        
+
         await SendNoContentAsync(cancellation: ct);
     }
 }

@@ -1,5 +1,3 @@
-using FastEndpoints;
-
 namespace Eiromplays.IdentityServer.Application.Identity.Users;
 
 public class UpdateUserRequestValidator : Validator<UpdateUserRequest>
@@ -23,7 +21,7 @@ public class UpdateUserRequestValidator : Validator<UpdateUserRequest>
                 .WithMessage(T["Invalid Email Address."])
             .MustAsync(async (user, email, _) => !await userService.ExistsWithEmailAsync(email, user.Id))
                 .WithMessage((_, email) => string.Format(T["Email {0} is already registered."], email));
-        
+
         RuleFor(p => p.Image)
             .SetValidator(fileUploadRequestValidator);
 
