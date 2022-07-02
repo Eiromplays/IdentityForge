@@ -88,22 +88,6 @@ export const Dashboard = () => {
             smallIcon: <HiLockClosed className="text-blue-600 w-full h-full" />,
             largeIcon: <HiLockClosed className="text-blue-600 w-full h-full" />,
           },
-          {
-            title: 'Products',
-            value: dashboardStatsQuery.data.productCount,
-            countUpProps: { duration: 3, end: dashboardStatsQuery.data.productCount },
-            description: 'Total number of products',
-            smallIcon: <HiOutlineShoppingCart className="text-red-600 w-full h-full" />,
-            largeIcon: <HiOutlineShoppingCart className="text-red-600 w-full h-full" />,
-          },
-          {
-            title: 'Brands',
-            value: dashboardStatsQuery.data.brandCount,
-            countUpProps: { duration: 3, end: dashboardStatsQuery.data.brandCount },
-            description: 'Total number of brands',
-            smallIcon: <HiOutlineCollection className="text-yellow-600 w-full h-full" />,
-            largeIcon: <HiOutlineCollection className="text-yellow-600 w-full h-full" />,
-          },
         ]}
       />
       <br />
