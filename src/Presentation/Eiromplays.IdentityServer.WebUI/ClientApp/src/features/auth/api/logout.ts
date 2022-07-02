@@ -12,7 +12,7 @@ export type LogoutDTO = {
 };
 
 export const getLogoutInfo = ({ logoutId }: LogoutDTO): Promise<LogoutResponse> => {
-  return axios.get(`${identityServerUrl}/spa/Logout?logoutId=${logoutId}`);
+  return axios.get(`${identityServerUrl}/api/v1/account/logout?logoutId=${logoutId}`);
 };
 
 export const logoutUser = ({ logoutId }: LogoutDTO): Promise<LogoutResponse> => {
@@ -20,7 +20,7 @@ export const logoutUser = ({ logoutId }: LogoutDTO): Promise<LogoutResponse> => 
     logoutId: logoutId,
   };
 
-  return axios.post(`${identityServerUrl}/spa/Logout`, logoutDto);
+  return axios.post(`${identityServerUrl}/api/v1/account/logout`, logoutDto);
 };
 
 type QueryFnType = typeof getLogoutInfo;

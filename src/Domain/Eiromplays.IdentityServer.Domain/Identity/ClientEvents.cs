@@ -17,11 +17,9 @@ public class ClientCreatedEvent : ClientEvent
 
 public class ClientUpdatedEvent : ClientEvent
 {
-
     public ClientUpdatedEvent(int clientId)
         : base(clientId)
     {
-        
     }
 }
 
@@ -30,6 +28,5 @@ public class ClientDeletedEvent : ClientEvent
     public ClientDeletedEvent(int clientId)
         : base(clientId)
     {
-        
     }
 }

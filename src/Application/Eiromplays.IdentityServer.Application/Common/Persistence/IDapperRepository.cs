@@ -1,6 +1,4 @@
 using System.Data;
-using Eiromplays.IdentityServer.Application.Common.Interfaces;
-using Eiromplays.IdentityServer.Domain.Common.Contracts;
 
 namespace Eiromplays.IdentityServer.Application.Common.Persistence;
 

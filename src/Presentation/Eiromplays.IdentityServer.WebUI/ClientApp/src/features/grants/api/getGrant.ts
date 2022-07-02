@@ -6,7 +6,7 @@ import { identityServerUrl } from '@/utils/envVariables';
 import { Grant } from '../types';
 
 export const getGrant = ({ clientId }: { clientId: string }): Promise<Grant> => {
-  return axios.get(`${identityServerUrl}/grants/${clientId}`);
+  return axios.get(`${identityServerUrl}/api/v1/grants/${clientId}`);
 };
 
 type QueryFnType = typeof getGrant;

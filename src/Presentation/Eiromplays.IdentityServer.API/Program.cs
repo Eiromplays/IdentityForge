@@ -2,7 +2,6 @@ using Eiromplays.IdentityServer.API.Configurations;
 using Eiromplays.IdentityServer.Application;
 using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure;
-using FastEndpoints;
 using FluentValidation.AspNetCore;
 using Serilog;
 using Eiromplays.IdentityServer.Infrastructure.Common;
@@ -19,11 +18,10 @@ try
     });
 
     builder.Services.AddControllers();
-    
+
     builder.Services.AddInfrastructure(builder.Configuration, ProjectType.Api);
-    
+
     builder.Services.AddApplication();
-    
     builder.Services.AddAuthentication(options =>
         {
             options.DefaultScheme = "token";
@@ -34,10 +32,10 @@ try
         {
             options.Authority = "https://localhost:7001";
             options.Audience = "api";
-
             options.MapInboundClaims = false;
+            options.RequireHttpsMetadata = false;
         });
-    
+
     builder.Services.AddAuthorization(options =>
     {
         options.AddPolicy("ApiCaller", policy =>
@@ -49,7 +47,7 @@ try
         {
             policy.RequireClaim("sub");
         });
-    
+
         options.AddPolicy("RequireAdministrator", policy =>
         {
             policy.RequireClaim("role", "Administrator");
@@ -63,9 +61,7 @@ try
 
     await app.Services.InitializeDatabasesAsync();
 
-    app.UseInfrastructure(builder.Configuration, ProjectType.Api);
-    
-    app.UseFastEndpoints(config =>
+    app.UseInfrastructure(builder.Configuration, ProjectType.Api, config =>
     {
         config.GlobalEndpointOptions = (_, routeHandlerBuilder) =>
         {
@@ -78,9 +74,9 @@ try
             options.DefaultVersion = 1;
         };
     });
-    
+
     app.MapEndpoints();
-    
+
     app.Run();
 }
 catch (Exception ex) when (!ex.GetType().Name.Equals("StopTheHostException", StringComparison.Ordinal))

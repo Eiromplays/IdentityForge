@@ -9,22 +9,22 @@ public class ProfilePictureHelper
     {
         if (!string.IsNullOrWhiteSpace(user.ProfilePicture))
         {
-            return user.ProfilePicture.StartsWith(accountConfiguration?.ProfilePictureConfiguration.DefaultUrl ?? "")
+            return user.ProfilePicture.StartsWith(accountConfiguration?.ProfilePictureConfiguration.DefaultUrl ?? string.Empty)
                 ? user.ProfilePicture
                 : $"{accountConfiguration?.ProfilePictureConfiguration.BaseUrl}{user.ProfilePicture}";
         }
 
-        var email = user.GravatarEmail ?? user.Email;
+        string? email = user.GravatarEmail ?? user.Email;
 
         return GetGravatarUrl(email);
     }
 
     private static string GetGravatarUrl(string? email, int? size = 150)
     {
-        var hash = Md5HashHelper.GetMd5Hash(email);
-        
-        var sizeArgument = size > 0 ? $"?s={size}" : "";
-        
+        string hash = Md5HashHelper.GetMd5Hash(email);
+
+        string sizeArgument = size > 0 ? $"?s={size}" : string.Empty;
+
         return $"https://www.gravatar.com/avatar/{hash}{sizeArgument}";
     }
 }

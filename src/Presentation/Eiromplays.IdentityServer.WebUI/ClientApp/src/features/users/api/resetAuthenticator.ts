@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { identityServerUrl } from '@/utils/envVariables';
 
 export const resetAuthenticator = () => {
-  return axios.post(`${identityServerUrl}/account/ResetAuthenticator`);
+  return axios.post(`${identityServerUrl}/api/v1/manage/two-factor-authentication/reset`);
 };
 
 type UseResetAuthenticatorOptions = {

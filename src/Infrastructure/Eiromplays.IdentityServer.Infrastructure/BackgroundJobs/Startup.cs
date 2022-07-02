@@ -17,7 +17,7 @@ namespace Eiromplays.IdentityServer.Infrastructure.BackgroundJobs;
 
 internal static class Startup
 {
-    private static readonly ILogger _logger = Log.ForContext(typeof(Startup));
+    private static readonly ILogger Logger = Log.ForContext(typeof(Startup));
 
     internal static IServiceCollection AddBackgroundJobs(this IServiceCollection services, IConfiguration config)
     {
@@ -26,17 +26,17 @@ internal static class Startup
         services.AddHangfireConsoleExtensions();
 
         var storageSettings = config.GetSection("HangfireSettings:Storage").Get<HangfireStorageSettings>();
-        
-        if (string.IsNullOrEmpty(storageSettings.ConnectionString)) throw new Exception("Hangfire Storage Provider ConnectionString is not configured.");
-        
-        _logger.Information($"Hangfire: Current Storage Provider : {storageSettings.StorageProvider}");
-        _logger.Information("For more Hangfire storage, visit https://www.hangfire.io/extensions.html");
 
-        services.AddSingleton<JobActivator, EIAJobActivator>();
+        if (string.IsNullOrEmpty(storageSettings.ConnectionString)) throw new Exception("Hangfire Storage Provider ConnectionString is not configured.");
+
+        Logger.Information("Hangfire: Current Storage Provider : {StorageProvider}", storageSettings.StorageProvider);
+        Logger.Information("For more Hangfire storage, visit https://www.hangfire.io/extensions.html");
+
+        services.AddSingleton<JobActivator, EiaJobActivator>();
 
         services.AddHangfire((provider, hangfireConfig) => hangfireConfig
             .UseDatabase(storageSettings.StorageProvider, storageSettings.ConnectionString, config)
-            .UseFilter(new EIAJobFilter(provider))
+            .UseFilter(new EiaJobFilter(provider))
             .UseFilter(new LogJobFilter())
             .UseConsole());
 

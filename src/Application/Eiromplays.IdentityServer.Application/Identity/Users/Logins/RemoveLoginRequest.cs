@@ -3,11 +3,11 @@ namespace Eiromplays.IdentityServer.Application.Identity.Users.Logins;
 public class RemoveLoginRequest
 {
     public string LoginProvider { get; set; } = default!;
-    
+
     public string ProviderKey { get; set; } = default!;
 }
 
-public class RemoveLoginRequestValidator : CustomValidator<RemoveLoginRequest>
+public class RemoveLoginRequestValidator : Validator<RemoveLoginRequest>
 {
     public RemoveLoginRequestValidator()
     {

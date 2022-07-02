@@ -1,8 +1,8 @@
-namespace Shared.Authorization;
-
 using System.Collections.ObjectModel;
 
-public static class EIAAction
+namespace Shared.Authorization;
+
+public static class EiaAction
 {
     public const string View = nameof(View);
     public const string Search = nameof(Search);
@@ -15,7 +15,7 @@ public static class EIAAction
     public const string UpgradeSubscription = nameof(UpgradeSubscription);
 }
 
-public static class EIAResource
+public static class EiaResource
 {
     public const string Dashboard = nameof(Dashboard);
     public const string Hangfire = nameof(Hangfire);
@@ -23,8 +23,6 @@ public static class EIAResource
     public const string UserRoles = nameof(UserRoles);
     public const string Roles = nameof(Roles);
     public const string RoleClaims = nameof(RoleClaims);
-    public const string Products = nameof(Products);
-    public const string Brands = nameof(Brands);
     public const string PersistedGrants = nameof(PersistedGrants);
     public const string AuditLog = nameof(AuditLog);
     public const string Clients = nameof(Clients);
@@ -33,83 +31,69 @@ public static class EIAResource
     public const string ApiScopes = nameof(ApiScopes);
 }
 
-
-public static class EIAPermissions
+public static class EiaPermissions
 {
-    private static readonly EIAPermission[] _all =
+    private static readonly EiaPermission[] AllPermissions =
     {
-        new("View Dashboard", EIAAction.View, EIAResource.Dashboard),
-        new("View Hangfire", EIAAction.View, EIAResource.Hangfire),
-        new("View Users", EIAAction.View, EIAResource.Users),
-        new("Search Users", EIAAction.Search, EIAResource.Users),
-        new("Create Users", EIAAction.Create, EIAResource.Users),
-        new("Update Users", EIAAction.Update, EIAResource.Users),
-        new("Delete Users", EIAAction.Delete, EIAResource.Users),
-        new("Export Users", EIAAction.Export, EIAResource.Users),
-        new("View UserRoles", EIAAction.View, EIAResource.UserRoles),
-        new("Update UserRoles", EIAAction.Update, EIAResource.UserRoles),
-        new("Search Roles", EIAAction.Search, EIAResource.Roles),
-        new("View Roles", EIAAction.View, EIAResource.Roles),
-        new("Create Roles", EIAAction.Create, EIAResource.Roles),
-        new("Update Roles", EIAAction.Update, EIAResource.Roles),
-        new("Delete Roles", EIAAction.Delete, EIAResource.Roles),
-        new("View RoleClaims", EIAAction.View, EIAResource.RoleClaims),
-        new("Update RoleClaims", EIAAction.Update, EIAResource.RoleClaims),
-        new("View Products", EIAAction.View, EIAResource.Products, IsBasic: true),
-        new("Search Products", EIAAction.Search, EIAResource.Products, IsBasic: true),
-        new("Create Products", EIAAction.Create, EIAResource.Products),
-        new("Update Products", EIAAction.Update, EIAResource.Products),
-        new("Delete Products", EIAAction.Delete, EIAResource.Products),
-        new("Export Products", EIAAction.Export, EIAResource.Products),
-        new("View Brands", EIAAction.View, EIAResource.Brands, IsBasic: true),
-        new("Search Brands", EIAAction.Search, EIAResource.Brands, IsBasic: true),
-        new("Create Brands", EIAAction.Create, EIAResource.Brands),
-        new("Update Brands", EIAAction.Update, EIAResource.Brands),
-        new("Delete Brands", EIAAction.Delete, EIAResource.Brands),
-        new("Generate Brands", EIAAction.Generate, EIAResource.Brands),
-        new("Clean Brands", EIAAction.Clean, EIAResource.Brands),
-        new("View Persisted Grants", EIAAction.View, EIAResource.PersistedGrants),
-        new("Search Persisted Grants", EIAAction.Search, EIAResource.PersistedGrants),
-        new("Create Persisted Grants", EIAAction.Create, EIAResource.PersistedGrants),
-        new("Update Persisted Grants", EIAAction.Update, EIAResource.PersistedGrants),
-        new("Delete Persisted Grants", EIAAction.Delete, EIAResource.PersistedGrants),
-        new("Export Persisted Grants", EIAAction.Export, EIAResource.PersistedGrants),
-        new("Search Audit Logs", EIAAction.Search, EIAResource.AuditLog),
-        new("View Audit Logs", EIAAction.View, EIAResource.AuditLog),
-        new("Search Clients", EIAAction.Search, EIAResource.Clients),
-        new("View Clients", EIAAction.View, EIAResource.Clients),
-        new("Create Clients", EIAAction.Create, EIAResource.Clients),
-        new("Update Clients", EIAAction.Update, EIAResource.Clients),
-        new("Delete Clients", EIAAction.Delete, EIAResource.Clients),
-        new("Search IdentityResources", EIAAction.Search, EIAResource.IdentityResources),
-        new("View IdentityResources", EIAAction.View, EIAResource.IdentityResources),
-        new("Create IdentityResources", EIAAction.Create, EIAResource.IdentityResources),
-        new("Update IdentityResources", EIAAction.Update, EIAResource.IdentityResources),
-        new("Delete IdentityResources", EIAAction.Delete, EIAResource.IdentityResources),
-        new("Search ApiScopes", EIAAction.Search, EIAResource.ApiResources),
-        new("View ApiResources", EIAAction.View, EIAResource.ApiResources),
-        new("Create ApiResources", EIAAction.Create, EIAResource.ApiResources),
-        new("Update ApiResources", EIAAction.Update, EIAResource.ApiResources),
-        new("Delete ApiResources", EIAAction.Delete, EIAResource.ApiResources),
-        new("Search ApiResources", EIAAction.Search, EIAResource.ApiScopes),
-        new("View ApiScopes", EIAAction.View, EIAResource.ApiScopes),
-        new("Create ApiScopes", EIAAction.Create, EIAResource.ApiScopes),
-        new("Update ApiScopes", EIAAction.Update, EIAResource.ApiScopes),
-        new("Delete ApiScopes", EIAAction.Delete, EIAResource.ApiScopes),
+        new("View Dashboard", EiaAction.View, EiaResource.Dashboard),
+        new("View Hangfire", EiaAction.View, EiaResource.Hangfire),
+        new("View Users", EiaAction.View, EiaResource.Users),
+        new("Search Users", EiaAction.Search, EiaResource.Users),
+        new("Create Users", EiaAction.Create, EiaResource.Users),
+        new("Update Users", EiaAction.Update, EiaResource.Users),
+        new("Delete Users", EiaAction.Delete, EiaResource.Users),
+        new("Export Users", EiaAction.Export, EiaResource.Users),
+        new("View UserRoles", EiaAction.View, EiaResource.UserRoles),
+        new("Update UserRoles", EiaAction.Update, EiaResource.UserRoles),
+        new("Search Roles", EiaAction.Search, EiaResource.Roles),
+        new("View Roles", EiaAction.View, EiaResource.Roles),
+        new("Create Roles", EiaAction.Create, EiaResource.Roles),
+        new("Update Roles", EiaAction.Update, EiaResource.Roles),
+        new("Delete Roles", EiaAction.Delete, EiaResource.Roles),
+        new("View RoleClaims", EiaAction.View, EiaResource.RoleClaims),
+        new("Update RoleClaims", EiaAction.Update, EiaResource.RoleClaims),
+        new("View Persisted Grants", EiaAction.View, EiaResource.PersistedGrants),
+        new("Search Persisted Grants", EiaAction.Search, EiaResource.PersistedGrants),
+        new("Create Persisted Grants", EiaAction.Create, EiaResource.PersistedGrants),
+        new("Update Persisted Grants", EiaAction.Update, EiaResource.PersistedGrants),
+        new("Delete Persisted Grants", EiaAction.Delete, EiaResource.PersistedGrants),
+        new("Export Persisted Grants", EiaAction.Export, EiaResource.PersistedGrants),
+        new("Search Audit Logs", EiaAction.Search, EiaResource.AuditLog),
+        new("View Audit Logs", EiaAction.View, EiaResource.AuditLog),
+        new("Search Clients", EiaAction.Search, EiaResource.Clients),
+        new("View Clients", EiaAction.View, EiaResource.Clients),
+        new("Create Clients", EiaAction.Create, EiaResource.Clients),
+        new("Update Clients", EiaAction.Update, EiaResource.Clients),
+        new("Delete Clients", EiaAction.Delete, EiaResource.Clients),
+        new("Search IdentityResources", EiaAction.Search, EiaResource.IdentityResources),
+        new("View IdentityResources", EiaAction.View, EiaResource.IdentityResources),
+        new("Create IdentityResources", EiaAction.Create, EiaResource.IdentityResources),
+        new("Update IdentityResources", EiaAction.Update, EiaResource.IdentityResources),
+        new("Delete IdentityResources", EiaAction.Delete, EiaResource.IdentityResources),
+        new("Search ApiScopes", EiaAction.Search, EiaResource.ApiResources),
+        new("View ApiResources", EiaAction.View, EiaResource.ApiResources),
+        new("Create ApiResources", EiaAction.Create, EiaResource.ApiResources),
+        new("Update ApiResources", EiaAction.Update, EiaResource.ApiResources),
+        new("Delete ApiResources", EiaAction.Delete, EiaResource.ApiResources),
+        new("Search ApiResources", EiaAction.Search, EiaResource.ApiScopes),
+        new("View ApiScopes", EiaAction.View, EiaResource.ApiScopes),
+        new("Create ApiScopes", EiaAction.Create, EiaResource.ApiScopes),
+        new("Update ApiScopes", EiaAction.Update, EiaResource.ApiScopes),
+        new("Delete ApiScopes", EiaAction.Delete, EiaResource.ApiScopes),
     };
 
-    public static IReadOnlyList<EIAPermission> All { get; } = new ReadOnlyCollection<EIAPermission>(_all);
+    public static IReadOnlyList<EiaPermission> All { get; } = new ReadOnlyCollection<EiaPermission>(AllPermissions);
 
-    public static IReadOnlyList<EIAPermission> Root { get; } = new ReadOnlyCollection<EIAPermission>(_all.Where(p => p.IsRoot).ToArray());
+    public static IReadOnlyList<EiaPermission> Root { get; } = new ReadOnlyCollection<EiaPermission>(AllPermissions.Where(p => p.IsRoot).ToArray());
 
-    public static IReadOnlyList<EIAPermission> Admin { get; } = new ReadOnlyCollection<EIAPermission>(_all.Where(p => !p.IsRoot).ToArray());
+    public static IReadOnlyList<EiaPermission> Admin { get; } = new ReadOnlyCollection<EiaPermission>(AllPermissions.Where(p => !p.IsRoot).ToArray());
 
-    public static IReadOnlyList<EIAPermission> Basic { get; } = new ReadOnlyCollection<EIAPermission>(_all.Where(p => p.IsBasic).ToArray());
+    public static IReadOnlyList<EiaPermission> Basic { get; } = new ReadOnlyCollection<EiaPermission>(AllPermissions.Where(p => p.IsBasic).ToArray());
 }
 
-public record EIAPermission(string Description, string Action, string Resource, bool IsBasic = false, bool IsRoot = false)
+public record EiaPermission(string Description, string Action, string Resource, bool IsBasic = false, bool IsRoot = false)
 {
-    public string Name => NameFor(Action, Resource);
+    public string Name => NameFor(this.Action, this.Resource);
 
     public static string NameFor(string action, string resource) => $"Permissions.{resource}.{action}";
 }

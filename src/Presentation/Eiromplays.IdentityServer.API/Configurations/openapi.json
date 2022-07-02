@@ -11,5 +11,27 @@
     "License": true,
     "LicenseName": "MIT License",
     "LicenseUrl": "https://github.com/Eiromplays/IdentityServer.Admin/blob/main/LICENSE"
+  },
+  "OpenApiSecurityScheme": {
+    "Type": "oauth2",
+    "Flows": {
+      "AuthorizationCode": {
+        "AuthorizationUrl": "https://localhost:7001/connect/authorize",
+        "TokenUrl": "https://localhost:7001/connect/token",
+        "Scopes": {
+          "api": "api"
+        }
+      }
+    }
+  },
+  "SwaggerUiSettings": {
+    "OAuth2Client": {
+      "ClientId": "eiromplays_identityserver_api",
+      "ClientSecret": "",
+      "AppName": "Eiromplays IdentityServer Api",
+      "ScopeSeparator": " ",
+      "Scopes": ["api"],
+      "UsePkceWithAuthorizationCodeGrant": true
+    }
   }
 }

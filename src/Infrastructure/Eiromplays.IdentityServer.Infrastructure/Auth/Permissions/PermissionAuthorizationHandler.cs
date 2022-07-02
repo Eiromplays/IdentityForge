@@ -13,7 +13,7 @@ internal class PermissionAuthorizationHandler : AuthorizationHandler<PermissionR
 
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
     {
-        if (context.User?.GetUserId() is { } userId &&
+        if (context.User.GetUserId() is { } userId &&
             await _userService.HasPermissionAsync(userId, requirement.Permission))
         {
             context.Succeed(requirement);

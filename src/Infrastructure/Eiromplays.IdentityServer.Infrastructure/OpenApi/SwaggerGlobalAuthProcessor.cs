@@ -39,7 +39,7 @@ public class SwaggerGlobalAuthProcessor : IOperationProcessor
     {
         var list = ((AspNetCoreOperationProcessorContext)context).ApiDescription?.ActionDescriptor.TryGetPropertyValue<IList<object>>("EndpointMetadata");
         if (list is null) return true;
-        
+
         if (list.OfType<AllowAnonymousAttribute>().Any())
         {
             return true;

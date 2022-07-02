@@ -2,10 +2,10 @@
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 
-public class ApplicationRole : IdentityRole
+public sealed class ApplicationRole : IdentityRole
 {
     public string? Description { get; set; }
-    
+
     public DateTime Created { get; init; }
     public string? CreatedBy { get; init; }
 

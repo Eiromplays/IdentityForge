@@ -28,10 +28,9 @@ public class Endpoint : EndpointWithoutRequest
             await SendUnauthorizedAsync(ct);
             return;
         }
-        
+
         var result = await _userService.ExportPersonalDataAsync(userId);
 
-        await SendStreamAsync(result, "PersonalData.csv", result.Length, contentType: "application/octet-stream",
-            cancellation: ct);
+        await SendStreamAsync(result, "PersonalData.csv", result.Length, contentType: "application/octet-stream", cancellation: ct);
     }
 }

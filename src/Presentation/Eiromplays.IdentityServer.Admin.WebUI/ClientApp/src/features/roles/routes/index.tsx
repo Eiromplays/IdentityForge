@@ -1,10 +1,9 @@
 import { Navigate, Route } from '@tanstack/react-location';
-import { queryClient } from 'eiromplays-ui';
+import { queryClient, searchPagination } from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
 import { getRole } from '../api/getRole';
-import { searchRoles } from '../api/searchRoles';
 
 import { RoleInfo } from './RoleInfo';
 import { Roles } from './Roles';
@@ -15,17 +14,20 @@ export const RolesRoutes: Route<LocationGenerics> = {
     {
       path: '/',
       element: <Roles />,
-      loader: async ({ search: { pagination } }) =>
-        queryClient.getQueryData([
+      loader: async ({ search: { pagination, searchFilter } }) =>
+        await queryClient.getQueryData([
           'search-roles',
           pagination?.index ?? 1,
           pagination?.size ?? 10,
         ]) ??
-        queryClient
+        await queryClient
           .fetchQuery(['search-roles', pagination?.index ?? 1, pagination?.size ?? 10], () =>
-            searchRoles({ pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 })
-          )
-          .then(() => ({})),
+            searchPagination(
+              '/roles/search',
+              { pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 },
+              searchFilter
+            )
+          ),
     },
     {
       path: ':roleId',

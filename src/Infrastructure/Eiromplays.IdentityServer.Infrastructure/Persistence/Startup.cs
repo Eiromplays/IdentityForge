@@ -1,4 +1,3 @@
-using Duende.Bff;
 using Duende.Bff.EntityFramework;
 using Duende.IdentityServer.EntityFramework.Storage;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Database;
@@ -26,19 +25,21 @@ internal static class Startup
     internal static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration config, ProjectType projectType)
     {
         if (projectType is ProjectType.Spa) return services;
-        
+
         var databaseConfiguration = config.GetSection(nameof(DatabaseConfiguration)).Get<DatabaseConfiguration>();
-        
+
         Logger.Information("Current DB Provider : {DatabaseProvider}", databaseConfiguration.DatabaseProvider);
 
         return services
             .Configure<DatabaseConfiguration>(config.GetSection(nameof(DatabaseConfiguration)))
 
-            .AddDbContext<ApplicationDbContext>(m => m.UseDatabase(databaseConfiguration.DatabaseProvider,
+            .AddDbContext<ApplicationDbContext>(m => m.UseDatabase(
+                databaseConfiguration.DatabaseProvider,
                 databaseConfiguration.ConnectionStringsConfiguration.ApplicationDbConnection))
             .AddConfigurationDbContext<ApplicationDbContext>()
             .AddOperationalDbContext<ApplicationDbContext>()
-            .AddDbContext<SessionDbContext>(m => m.UseDatabase(databaseConfiguration.DatabaseProvider,
+            .AddDbContext<SessionDbContext>(m => m.UseDatabase(
+                databaseConfiguration.DatabaseProvider,
                 databaseConfiguration.ConnectionStringsConfiguration.SessionDbConnection))
 
             .AddTransient<IDatabaseInitializer, DatabaseInitializer>()
@@ -46,7 +47,7 @@ internal static class Startup
             .AddTransient<SessionDbInitializer>()
             .AddTransient<ApplicationDbSeeder>()
 
-            .AddServices(typeof(ICustomSeeder), ServiceLifetime.Transient)
+            .AddServices(typeof(ICustomSeeder), ServiceLifetime.Transient, projectType)
             .AddTransient<CustomSeederRunner>()
 
             .AddTransient<IConnectionStringSecurer, ConnectionStringSecurer>()
@@ -55,14 +56,13 @@ internal static class Startup
             .AddRepositories();
     }
 
-    internal static BffBuilder AddBffPersistence(this BffBuilder bffBuilder, IConfiguration configuration,
-        ProjectType projectType)
+    internal static BffBuilder AddBffPersistence(this BffBuilder bffBuilder, IConfiguration configuration, ProjectType projectType)
     {
         if (projectType is not ProjectType.Spa)
             return bffBuilder;
 
         var databaseConfiguration = configuration.GetSection(nameof(DatabaseConfiguration)).Get<DatabaseConfiguration>();
-        
+
         Logger.Information("Current DB Provider : {DatabaseProvider}", databaseConfiguration.DatabaseProvider);
 
         bffBuilder.AddEntityFrameworkServerSideSessions(options => options.UseDatabase(
@@ -73,13 +73,13 @@ internal static class Startup
             .Configure<DatabaseConfiguration>(configuration.GetSection(nameof(DatabaseConfiguration)))
             .AddTransient<IDatabaseInitializer, DatabaseInitializer>()
             .AddTransient<SessionDbInitializer>()
-            
             .AddTransient<IConnectionStringSecurer, ConnectionStringSecurer>()
             .AddTransient<IConnectionStringValidator, ConnectionStringValidator>();
 
         return bffBuilder;
     }
 
+    // ReSharper disable once UnusedMethodReturnValue.Local
     private static DbContextOptionsBuilder UseDatabase(this DbContextOptionsBuilder builder, DatabaseProvider databaseProvider, string connectionString)
     {
         switch (databaseProvider)
@@ -99,7 +99,7 @@ internal static class Startup
 
             case DatabaseProvider.Sqlite:
                 return builder.UseSqlite(connectionString, e => e.MigrationsAssembly("Migrators.Sqlite"));
-            
+
             case DatabaseProvider.InMemory:
                 return builder.UseInMemoryDatabase(connectionString);
 
