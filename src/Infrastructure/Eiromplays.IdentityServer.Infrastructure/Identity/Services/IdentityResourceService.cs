@@ -10,27 +10,22 @@ using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
-internal partial class  IdentityResourceService : IIdentityResourceService
+internal class IdentityResourceService : IIdentityResourceService
 {
     private readonly ApplicationDbContext _db;
     private readonly IStringLocalizer _t;
-    private readonly ILogger _logger;
     private readonly IEventPublisher _events;
-    
-    public IdentityResourceService(ApplicationDbContext db, IStringLocalizer<IdentityResourceService> t,
-        ILogger<IdentityResourceService> logger,
-        IEventPublisher events)
+
+    public IdentityResourceService(ApplicationDbContext db, IStringLocalizer<IdentityResourceService> t, IEventPublisher events)
     {
         _db = db;
         _t = t;
-        _logger = logger;
         _events = events;
     }
-    
+
     public async Task<PaginationResponse<IdentityResourceDto>> SearchAsync(IdentityResourceListFilter filter, CancellationToken cancellationToken)
     {
         var spec = new EntitiesByPaginationFilterSpec<IdentityResource>(filter);
@@ -40,7 +35,7 @@ internal partial class  IdentityResourceService : IIdentityResourceService
             .ProjectToType<IdentityResourceDto>()
             .ToListAsync(cancellationToken);
 
-        var count = await _db.IdentityResources
+        int count = await _db.IdentityResources
             .CountAsync(cancellationToken);
 
         return new PaginationResponse<IdentityResourceDto>(identityResources, count, filter.PageNumber, filter.PageSize);
@@ -49,10 +44,10 @@ internal partial class  IdentityResourceService : IIdentityResourceService
     public async Task<IdentityResourceDto> GetAsync(int identityResourceId, CancellationToken cancellationToken)
     {
         var client = await FindIdentityResourceByIdAsync(identityResourceId, cancellationToken);
-        
+
         return client.Adapt<IdentityResourceDto>();
     }
-    
+
     public async Task UpdateAsync(UpdateIdentityResourceRequest request, int identityResourceId, CancellationToken cancellationToken)
     {
         var identityResource = await FindIdentityResourceByIdAsync(identityResourceId, cancellationToken);
@@ -65,36 +60,37 @@ internal partial class  IdentityResourceService : IIdentityResourceService
         identityResource.Required = request.Required;
         identityResource.Enabled = request.Enabled;
         identityResource.NonEditable = request.NonEditable;
-        
+
         _db.IdentityResources.Update(identityResource);
 
-        var success = await _db.SaveChangesAsync(cancellationToken) > 0;
+        bool success = await _db.SaveChangesAsync(cancellationToken) > 0;
 
         await _events.PublishAsync(new IdentityResourceUpdatedEvent(identityResource.Id));
-        
+
         if (!success)
         {
-            throw new InternalServerException(_t["Update IdentityResource failed"],
+            throw new InternalServerException(
+                _t["Update IdentityResource failed"],
                 new List<string> { "Failed to update IdentityResource" });
         }
     }
-    
+
     public async Task DeleteAsync(int identityResourceId, CancellationToken cancellationToken)
     {
         var identityResource = await FindIdentityResourceByIdAsync(identityResourceId, cancellationToken);
 
         _db.IdentityResources.Remove(identityResource);
 
-        var success = await _db.SaveChangesAsync(cancellationToken) > 0;
+        bool success = await _db.SaveChangesAsync(cancellationToken) > 0;
 
         await _events.PublishAsync(new IdentityResourceDeletedEvent(identityResource.Id));
-        
+
         if (!success)
         {
-            throw new InternalServerException(_t["Delete client failed"], new List<string>{ "Failed to delete client" });
+            throw new InternalServerException(_t["Delete client failed"], new List<string> { "Failed to delete client" });
         }
     }
-    
+
     public async Task<string> CreateAsync(CreateIdentityResourceRequest request, CancellationToken cancellationToken)
     {
         var identityResource = new IdentityResource
@@ -111,15 +107,15 @@ internal partial class  IdentityResourceService : IIdentityResourceService
 
         await _db.IdentityResources.AddAsync(identityResource, cancellationToken);
 
-        var success = await _db.SaveChangesAsync(cancellationToken) > 0;
-        
-        if (!success) throw new InternalServerException(_t["Create IdentityResource failed"], new List<string>{ "Failed to create IdentityResource" });
-        
+        bool success = await _db.SaveChangesAsync(cancellationToken) > 0;
+
+        if (!success) throw new InternalServerException(_t["Create IdentityResource failed"], new List<string> { "Failed to create IdentityResource" });
+
         await _events.PublishAsync(new IdentityResourceCreatedEvent(identityResource.Id));
 
         return string.Format(_t["IdentityResource {0} Registered."], identityResource.Id);
     }
-    
+
     #region Entity Queries
 
     // TODO: Move to repository or something like that :)

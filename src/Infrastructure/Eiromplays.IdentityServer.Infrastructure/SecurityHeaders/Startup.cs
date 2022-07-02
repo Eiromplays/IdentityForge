@@ -40,9 +40,9 @@ internal static class Startup
                         context.Response.Headers.Add(HeaderNames.SAMESITE, settings.SameSite);
                     }
 
-                    if (!string.IsNullOrWhiteSpace(settings.XXSSProtection))
+                    if (!string.IsNullOrWhiteSpace(settings.XxssProtection))
                     {
-                        context.Response.Headers.Add(HeaderNames.XXSSPROTECTION, settings.XXSSProtection);
+                        context.Response.Headers.Add(HeaderNames.XXSSPROTECTION, settings.XxssProtection);
                     }
                 }
 

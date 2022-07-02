@@ -1,10 +1,10 @@
 import { useMatch } from '@tanstack/react-location';
-import { ContentLayout, Spinner } from 'eiromplays-ui';
+import { ContentLayout, Spinner, useAuth } from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
 import { useUser } from '../api/getUser';
-import { UpdateProfile } from '../components/UpdateProfile';
+import { UpdateUser } from '../components/UpdateUser';
 
 type EntryProps = {
   label: string;
@@ -28,11 +28,19 @@ const PictureEntry = ({ label, value }: EntryProps) => (
 );
 
 export const User = () => {
+  const { user } = useAuth();
+
   const {
     params: { userId },
   } = useMatch<LocationGenerics>();
 
   const userQuery = useUser({ userId: userId });
+
+  //TODO: Find a better way to do this
+  if (user.id === userId) {
+    window.location.href = window.location.href.replace(userId, '');
+    return null;
+  }
 
   if (userQuery.isLoading) {
     return (
@@ -44,14 +52,14 @@ export const User = () => {
   if (!userQuery.data) return null;
 
   return (
-    <ContentLayout title="Profile">
+    <ContentLayout title={`User ${userQuery.data?.userName}`}>
       <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
         <div className="px-4 py-5 sm:px-6">
           <div className="flex justify-between">
             <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
               User Information
             </h3>
-            <UpdateProfile id={userId} />
+            <UpdateUser id={userId} />
           </div>
           <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-white">
             Personal details of the user.
@@ -61,28 +69,25 @@ export const User = () => {
           <dl className="sm:divide-y sm:divide-gray-200">
             <Entry label="Id" value={userQuery.data.id} />
             <Entry label="Username" value={userQuery.data.userName} />
+            <Entry label="Display Name" value={userQuery.data.displayName} />
             <Entry label="First Name" value={userQuery.data.firstName} />
             <Entry label="Last Name" value={userQuery.data.lastName} />
             <Entry label="Email Address" value={userQuery.data.email} />
             <Entry label="Phone Number" value={userQuery.data.phoneNumber} />
-            {userQuery.data.updated_at && (
-              <Entry label="Last updated at" value={userQuery.data.updated_at.toString()} />
-            )}
-            {userQuery.data.created_at && (
-              <Entry label="Created at" value={userQuery.data.created_at.toString()} />
-            )}
             {userQuery.data.gravatarEmail && (
               <Entry label="Gravatar Email Address" value={userQuery.data.gravatarEmail} />
             )}
             {userQuery.data.profilePicture && (
               <PictureEntry label={'Profile Picture'} value={userQuery.data.profilePicture} />
             )}
-            {userQuery.data.roles?.length > 0 && (
-              <Entry
-                label={userQuery.data.roles.length > 1 ? 'Roles' : 'Role'}
-                value={userQuery.data.roles.join(', ')}
-              />
-            )}
+            <Entry label="Email Confirmed" value={userQuery.data.emailConfirmed.toString()} />
+            <Entry label="Is Active" value={userQuery.data.isActive.toString()} />
+            <Entry
+              label="Phone Number Confirmed"
+              value={userQuery.data.phoneNumberConfirmed.toString()}
+            />
+            <Entry label="Lockout Enabled" value={userQuery.data.lockoutEnabled.toString()} />
+            <Entry label="Two-factor Enabled" value={userQuery.data.twoFactorEnabled.toString()} />
           </dl>
         </div>
       </div>

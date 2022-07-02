@@ -1,6 +1,9 @@
-import { axios, MutationConfig, queryClient } from 'eiromplays-ui';
+import { useSearch } from '@tanstack/react-location';
+import { axios, MutationConfig, PaginationResponse, queryClient } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
+
+import { LocationGenerics } from '@/App';
 
 import { User } from '../types';
 
@@ -17,26 +20,23 @@ type UseDeleteUserOptions = {
 };
 
 export const useDeleteUser = ({ config }: UseDeleteUserOptions = {}) => {
+  const { pagination } = useSearch<LocationGenerics>();
+
   return useMutation({
-    onMutate: async (deletedUser) => {
-      await queryClient.cancelQueries('users');
-
-      const previousUsers = queryClient.getQueryData<User[]>('users');
-
-      queryClient.setQueryData(
-        'users',
-        previousUsers?.filter((discussion) => discussion.id !== deletedUser.userId)
-      );
-
-      return { previousUsers };
-    },
     onError: (_, __, context: any) => {
       if (context?.previousUsers) {
-        queryClient.setQueryData('users', context.previousUsers);
+        queryClient.setQueryData(
+          ['search-users', pagination?.index ?? 1, pagination?.size ?? 10],
+          context.previousUsers
+        );
       }
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries('users');
+      await queryClient.refetchQueries([
+        'search-users',
+        pagination?.index ?? 1,
+        pagination?.size ?? 10,
+      ]);
       toast.success('User deleted');
     },
     ...config,

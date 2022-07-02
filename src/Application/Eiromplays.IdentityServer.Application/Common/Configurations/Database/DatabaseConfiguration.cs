@@ -4,7 +4,9 @@ namespace Eiromplays.IdentityServer.Application.Common.Configurations.Database;
 
 public class DatabaseConfiguration
 {
-    public DatabaseConfiguration(){}
+    public DatabaseConfiguration()
+    {
+    }
 
     public DatabaseConfiguration(
         DatabaseProvider databaseProvider,
@@ -25,5 +27,4 @@ public class DatabaseConfiguration
     public bool ApplyDatabaseMigrations { get; set; } = true;
 
     public ConnectionStringsConfiguration ConnectionStringsConfiguration { get; set; } = new();
-
 }

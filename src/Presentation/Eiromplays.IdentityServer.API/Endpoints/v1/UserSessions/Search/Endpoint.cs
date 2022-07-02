@@ -2,18 +2,18 @@ using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Identity.Sessions;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserLogins.Search;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserSessions.Search;
 
-public class Endpoint : Endpoint<Models.Request, PaginationResponse<UserSessionDto>>
+public class Endpoint : Endpoint<UserSessionListFilter, PaginationResponse<UserSessionDto>>
 {
     private readonly IUserService _userService;
-    
+
     public Endpoint(IUserService userService)
     {
         _userService = userService;
     }
 
-    public override void Configure() 
+    public override void Configure()
     {
         Post("/user-sessions/search");
         Summary(s =>
@@ -21,12 +21,12 @@ public class Endpoint : Endpoint<Models.Request, PaginationResponse<UserSessionD
             s.Summary = "Search user sessions using available filters.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Search, EIAResource.PersistedGrants));
+        Policies(EiaPermission.NameFor(EiaAction.Search, EiaResource.PersistedGrants));
     }
 
-    public override async Task HandleAsync(Models.Request request, CancellationToken ct)
+    public override async Task HandleAsync(UserSessionListFilter request, CancellationToken ct)
     {
-        Response = await _userService.SearchSessionsAsync(request.Data, ct);
+        Response = await _userService.SearchSessionsAsync(request, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

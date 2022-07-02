@@ -13,21 +13,23 @@ internal static class Startup
     internal static IServiceCollection AddMailing(this IServiceCollection services, IConfiguration configuration)
     {
         var emailConfiguration = configuration.GetSection(nameof(EmailConfiguration)).Get<EmailConfiguration>();
-        var fluentEmailServicesBuilder =services
+        var fluentEmailServicesBuilder = services
             .AddFluentEmail(emailConfiguration.From, emailConfiguration.DefaultFromName)
             .AddRazorRenderer();
-        
+
         switch (emailConfiguration.EmailProvider)
         {
             case EmailProvider.Smtp:
                 return emailConfiguration.SmtpEmailConfiguration is null
                     ? services
                     : fluentEmailServicesBuilder.AddSmtpSender(
-                        new SmtpClient(emailConfiguration.SmtpEmailConfiguration.Host,
+                        new SmtpClient(
+                            emailConfiguration.SmtpEmailConfiguration.Host,
                             emailConfiguration.SmtpEmailConfiguration.Port)
                         {
                             UseDefaultCredentials = false,
-                            Credentials = new NetworkCredential(emailConfiguration.SmtpEmailConfiguration.Login,
+                            Credentials = new NetworkCredential(
+                                emailConfiguration.SmtpEmailConfiguration.Login,
                                 emailConfiguration.SmtpEmailConfiguration.Password),
                             EnableSsl = emailConfiguration.SmtpEmailConfiguration.UseSsl
                         }).Services;
@@ -38,19 +40,22 @@ internal static class Startup
             case EmailProvider.SendGrid:
                 return emailConfiguration.SendGridConfiguration is null
                     ? services
-                    : fluentEmailServicesBuilder.AddSendGridSender(emailConfiguration.SendGridConfiguration.ApiKey,
+                    : fluentEmailServicesBuilder.AddSendGridSender(
+                        emailConfiguration.SendGridConfiguration.ApiKey,
                         emailConfiguration.SendGridConfiguration.SandboxMode).Services;
             case EmailProvider.Mailgun:
                 return emailConfiguration.MailgunConfiguration is null
                     ? services
-                    : fluentEmailServicesBuilder.AddMailGunSender(emailConfiguration.MailgunConfiguration.DomainName,
-                            emailConfiguration.MailgunConfiguration.ApiKey,
-                            emailConfiguration.MailgunConfiguration.Region)
+                    : fluentEmailServicesBuilder.AddMailGunSender(
+                        emailConfiguration.MailgunConfiguration.DomainName,
+                        emailConfiguration.MailgunConfiguration.ApiKey,
+                        emailConfiguration.MailgunConfiguration.Region)
                         .Services;
             case EmailProvider.Mailtrap:
                 return emailConfiguration.MailtrapConfiguration is null
                     ? services
-                    : fluentEmailServicesBuilder.AddMailtrapSender(emailConfiguration.MailtrapConfiguration.UserName,
+                    : fluentEmailServicesBuilder.AddMailtrapSender(
+                        emailConfiguration.MailtrapConfiguration.UserName,
                         emailConfiguration.MailtrapConfiguration.Password,
                         emailConfiguration.MailtrapConfiguration.Host,
                         emailConfiguration.MailtrapConfiguration.Port).Services;
@@ -60,7 +65,8 @@ internal static class Startup
                     : fluentEmailServicesBuilder.AddGraphSender(emailConfiguration.GraphConfiguration).Services;
             default:
                 const string nameOfEmailProvider = nameof(emailConfiguration.EmailProvider);
-                throw new ArgumentOutOfRangeException(nameOfEmailProvider,
+                throw new ArgumentOutOfRangeException(
+                    nameOfEmailProvider,
                     $"EmailProvider needs to be one of these: {string.Join(", ", Enum.GetNames(typeof(EmailProvider)))}.");
         }
     }

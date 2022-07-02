@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Roles.DeleteRole;
 public class Endpoint : Endpoint<Models.Request, Models.Response>
 {
     private readonly IRoleService _roleService;
-    
+
     public Endpoint(IRoleService roleService)
     {
         _roleService = roleService;
@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             s.Summary = "Delete a role.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Delete, EIAResource.Roles));
+        Policies(EiaPermission.NameFor(EiaAction.Delete, EiaResource.Roles));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)

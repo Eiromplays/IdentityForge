@@ -11,7 +11,7 @@ public class ApplicationUser : IdentityUser, IAuditableEntity
     public string? LastName { get; set; }
 
     public bool IsActive { get; set; }
-    
+
     [PersonalData]
     public string? DisplayName { get; set; }
 
@@ -29,7 +29,7 @@ public class ApplicationUser : IdentityUser, IAuditableEntity
 
     [PersonalData]
     public string? DiscordId { get; set; }
-    
+
     public DateTime CreatedOn { get; set;  }
     public string? CreatedBy { get; set; }
 

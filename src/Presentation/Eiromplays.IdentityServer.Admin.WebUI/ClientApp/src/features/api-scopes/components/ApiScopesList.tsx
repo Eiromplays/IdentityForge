@@ -1,5 +1,12 @@
 import { useSearch, MatchRoute } from '@tanstack/react-location';
-import { Spinner, PaginatedTable, Link, defaultPageIndex, defaultPageSize } from 'eiromplays-ui';
+import {
+  Spinner,
+  PaginatedTable,
+  Link,
+  defaultPageIndex,
+  defaultPageSize,
+  SearchFilter,
+} from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
@@ -12,11 +19,22 @@ export const ApiScopesList = () => {
   const page = search.pagination?.index || defaultPageIndex;
   const pageSize = search.pagination?.size || defaultPageSize;
 
+  const searchFilter: SearchFilter = {
+    customProperties: [],
+    orderBy: ['id', 'name', 'enabled', 'displayName', 'required', 'showInDiscoveryDocument'],
+    advancedSearch: {
+      fields: ['id', 'name', 'enabled', 'displayName', 'required', 'showInDiscoveryDocument'],
+      keyword: '',
+    },
+    keyword: '',
+  };
+
   return (
     <PaginatedTable<SearchApiScopeDTO, ApiScope>
       url="/api-scopes/search"
       queryKeyName="search-api-scopes"
       searchData={{ pageNumber: page, pageSize: pageSize }}
+      searchFilter={searchFilter}
       columns={[
         {
           title: 'Id',

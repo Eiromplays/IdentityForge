@@ -19,13 +19,13 @@ public class Endpoint : EndpointWithoutRequest<List<AuditDto>>
             s.Summary = "Get list of all logs.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.AuditLog));
+        Policies(EiaPermission.NameFor(EiaAction.View, EiaResource.AuditLog));
     }
 
     public override async Task HandleAsync(CancellationToken ct)
     {
         Response = await _auditService.GetListAsync(ct);
-        
+
         await SendOkAsync(Response, cancellation: ct);
     }
 }

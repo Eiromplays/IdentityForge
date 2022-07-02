@@ -14,7 +14,7 @@ internal static class Startup
     internal static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration, ProjectType projectType)
     {
         if (projectType is ProjectType.Spa) return services;
-        
+
         services
             .AddCurrentUser()
             .AddPermissions()

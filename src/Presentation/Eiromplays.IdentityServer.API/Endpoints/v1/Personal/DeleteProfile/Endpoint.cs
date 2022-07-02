@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Personal.DeleteProfile;
 public class Endpoint : EndpointWithoutRequest
 {
     private readonly IUserService _userService;
-    
+
     public Endpoint(IUserService userService)
     {
         _userService = userService;
@@ -28,7 +28,7 @@ public class Endpoint : EndpointWithoutRequest
             await SendUnauthorizedAsync(ct);
             return;
         }
-        
+
         await _userService.DeleteAsync(userId);
 
         await SendNoContentAsync(cancellation: ct);

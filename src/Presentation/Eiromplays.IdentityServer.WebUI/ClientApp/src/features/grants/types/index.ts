@@ -9,7 +9,3 @@ export type Grant = {
   identityGrantNames: string[];
   apiGrantNames: string[];
 };
-
-export type GrantsViewModel = {
-  grants: Grant[];
-};

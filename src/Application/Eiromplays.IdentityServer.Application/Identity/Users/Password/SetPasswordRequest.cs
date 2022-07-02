@@ -10,11 +10,13 @@ public class SetPasswordRequest
         Password = password;
         ConfirmPassword = confirmPassword;
     }
-    
-    public SetPasswordRequest () { }
+
+    public SetPasswordRequest()
+    {
+    }
 }
 
-public class SetPasswordRequestValidator : CustomValidator<SetPasswordRequest>
+public class SetPasswordRequestValidator : Validator<SetPasswordRequest>
 {
     public SetPasswordRequestValidator(IStringLocalizer<ChangePasswordRequestValidator> T)
     {

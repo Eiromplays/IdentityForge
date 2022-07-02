@@ -7,7 +7,7 @@ import { LoginViewModel } from '../types';
 
 export const getLogin = ({ returnUrl }: { returnUrl?: string }): Promise<LoginViewModel> => {
   return axios.get(
-    `${identityServerUrl}/spa/login?returnUrl=${encodeURIComponent(returnUrl || '')}`
+    `${identityServerUrl}/api/v1/account/login?returnUrl=${encodeURIComponent(returnUrl || '')}`
   );
 };
 

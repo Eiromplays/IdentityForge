@@ -7,6 +7,7 @@ import {
   PaginatedTable,
   defaultPageIndex,
   defaultPageSize,
+  SearchFilter,
 } from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
@@ -18,11 +19,23 @@ export const LogsList = () => {
   const search = useSearch<LocationGenerics>();
   const page = search.pagination?.index || defaultPageIndex;
   const pageSize = search.pagination?.size || defaultPageSize;
+
+  const searchFilter: SearchFilter = {
+    customProperties: [],
+    orderBy: ['id', 'userId', 'type', 'tableName'],
+    advancedSearch: {
+      fields: ['id', 'userId', 'type', 'tableName'],
+      keyword: '',
+    },
+    keyword: '',
+  };
+
   return (
     <PaginatedTable<SearchLogsDTO, Log>
       url="/logs/search"
       queryKeyName="search-logs"
       searchData={{ pageNumber: page, pageSize: pageSize }}
+      searchFilter={searchFilter}
       columns={[
         {
           title: 'Id',

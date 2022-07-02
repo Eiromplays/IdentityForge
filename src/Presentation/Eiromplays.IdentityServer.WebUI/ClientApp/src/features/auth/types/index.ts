@@ -13,10 +13,12 @@ export type AuthUser = {
   created_at: string;
 };
 
-export type LoginConsentResponse = {
+export type LoginResponse = {
   error: string;
   signInResult: SignInResult;
   validReturnUrl: string;
+  twoFactorReturnUrl?: string;
+  message?: string;
 };
 
 export type SignInResult = {

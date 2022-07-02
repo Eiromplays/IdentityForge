@@ -1,7 +1,4 @@
-﻿using Ardalis.Specification;
-using Eiromplays.IdentityServer.Domain.Common.Contracts;
-
-namespace Eiromplays.IdentityServer.Application.Common.Persistence;
+﻿namespace Eiromplays.IdentityServer.Application.Common.Persistence;
 
 // The Repository for the Application Db
 // I(Read)RepositoryBase<T> is from Ardalis.Specification

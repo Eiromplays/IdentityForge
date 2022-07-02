@@ -11,7 +11,7 @@ export const AddUserLogin = ({ providerName }: AddUserLoginProps) => {
   return (
     <Button
       onClick={() =>
-        (window.location.href = `${identityServerUrl}/ExternalLogins/add-login?provider=${providerName}`)
+        (window.location.href = `${identityServerUrl}/api/v1/external-logins/link-login?provider=${providerName}`)
       }
       variant="primary"
       startIcon={<HiOutlinePlus className="h-4 w-4" />}

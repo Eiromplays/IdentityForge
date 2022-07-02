@@ -19,13 +19,13 @@ public class Endpoint : Endpoint<Models.Request, AuditDto>
             s.Summary = "Get a log.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.AuditLog));
+        Policies(EiaPermission.NameFor(EiaAction.View, EiaResource.AuditLog));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
         Response = await _auditService.GetTrailAsync(req.Id, ct);
-        
+
         await SendOkAsync(Response, cancellation: ct);
     }
 }

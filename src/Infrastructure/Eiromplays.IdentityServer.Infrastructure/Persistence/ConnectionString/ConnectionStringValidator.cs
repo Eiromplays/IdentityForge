@@ -29,15 +29,15 @@ internal class ConnectionStringValidator : IConnectionStringValidator
             switch (dbProvider)
             {
                 case DatabaseProvider.PostgreSql:
-                    var postgresqlcs = new NpgsqlConnectionStringBuilder(connectionString);
+                    _ = new NpgsqlConnectionStringBuilder(connectionString);
                     break;
 
                 case DatabaseProvider.MySql:
-                    var mysqlcs = new MySqlConnectionStringBuilder(connectionString);
+                    _ = new MySqlConnectionStringBuilder(connectionString);
                     break;
 
                 case DatabaseProvider.SqlServer:
-                    var mssqlcs = new SqlConnectionStringBuilder(connectionString);
+                    _ = new SqlConnectionStringBuilder(connectionString);
                     break;
             }
 

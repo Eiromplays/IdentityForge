@@ -10,12 +10,12 @@ namespace Eiromplays.IdentityServer.Infrastructure.Localization;
 /// <summary>
 /// Provides PO files for FSH Localization.
 /// </summary>
-public class EIAPoFileLocationProvider : ILocalizationFileLocationProvider
+public class EiaPoFileLocationProvider : ILocalizationFileLocationProvider
 {
     private readonly IFileProvider _fileProvider;
     private readonly string _resourcesContainer;
 
-    public EIAPoFileLocationProvider(IHostEnvironment hostingEnvironment, IOptions<LocalizationOptions> localizationOptions)
+    public EiaPoFileLocationProvider(IHostEnvironment hostingEnvironment, IOptions<LocalizationOptions> localizationOptions)
     {
         _fileProvider = hostingEnvironment.ContentRootFileProvider;
         _resourcesContainer = localizationOptions.Value.ResourcesPath;

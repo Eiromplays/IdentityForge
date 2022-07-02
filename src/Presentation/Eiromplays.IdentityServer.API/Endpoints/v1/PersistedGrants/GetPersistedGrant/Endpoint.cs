@@ -19,13 +19,13 @@ public class Endpoint : Endpoint<Models.Request, PersistedGrantDto>
             s.Summary = "Get persisted grant by Key.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.View, EIAResource.PersistedGrants));
+        Policies(EiaPermission.NameFor(EiaAction.View, EiaResource.PersistedGrants));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
         Response = await _persistedGrantService.GetAsync(req.Key, ct);
-        
+
         await SendOkAsync(Response, cancellation: ct);
     }
 }

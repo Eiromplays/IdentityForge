@@ -14,24 +14,26 @@ internal partial class UserService
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
 
         var userRoles = await _userManager.GetRolesAsync(user);
-        
+
         var permissions = new List<string>();
-        
+
         foreach (var role in await _roleManager.Roles
             .Where(r => userRoles.Contains(r.Name))
             .ToListAsync(cancellationToken))
         {
             permissions.AddRange(await _db.RoleClaims
-                .Where(rc => rc.RoleId == role.Id && rc.ClaimType == EIAClaims.Permission)
+                .Where(rc => rc.RoleId == role.Id && rc.ClaimType == EiaClaims.Permission)
                 .Select(rc => rc.ClaimValue)
                 .ToListAsync(cancellationToken));
         }
-        
+
         if (includeUserClaims)
+        {
             permissions.AddRange(await _db.UserClaims
-                .Where(rc => rc.UserId == user.Id && rc.ClaimType == EIAClaims.Permission)
+                .Where(rc => rc.UserId == user.Id && rc.ClaimType == EiaClaims.Permission)
                 .Select(rc => rc.ClaimValue)
                 .ToListAsync(cancellationToken));
+        }
 
         return permissions.Distinct().ToList();
     }
@@ -39,7 +41,7 @@ internal partial class UserService
     public async Task<bool> HasPermissionAsync(string userId, string permission, CancellationToken cancellationToken)
     {
         var permissions = await _cache.GetOrSetAsync(
-            _cacheKeys.GetCacheKey(EIAClaims.Permission, userId),
+            _cacheKeys.GetCacheKey(EiaClaims.Permission, userId),
             () => GetPermissionsAsync(userId, cancellationToken),
             cancellationToken: cancellationToken);
 
@@ -47,5 +49,5 @@ internal partial class UserService
     }
 
     public Task InvalidatePermissionCacheAsync(string userId, CancellationToken cancellationToken) =>
-        _cache.RemoveAsync(_cacheKeys.GetCacheKey(EIAClaims.Permission, userId), cancellationToken);
+        _cache.RemoveAsync(_cacheKeys.GetCacheKey(EiaClaims.Permission, userId), cancellationToken);
 }

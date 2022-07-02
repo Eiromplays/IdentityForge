@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.UpdateUser;
 public class Endpoint : Endpoint<Models.Request>
 {
     private readonly IUserService _userService;
-    
+
     public Endpoint(IUserService userService)
     {
         _userService = userService;
@@ -19,13 +19,15 @@ public class Endpoint : Endpoint<Models.Request>
             s.Summary = "Update a user.";
         });
         Version(1);
-        Policies(EIAPermission.NameFor(EIAAction.Update, EIAResource.Users));
+        Policies(EiaPermission.NameFor(EiaAction.Update, EiaResource.Users));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        await _userService.UpdateAsync(req.Data, req.Id, ct);
-        
+        if (User.GetUserId() == req.Id) ThrowError("You cannot update your own user.");
+
+        await _userService.UpdateAsync(req.UpdateUserRequest, req.Id, ct);
+
         await SendNoContentAsync(cancellation: ct);
     }
 }
