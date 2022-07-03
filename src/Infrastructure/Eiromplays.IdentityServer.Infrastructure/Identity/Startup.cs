@@ -30,6 +30,7 @@ internal static class Startup
                 configuration.GetSection(nameof(IdentityOptions)).Bind(options))
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders()
+            .AddSignInManager<ApplicationSignInManager>()
             .Services
 
             // This is required to redirect the user to the correct page for login

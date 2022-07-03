@@ -3,5 +3,5 @@
 public interface IUserResolver<TUser> : ITransientService
     where TUser : class
 {
-    Task<TUser?> GetUserAsync(string? identifier);
+    Task<TUser?> GetUserAsync(string? identifier, CancellationToken ct = default);
 }

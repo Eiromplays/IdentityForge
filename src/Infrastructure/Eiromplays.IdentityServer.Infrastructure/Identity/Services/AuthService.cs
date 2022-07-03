@@ -4,6 +4,7 @@ using Duende.IdentityServer.Services;
 using Eiromplays.IdentityServer.Application.Common.Configurations;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Application.Common.Sms;
 using Eiromplays.IdentityServer.Application.Identity.Auth;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.ExternalLogins;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Login;
@@ -20,8 +21,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using LogoutRequest = Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Login.LogoutRequest;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
@@ -29,7 +32,7 @@ public class AuthService : IAuthService
 {
     private readonly IIdentityServerInteractionService _interaction;
     private readonly ICurrentUser _currentUser;
-    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly ApplicationSignInManager _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IAuthenticationHandlerProvider _authenticationHandlerProvider;
     private readonly IEventService _events;
@@ -38,11 +41,14 @@ public class AuthService : IAuthService
     private readonly IServerUrls _serverUrls;
     private readonly SpaConfiguration _spaConfiguration;
     private readonly IUserService _userService;
+    private readonly IJobService _jobService;
+    private readonly ISmsService _smsService;
+    private readonly IStringLocalizer _t;
 
     public AuthService(
         IIdentityServerInteractionService interaction,
         ICurrentUser currentUser,
-        SignInManager<ApplicationUser> signInManager,
+        ApplicationSignInManager signInManager,
         IAuthenticationHandlerProvider authenticationHandlerProvider,
         IEventService events,
         LinkGenerator linkGenerator,
@@ -50,7 +56,10 @@ public class AuthService : IAuthService
         IServerUrls serverUrls,
         IOptions<SpaConfiguration> spaConfiguration,
         IUserService userService,
-        UserManager<ApplicationUser> userManager)
+        UserManager<ApplicationUser> userManager,
+        IJobService jobService,
+        ISmsService smsService,
+        IStringLocalizer<AuthService> t)
     {
         _interaction = interaction;
         _currentUser = currentUser;
@@ -62,10 +71,43 @@ public class AuthService : IAuthService
         _serverUrls = serverUrls;
         _userService = userService;
         _userManager = userManager;
+        _jobService = jobService;
+        _smsService = smsService;
+        _t = t;
         _spaConfiguration = spaConfiguration.Value;
     }
 
     #region Login
+
+    public async Task<Result<SendSmsLoginCodeResponse>> SendLoginVerificationCodeAsync(SendSmsLoginCodeRequest request)
+    {
+        var user = await _userResolver.GetUserAsync(request.PhoneNumber);
+
+        if (user is null)
+        {
+            var badRequest = new BadRequestException("Invalid phone number");
+            return new Result<SendSmsLoginCodeResponse>(badRequest);
+        }
+
+        if (!await _userManager.IsPhoneNumberConfirmedAsync(user))
+        {
+            var badRequest = new BadRequestException("Phone number is not confirmed");
+            return new Result<SendSmsLoginCodeResponse>(badRequest);
+        }
+
+        string? code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, user.PhoneNumber);
+
+        var smsRequest = new SmsRequest(
+            new List<string> { user.PhoneNumber },
+            _t[$"Your verification code is {code}"]);
+
+        _jobService.Enqueue(() => _smsService.SendAsync(smsRequest, CancellationToken.None));
+
+        return new Result<SendSmsLoginCodeResponse>(new SendSmsLoginCodeResponse
+        {
+            Message = _t["Verification code has been sent to your phone!"]
+        });
+    }
 
     public async Task<Result<LoginResponse>> LoginAsync(LoginRequest request)
     {
@@ -76,11 +118,14 @@ public class AuthService : IAuthService
         var user = await _userResolver.GetUserAsync(request.Login);
         if (user is null)
         {
-            var badRequest = new BadRequestException("Invalid username or password");
+            var badRequest = new BadRequestException(provider is AccountProviders.Phone ? "Invalid phone number or code" : "Invalid username or password");
             return new Result<LoginResponse>(badRequest);
         }
 
-        var loginResult = provider is AccountProviders.Email ? await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, lockoutOnFailure: true) : await _userManager.VerifyChangePhoneNumberTokenAsync();
+        var loginResult = provider is AccountProviders.Email
+            ? await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, lockoutOnFailure: true)
+            : await _signInManager.PhoneNumberSignInAsync(user, request.Code, request.RememberMe, lockoutOnFailure: true);
+
         response.SignInResult = loginResult;
 
         if (!loginResult.Succeeded)
@@ -97,7 +142,7 @@ public class AuthService : IAuthService
                 return new Result<LoginResponse>(response);
             }
 
-            response.Error = "Invalid username or password";
+            response.Error = provider is AccountProviders.Phone ? "Invalid phone number or code" : "Invalid username or password";
             return response;
         }
 

@@ -1,12 +1,15 @@
-import { Link, Button, Form, InputField, useAuth } from 'eiromplays-ui';
+import { Link, Button, Form, InputField, useAuth, CustomInputField } from 'eiromplays-ui';
+import React from 'react';
+import { isPossiblePhoneNumber } from 'react-phone-number-input';
 import PhoneInputWithCountry from 'react-phone-number-input/react-hook-form';
 import * as z from 'zod';
 
 const schema = z.object({
+  email: z.string().min(1, 'Required'),
   userName: z.string().min(1, 'Required'),
   firstName: z.string().min(1, 'Required'),
   lastName: z.string().min(1, 'Required'),
-  phoneNumber: z.string().min(1, 'Required'),
+  phoneNumber: z.string().min(1, 'Required').refine(isPossiblePhoneNumber, 'Invalid phone number'),
 });
 
 type RegisterValues = {
@@ -14,6 +17,7 @@ type RegisterValues = {
   firstName: string;
   lastName: string;
   userName: string;
+  email: string;
   phoneNumber: string;
 };
 
@@ -38,7 +42,7 @@ export const RegisterUsingPhoneNumberForm = ({ onSuccess }: RegisterUsingPhoneNu
           shouldUnregister: true,
         }}
       >
-        {({ register, formState, control: control }) => (
+        {({ register, formState, control }) => (
           <>
             <InputField
               type="text"
@@ -58,12 +62,26 @@ export const RegisterUsingPhoneNumberForm = ({ onSuccess }: RegisterUsingPhoneNu
               error={formState.errors['userName']}
               registration={register('userName')}
             />
-            <PhoneInputWithCountry
-              className="bg-white dark:bg-gray-900 block px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm',
+            <InputField
+              type="email"
+              label="Email Address"
+              error={formState.errors['email']}
+              registration={register('email')}
+            />
+
+            <CustomInputField
+              label="Phone Number"
+              error={formState.errors['phoneNumber']}
+              customInputField={
+                <PhoneInputWithCountry
+                  className="bg-white dark:bg-gray-900 block px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm',
                   'placeholder-gray-400 dark:placeholder-white focus:outline-none focus:ring-blue-500 dark:focus:ring-indigo-700 focus:border-blue-500',
                   'dark:focus:border-indigo-900 sm:text-sm"
-              name="phoneNumber"
-              control={control}
+                  name="phoneNumber"
+                  control={control}
+                  register={register('phoneNumber')}
+                />
+              }
             />
             <div>
               <Button isLoading={isRegistering} type="submit" className="w-full">

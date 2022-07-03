@@ -26,4 +26,6 @@ public interface IAuthService : ITransientService
         where TEndpoint : IEndpoint;
 
     Task<Result<LoginResponse>> LinkExternalLoginCallbackAsync(string userId, HttpContext httpContext);
+
+    Task<Result<SendSmsLoginCodeResponse>> SendLoginVerificationCodeAsync(SendSmsLoginCodeRequest request);
 }

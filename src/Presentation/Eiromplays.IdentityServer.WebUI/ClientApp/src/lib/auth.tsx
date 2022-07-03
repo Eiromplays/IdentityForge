@@ -2,11 +2,10 @@ import { AuthUser, getUser } from 'eiromplays-ui';
 import { toast } from 'react-toastify';
 
 import {
-  GetLogin2FaResponse,
   Login2faCredentialsDto,
   LoginCredentialsDTO,
   loginWith2fa,
-  loginWithEmailAndPassword,
+  loginWithEmailAndPasswordOrPhoneNumber,
   logoutUser,
   RegisterCredentialsDTO,
   registerWithEmailAndPassword,
@@ -22,9 +21,9 @@ export const loadUser = async () => {
 };
 
 export const loginFn = async (data: LoginCredentialsDTO): Promise<AuthUser | null> => {
-  const response = await loginWithEmailAndPassword(data);
+  const response = await loginWithEmailAndPasswordOrPhoneNumber(data);
 
-  if (response?.twoFactorReturnUrl){
+  if (response?.twoFactorReturnUrl) {
     window.location.href = response.twoFactorReturnUrl;
     return null;
   }

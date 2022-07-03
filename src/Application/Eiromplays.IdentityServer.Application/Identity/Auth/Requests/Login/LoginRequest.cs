@@ -9,6 +9,8 @@ public class LoginRequest
     public string Login { get; set; } = default!;
     public string Password { get; set; } = default!;
 
+    public string Code { get; set; } = default!;
+
     public bool RememberMe { get; set; }
 
     public string? ReturnUrl { get; set; }
@@ -35,5 +37,9 @@ public class LoginRequestValidator : Validator<LoginRequest>
 
         RuleFor(x => x.ReturnUrl)
             .MaximumLength(2000);
+
+        RuleFor(x => x.Code)
+            .MaximumLength(100)
+            .When(u => u.Provider == AccountProviders.Phone.ToString());
     }
 }

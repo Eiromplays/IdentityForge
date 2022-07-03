@@ -48,6 +48,12 @@ public class CustomProfileService : ProfileService<ApplicationUser>
 
         string profilePicture = ProfilePictureHelper.GetProfilePicture(user, _accountConfiguration);
 
+        if (!string.IsNullOrWhiteSpace(user.PhoneNumber))
+            claims.Add(new Claim(JwtClaimTypes.PhoneNumber, user.PhoneNumber));
+
+        if (user.PhoneNumberConfirmed)
+            claims.Add(new Claim(JwtClaimTypes.PhoneNumberVerified, "true", ClaimValueTypes.Boolean));
+
         if (!string.IsNullOrEmpty(user.FirstName))
             claims.Add(new Claim(JwtClaimTypes.GivenName, user.FirstName));
 

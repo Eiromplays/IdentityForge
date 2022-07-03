@@ -1,10 +1,12 @@
 using Eiromplays.IdentityServer.Domain.Enums;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 
 namespace Eiromplays.IdentityServer.Application.Identity.Users;
 
 public class CreateUserRequestValidator : Validator<CreateUserRequest>
 {
-    public CreateUserRequestValidator(IUserService userService, IStringLocalizer<CreateUserRequestValidator> T)
+    public CreateUserRequestValidator(IUserService userService, IOptions<IdentityOptions> identityOptions, IStringLocalizer<CreateUserRequestValidator> T)
     {
         RuleFor(u => u.Provider).Cascade(CascadeMode.Stop)
             .NotEmpty()
@@ -19,8 +21,8 @@ public class CreateUserRequestValidator : Validator<CreateUserRequest>
             .MustAsync(async (email, _) =>
                 !await userService.ExistsWithEmailAsync(email))
                 .WithMessage((_, email) => T["Email {0} is already registered.", email])
-            .When((req, _) => (req.Provider == AccountProviders.Email.ToString() || req.Provider == AccountProviders.External.ToString()) &&
-                              !string.IsNullOrWhiteSpace(req.Email));
+            .When((req, _) => ((req.Provider == AccountProviders.Email.ToString() || req.Provider == AccountProviders.External.ToString()) &&
+                              !string.IsNullOrWhiteSpace(req.Email)) || identityOptions.Value.SignIn.RequireConfirmedEmail);
 
         RuleFor(u => u.UserName).Cascade(CascadeMode.Stop)
             .NotEmpty()
@@ -31,7 +33,11 @@ public class CreateUserRequestValidator : Validator<CreateUserRequest>
         RuleFor(u => u.PhoneNumber).Cascade(CascadeMode.Stop)
             .MustAsync(async (phone, _) => !await userService.ExistsWithPhoneNumberAsync(phone!))
                 .WithMessage((_, phone) => T["Phone number {0} is already registered.", phone!])
-                .Unless(u => string.IsNullOrWhiteSpace(u.PhoneNumber) && u.Provider != AccountProviders.Phone.ToString());
+                .Unless(u =>
+                string.IsNullOrWhiteSpace(u.PhoneNumber) && u.Provider != AccountProviders.Phone.ToString() &&
+                !identityOptions.Value.SignIn.RequireConfirmedPhoneNumber)
+            .NotEmpty()
+            .When(u => (!string.IsNullOrWhiteSpace(u.PhoneNumber) && u.Provider == AccountProviders.Phone.ToString()) || identityOptions.Value.SignIn.RequireConfirmedPhoneNumber);
 
         RuleFor(p => p.FirstName).Cascade(CascadeMode.Stop)
             .NotEmpty();

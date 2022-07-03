@@ -163,23 +163,31 @@ internal partial class UserService
             }
 
             if (_signInManager.Options.SignIn.RequireConfirmedPhoneNumber &&
+                !_signInManager.Options.SignIn.RequireConfirmedEmail &&
                 !string.IsNullOrWhiteSpace(user.PhoneNumber))
             {
-                (string phoneVerificationUri, string phoneVerificationCode) = await GetPhoneNumberVerificationUriAsync(user, user.PhoneNumber, origin);
-
-                var smsRequest = new SmsRequest(
-                    new List<string> { user.PhoneNumber },
-                    $"{_t["Please confirm your account by entering the code"]} {phoneVerificationCode} {_t["on the following page"]} {phoneVerificationUri}");
-
-                _jobService.Enqueue(() => _smsService.SendAsync(smsRequest, CancellationToken.None));
-
-                messages.Add(_t["Please check your phone to verify your phone number!"]);
+                string phoneNumberVerificationMessage = await SendPhoneNumberVerificationAsync(user, origin);
+                if (!string.IsNullOrWhiteSpace(phoneNumberVerificationMessage))
+                    messages.Add(phoneNumberVerificationMessage);
             }
         }
 
         await _events.PublishAsync(new ApplicationUserCreatedEvent(user.Id));
 
         return new CreateUserResponse(user.Id, string.Join(Environment.NewLine, messages));
+    }
+
+    public async Task<string> SendPhoneNumberVerificationAsync(ApplicationUser user, string origin)
+    {
+        (string phoneVerificationUri, string phoneVerificationCode) = await GetPhoneNumberVerificationUriAsync(user, user.PhoneNumber, origin);
+
+        var smsRequest = new SmsRequest(
+            new List<string> { user.PhoneNumber },
+            _t[$"Please confirm your account by entering the code {phoneVerificationCode} or by clicking this link {phoneVerificationUri}"]);
+
+        _jobService.Enqueue(() => _smsService.SendAsync(smsRequest, CancellationToken.None));
+
+        return _t["Please check your phone to verify your phone number!"];
     }
 
     public async Task<CreateUserResponse> CreateExternalAsync(CreateExternalUserRequest request, string origin)

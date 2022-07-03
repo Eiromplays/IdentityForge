@@ -53,6 +53,16 @@
         ]
       },
       {
+        "Name": "phone_number",
+        "Enabled": true,
+        "DisplayName": "Your phone number",
+        "Emphasize": true,
+        "UserClaims": [
+          "phone_number",
+          "phone_number_verified"
+        ]
+      },
+      {
         "Name": "gravatar_email",
         "Enabled": true,
         "DisplayName": "Your gravatar email address",
@@ -123,7 +133,8 @@
           "api",
           "roles",
           "email",
-          "gravatar_email"
+          "gravatar_email",
+          "phone_number"
         ]
       },
       {
@@ -145,66 +156,6 @@
         ],
         "AllowedCorsOrigins": [
           "https://localhost:3001"
-        ],
-        "AllowOfflineAccess": true,
-        "AllowedScopes": [
-          "openid",
-          "profile",
-          "api",
-          "roles",
-          "email",
-          "gravatar_email"
-        ]
-      },
-      {
-        "ClientId": "blazor_spa",
-        "ClientName": "blazor_spa",
-        "ClientUri": "https://localhost:5002",
-        "AllowedGrantTypes": [
-          "authorization_code",
-          "client_credentials"
-        ],
-        "RequireClientSecret": false,
-        "RedirectUris": [
-          "https://localhost:5002/signin-oidc"
-        ],
-        "FrontChannelLogoutUri": "https://localhost:5002/signout-oidc",
-        "BackChannelLogoutUri": "https://localhost:5002/bff/backchannel",
-        "PostLogoutRedirectUris": [
-          "https://localhost:5002/signout-callback-oidc"
-        ],
-        "AllowedCorsOrigins": [
-          "https://localhost:5002"
-        ],
-        "AllowOfflineAccess": true,
-        "AllowedScopes": [
-          "openid",
-          "profile",
-          "api",
-          "roles",
-          "email",
-          "gravatar_email"
-        ]
-      },
-      {
-        "ClientId": "react_bff_client",
-        "ClientName": "react_bff_client",
-        "ClientUri": "https://localhost:44447",
-        "AllowedGrantTypes": [
-          "authorization_code",
-          "client_credentials"
-        ],
-        "RequireClientSecret": false,
-        "RedirectUris": [
-          "https://localhost:44447/signin-oidc"
-        ],
-        "FrontChannelLogoutUri": "https://localhost:44447/signout-oidc",
-        "BackChannelLogoutUri": "https://localhost:44447/bff/backchannel",
-        "PostLogoutRedirectUris": [
-          "https://localhost:44447/signout-callback-oidc"
-        ],
-        "AllowedCorsOrigins": [
-          "https://localhost:44447"
         ],
         "AllowOfflineAccess": true,
         "AllowedScopes": [
