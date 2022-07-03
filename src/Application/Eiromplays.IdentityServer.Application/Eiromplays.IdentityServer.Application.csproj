@@ -18,7 +18,7 @@
     <PackageReference Include="FluentEmail.Graph" Version="1.5.1" />
     <PackageReference Include="FluentEmail.Mailgun" Version="3.0.2" />
     <PackageReference Include="FluentEmail.MailKit" Version="3.0.2" />
-    <PackageReference Include="FluentSms.Infobip" Version="1.0.1" />
+    <PackageReference Include="FluentSms.Core" Version="1.0.1" />
     <PackageReference Include="FluenttSms.Twilio" Version="1.0.1" />
     <PackageReference Include="FluentValidation" Version="11.1.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.1.0" />
@@ -31,6 +31,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\FluentSms\src\FluentSms.Core\FluentSms.Core.csproj" />
+    <ProjectReference Include="..\..\..\..\FluentSms\src\Senders\FluentSms.Infobip\FluentSms.Infobip.csproj" />
     <ProjectReference Include="..\..\Domain\Eiromplays.IdentityServer.Domain\Eiromplays.IdentityServer.Domain.csproj" />
   </ItemGroup>
 

@@ -1,7 +1,11 @@
+using Eiromplays.IdentityServer.Domain.Enums;
+
 namespace Eiromplays.IdentityServer.Application.Identity.Users;
 
 public class CreateUserRequest
 {
+    // Provider used to create the user. Defaults to Email.
+    public string Provider { get; set; } = AccountProviders.Email.ToString();
     public string FirstName { get; set; } = default!;
     public string LastName { get; set; } = default!;
     public string Email { get; set; } = default!;

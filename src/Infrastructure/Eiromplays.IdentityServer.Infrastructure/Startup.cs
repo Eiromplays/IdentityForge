@@ -20,6 +20,7 @@ using Eiromplays.IdentityServer.Infrastructure.OpenApi;
 using Eiromplays.IdentityServer.Infrastructure.Persistence;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Initialization;
 using Eiromplays.IdentityServer.Infrastructure.SecurityHeaders;
+using Eiromplays.IdentityServer.Infrastructure.Sms;
 using FastEndpoints;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -47,6 +48,7 @@ public static class Startup
             .AddHealthCheck()
             .AddPoLocalization(config)
             .AddMailing(config)
+            .AddSms(config)
             .AddMediatR(Assembly.GetExecutingAssembly())
             .AddNotifications(config)
             .AddOpenApiDocumentation(config)

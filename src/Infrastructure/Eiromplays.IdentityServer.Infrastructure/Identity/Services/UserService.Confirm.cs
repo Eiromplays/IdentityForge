@@ -12,6 +12,7 @@ internal partial class UserService
     private async Task<string> GetEmailVerificationUriAsync(ApplicationUser user, string origin)
     {
         string? code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        Console.WriteLine($"Code {code}");
         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
         var endpointUri = new Uri(string.Concat(origin, "api/v1/account/confirm-email"));
@@ -20,6 +21,20 @@ internal partial class UserService
         verificationUri = QueryHelpers.AddQueryString(verificationUri, QueryStringKeys.ReturnUrl, new Uri(string.Concat(_spaConfiguration.IdentityServerUiBaseUrl, "auth/confirmed-email")).ToString());
 
         return verificationUri;
+    }
+
+    private async Task<(string VerificationUri, string Code)> GetPhoneNumberVerificationUriAsync(ApplicationUser user, string phoneNumber, string origin)
+    {
+        string? code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, phoneNumber);
+        Console.WriteLine($"Code: {code}");
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+        var endpointUri = new Uri(string.Concat(origin, "api/v1/account/confirm-phone-number"));
+        string verificationUri = QueryHelpers.AddQueryString(endpointUri.ToString(), QueryStringKeys.UserId, user.Id);
+        verificationUri = QueryHelpers.AddQueryString(verificationUri, QueryStringKeys.Code, code);
+        verificationUri = QueryHelpers.AddQueryString(verificationUri, QueryStringKeys.ReturnUrl, new Uri(string.Concat(_spaConfiguration.IdentityServerUiBaseUrl, "auth/confirmed-phone-number")).ToString());
+
+        return (verificationUri, code);
     }
 
     public async Task<string> ConfirmEmailAsync(string userId, string code, CancellationToken cancellationToken)

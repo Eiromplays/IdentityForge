@@ -6,6 +6,7 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 import './index.scss';
 import 'eiromplays-ui/dist/style.css';
+import 'react-phone-number-input/style.css';
 
 const rootElement = document.getElementById('root');
 

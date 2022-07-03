@@ -9,6 +9,7 @@ using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.ExternalLogin
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Login;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Login;
 using Eiromplays.IdentityServer.Application.Identity.Users;
+using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure.Common.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using FastEndpoints;
@@ -29,6 +30,7 @@ public class AuthService : IAuthService
     private readonly IIdentityServerInteractionService _interaction;
     private readonly ICurrentUser _currentUser;
     private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly IAuthenticationHandlerProvider _authenticationHandlerProvider;
     private readonly IEventService _events;
     private readonly LinkGenerator _linkGenerator;
@@ -47,7 +49,8 @@ public class AuthService : IAuthService
         IUserResolver<ApplicationUser> userResolver,
         IServerUrls serverUrls,
         IOptions<SpaConfiguration> spaConfiguration,
-        IUserService userService)
+        IUserService userService,
+        UserManager<ApplicationUser> userManager)
     {
         _interaction = interaction;
         _currentUser = currentUser;
@@ -58,6 +61,7 @@ public class AuthService : IAuthService
         _userResolver = userResolver;
         _serverUrls = serverUrls;
         _userService = userService;
+        _userManager = userManager;
         _spaConfiguration = spaConfiguration.Value;
     }
 
@@ -67,6 +71,8 @@ public class AuthService : IAuthService
     {
         var response = new LoginResponse();
 
+        var provider = Enum.Parse<AccountProviders>(request.Provider, true);
+
         var user = await _userResolver.GetUserAsync(request.Login);
         if (user is null)
         {
@@ -74,7 +80,7 @@ public class AuthService : IAuthService
             return new Result<LoginResponse>(badRequest);
         }
 
-        var loginResult = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, lockoutOnFailure: true);
+        var loginResult = provider is AccountProviders.Email ? await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, lockoutOnFailure: true) : await _userManager.VerifyChangePhoneNumberTokenAsync();
         response.SignInResult = loginResult;
 
         if (!loginResult.Succeeded)

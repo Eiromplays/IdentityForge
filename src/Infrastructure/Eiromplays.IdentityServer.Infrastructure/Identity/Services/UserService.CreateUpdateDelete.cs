@@ -2,6 +2,7 @@
 using Duende.IdentityServer.Extensions;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Mailing;
+using Eiromplays.IdentityServer.Application.Common.Sms;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Domain.Common;
 using Eiromplays.IdentityServer.Domain.Identity;
@@ -123,7 +124,10 @@ internal partial class UserService
         if (_accountConfiguration.ProfilePictureConfiguration is { Enabled: true, AutoGenerate: true })
             user.ProfilePicture = $"{_accountConfiguration.ProfilePictureConfiguration.DefaultUrl}{user.UserName}.svg";
 
-        var result = await _userManager.CreateAsync(user, request.Password);
+        var result = string.IsNullOrWhiteSpace(request.Password)
+            ? await _userManager.CreateAsync(user)
+            : await _userManager.CreateAsync(user, request.Password);
+
         if (!result.Succeeded)
         {
             throw new InternalServerException(_t["Validation Errors Occurred."], result.GetErrors(_t));
@@ -134,26 +138,43 @@ internal partial class UserService
 
         var messages = new List<string> { string.Format(_t["User {0} Registered."], user.UserName) };
 
-        if (_signInManager.Options.SignIn.RequireConfirmedAccount && !string.IsNullOrEmpty(user.Email))
+        if (_signInManager.Options.SignIn.RequireConfirmedAccount)
         {
-            // send verification email
-            string emailVerificationUri = await GetEmailVerificationUriAsync(user, origin);
-
-            var emailModel = new RegisterUserEmailModel
+            if (_signInManager.Options.SignIn.RequireConfirmedEmail && !string.IsNullOrWhiteSpace(user.Email))
             {
-                Email = user.Email,
-                UserName = user.UserName,
-                Url = emailVerificationUri
-            };
+                // send verification email
+                string emailVerificationUri = await GetEmailVerificationUriAsync(user, origin);
 
-            var mailRequest = new MailRequest(
-                new List<string> { user.Email },
-                _t["Confirm Registration"],
-                _templateService.GenerateEmailTemplate("email-confirmation", emailModel));
+                var emailModel = new RegisterUserEmailModel
+                {
+                    Email = user.Email,
+                    UserName = user.UserName,
+                    Url = emailVerificationUri
+                };
 
-            _jobService.Enqueue(() => _mailService.SendAsync(mailRequest, CancellationToken.None));
+                var mailRequest = new MailRequest(
+                    new List<string> { user.Email },
+                    _t["Confirm Registration"],
+                    await _templateService.GenerateEmailTemplateAsync("email-confirmation", emailModel));
 
-            messages.Add(_t[$"Please check {user.Email} to verify your account!"]);
+                _jobService.Enqueue(() => _mailService.SendAsync(mailRequest, CancellationToken.None));
+
+                messages.Add(_t[$"Please check {user.Email} to verify your account!"]);
+            }
+
+            if (_signInManager.Options.SignIn.RequireConfirmedPhoneNumber &&
+                !string.IsNullOrWhiteSpace(user.PhoneNumber))
+            {
+                (string phoneVerificationUri, string phoneVerificationCode) = await GetPhoneNumberVerificationUriAsync(user, user.PhoneNumber, origin);
+
+                var smsRequest = new SmsRequest(
+                    new List<string> { user.PhoneNumber },
+                    $"{_t["Please confirm your account by entering the code"]} {phoneVerificationCode} {_t["on the following page"]} {phoneVerificationUri}");
+
+                _jobService.Enqueue(() => _smsService.SendAsync(smsRequest, CancellationToken.None));
+
+                messages.Add(_t["Please check your phone to verify your phone number!"]);
+            }
         }
 
         await _events.PublishAsync(new ApplicationUserCreatedEvent(user.Id));
@@ -205,7 +226,7 @@ internal partial class UserService
             var mailRequest = new MailRequest(
                 new List<string> { user.Email },
                 _t["Confirm Registration"],
-                _templateService.GenerateEmailTemplate("email-confirmation", emailModel));
+                await _templateService.GenerateEmailTemplateAsync("email-confirmation", emailModel));
 
             _jobService.Enqueue(() => _mailService.SendAsync(mailRequest, CancellationToken.None));
 
