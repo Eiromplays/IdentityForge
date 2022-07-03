@@ -24,7 +24,6 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using LogoutRequest = Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Login.LogoutRequest;
-using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 

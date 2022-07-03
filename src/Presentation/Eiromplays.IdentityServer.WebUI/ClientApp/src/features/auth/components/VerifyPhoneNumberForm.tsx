@@ -1,6 +1,7 @@
 import { useSearch } from '@tanstack/react-location';
 import { Link, Button, Form, InputField } from 'eiromplays-ui';
 import React from 'react';
+import { toast } from 'react-toastify';
 import * as z from 'zod';
 
 import { LocationGenerics } from '@/App';
@@ -24,8 +25,8 @@ export const VerifyPhoneNumberForm = () => {
       <Form<VerifyPhoneNumberDTO, typeof schema>
         onSubmit={async (values) => {
           values.userId = userId || '';
-          const test = await verifyPhoneNumberMutation.mutateAsync(values);
-          console.log('test', test);
+          const response = await verifyPhoneNumberMutation.mutateAsync(values);
+          toast.success(response.message);
         }}
         schema={schema}
       >

@@ -14,7 +14,7 @@ const schema = z
     confirmPassword: z.string().min(1, 'Required'),
     phoneNumber: z
       .string()
-      .optional()
+      .nullable()
       .refine((v) => (v ? isPossiblePhoneNumber(v) : true), 'Invalid phone number'),
   })
   .refine((data) => data.confirmPassword === data.password, {

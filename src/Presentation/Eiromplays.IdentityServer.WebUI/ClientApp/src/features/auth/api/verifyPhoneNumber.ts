@@ -22,7 +22,6 @@ type UseVerifyPhoneNumberOptions = {
 export const useVerifyPhoneNumber = ({ config }: UseVerifyPhoneNumberOptions = {}) => {
   return useMutation({
     onSuccess: (response) => {
-      alert(response);
       toast.success(response.message);
     },
     ...config,

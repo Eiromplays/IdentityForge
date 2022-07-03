@@ -7,8 +7,6 @@ export const Landing = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  console.log(user);
-
   const handleStart = () => {
     if (user) {
       navigate({ to: '/app', replace: true });
