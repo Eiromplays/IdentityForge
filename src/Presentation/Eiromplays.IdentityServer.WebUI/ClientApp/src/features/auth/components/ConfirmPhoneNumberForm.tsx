@@ -1,32 +1,30 @@
 import { useSearch } from '@tanstack/react-location';
 import { Link, Button, Form, InputField } from 'eiromplays-ui';
 import React from 'react';
-import { toast } from 'react-toastify';
 import * as z from 'zod';
 
 import { LocationGenerics } from '@/App';
 
-import { useVerifyPhoneNumber, VerifyPhoneNumberDTO } from '../api/verifyPhoneNumber';
+import { ConfirmPhoneNumberDTO, useConfirmPhoneNUmber } from '../api/confirmPhoneNumber';
 
 const schema = z.object({
   code: z.string().optional(),
 });
 
-export const VerifyPhoneNumberForm = () => {
+export const ConfirmPhoneNumberForm = () => {
   const { returnUrl, ReturnUrl, userId } = useSearch<LocationGenerics>();
   console.log(returnUrl || ReturnUrl);
 
-  const verifyPhoneNumberMutation = useVerifyPhoneNumber();
+  const confirmPhoneNumberMutation = useConfirmPhoneNUmber();
 
   if (!userId) return null;
 
   return (
     <div>
-      <Form<VerifyPhoneNumberDTO, typeof schema>
+      <Form<ConfirmPhoneNumberDTO, typeof schema>
         onSubmit={async (values) => {
           values.userId = userId || '';
-          const response = await verifyPhoneNumberMutation.mutateAsync(values);
-          toast.success(response.message);
+          await confirmPhoneNumberMutation.mutateAsync(values);
         }}
         schema={schema}
       >
@@ -40,7 +38,7 @@ export const VerifyPhoneNumberForm = () => {
             />
             <div>
               <Button
-                isLoading={verifyPhoneNumberMutation.isLoading}
+                isLoading={confirmPhoneNumberMutation.isLoading}
                 type="submit"
                 className="w-full"
               >

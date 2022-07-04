@@ -4,7 +4,6 @@ using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Services;
-using Eiromplays.IdentityServer.Infrastructure.Identity.Validators;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
@@ -25,7 +24,6 @@ internal static class Startup
 
         return services
             .Configure<IdentityOptions>(configuration.GetSection(nameof(IdentityOptions)))
-            .AddTransient<IUserValidator<ApplicationUser>, OptionalEmailUserValidator<ApplicationUser>>()
             .AddIdentity<ApplicationUser, ApplicationRole>(options =>
                 configuration.GetSection(nameof(IdentityOptions)).Bind(options))
             .AddEntityFrameworkStores<ApplicationDbContext>()

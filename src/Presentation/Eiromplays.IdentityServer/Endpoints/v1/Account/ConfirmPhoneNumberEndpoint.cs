@@ -24,7 +24,7 @@ public class ConfirmPhoneNumberEndpoint : Endpoint<ConfirmPhoneNumberRequest, Co
 
     public override async Task HandleAsync(ConfirmPhoneNumberRequest req, CancellationToken ct)
     {
-        Response.Message = await _userService.ConfirmPhoneNumberAsync(req.UserId, req.Code);
+        Response = await _userService.ConfirmPhoneNumberAsync(req.UserId, req.Code);
 
         await SendAsync(Response, cancellation: ct);
     }

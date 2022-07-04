@@ -4,6 +4,7 @@ public enum LoginPolicy
 {
     Username,
     Email,
+    PhoneNumber,
     Id,
     All
 }

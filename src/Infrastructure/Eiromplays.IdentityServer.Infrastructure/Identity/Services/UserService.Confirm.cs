@@ -61,7 +61,6 @@ internal partial class UserService
             if (!string.IsNullOrWhiteSpace(phoneNumberVerificationMessage))
                 messages.Add(phoneNumberVerificationMessage);
 
-            response.PhoneNumberVerificationSent = true;
             response.ReturnUrl =
                 $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/verify-phone-number?userId={user.Id}&returnUrl={request.ReturnUrl}";
         }
@@ -76,18 +75,30 @@ internal partial class UserService
             : throw new InternalServerException(string.Format(_t["An error occurred while confirming {0}"], user.Email));
     }
 
-    public async Task<string> ConfirmPhoneNumberAsync(string userId, string code)
+    public async Task<ConfirmPhoneNumberResponse> ConfirmPhoneNumberAsync(string userId, string code)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
         _ = user ?? throw new InternalServerException(_t["An error occurred while confirming Mobile Phone."]);
 
+        var response = new ConfirmPhoneNumberResponse();
+        var messages = new List<string>();
+
         var result = await _userManager.ChangePhoneNumberAsync(user, user.PhoneNumber, code);
 
+        if (result.Succeeded)
+            response.ReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/confirmed-phone-number";
+
+        messages.Add(!user.EmailConfirmed && _signInManager.Options.SignIn.RequireConfirmedEmail
+            ? string.Format(
+                _t["Account Confirmed for Phone Number {0}. You should confirm your E-mail before continuing."],
+                user.PhoneNumber)
+            : string.Format(_t["Account Confirmed for Phone Number {0}."], user.PhoneNumber));
+
+        response.Message = string.Join(Environment.NewLine, messages);
+
         return result.Succeeded
-            ? user.EmailConfirmed && !_signInManager.Options.SignIn.RequireConfirmedEmail
-                ? string.Format(_t["Account Confirmed for Phone Number {0}."], user.PhoneNumber)
-                : string.Format(_t["Account Confirmed for Phone Number {0}. You should confirm your E-mail before continuing."], user.PhoneNumber)
+            ? response
             : throw new InternalServerException(string.Format(_t["An error occurred while confirming {0}"], user.PhoneNumber));
     }
 }
