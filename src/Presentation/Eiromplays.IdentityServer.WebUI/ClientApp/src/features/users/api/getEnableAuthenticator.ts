@@ -3,9 +3,9 @@ import { useQuery } from 'react-query';
 
 import { identityServerUrl } from '@/utils/envVariables';
 
-import { EnableAuthenticatorViewModel } from '../types';
+import { GetEnableAuthenticatorResponse } from '../types';
 
-export const getEnableAuthenticator = (): Promise<EnableAuthenticatorViewModel> => {
+export const getEnableAuthenticator = (): Promise<GetEnableAuthenticatorResponse> => {
   return axios.get(`${identityServerUrl}/api/v1/manage/two-factor-authentication/enable`);
 };
 
@@ -18,7 +18,7 @@ type UseEnableAuthenticatorOptions = {
 export const useEnableAuthenticator = ({ config }: UseEnableAuthenticatorOptions = {}) => {
   return useQuery<ExtractFnReturnType<QueryFnType>>({
     ...config,
-    queryKey: ['enable-authenticator'],
+    queryKey: ['get-enable-authenticator'],
     queryFn: () => getEnableAuthenticator(),
   });
 };

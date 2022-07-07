@@ -4,9 +4,9 @@ import { toast } from 'react-toastify';
 
 import { identityServerUrl } from '@/utils/envVariables';
 
-import { EnableAuthenticatorViewModel } from '../types';
+import { EnableAuthenticatorRequest } from '../types';
 
-export const addAuthenticator = (data: EnableAuthenticatorViewModel): Promise<string[]> => {
+export const addAuthenticator = (data: EnableAuthenticatorRequest): Promise<string[]> => {
   return axios.post(`${identityServerUrl}/api/v1/manage/two-factor-authentication/enable`, data);
 };
 

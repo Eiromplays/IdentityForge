@@ -1,3 +1,4 @@
+using System.Text.Encodings.Web;
 using Ardalis.Specification.EntityFrameworkCore;
 using Duende.Bff.EntityFramework;
 using Eiromplays.IdentityServer.Application.Common.Caching;
@@ -44,6 +45,9 @@ internal partial class UserService : IUserService
     private readonly IEmailTemplateService _templateService;
     private readonly SpaConfiguration _spaConfiguration;
     private readonly ISmsService _smsService;
+    private readonly UrlEncoder _urlEncoder;
+
+    public const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
 
     public UserService(
         SignInManager<ApplicationUser> signInManager,
@@ -62,7 +66,8 @@ internal partial class UserService : IUserService
         IOptions<AccountConfiguration> accountConfiguration,
         IEmailTemplateService templateService,
         IOptions<SpaConfiguration> spaConfiguration,
-        ISmsService smsService)
+        ISmsService smsService,
+        UrlEncoder urlEncoder)
     {
         _signInManager = signInManager;
         _userManager = userManager;
@@ -79,6 +84,7 @@ internal partial class UserService : IUserService
         _excelWriter = excelWriter;
         _templateService = templateService;
         _smsService = smsService;
+        _urlEncoder = urlEncoder;
         _spaConfiguration = spaConfiguration.Value;
         _accountConfiguration = accountConfiguration.Value;
     }

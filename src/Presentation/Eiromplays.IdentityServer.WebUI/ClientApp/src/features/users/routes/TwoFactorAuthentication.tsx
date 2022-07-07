@@ -73,7 +73,11 @@ export const TwoFactorAuthentication = () => {
         </div>
         <div className="border-t border-gray-200 flex flex-wrap flex-column gap-5 pt-5 pl-5 pb-5">
           {twoFactorAuthenticationQuery.data.hasAuthenticator && <ResetAuthenticator />}
-          <AddAuthenticator />
+          <AddAuthenticator
+            options={twoFactorAuthenticationQuery.data.validProviders.map((validProvider) => {
+              return { label: validProvider, value: validProvider };
+            })}
+          />
         </div>
       </div>
     </ContentLayout>

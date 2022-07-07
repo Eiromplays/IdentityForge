@@ -6,9 +6,9 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 public class ApplicationUser : IdentityUser, IAuditableEntity
 {
     [PersonalData]
-    public string? FirstName { get; set; }
+    public string FirstName { get; set; } = default!;
     [PersonalData]
-    public string? LastName { get; set; }
+    public string LastName { get; set; } = default!;
 
     public bool IsActive { get; set; }
 
@@ -16,7 +16,7 @@ public class ApplicationUser : IdentityUser, IAuditableEntity
     public string? DisplayName { get; set; }
 
     [ProtectedPersonalData]
-    public override string? Email { get; set; }
+    public override string Email { get; set; } = default!;
 
     [PersonalData]
     public string? ProfilePicture { get; set; }

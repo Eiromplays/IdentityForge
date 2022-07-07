@@ -1,8 +1,11 @@
 using System.Text;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
+using Eiromplays.IdentityServer.Application.Common.Mailing;
+using Eiromplays.IdentityServer.Application.Common.Sms;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Infrastructure.Common;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
+using Eiromplays.IdentityServer.Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,18 +27,40 @@ internal partial class UserService
         return verificationUri;
     }
 
-    private async Task<(string VerificationUri, string Code)> GetPhoneNumberVerificationUriAsync(ApplicationUser user, string phoneNumber, string origin)
+    private async Task<string> SendEmailVerificationAsync(ApplicationUser user, string origin)
     {
-        string? code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, phoneNumber);
+        // send verification email
+        string emailVerificationUri = await GetEmailVerificationUriAsync(user, origin);
 
-        string encodedCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+        var emailModel = new RegisterUserEmailModel
+        {
+            Email = user.Email,
+            UserName = user.UserName,
+            Url = emailVerificationUri
+        };
 
-        var endpointUri = new Uri(string.Concat(origin, "api/v1/account/confirm-phone-number"));
-        string verificationUri = QueryHelpers.AddQueryString(endpointUri.ToString(), QueryStringKeys.UserId, user.Id);
-        verificationUri = QueryHelpers.AddQueryString(verificationUri, QueryStringKeys.Code, encodedCode);
-        verificationUri = QueryHelpers.AddQueryString(verificationUri, QueryStringKeys.ReturnUrl, new Uri(string.Concat(_spaConfiguration.IdentityServerUiBaseUrl, "auth/confirmed-phone-number")).ToString());
+        var mailRequest = new MailRequest(
+            new List<string> { user.Email },
+            _t["Confirm Registration"],
+            await _templateService.GenerateEmailTemplateAsync("email-confirmation", emailModel));
 
-        return (verificationUri, code);
+        _jobService.Enqueue(() => _mailService.SendAsync(mailRequest, CancellationToken.None));
+
+        return _t[$"Please check {user.Email} to verify your account!"];
+    }
+
+
+    private async Task<string> SendPhoneNumberVerificationAsync(ApplicationUser user)
+    {
+        string? phoneVerificationCode = await _userManager.GenerateChangePhoneNumberTokenAsync(user, user.PhoneNumber);
+
+        var smsRequest = new SmsRequest(
+            new List<string> { user.PhoneNumber },
+            _t[$"Please confirm your account by entering this code: {phoneVerificationCode}"]);
+
+        _jobService.Enqueue(() => _smsService.SendAsync(smsRequest, CancellationToken.None));
+
+        return _t["A verification code has been sent to your phone number."];
     }
 
     public async Task<ConfirmEmailResponse> ConfirmEmailAsync(ConfirmEmailRequest request, string origin, CancellationToken cancellationToken)
@@ -56,7 +81,7 @@ internal partial class UserService
         if (result.Succeeded && _signInManager.Options.SignIn.RequireConfirmedPhoneNumber &&
             !string.IsNullOrWhiteSpace(user.PhoneNumber))
         {
-            string phoneNumberVerificationMessage = await SendPhoneNumberVerificationAsync(user, origin);
+            string phoneNumberVerificationMessage = await SendPhoneNumberVerificationAsync(user);
 
             if (!string.IsNullOrWhiteSpace(phoneNumberVerificationMessage))
                 messages.Add(phoneNumberVerificationMessage);

@@ -14,10 +14,7 @@ export const Login2fa = () => {
 
   return (
     <Layout title="Log in to your account with two-factor authentication">
-      <Login2faForm
-        rememberMe={rememberMeAsBoolean}
-        returnUrl={returnUrl || ''}
-      />
+      <Login2faForm rememberMe={rememberMeAsBoolean} returnUrl={returnUrl || ''} />
     </Layout>
   );
 };

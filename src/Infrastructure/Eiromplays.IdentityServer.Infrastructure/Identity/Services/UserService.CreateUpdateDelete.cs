@@ -2,7 +2,6 @@
 using Duende.IdentityServer.Extensions;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Mailing;
-using Eiromplays.IdentityServer.Application.Common.Sms;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Domain.Common;
 using Eiromplays.IdentityServer.Domain.Identity;
@@ -138,38 +137,21 @@ internal partial class UserService
 
         var messages = new List<string> { string.Format(_t["User {0} Registered."], user.UserName) };
 
-        if (_signInManager.Options.SignIn.RequireConfirmedAccount)
+        if (_signInManager.Options.SignIn.RequireConfirmedEmail && !string.IsNullOrWhiteSpace(user.Email))
         {
-            if (_signInManager.Options.SignIn.RequireConfirmedEmail && !string.IsNullOrWhiteSpace(user.Email))
-            {
-                // send verification email
-                string emailVerificationUri = await GetEmailVerificationUriAsync(user, origin);
+            string emailVerificationMessage = await SendEmailVerificationAsync(user, origin);
 
-                var emailModel = new RegisterUserEmailModel
-                {
-                    Email = user.Email,
-                    UserName = user.UserName,
-                    Url = emailVerificationUri
-                };
+            if (!string.IsNullOrWhiteSpace(emailVerificationMessage))
+                messages.Add(emailVerificationMessage);
+        }
 
-                var mailRequest = new MailRequest(
-                    new List<string> { user.Email },
-                    _t["Confirm Registration"],
-                    await _templateService.GenerateEmailTemplateAsync("email-confirmation", emailModel));
-
-                _jobService.Enqueue(() => _mailService.SendAsync(mailRequest, CancellationToken.None));
-
-                messages.Add(_t[$"Please check {user.Email} to verify your account!"]);
-            }
-
-            if (_signInManager.Options.SignIn.RequireConfirmedPhoneNumber &&
-                !_signInManager.Options.SignIn.RequireConfirmedEmail &&
-                !string.IsNullOrWhiteSpace(user.PhoneNumber))
-            {
-                string phoneNumberVerificationMessage = await SendPhoneNumberVerificationAsync(user, origin);
-                if (!string.IsNullOrWhiteSpace(phoneNumberVerificationMessage))
-                    messages.Add(phoneNumberVerificationMessage);
-            }
+        if (_signInManager.Options.SignIn.RequireConfirmedPhoneNumber &&
+            !_signInManager.Options.SignIn.RequireConfirmedEmail &&
+            !string.IsNullOrWhiteSpace(user.PhoneNumber))
+        {
+            string phoneNumberVerificationMessage = await SendPhoneNumberVerificationAsync(user);
+            if (!string.IsNullOrWhiteSpace(phoneNumberVerificationMessage))
+                messages.Add(phoneNumberVerificationMessage);
         }
 
         await _events.PublishAsync(new ApplicationUserCreatedEvent(user.Id));
@@ -177,22 +159,10 @@ internal partial class UserService
         return new CreateUserResponse(user.Id, string.Join(Environment.NewLine, messages));
     }
 
-    public async Task<string> SendPhoneNumberVerificationAsync(ApplicationUser user, string origin)
-    {
-        (string phoneVerificationUri, string phoneVerificationCode) = await GetPhoneNumberVerificationUriAsync(user, user.PhoneNumber, origin);
-
-        var smsRequest = new SmsRequest(
-            new List<string> { user.PhoneNumber },
-            _t[$"Please confirm your account by entering the code {phoneVerificationCode} or by clicking this link {phoneVerificationUri}"]);
-
-        _jobService.Enqueue(() => _smsService.SendAsync(smsRequest, CancellationToken.None));
-
-        return _t["Please check your phone to verify your phone number!"];
-    }
-
     public async Task<CreateUserResponse> CreateExternalAsync(CreateExternalUserRequest request, string origin)
     {
-        if (_accountConfiguration.RegisterConfiguration is { Enabled: false }) throw new InternalServerException(_t["Registration is disabled."]);
+        if (_accountConfiguration.RegisterConfiguration is { Enabled: false })
+            throw new InternalServerException(_t["Registration is disabled."]);
 
         var user = new ApplicationUser
         {
@@ -274,13 +244,6 @@ internal partial class UserService
         user.IsActive = request.IsActive;
         user.TwoFactorEnabled = request.TwoFactorEnabled;
         user.LockoutEnabled = request.LockoutEnabled;
-
-        string? phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
-        if (request.PhoneNumber != phoneNumber)
-        {
-            await _userManager.SetPhoneNumberAsync(user, request.PhoneNumber);
-        }
 
         if (user.GravatarEmail != request.GravatarEmail)
             user.GravatarEmail = request.GravatarEmail;

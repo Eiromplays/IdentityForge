@@ -4,6 +4,7 @@ using Duende.IdentityServer.Services;
 using Eiromplays.IdentityServer.Application.Common.Configurations;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Application.Common.Mailing;
 using Eiromplays.IdentityServer.Application.Common.Sms;
 using Eiromplays.IdentityServer.Application.Identity.Auth;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.ExternalLogins;
@@ -42,6 +43,7 @@ public class AuthService : IAuthService
     private readonly IUserService _userService;
     private readonly IJobService _jobService;
     private readonly ISmsService _smsService;
+    private readonly IMailService _mailService;
     private readonly IStringLocalizer _t;
 
     public AuthService(
@@ -58,6 +60,7 @@ public class AuthService : IAuthService
         UserManager<ApplicationUser> userManager,
         IJobService jobService,
         ISmsService smsService,
+        IMailService mailService,
         IStringLocalizer<AuthService> t)
     {
         _interaction = interaction;
@@ -72,6 +75,7 @@ public class AuthService : IAuthService
         _userManager = userManager;
         _jobService = jobService;
         _smsService = smsService;
+        _mailService = mailService;
         _t = t;
         _spaConfiguration = spaConfiguration.Value;
     }
@@ -174,6 +178,62 @@ public class AuthService : IAuthService
             response.ValidReturnUrl = url ?? _serverUrls.BaseUrl;
 
         return new Result<LoginResponse>(response);
+    }
+
+    public async Task<Result<Send2FaVerificationCodeResponse>> Send2FaVerificationCodeAsync(
+        Send2FaVerificationCodeRequest request)
+    {
+        var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+        if (user is null)
+            return new Result<Send2FaVerificationCodeResponse>(new BadRequestException("Unable to get user"));
+
+        string? code = await _userManager.GenerateTwoFactorTokenAsync(user, request.Provider);
+        if (string.IsNullOrWhiteSpace(code))
+            return new Result<Send2FaVerificationCodeResponse>(new InternalServerException("Unable to generate two factor code"));
+
+        var message = _t[$"Your verification code is {code}"];
+
+        var messages = new List<string>();
+
+        switch (request.Provider)
+        {
+            case nameof(TwoFactorAuthenticationProviders.Sms):
+                var smsRequest = new SmsRequest(
+                        new List<string> { user.PhoneNumber },
+                        message);
+
+                _jobService.Enqueue(() => _smsService.SendAsync(smsRequest, CancellationToken.None));
+
+                messages.Add(_t["Verification code has been sent to your phone!"]);
+                break;
+
+            case nameof(TwoFactorAuthenticationProviders.Email):
+                var emailRequest = new MailRequest(
+                        new List<string> { user.Email },
+                        _t["Verification code"],
+                        message);
+
+                _jobService.Enqueue(() => _mailService.SendAsync(emailRequest, CancellationToken.None));
+
+                messages.Add(_t["Verification code has been sent to your email!"]);
+                break;
+        }
+
+        return new Result<Send2FaVerificationCodeResponse>(new Send2FaVerificationCodeResponse
+        {
+            Message = string.Join(Environment.NewLine, messages)
+        });
+    }
+
+    public async Task<Result<IList<string>>> GetSend2FaVerificationCodeAsync()
+    {
+        var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+        if (user is null)
+            return new Result<IList<string>>(new BadRequestException("Unable to get user"));
+
+        var validProviders = await _userManager.GetValidTwoFactorProvidersAsync(user);
+
+        return new Result<IList<string>>(validProviders);
     }
 
     #endregion
