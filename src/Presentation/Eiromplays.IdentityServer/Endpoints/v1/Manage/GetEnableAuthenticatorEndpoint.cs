@@ -1,20 +1,17 @@
-using System.Net;
-using System.Text.Encodings.Web;
+using Eiromplays.IdentityServer.Application.Common.Exceptions;
+using Eiromplays.IdentityServer.Application.Identity.Auth.Requests;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.TwoFactorAuthentication;
-using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
-using Microsoft.AspNetCore.Identity;
+using Eiromplays.IdentityServer.Application.Identity.Users;
 
 namespace Eiromplays.IdentityServer.Endpoints.v1.Manage;
 
-public class GetEnableAuthenticatorEndpoint : EndpointWithoutRequest<EnableAuthenticator>
+public class GetEnableAuthenticatorEndpoint : EndpointWithoutRequest<GetEnableAuthenticatorResponse>
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly UrlEncoder _urlEncoder;
+    private readonly IUserService _userService;
 
-    public GetEnableAuthenticatorEndpoint(UserManager<ApplicationUser> userManager, UrlEncoder urlEncoder)
+    public GetEnableAuthenticatorEndpoint(IUserService userService)
     {
-        _userManager = userManager;
-        _urlEncoder = urlEncoder;
+        _userService = userService;
     }
 
     public override void Configure()
@@ -29,40 +26,25 @@ public class GetEnableAuthenticatorEndpoint : EndpointWithoutRequest<EnableAuthe
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-        {
-            AddError("User not found");
-            await SendErrorsAsync((int)HttpStatusCode.NotFound, ct);
-            return;
-        }
+        var result = await _userService.GetEnableTwoFactorAsync(User.GetUserId() ?? string.Empty);
 
-        var response = new EnableAuthenticator();
-        await LoadSharedKeyAndQrCodeUriAsync(user, response);
-
-        await SendOkAsync(response, ct);
-    }
-
-    private async Task LoadSharedKeyAndQrCodeUriAsync(ApplicationUser user, EnableAuthenticator response)
-    {
-        string? sharedKey = await _userManager.GetAuthenticatorKeyAsync(user);
-        if (string.IsNullOrEmpty(sharedKey))
-        {
-            await _userManager.ResetAuthenticatorKeyAsync(user);
-            sharedKey = await _userManager.GetAuthenticatorKeyAsync(user);
-        }
-
-        response.SharedKey = sharedKey;
-        if (!string.IsNullOrWhiteSpace(user.Email))
-            response.AuthenticatorUri = GenerateQrCodeUri(user.Email, sharedKey);
-    }
-
-    private string GenerateQrCodeUri(string email, string unformattedKey)
-    {
-        return string.Format(
-            EnableAuthenticatorEndpoint.AuthenticatorUriFormat,
-            _urlEncoder.Encode("Eiromplays.IdentityServer.Admin"),
-            _urlEncoder.Encode(email),
-            unformattedKey);
+        await result.Match(
+            async x =>
+            {
+                await SendOkAsync(x, cancellation: ct);
+            },
+            async exception =>
+            {
+                switch (exception)
+                {
+                    case NotFoundException notFoundException:
+                        AddError(notFoundException.Message);
+                        await SendErrorsAsync((int)notFoundException.StatusCode, ct);
+                        return;
+                    default:
+                        await SendErrorsAsync(cancellation: ct);
+                        break;
+                }
+            });
     }
 }

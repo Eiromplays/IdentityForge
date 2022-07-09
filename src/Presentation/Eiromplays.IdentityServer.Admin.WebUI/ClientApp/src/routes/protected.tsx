@@ -45,7 +45,7 @@ const App = () => {
           { name: 'Api Scopes', to: './api-scopes', icon: BiTargetLock },
           { name: 'Api Resources', to: './api-resources', icon: HiOutlineShieldCheck },
           { name: 'Persisted Grants', to: './persisted-grants', icon: MdOutlineVerified },
-          { name: 'User Sessions', to: './user-sessions', icon: MdOutlineDevicesOther },
+          { name: 'Sessions', to: './sessions', icon: MdOutlineDevicesOther },
           { name: 'Logs', to: './logs', icon: MdOutlineHistory },
           {
             name: 'Discovery Document',

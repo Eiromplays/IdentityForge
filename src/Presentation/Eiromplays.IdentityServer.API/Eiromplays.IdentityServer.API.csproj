@@ -53,10 +53,7 @@
     <None Include="Email-Templates\*.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Content Update="Configurations\database.Development.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="Configurations\mail.Development.json">
+    <Content Update="Configurations\sms.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -1,13 +1,13 @@
-import { Table, Spinner, Link, useAuth, formatDate } from 'eiromplays-ui';
+import { Table, Spinner, useAuth, formatDate } from 'eiromplays-ui';
 
-import { useUserSessions } from '../api/getUserSessions';
+import { useBffUserSessions } from '../api/getBffUserSessions';
 import { UserSession } from '../types';
 
-import { DeleteUserSession } from './DeleteUserSession';
+import { DeleteBffUserSession } from './DeleteBffUserSession';
 
-export const UserSessionsList = () => {
+export const BffUserSessionsList = () => {
   const { user } = useAuth();
-  const userSessionsQuery = useUserSessions();
+  const userSessionsQuery = useBffUserSessions();
 
   if (userSessionsQuery.isLoading) {
     return (
@@ -38,6 +38,20 @@ export const UserSessionsList = () => {
           },
         },
         {
+          title: 'ApplicationName',
+          field: 'applicationName',
+          Cell({ entry: { applicationName } }) {
+            return (
+              <span>
+                {applicationName
+                  ?.split('/')
+                  ?.filter((x) => x)
+                  ?.pop()}
+              </span>
+            );
+          },
+        },
+        {
           title: 'Created At',
           field: 'created',
           Cell({ entry: { created } }) {
@@ -52,10 +66,10 @@ export const UserSessionsList = () => {
           },
         },
         {
-          title: '',
-          field: 'key',
-          Cell({ entry: { key } }) {
-            return <Link to={`./${key}`}>View</Link>;
+          title: 'Renewed At',
+          field: 'renewed',
+          Cell({ entry: { renewed } }) {
+            return <span>{formatDate(renewed)}</span>;
           },
         },
         {
@@ -63,7 +77,7 @@ export const UserSessionsList = () => {
           field: 'key',
           Cell({ entry: { key, sessionId } }) {
             return (
-              <DeleteUserSession
+              <DeleteBffUserSession
                 userSessionKey={key}
                 currentSession={user.sessionId === sessionId}
               />

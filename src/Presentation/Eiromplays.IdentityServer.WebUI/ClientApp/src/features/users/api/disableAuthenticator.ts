@@ -1,4 +1,4 @@
-import { axios, MutationConfig } from 'eiromplays-ui';
+import { axios, MutationConfig, queryClient } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
@@ -14,7 +14,8 @@ type UseDisableAuthenticatorOptions = {
 
 export const useDisableAuthenticator = ({ config }: UseDisableAuthenticatorOptions = {}) => {
   return useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['two-factor-authentication']);
       toast.success('Authenticator disabled successfully');
     },
     ...config,

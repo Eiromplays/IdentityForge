@@ -16,7 +16,7 @@ type useUserSessionOptions = {
 export const useUserSessions = ({ config }: useUserSessionOptions = {}) => {
   return useQuery<ExtractFnReturnType<QueryFnType>>({
     ...config,
-    queryKey: ['user-sessions'],
+    queryKey: ['sessions'],
     queryFn: () => getUserSessions(),
   });
 };

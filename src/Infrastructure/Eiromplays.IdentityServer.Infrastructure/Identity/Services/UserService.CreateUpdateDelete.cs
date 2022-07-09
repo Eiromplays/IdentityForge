@@ -123,7 +123,10 @@ internal partial class UserService
         if (_accountConfiguration.ProfilePictureConfiguration is { Enabled: true, AutoGenerate: true })
             user.ProfilePicture = $"{_accountConfiguration.ProfilePictureConfiguration.DefaultUrl}{user.UserName}.svg";
 
-        var result = await _userManager.CreateAsync(user, request.Password);
+        var result = string.IsNullOrWhiteSpace(request.Password)
+            ? await _userManager.CreateAsync(user)
+            : await _userManager.CreateAsync(user, request.Password);
+
         if (!result.Succeeded)
         {
             throw new InternalServerException(_t["Validation Errors Occurred."], result.GetErrors(_t));
@@ -134,26 +137,21 @@ internal partial class UserService
 
         var messages = new List<string> { string.Format(_t["User {0} Registered."], user.UserName) };
 
-        if (_signInManager.Options.SignIn.RequireConfirmedAccount && !string.IsNullOrEmpty(user.Email))
+        if (_signInManager.Options.SignIn.RequireConfirmedEmail && !string.IsNullOrWhiteSpace(user.Email))
         {
-            // send verification email
-            string emailVerificationUri = await GetEmailVerificationUriAsync(user, origin);
+            string emailVerificationMessage = await SendEmailVerificationAsync(user, origin);
 
-            var emailModel = new RegisterUserEmailModel
-            {
-                Email = user.Email,
-                UserName = user.UserName,
-                Url = emailVerificationUri
-            };
+            if (!string.IsNullOrWhiteSpace(emailVerificationMessage))
+                messages.Add(emailVerificationMessage);
+        }
 
-            var mailRequest = new MailRequest(
-                new List<string> { user.Email },
-                _t["Confirm Registration"],
-                _templateService.GenerateEmailTemplate("email-confirmation", emailModel));
-
-            _jobService.Enqueue(() => _mailService.SendAsync(mailRequest, CancellationToken.None));
-
-            messages.Add(_t[$"Please check {user.Email} to verify your account!"]);
+        if (_signInManager.Options.SignIn.RequireConfirmedPhoneNumber &&
+            !_signInManager.Options.SignIn.RequireConfirmedEmail &&
+            !string.IsNullOrWhiteSpace(user.PhoneNumber))
+        {
+            string phoneNumberVerificationMessage = await SendPhoneNumberVerificationAsync(user);
+            if (!string.IsNullOrWhiteSpace(phoneNumberVerificationMessage))
+                messages.Add(phoneNumberVerificationMessage);
         }
 
         await _events.PublishAsync(new ApplicationUserCreatedEvent(user.Id));
@@ -163,7 +161,8 @@ internal partial class UserService
 
     public async Task<CreateUserResponse> CreateExternalAsync(CreateExternalUserRequest request, string origin)
     {
-        if (_accountConfiguration.RegisterConfiguration is { Enabled: false }) throw new InternalServerException(_t["Registration is disabled."]);
+        if (_accountConfiguration.RegisterConfiguration is { Enabled: false })
+            throw new InternalServerException(_t["Registration is disabled."]);
 
         var user = new ApplicationUser
         {
@@ -205,7 +204,7 @@ internal partial class UserService
             var mailRequest = new MailRequest(
                 new List<string> { user.Email },
                 _t["Confirm Registration"],
-                _templateService.GenerateEmailTemplate("email-confirmation", emailModel));
+                await _templateService.GenerateEmailTemplateAsync("email-confirmation", emailModel));
 
             _jobService.Enqueue(() => _mailService.SendAsync(mailRequest, CancellationToken.None));
 
@@ -246,13 +245,6 @@ internal partial class UserService
         user.TwoFactorEnabled = request.TwoFactorEnabled;
         user.LockoutEnabled = request.LockoutEnabled;
 
-        string? phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
-        if (request.PhoneNumber != phoneNumber)
-        {
-            await _userManager.SetPhoneNumberAsync(user, request.PhoneNumber);
-        }
-
         if (user.GravatarEmail != request.GravatarEmail)
             user.GravatarEmail = request.GravatarEmail;
 
@@ -266,7 +258,7 @@ internal partial class UserService
         }
 
         if (request.RevokeUserSessions)
-            await RemoveSessionsAsync(userId, cancellationToken);
+            await RemoveBffSessionsAsync(userId, cancellationToken);
     }
 
     public async Task DeleteAsync(string userId)

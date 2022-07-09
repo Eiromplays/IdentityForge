@@ -28,64 +28,73 @@ export const ChangePasswordForm = ({ onSuccess }: ChangePasswordFormProps) => {
 
   return (
     <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
-      <div className="flex flex-column flex-wrap gap-5 pl-5 pb-5">
-        <Form<ChangePasswordDTO['data'], typeof schema>
-          id="change-password"
-          onSubmit={async (values) => {
-            values.userId = user?.id;
-            await changePasswordMutation.mutateAsync({ data: values });
+      <div className="px-4 py-5 sm:px-6">
+        <div className="flex justify-between">
+          <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
+            Change password
+          </h3>
+        </div>
+      </div>
+      <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
+        <div className="flex flex-column flex-wrap gap-5 pl-5 pb-5">
+          <Form<ChangePasswordDTO['data'], typeof schema>
+            id="change-password"
+            onSubmit={async (values) => {
+              values.userId = user?.id;
+              await changePasswordMutation.mutateAsync({ data: values });
 
-            onSuccess();
-          }}
-          schema={schema}
-        >
-          {({ register, formState }) => (
-            <>
-              <InputField
-                label="Current Password"
-                type="password"
-                error={formState.errors['password']}
-                registration={register('password')}
-              />
-              <InputField
-                label="New Password"
-                type="password"
-                error={formState.errors['newPassword']}
-                registration={register('newPassword')}
-              />
-              <InputField
-                label="Confirm New Password"
-                type="password"
-                error={formState.errors['confirmNewPassword']}
-                registration={register('confirmNewPassword')}
-              />
-              <div className="mt-4">
-                <ConfirmationDialog
-                  icon="warning"
-                  title="Change Password"
-                  body="Are you sure you want to update your password? This will log you out."
-                  triggerButton={
-                    <Button size="sm" isLoading={changePasswordMutation.isLoading}>
-                      Change Password
-                    </Button>
-                  }
-                  confirmButton={
-                    <Button
-                      form="change-password"
-                      type="submit"
-                      className="mt-2"
-                      variant="warning"
-                      size="sm"
-                      isLoading={changePasswordMutation.isLoading}
-                    >
-                      Submit
-                    </Button>
-                  }
+              onSuccess();
+            }}
+            schema={schema}
+          >
+            {({ register, formState }) => (
+              <>
+                <InputField
+                  label="Current Password"
+                  type="password"
+                  error={formState.errors['password']}
+                  registration={register('password')}
                 />
-              </div>
-            </>
-          )}
-        </Form>
+                <InputField
+                  label="New Password"
+                  type="password"
+                  error={formState.errors['newPassword']}
+                  registration={register('newPassword')}
+                />
+                <InputField
+                  label="Confirm New Password"
+                  type="password"
+                  error={formState.errors['confirmNewPassword']}
+                  registration={register('confirmNewPassword')}
+                />
+                <div className="mt-4">
+                  <ConfirmationDialog
+                    icon="warning"
+                    title="Change Password"
+                    body="Are you sure you want to update your password? This will log you out."
+                    triggerButton={
+                      <Button size="sm" isLoading={changePasswordMutation.isLoading}>
+                        Change Password
+                      </Button>
+                    }
+                    confirmButton={
+                      <Button
+                        form="change-password"
+                        type="submit"
+                        className="mt-2"
+                        variant="warning"
+                        size="sm"
+                        isLoading={changePasswordMutation.isLoading}
+                      >
+                        Submit
+                      </Button>
+                    }
+                  />
+                </div>
+              </>
+            )}
+          </Form>
+        </div>
       </div>
     </div>
   );

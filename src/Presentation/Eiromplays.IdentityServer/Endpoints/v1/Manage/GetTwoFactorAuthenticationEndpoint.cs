@@ -1,16 +1,17 @@
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Identity.Auth;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.TwoFactorAuthentication;
+using Eiromplays.IdentityServer.Application.Identity.Users;
 
 namespace Eiromplays.IdentityServer.Endpoints.v1.Manage;
 
 public class GetTwoFactorAuthenticationEndpoint : EndpointWithoutRequest<TwoFactorAuthenticationResponse>
 {
-    private readonly ITwoFactorAuthenticationService _twoFactorAuthenticationService;
+    private readonly IUserService _userService;
 
-    public GetTwoFactorAuthenticationEndpoint(ITwoFactorAuthenticationService twoFactorAuthenticationService)
+    public GetTwoFactorAuthenticationEndpoint(IUserService userService)
     {
-        _twoFactorAuthenticationService = twoFactorAuthenticationService;
+        _userService = userService;
     }
 
     public override void Configure()
@@ -25,7 +26,7 @@ public class GetTwoFactorAuthenticationEndpoint : EndpointWithoutRequest<TwoFact
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var result = await _twoFactorAuthenticationService.GetTwoFactorAuthenticationAsync(User);
+        var result = await _userService.GetTwoFactorAuthenticationAsync(User);
         await result.Match(
             async x =>
         {

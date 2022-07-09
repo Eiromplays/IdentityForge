@@ -30,7 +30,7 @@ public class Endpoint : Endpoint<Models.Request, UserSessionDto>
             return;
         }
 
-        Response = await _userService.GetUserSessionAsync(req.Key, userId, ct);
+        Response = await _userService.GetBffUserSessionAsync(req.Key, userId, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

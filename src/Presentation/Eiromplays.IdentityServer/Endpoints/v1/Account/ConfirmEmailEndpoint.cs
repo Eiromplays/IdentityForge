@@ -24,11 +24,11 @@ public class ConfirmEmailEndpoint : Endpoint<ConfirmEmailRequest, ConfirmEmailRe
 
     public override async Task HandleAsync(ConfirmEmailRequest req, CancellationToken ct)
     {
-        Response.Message = await _userService.ConfirmEmailAsync(req.UserId, req.Code, ct);
+        Response = await _userService.ConfirmEmailAsync(req, BaseURL, ct);
 
-        if (!string.IsNullOrWhiteSpace(req.ReturnUrl))
+        if (!string.IsNullOrWhiteSpace(Response.ReturnUrl))
         {
-            await SendRedirectAsync(req.ReturnUrl, true, ct);
+            await SendRedirectAsync(Response.ReturnUrl, true, ct);
             return;
         }
 

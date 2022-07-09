@@ -25,7 +25,7 @@ public class Endpoint : EndpointWithoutRequest<List<UserSessionDto>>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        Response = await _userService.GetAllUserSessions(ct);
+        Response = await _userService.GetAllBffUserSessions(ct);
 
         await SendAsync(Response, cancellation: ct);
     }

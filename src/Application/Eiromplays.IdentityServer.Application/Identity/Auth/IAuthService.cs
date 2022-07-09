@@ -15,6 +15,10 @@ public interface IAuthService : ITransientService
 
     Task<Result<LoginResponse>> Login2FaAsync(Login2FaRequest request);
 
+    Task<Result<Send2FaVerificationCodeResponse>> Send2FaVerificationCodeAsync(
+        Send2FaVerificationCodeRequest request);
+    Task<Result<IList<string>>> GetValidTwoFactorProvidersAsync();
+
     Task<Result<AuthenticationProperties>> ExternalLoginAsync<TEndpoint>(ExternalLoginRequest request, HttpResponse rsp)
         where TEndpoint : IEndpoint;
 
@@ -26,4 +30,6 @@ public interface IAuthService : ITransientService
         where TEndpoint : IEndpoint;
 
     Task<Result<LoginResponse>> LinkExternalLoginCallbackAsync(string userId, HttpContext httpContext);
+
+    Task<Result<SendSmsLoginCodeResponse>> SendLoginVerificationCodeAsync(SendSmsLoginCodeRequest request);
 }

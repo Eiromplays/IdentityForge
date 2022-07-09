@@ -30,7 +30,7 @@ public class Endpoint : EndpointWithoutRequest<List<UserSessionDto>>
             return;
         }
 
-        Response = await _userService.GetUserSessionsAsync(userId, ct);
+        Response = await _userService.GetBffUserSessionsAsync(userId, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

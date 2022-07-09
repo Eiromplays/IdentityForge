@@ -15,12 +15,12 @@ type UseDeleteUserSessionOptions = {
 export const useDeleteUserSession = ({ config }: UseDeleteUserSessionOptions = {}) => {
   return useMutation({
     onMutate: async (deletedUserSession) => {
-      await queryClient.cancelQueries('user-sessions');
+      await queryClient.cancelQueries('sessions');
 
-      const previousUserSessions = queryClient.getQueryData<UserSession[]>('user-sessions');
+      const previousUserSessions = queryClient.getQueryData<UserSession[]>('sessions');
 
       queryClient.setQueryData(
-        'user-sessions',
+        'sessions',
         previousUserSessions?.filter(
           (userSession) => userSession.key !== deletedUserSession.userSessionKey
         )
@@ -30,11 +30,11 @@ export const useDeleteUserSession = ({ config }: UseDeleteUserSessionOptions = {
     },
     onError: (_, __, context: any) => {
       if (context?.previousUserSessions) {
-        queryClient.setQueryData('user-sessions', context.previousUserSessions);
+        queryClient.setQueryData('sessions', context.previousUserSessions);
       }
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries('user-sessions');
+      await queryClient.invalidateQueries('sessions');
       toast.success('User Session Deleted');
       window.location.href = '/app';
     },

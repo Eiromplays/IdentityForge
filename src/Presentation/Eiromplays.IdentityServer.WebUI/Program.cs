@@ -1,12 +1,14 @@
+using System.Security.Claims;
 using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure;
+using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddAuthorization();
-builder.Services.AddInfrastructure(builder.Configuration, ProjectType.Spa);
+builder.Services.AddInfrastructure(builder.Configuration, builder.Environment, ProjectType.Spa);
 
 builder.Services.AddAuthentication(options =>
 {
@@ -36,6 +38,7 @@ builder.Services.AddAuthentication(options =>
     options.Scope.Add("offline_access");
     options.Scope.Add("roles");
     options.Scope.Add("email");
+    options.Scope.Add("phone_number");
 
     options.ClaimActions.MapJsonKey("role", "role", "role");
     options.ClaimActions.MapJsonKey("picture", "picture", "picture");
@@ -44,6 +47,8 @@ builder.Services.AddAuthentication(options =>
     options.ClaimActions.MapJsonKey("created_at", "created_at", "created_at");
     options.ClaimActions.MapUniqueJsonKey("given_name", "given_name", "given_name");
     options.ClaimActions.MapUniqueJsonKey("family_name", "family_name", "family_name");
+    options.ClaimActions.MapUniqueJsonKey(JwtClaimTypes.PhoneNumber, JwtClaimTypes.PhoneNumber, JwtClaimTypes.PhoneNumber);
+    options.ClaimActions.MapUniqueJsonKey(JwtClaimTypes.PhoneNumberVerified, JwtClaimTypes.PhoneNumberVerified, ClaimValueTypes.Boolean);
 });
 
 var app = builder.Build();

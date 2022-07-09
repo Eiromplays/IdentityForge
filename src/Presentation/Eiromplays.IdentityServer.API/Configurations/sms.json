@@ -1,0 +1,15 @@
+{
+  "SmsConfiguration": {
+    "SmsProvider": "Infobip",
+    "From": "InfoSMS",
+    "InfobipConfiguration": {
+      "ApiKey": "",
+      "ApiKeyPrefix": "App",
+      "BasePath": ""
+    },
+    "TwilioConfiguration": {
+        "AccountSid": "",
+        "AuthToken": ""
+    }
+  }
+}

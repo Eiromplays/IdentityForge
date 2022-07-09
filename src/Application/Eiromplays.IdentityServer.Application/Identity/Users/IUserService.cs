@@ -1,4 +1,6 @@
 using System.Security.Claims;
+using Eiromplays.IdentityServer.Application.Identity.Auth.Requests;
+using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.TwoFactorAuthentication;
 using Eiromplays.IdentityServer.Application.Identity.Sessions;
 using Eiromplays.IdentityServer.Application.Identity.Users.Logins;
 using Eiromplays.IdentityServer.Application.Identity.Users.Password;
@@ -33,8 +35,8 @@ public interface IUserService : ITransientService
     Task<CreateUserResponse> CreateExternalAsync(CreateExternalUserRequest request, string origin);
     Task UpdateAsync(UpdateUserRequest request, string userId, CancellationToken cancellationToken = default);
 
-    Task<string> ConfirmEmailAsync(string userId, string code, CancellationToken cancellationToken = default);
-    Task<string> ConfirmPhoneNumberAsync(string userId, string code);
+    Task<ConfirmEmailResponse> ConfirmEmailAsync(ConfirmEmailRequest request, string origin, CancellationToken cancellationToken = default);
+    Task<ConfirmPhoneNumberResponse> ConfirmPhoneNumberAsync(string userId, string code);
 
     Task<string> ForgotPasswordAsync(ForgotPasswordRequest request, string origin);
     Task<string> ResetPasswordAsync(ResetPasswordRequest request);
@@ -53,17 +55,20 @@ public interface IUserService : ITransientService
 
     Task<Stream> ExportPersonalDataAsync(string userId, bool includeLogins = true);
 
-    Task<bool> RemoveSessionsAsync(string userId, CancellationToken cancellationToken = default);
+    Task<bool> RemoveBffSessionsAsync(string userId, CancellationToken cancellationToken = default);
 
-    Task<List<UserSessionDto>> GetAllUserSessions(CancellationToken cancellationToken = default);
-    Task<List<UserSessionDto>> GetUserSessionsAsync(string userId, CancellationToken cancellationToken = default);
-    Task<UserSessionDto> GetUserSessionAsync(string key, string? userId = default, CancellationToken cancellationToken = default);
-    Task<string> DeleteUserSessionAsync(string key, string? userId = default,  CancellationToken cancellationToken = default);
+    Task<List<UserSessionDto>> GetAllBffUserSessions(CancellationToken cancellationToken = default);
+    Task<List<UserSessionDto>> GetBffUserSessionsAsync(string userId, CancellationToken cancellationToken = default);
+    Task<UserSessionDto> GetBffUserSessionAsync(string key, string? userId = default, CancellationToken cancellationToken = default);
+    Task<string> DeleteBffUserSessionAsync(string key, string? userId = default,  CancellationToken cancellationToken = default);
 
-    Task<PaginationResponse<UserSessionDto>> SearchSessionsAsync(UserSessionListFilter filter, CancellationToken cancellationToken = default);
+    Task<PaginationResponse<UserSessionDto>> SearchBffSessionsAsync(UserSessionListFilter filter, CancellationToken cancellationToken = default);
 
     Task DeleteAsync(string userId);
 
-    Task<string> DisableTwoFactorAsync(string userId);
-
+    Task<Result<GetEnableAuthenticatorResponse>> GetEnableTwoFactorAsync(string? userId);
+    Task<Result<EnableAuthenticatorResponse>> EnableTwoFactorAsync(EnableAuthenticatorRequest req, ClaimsPrincipal claimsPrincipal);
+    Task<string> DisableTwoFactorAsync(string? userId);
+    Task<Result<TwoFactorAuthenticationResponse>> GetTwoFactorAuthenticationAsync(ClaimsPrincipal claimsPrincipal);
+    Task<IList<string>> GetValidTwoFactorProvidersAsync(string? userId);
 }

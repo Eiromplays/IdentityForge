@@ -48,12 +48,6 @@
     <Content Update="Configurations\mail.Development.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="Configurations\mail.Development.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="Configurations\database.Development.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Logs\*" />

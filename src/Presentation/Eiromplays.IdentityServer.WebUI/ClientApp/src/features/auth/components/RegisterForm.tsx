@@ -1,4 +1,7 @@
-import { Link, Button, Form, InputField, useAuth } from 'eiromplays-ui';
+import { Link, Button, Form, InputField, useAuth, CustomInputField } from 'eiromplays-ui';
+import React from 'react';
+import { isPossiblePhoneNumber } from 'react-phone-number-input';
+import PhoneInputWithCountry from 'react-phone-number-input/react-hook-form';
 import * as z from 'zod';
 
 const schema = z
@@ -9,6 +12,10 @@ const schema = z
     lastName: z.string().min(1, 'Required'),
     password: z.string().min(1, 'Required'),
     confirmPassword: z.string().min(1, 'Required'),
+    phoneNumber: z
+      .string()
+      .nullable()
+      .refine((v) => (v ? isPossiblePhoneNumber(v) : true), 'Invalid phone number'),
   })
   .refine((data) => data.confirmPassword === data.password, {
     message: "Passwords don't match",
@@ -20,6 +27,7 @@ type RegisterValues = {
   lastName: string;
   userName: string;
   email: string;
+  phoneNumber: string;
   password: string;
   confirmPassword: string;
 };
@@ -44,7 +52,7 @@ export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
           shouldUnregister: true,
         }}
       >
-        {({ register, formState }) => (
+        {({ register, formState, control }) => (
           <>
             <InputField
               type="text"
@@ -70,6 +78,20 @@ export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
               error={formState.errors['email']}
               registration={register('email')}
             />
+            <CustomInputField
+              label="Phone Number"
+              error={formState.errors['phoneNumber']}
+              customInputField={
+                <PhoneInputWithCountry
+                  className="bg-white dark:bg-gray-900 block px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm',
+                  'placeholder-gray-400 dark:placeholder-white focus:outline-none focus:ring-blue-500 dark:focus:ring-indigo-700 focus:border-blue-500',
+                  'dark:focus:border-indigo-900 sm:text-sm"
+                  name="phoneNumber"
+                  control={control}
+                  register={register('phoneNumber')}
+                />
+              }
+            />
             <InputField
               type="password"
               label="Password"
@@ -82,7 +104,6 @@ export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
               error={formState.errors['confirmPassword']}
               registration={register('confirmPassword')}
             />
-
             <div>
               <Button isLoading={isRegistering} type="submit" className="w-full">
                 Register

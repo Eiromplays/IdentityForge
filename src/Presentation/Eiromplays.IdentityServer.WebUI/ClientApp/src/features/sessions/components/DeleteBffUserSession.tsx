@@ -1,15 +1,18 @@
 import { Button, ConfirmationDialog } from 'eiromplays-ui';
 import { HiOutlineTrash } from 'react-icons/hi';
 
-import { useDeleteUserSession } from '../api/deleteUserSession';
+import { useDeleteBffUserSession } from '../api/deleteBffUserSession';
 
 type DeleteUserSessionProps = {
   userSessionKey: string;
-  currentSession?: boolean;
+  currentSession: boolean;
 };
 
-export const DeleteUserSession = ({ userSessionKey, currentSession }: DeleteUserSessionProps) => {
-  const deleteUserSessionMutation = useDeleteUserSession();
+export const DeleteBffUserSession = ({
+  userSessionKey,
+  currentSession,
+}: DeleteUserSessionProps) => {
+  const deleteUserSessionMutation = useDeleteBffUserSession();
 
   return (
     <ConfirmationDialog
@@ -20,7 +23,7 @@ export const DeleteUserSession = ({ userSessionKey, currentSession }: DeleteUser
       }`}
       triggerButton={
         <Button variant="danger" startIcon={<HiOutlineTrash className="h-4 w-4" />}>
-          Delete User Session
+          Delete
         </Button>
       }
       confirmButton={
@@ -29,7 +32,10 @@ export const DeleteUserSession = ({ userSessionKey, currentSession }: DeleteUser
           type="button"
           className="bg-red-600"
           onClick={async () =>
-            await deleteUserSessionMutation.mutateAsync({ userSessionKey: userSessionKey })
+            await deleteUserSessionMutation.mutateAsync({
+              currentSession: currentSession,
+              userSessionKey: userSessionKey,
+            })
           }
         >
           Delete User Session

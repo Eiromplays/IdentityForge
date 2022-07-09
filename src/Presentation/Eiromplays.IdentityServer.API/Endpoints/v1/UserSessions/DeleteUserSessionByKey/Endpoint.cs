@@ -29,7 +29,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             return;
         }
 
-        Response.Message = await _userService.DeleteUserSessionAsync(req.Key, userId, ct);
+        Response.Message = await _userService.DeleteBffUserSessionAsync(req.Key, userId, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

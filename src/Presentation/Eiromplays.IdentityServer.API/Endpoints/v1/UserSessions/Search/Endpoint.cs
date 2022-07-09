@@ -26,7 +26,7 @@ public class Endpoint : Endpoint<UserSessionListFilter, PaginationResponse<UserS
 
     public override async Task HandleAsync(UserSessionListFilter request, CancellationToken ct)
     {
-        Response = await _userService.SearchSessionsAsync(request, ct);
+        Response = await _userService.SearchBffSessionsAsync(request, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

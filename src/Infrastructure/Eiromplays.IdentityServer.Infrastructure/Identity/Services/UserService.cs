@@ -1,3 +1,4 @@
+using System.Text.Encodings.Web;
 using Ardalis.Specification.EntityFrameworkCore;
 using Duende.Bff.EntityFramework;
 using Eiromplays.IdentityServer.Application.Common.Caching;
@@ -9,11 +10,13 @@ using Eiromplays.IdentityServer.Application.Common.FileStorage;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Common.Mailing;
 using Eiromplays.IdentityServer.Application.Common.Models;
+using Eiromplays.IdentityServer.Application.Common.Sms;
 using Eiromplays.IdentityServer.Application.Common.Specification;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Domain.Identity;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
+using FluentSMS.Core;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -41,6 +44,10 @@ internal partial class UserService : IUserService
     private readonly AccountConfiguration _accountConfiguration;
     private readonly IEmailTemplateService _templateService;
     private readonly SpaConfiguration _spaConfiguration;
+    private readonly ISmsService _smsService;
+    private readonly UrlEncoder _urlEncoder;
+
+    public const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
 
     public UserService(
         SignInManager<ApplicationUser> signInManager,
@@ -58,7 +65,9 @@ internal partial class UserService : IUserService
         IExcelWriter excelWriter,
         IOptions<AccountConfiguration> accountConfiguration,
         IEmailTemplateService templateService,
-        IOptions<SpaConfiguration> spaConfiguration)
+        IOptions<SpaConfiguration> spaConfiguration,
+        ISmsService smsService,
+        UrlEncoder urlEncoder)
     {
         _signInManager = signInManager;
         _userManager = userManager;
@@ -74,6 +83,8 @@ internal partial class UserService : IUserService
         _sessionDbContext = sessionDbContext;
         _excelWriter = excelWriter;
         _templateService = templateService;
+        _smsService = smsService;
+        _urlEncoder = urlEncoder;
         _spaConfiguration = spaConfiguration.Value;
         _accountConfiguration = accountConfiguration.Value;
     }

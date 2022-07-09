@@ -4,11 +4,14 @@ using Duende.IdentityServer.Services;
 using Eiromplays.IdentityServer.Application.Common.Configurations;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Interfaces;
+using Eiromplays.IdentityServer.Application.Common.Mailing;
+using Eiromplays.IdentityServer.Application.Common.Sms;
 using Eiromplays.IdentityServer.Application.Identity.Auth;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.ExternalLogins;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Login;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Login;
 using Eiromplays.IdentityServer.Application.Identity.Users;
+using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure.Common.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using FastEndpoints;
@@ -19,6 +22,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using LogoutRequest = Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Login.LogoutRequest;
 
@@ -28,7 +32,8 @@ public class AuthService : IAuthService
 {
     private readonly IIdentityServerInteractionService _interaction;
     private readonly ICurrentUser _currentUser;
-    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly ApplicationSignInManager _signInManager;
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly IAuthenticationHandlerProvider _authenticationHandlerProvider;
     private readonly IEventService _events;
     private readonly LinkGenerator _linkGenerator;
@@ -36,18 +41,27 @@ public class AuthService : IAuthService
     private readonly IServerUrls _serverUrls;
     private readonly SpaConfiguration _spaConfiguration;
     private readonly IUserService _userService;
+    private readonly IJobService _jobService;
+    private readonly ISmsService _smsService;
+    private readonly IMailService _mailService;
+    private readonly IStringLocalizer _t;
 
     public AuthService(
         IIdentityServerInteractionService interaction,
         ICurrentUser currentUser,
-        SignInManager<ApplicationUser> signInManager,
+        ApplicationSignInManager signInManager,
         IAuthenticationHandlerProvider authenticationHandlerProvider,
         IEventService events,
         LinkGenerator linkGenerator,
         IUserResolver<ApplicationUser> userResolver,
         IServerUrls serverUrls,
         IOptions<SpaConfiguration> spaConfiguration,
-        IUserService userService)
+        IUserService userService,
+        UserManager<ApplicationUser> userManager,
+        IJobService jobService,
+        ISmsService smsService,
+        IMailService mailService,
+        IStringLocalizer<AuthService> t)
     {
         _interaction = interaction;
         _currentUser = currentUser;
@@ -58,30 +72,70 @@ public class AuthService : IAuthService
         _userResolver = userResolver;
         _serverUrls = serverUrls;
         _userService = userService;
+        _userManager = userManager;
+        _jobService = jobService;
+        _smsService = smsService;
+        _mailService = mailService;
+        _t = t;
         _spaConfiguration = spaConfiguration.Value;
     }
 
     #region Login
 
+    public async Task<Result<SendSmsLoginCodeResponse>> SendLoginVerificationCodeAsync(SendSmsLoginCodeRequest request)
+    {
+        var user = await _userResolver.GetUserAsync(request.PhoneNumber);
+
+        if (user is null)
+        {
+            var badRequest = new BadRequestException("Invalid phone number");
+            return new Result<SendSmsLoginCodeResponse>(badRequest);
+        }
+
+        if (!await _userManager.IsPhoneNumberConfirmedAsync(user))
+        {
+            var badRequest = new BadRequestException("Phone number is not confirmed");
+            return new Result<SendSmsLoginCodeResponse>(badRequest);
+        }
+
+        string? code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, user.PhoneNumber);
+
+        var smsRequest = new SmsRequest(
+            new List<string> { user.PhoneNumber },
+            _t[$"Your verification code is {code}"]);
+
+        _jobService.Enqueue(() => _smsService.SendAsync(smsRequest, CancellationToken.None));
+
+        return new Result<SendSmsLoginCodeResponse>(new SendSmsLoginCodeResponse
+        {
+            Message = _t["Verification code has been sent to your phone!"]
+        });
+    }
+
     public async Task<Result<LoginResponse>> LoginAsync(LoginRequest request)
     {
         var response = new LoginResponse();
 
+        var provider = Enum.Parse<AccountProviders>(request.Provider, true);
+
         var user = await _userResolver.GetUserAsync(request.Login);
         if (user is null)
         {
-            var badRequest = new BadRequestException("Invalid username or password");
+            var badRequest = new BadRequestException(provider is AccountProviders.Phone ? "Invalid phone number or code" : "Invalid username or password");
             return new Result<LoginResponse>(badRequest);
         }
 
-        var loginResult = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, lockoutOnFailure: true);
+        var loginResult = provider is AccountProviders.Email
+            ? await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, lockoutOnFailure: true)
+            : await _signInManager.PhoneNumberSignInAsync(user, request.Code, request.RememberMe, lockoutOnFailure: true);
+
         response.SignInResult = loginResult;
 
         if (!loginResult.Succeeded)
         {
             if (loginResult.RequiresTwoFactor)
             {
-                response.TwoFactorReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/login2fa/{request.RememberMe}/{request.ReturnUrl}";
+                response.TwoFactorReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/login2fa?rememberMe={request.RememberMe}&returnUrl={request.ReturnUrl}";
                 return new Result<LoginResponse>(response);
             }
 
@@ -91,7 +145,7 @@ public class AuthService : IAuthService
                 return new Result<LoginResponse>(response);
             }
 
-            response.Error = "Invalid username or password";
+            response.Error = provider is AccountProviders.Phone ? "Invalid phone number or code" : "Invalid username or password";
             return response;
         }
 
@@ -112,7 +166,7 @@ public class AuthService : IAuthService
         string authenticatorCode = request.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
 
         var result =
-            await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, request.RememberMe, request.RememberMachine);
+            await _signInManager.TwoFactorSignInAsync(request.Provider, authenticatorCode, request.RememberMe, request.RememberMachine);
 
         if (!result.Succeeded) return new Result<LoginResponse>(new BadRequestException("Invalid authentication code"));
 
@@ -124,6 +178,62 @@ public class AuthService : IAuthService
             response.ValidReturnUrl = url ?? _serverUrls.BaseUrl;
 
         return new Result<LoginResponse>(response);
+    }
+
+    public async Task<Result<Send2FaVerificationCodeResponse>> Send2FaVerificationCodeAsync(
+        Send2FaVerificationCodeRequest request)
+    {
+        var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+        if (user is null)
+            return new Result<Send2FaVerificationCodeResponse>(new BadRequestException("Unable to get user"));
+
+        string? code = await _userManager.GenerateTwoFactorTokenAsync(user, request.Provider);
+        if (string.IsNullOrWhiteSpace(code))
+            return new Result<Send2FaVerificationCodeResponse>(new InternalServerException("Unable to generate two factor code"));
+
+        var message = _t[$"Your verification code is {code}"];
+
+        var messages = new List<string>();
+
+        switch (request.Provider)
+        {
+            case nameof(TwoFactorAuthenticationProviders.Phone):
+                var smsRequest = new SmsRequest(
+                        new List<string> { user.PhoneNumber },
+                        message);
+
+                _jobService.Enqueue(() => _smsService.SendAsync(smsRequest, CancellationToken.None));
+
+                messages.Add(_t["Verification code has been sent to your phone!"]);
+                break;
+
+            case nameof(TwoFactorAuthenticationProviders.Email):
+                var emailRequest = new MailRequest(
+                        new List<string> { user.Email },
+                        _t["Verification code"],
+                        message);
+
+                _jobService.Enqueue(() => _mailService.SendAsync(emailRequest, CancellationToken.None));
+
+                messages.Add(_t["Verification code has been sent to your email!"]);
+                break;
+        }
+
+        return new Result<Send2FaVerificationCodeResponse>(new Send2FaVerificationCodeResponse
+        {
+            Message = string.Join(Environment.NewLine, messages)
+        });
+    }
+
+    public async Task<Result<IList<string>>> GetValidTwoFactorProvidersAsync()
+    {
+        var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+        if (user is null)
+            return new Result<IList<string>>(new BadRequestException("Unable to get user"));
+
+        var validProviders = await _userManager.GetValidTwoFactorProvidersAsync(user);
+
+        return new Result<IList<string>>(validProviders);
     }
 
     #endregion
@@ -274,7 +384,8 @@ public class AuthService : IAuthService
         response.SignInResult = result;
         if (result.RequiresTwoFactor)
         {
-            return await Login2FaAsync(new Login2FaRequest { ReturnUrl = request.ReturnUrl, RememberMe = true });
+            response.ExternalLoginReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/login2fa?rememberMe=true&returnUrl={request.ReturnUrl}";
+            return new Result<LoginResponse>(response);
         }
 
         if (result.IsLockedOut)

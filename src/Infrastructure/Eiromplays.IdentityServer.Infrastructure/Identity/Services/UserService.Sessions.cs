@@ -11,7 +11,9 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
 internal partial class UserService
 {
-    public async Task<PaginationResponse<UserSessionDto>> SearchSessionsAsync(UserSessionListFilter filter, CancellationToken cancellationToken)
+    #region Bff Sessions
+
+    public async Task<PaginationResponse<UserSessionDto>> SearchBffSessionsAsync(UserSessionListFilter filter, CancellationToken cancellationToken)
     {
         var spec = new EntitiesByPaginationFilterSpec<UserSessionEntity>(filter);
 
@@ -24,13 +26,13 @@ internal partial class UserService
         return new PaginationResponse<UserSessionDto>(sessions, count, filter.PageNumber, filter.PageSize);
     }
 
-    public async Task<List<UserSessionDto>> GetAllUserSessions(CancellationToken cancellationToken)
+    public async Task<List<UserSessionDto>> GetAllBffUserSessions(CancellationToken cancellationToken)
     {
         return (await _sessionDbContext.UserSessions.AsNoTracking().ToListAsync(cancellationToken))
             .Adapt<List<UserSessionDto>>();
     }
 
-    public async Task<bool> RemoveSessionsAsync(string userId, CancellationToken cancellationToken)
+    public async Task<bool> RemoveBffSessionsAsync(string userId, CancellationToken cancellationToken)
     {
         _sessionDbContext.UserSessions
             .RemoveRange(await _sessionDbContext.UserSessions.Where(x =>
@@ -39,7 +41,7 @@ internal partial class UserService
         return await _sessionDbContext.SaveChangesAsync(cancellationToken) > 0;
     }
 
-    public async Task<List<UserSessionDto>> GetUserSessionsAsync(string userId, CancellationToken cancellationToken)
+    public async Task<List<UserSessionDto>> GetBffUserSessionsAsync(string userId, CancellationToken cancellationToken)
     {
         var userSessions = (await _sessionDbContext.UserSessions
             .Where(x => x.SubjectId.Equals(userId))
@@ -48,7 +50,7 @@ internal partial class UserService
         return userSessions;
     }
 
-    public async Task<UserSessionDto> GetUserSessionAsync(string key, string? userId, CancellationToken cancellationToken)
+    public async Task<UserSessionDto> GetBffUserSessionAsync(string key, string? userId, CancellationToken cancellationToken)
     {
         var userSession =
             (await _sessionDbContext.UserSessions.Where(x => x.Key == key).FirstOrDefaultAsync(cancellationToken))
@@ -61,7 +63,7 @@ internal partial class UserService
         return userSession;
     }
 
-    public async Task<string> DeleteUserSessionAsync(string key, string? userId, CancellationToken cancellationToken)
+    public async Task<string> DeleteBffUserSessionAsync(string key, string? userId, CancellationToken cancellationToken)
     {
         var userSession = await _sessionDbContext.UserSessions.Where(x => x.Key == key).FirstOrDefaultAsync(cancellationToken);
 
@@ -76,4 +78,6 @@ internal partial class UserService
 
         return string.Format(_t["User Session {0} Deleted."], userSession.Key);
     }
+
+    #endregion
 }
