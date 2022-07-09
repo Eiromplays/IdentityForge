@@ -1,10 +1,17 @@
-import { axios, MutationConfig, queryClient } from 'eiromplays-ui';
+import { axios, MutationConfig, queryClient, useAuth } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
 import { UserSession } from '../types';
 
-export const deleteBffUserSession = ({ userSessionKey }: { userSessionKey: string }) => {
+export const deleteBffUserSession = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  currentSession,
+  userSessionKey,
+}: {
+  currentSession: boolean;
+  userSessionKey: string;
+}) => {
   return axios.delete(`/user-sessions/${userSessionKey}`);
 };
 
@@ -13,6 +20,8 @@ type UseDeleteBffUserSessionOptions = {
 };
 
 export const useDeleteBffUserSession = ({ config }: UseDeleteBffUserSessionOptions = {}) => {
+  const { logout } = useAuth();
+
   return useMutation({
     onMutate: async (deletedUserSession) => {
       await queryClient.cancelQueries('bff-sessions');
@@ -33,10 +42,14 @@ export const useDeleteBffUserSession = ({ config }: UseDeleteBffUserSessionOptio
         queryClient.setQueryData('bff-sessions', context.previousUserSessions);
       }
     },
-    onSuccess: async () => {
+    onSuccess: async (_, variables) => {
+      if (variables.currentSession) {
+        await logout();
+        window.location.href = '/';
+        return;
+      }
       await queryClient.invalidateQueries('bff-sessions');
       toast.success('Bff User Session Deleted');
-      window.location.href = '/';
     },
     ...config,
     mutationFn: deleteBffUserSession,

@@ -8,7 +8,7 @@ import { Login2faForm } from '../components/Login2faForm';
 export const Login2fa = () => {
   const { rememberMe, returnUrl } = useSearch<LocationGenerics>();
 
-  const rememberMeAsBoolean = rememberMe?.toLowerCase() === 'true';
+  const rememberMeAsBoolean = rememberMe?.toString()?.toLowerCase() === 'true';
 
   return (
     <Layout title="Log in to your account with two-factor authentication">

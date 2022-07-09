@@ -1,4 +1,4 @@
-import { Table, Spinner, Link, useAuth, formatDate } from 'eiromplays-ui';
+import { Table, Spinner, useAuth, formatDate } from 'eiromplays-ui';
 
 import { useBffUserSessions } from '../api/getBffUserSessions';
 import { UserSession } from '../types';
@@ -38,6 +38,20 @@ export const BffUserSessionsList = () => {
           },
         },
         {
+          title: 'ApplicationName',
+          field: 'applicationName',
+          Cell({ entry: { applicationName } }) {
+            return (
+              <span>
+                {applicationName
+                  ?.split('/')
+                  ?.filter((x) => x)
+                  ?.pop()}
+              </span>
+            );
+          },
+        },
+        {
           title: 'Created At',
           field: 'created',
           Cell({ entry: { created } }) {
@@ -52,10 +66,10 @@ export const BffUserSessionsList = () => {
           },
         },
         {
-          title: '',
-          field: 'key',
-          Cell({ entry: { key } }) {
-            return <Link to={`./bff/${key}`}>View</Link>;
+          title: 'Renewed At',
+          field: 'renewed',
+          Cell({ entry: { renewed } }) {
+            return <span>{formatDate(renewed)}</span>;
           },
         },
         {

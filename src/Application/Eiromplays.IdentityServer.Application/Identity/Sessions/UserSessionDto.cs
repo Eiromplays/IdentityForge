@@ -17,6 +17,4 @@ public class UserSessionDto
     public DateTime Renewed { get; set; }
 
     public DateTime? Expires { get; set; }
-
-    public string Ticket { get; set; } = default!;
 }

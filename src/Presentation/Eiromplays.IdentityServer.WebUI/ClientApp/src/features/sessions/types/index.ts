@@ -6,7 +6,6 @@ export type UserSession = {
   created: number;
   renewed: number;
   expires: number;
-  ticket: string;
   applicationName: string;
 };
 

@@ -1,6 +1,6 @@
 using Eiromplays.IdentityServer.Application.Identity.Sessions;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.BffUserSessions.Search;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserSessions.Search;
 
 public class Models
 {

@@ -1,4 +1,4 @@
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.BffUserSessions.DeleteUserSessionByKey;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserSessions.DeleteUserSessionByKey;
 
 public class Models
 {

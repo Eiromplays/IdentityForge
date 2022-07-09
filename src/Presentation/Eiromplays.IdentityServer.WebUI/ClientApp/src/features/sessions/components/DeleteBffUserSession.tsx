@@ -5,7 +5,7 @@ import { useDeleteBffUserSession } from '../api/deleteBffUserSession';
 
 type DeleteUserSessionProps = {
   userSessionKey: string;
-  currentSession?: boolean;
+  currentSession: boolean;
 };
 
 export const DeleteBffUserSession = ({
@@ -23,7 +23,7 @@ export const DeleteBffUserSession = ({
       }`}
       triggerButton={
         <Button variant="danger" startIcon={<HiOutlineTrash className="h-4 w-4" />}>
-          Delete User Session
+          Delete
         </Button>
       }
       confirmButton={
@@ -32,7 +32,10 @@ export const DeleteBffUserSession = ({
           type="button"
           className="bg-red-600"
           onClick={async () =>
-            await deleteUserSessionMutation.mutateAsync({ userSessionKey: userSessionKey })
+            await deleteUserSessionMutation.mutateAsync({
+              currentSession: currentSession,
+              userSessionKey: userSessionKey,
+            })
           }
         >
           Delete User Session

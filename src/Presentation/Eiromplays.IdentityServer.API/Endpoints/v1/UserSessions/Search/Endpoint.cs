@@ -2,7 +2,7 @@ using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Identity.Sessions;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.BffUserSessions.Search;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserSessions.Search;
 
 public class Endpoint : Endpoint<UserSessionListFilter, PaginationResponse<UserSessionDto>>
 {

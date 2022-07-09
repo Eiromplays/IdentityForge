@@ -1,7 +1,7 @@
 using Eiromplays.IdentityServer.Application.Identity.Sessions;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.BffUserSessions.GetUserSessionByKey;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserSessions.GetUserSessionByKey;
 
 public class Endpoint : Endpoint<Models.Request, UserSessionDto>
 {

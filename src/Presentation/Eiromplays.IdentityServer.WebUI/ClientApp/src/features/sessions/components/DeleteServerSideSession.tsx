@@ -4,26 +4,21 @@ import { HiOutlineTrash } from 'react-icons/hi';
 import { useDeleteServerSideSession } from '../api/deleteServerSideSession';
 
 type DeleteUserSessionProps = {
-  serverSideSessionKey: string;
-  currentSession?: boolean;
+  sessionId: string;
+  currentSession: boolean;
 };
 
-export const DeleteServerSideSession = ({
-  serverSideSessionKey,
-  currentSession,
-}: DeleteUserSessionProps) => {
+export const DeleteServerSideSession = ({ sessionId, currentSession }: DeleteUserSessionProps) => {
   const deleteServerSideSessionMutation = useDeleteServerSideSession();
 
   return (
     <ConfirmationDialog
       icon="danger"
       title="Delete Server-side Session"
-      body={`Are you sure you want to delete this server-side session? ${
-        currentSession ? '(It will revoke access to all applications using that session)' : ''
-      }`}
+      body={'Are you sure you want to delete this server-side session?'}
       triggerButton={
         <Button variant="danger" startIcon={<HiOutlineTrash className="h-4 w-4" />}>
-          Delete Server-side Session
+          Delete
         </Button>
       }
       confirmButton={
@@ -33,7 +28,8 @@ export const DeleteServerSideSession = ({
           className="bg-red-600"
           onClick={async () =>
             await deleteServerSideSessionMutation.mutateAsync({
-              serverSideSessionKey: serverSideSessionKey,
+              currentSession: currentSession,
+              sessionId: sessionId,
             })
           }
         >

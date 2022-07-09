@@ -384,7 +384,8 @@ public class AuthService : IAuthService
         response.SignInResult = result;
         if (result.RequiresTwoFactor)
         {
-            return await Login2FaAsync(new Login2FaRequest { ReturnUrl = request.ReturnUrl, RememberMe = true });
+            response.ExternalLoginReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/login2fa?rememberMe=true&returnUrl={request.ReturnUrl}";
+            return new Result<LoginResponse>(response);
         }
 
         if (result.IsLockedOut)

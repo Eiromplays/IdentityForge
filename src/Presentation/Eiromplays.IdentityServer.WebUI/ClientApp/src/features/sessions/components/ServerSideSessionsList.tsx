@@ -1,4 +1,4 @@
-import { Table, Spinner, Link, useAuth, formatDate } from 'eiromplays-ui';
+import { Table, Spinner, useAuth, formatDate } from 'eiromplays-ui';
 
 import { useServerSideSessions } from '../api/getServerSideSessions';
 import { DeleteServerSideSession } from '../components/DeleteServerSideSession';
@@ -37,6 +37,10 @@ export const ServerSideSessionsList = () => {
           },
         },
         {
+          title: 'DisplayName',
+          field: 'displayName',
+        },
+        {
           title: 'Created At',
           field: 'created',
           Cell({ entry: { created } }) {
@@ -51,20 +55,20 @@ export const ServerSideSessionsList = () => {
           },
         },
         {
-          title: '',
-          field: 'key',
-          Cell({ entry: { key } }) {
-            return <Link to={`./server/${key}`}>View</Link>;
+          title: 'Renewed At',
+          field: 'renewed',
+          Cell({ entry: { renewed } }) {
+            return <span>{formatDate(renewed)}</span>;
           },
         },
         {
           title: '',
-          field: 'key',
-          Cell({ entry: { key, sessionId } }) {
+          field: 'sessionId',
+          Cell({ entry: { sessionId } }) {
             return (
               <DeleteServerSideSession
-                serverSideSessionKey={key}
-                currentSession={user.sessionId === sessionId}
+                sessionId={sessionId}
+                currentSession={sessionId === user.sessionId}
               />
             );
           },
