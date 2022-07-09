@@ -2,7 +2,7 @@ using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Identity.Sessions;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserSessions.Search;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.BffUserSessions.Search;
 
 public class Endpoint : Endpoint<UserSessionListFilter, PaginationResponse<UserSessionDto>>
 {
@@ -26,7 +26,7 @@ public class Endpoint : Endpoint<UserSessionListFilter, PaginationResponse<UserS
 
     public override async Task HandleAsync(UserSessionListFilter request, CancellationToken ct)
     {
-        Response = await _userService.SearchSessionsAsync(request, ct);
+        Response = await _userService.SearchBffSessionsAsync(request, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

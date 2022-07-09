@@ -16,7 +16,7 @@ internal partial class UserService
     private async Task<string> GetEmailVerificationUriAsync(ApplicationUser user, string origin)
     {
         string? code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        Console.WriteLine($"Code {code}");
+
         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
         var endpointUri = new Uri(string.Concat(origin, "api/v1/account/confirm-email"));

@@ -39,6 +39,7 @@ export type LocationGenerics = DefaultLocationGenerics & {
     ReturnUrl: string;
     errorId: string;
     logoutId: string;
+    rememberMe: string;
   };
 };
 

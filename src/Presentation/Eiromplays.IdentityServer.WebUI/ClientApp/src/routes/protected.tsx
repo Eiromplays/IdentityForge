@@ -1,5 +1,13 @@
 import { Outlet } from '@tanstack/react-location';
-import {Spinner, MainLayout, lazyImport, Button, useAuth, NotLoggedIn} from 'eiromplays-ui';
+import {
+  Spinner,
+  MainLayout,
+  lazyImport,
+  Button,
+  useAuth,
+  ROLES,
+  useAuthorization,
+} from 'eiromplays-ui';
 import { Suspense } from 'react';
 import {
   HiOutlineHome,
@@ -17,9 +25,8 @@ import logo from '@/assets/logo.svg';
 import { ConsentRoutes } from '@/features/consent';
 import { GrantsRoutes } from '@/features/grants';
 import { LogsRoutes } from '@/features/logs';
+import { SessionsRoutes } from '@/features/sessions';
 import { UserLoginsRoutes } from '@/features/user-logins';
-import { UserSessionsRoutes } from '@/features/user-sessions';
-import { ROLES, useAuthorization } from 'eiromplays-ui';
 import { identityServerAdminUiUrl, identityServerUrl } from '@/utils/envVariables';
 const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
 const { Profile } = lazyImport(() => import('@/features/users'), 'Profile');
@@ -28,8 +35,7 @@ const { TwoFactorAuthentication } = lazyImport(
   () => import('@/features/users'),
   'TwoFactorAuthentication'
 );
-const { ChangePassword } = lazyImport(() => import('@/features/users'), 'ChangePassword');
-const { SetPassword } = lazyImport(() => import('@/features/users'), 'SetPassword');
+const { Password } = lazyImport(() => import('@/features/users'), 'Password');
 
 const App = () => {
   const { user } = useAuth();
@@ -37,7 +43,7 @@ const App = () => {
   const isAdmin = checkAccess({ allowedRoles: [ROLES.ADMINISTRATOR] });
 
   if (!user) {
-    window.location.href = "/";
+    window.location.href = '/';
     return null;
   }
 
@@ -67,10 +73,9 @@ const App = () => {
             to: 'two-factor-authentication',
             icon: HiOutlineLockClosed,
           },
-          { name: 'Change Password', to: 'change-password', icon: HiOutlineKey },
-          { name: 'Set Password', to: 'set-password', icon: HiOutlineKey },
+          { name: 'Password', to: 'password', icon: HiOutlineKey },
           { name: 'Grants', to: 'grants', icon: HiOutlineShieldCheck },
-          { name: 'User Sessions', to: 'user-sessions', icon: MdOutlineDevicesOther },
+          { name: 'Sessions', to: 'sessions', icon: MdOutlineDevicesOther },
           { name: 'User Logins', to: 'user-logins', icon: HiOutlineLogin },
           { name: 'Logs', to: 'logs', icon: MdOutlineHistory },
           {
@@ -103,14 +108,13 @@ export const protectedRoutes = [
     children: [
       { path: '/', element: <Dashboard /> },
       GrantsRoutes,
-      UserSessionsRoutes,
+      SessionsRoutes,
       UserLoginsRoutes,
       LogsRoutes,
       { path: 'profile', element: <Profile /> },
       { path: 'personal-data', element: <PersonalData /> },
       { path: 'two-factor-authentication', element: <TwoFactorAuthentication /> },
-      { path: 'change-password', element: <ChangePassword /> },
-      { path: 'set-password', element: <SetPassword /> },
+      { path: 'password', element: <Password /> },
       ConsentRoutes,
       { path: '*', element: <Dashboard /> },
     ],

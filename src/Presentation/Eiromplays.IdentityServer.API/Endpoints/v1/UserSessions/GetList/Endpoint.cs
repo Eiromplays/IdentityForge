@@ -1,7 +1,7 @@
 using Eiromplays.IdentityServer.Application.Identity.Sessions;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserSessions.GetList;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.BffUserSessions.GetList;
 
 public class Endpoint : EndpointWithoutRequest<List<UserSessionDto>>
 {
@@ -25,7 +25,7 @@ public class Endpoint : EndpointWithoutRequest<List<UserSessionDto>>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        Response = await _userService.GetAllUserSessions(ct);
+        Response = await _userService.GetAllBffUserSessions(ct);
 
         await SendAsync(Response, cancellation: ct);
     }

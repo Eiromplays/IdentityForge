@@ -19,7 +19,7 @@ try
 
     builder.Services.AddControllers();
 
-    builder.Services.AddInfrastructure(builder.Configuration, ProjectType.Api);
+    builder.Services.AddInfrastructure(builder.Configuration, builder.Environment, ProjectType.Api);
 
     builder.Services.AddApplication();
     builder.Services.AddAuthentication(options =>

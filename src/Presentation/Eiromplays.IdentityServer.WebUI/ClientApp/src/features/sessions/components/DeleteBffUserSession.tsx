@@ -1,15 +1,18 @@
 import { Button, ConfirmationDialog } from 'eiromplays-ui';
 import { HiOutlineTrash } from 'react-icons/hi';
 
-import { useDeleteUserSession } from '../api/deleteUserSession';
+import { useDeleteBffUserSession } from '../api/deleteBffUserSession';
 
 type DeleteUserSessionProps = {
   userSessionKey: string;
   currentSession?: boolean;
 };
 
-export const DeleteUserSession = ({ userSessionKey, currentSession }: DeleteUserSessionProps) => {
-  const deleteUserSessionMutation = useDeleteUserSession();
+export const DeleteBffUserSession = ({
+  userSessionKey,
+  currentSession,
+}: DeleteUserSessionProps) => {
+  const deleteUserSessionMutation = useDeleteBffUserSession();
 
   return (
     <ConfirmationDialog

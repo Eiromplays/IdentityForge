@@ -3,21 +3,21 @@ import { useQuery } from 'react-query';
 
 import { UserSession } from '../types';
 
-export const getUserSession = ({ key }: { key: string }): Promise<UserSession> => {
+export const getBffUserSession = ({ key }: { key: string }): Promise<UserSession> => {
   return axios.get(`/user-sessions/${key}`);
 };
 
-type QueryFnType = typeof getUserSession;
+type QueryFnType = typeof getBffUserSession;
 
-type UseUserSessionOptions = {
+type UseBffUserSessionOptions = {
   key: string;
   config?: QueryConfig<QueryFnType>;
 };
 
-export const useUserSession = ({ key, config }: UseUserSessionOptions) => {
+export const useBffUserSession = ({ key, config }: UseBffUserSessionOptions) => {
   return useQuery<ExtractFnReturnType<QueryFnType>>({
     ...config,
-    queryKey: ['user-session', key],
-    queryFn: () => getUserSession({ key }),
+    queryKey: ['bff-user-session', key],
+    queryFn: () => getBffUserSession({ key }),
   });
 };

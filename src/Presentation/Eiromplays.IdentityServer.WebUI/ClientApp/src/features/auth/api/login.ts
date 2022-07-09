@@ -19,6 +19,7 @@ export const loginWithEmailAndPasswordOrPhoneNumber = (
 };
 
 export type Login2faCredentialsDto = {
+  provider: string;
   twoFactorCode: string;
   rememberMachine: boolean;
   rememberMe: boolean;
@@ -37,3 +38,11 @@ export type SendVerificationCodeDto = {
 export const sendVerificationCode = (data: SendVerificationCodeDto): Promise<MessageResponse> => {
   return axios.post(`${identityServerUrl}/api/v1/account/send-verification-code`, data);
 };
+
+export type Send2FaVerificationCodeDto = {
+  provider: string;
+  returnUrl?: string;
+  rememberMe?: boolean;
+};
+
+export type Send2FaVerificationCodeResponse = MessageResponse;

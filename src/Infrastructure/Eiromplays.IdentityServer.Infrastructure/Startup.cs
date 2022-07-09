@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using Duende.Bff;
 using Duende.Bff.Yarp;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
@@ -24,9 +25,11 @@ using Eiromplays.IdentityServer.Infrastructure.Sms;
 using FastEndpoints;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Protocols;
 
 [assembly: InternalsVisibleTo("Infrastructure.Test")]
 
@@ -34,13 +37,13 @@ namespace Eiromplays.IdentityServer.Infrastructure;
 
 public static class Startup
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config, ProjectType projectType)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, ConfigurationManager config, IWebHostEnvironment webHostEnvironment, ProjectType projectType)
     {
-        if (projectType is ProjectType.Spa) return services.AddInfrastructureSpa(config, projectType);
+        if (projectType is ProjectType.Spa) return services.AddInfrastructureSpa(config, webHostEnvironment, projectType);
 
         MapsterSettings.Configure();
         return services
-            .AddConfigurations(config)
+            .AddConfigurations(config, webHostEnvironment)
             .AddBackgroundJobs(config)
             .AddCaching(config)
             .AddCorsPolicy(config)
@@ -60,9 +63,11 @@ public static class Startup
             .AddServices(projectType);
     }
 
-    private static IServiceCollection AddInfrastructureSpa(this IServiceCollection services, IConfiguration config, ProjectType projectType)
+    private static IServiceCollection AddInfrastructureSpa(this IServiceCollection services, ConfigurationManager config, IWebHostEnvironment webHostEnvironment, ProjectType projectType)
     {
         if (projectType is not ProjectType.Spa) return services;
+
+        config.AddAwsSecretsManager(webHostEnvironment);
 
         var bffBuilder = services.AddBff(options => config.GetSection(nameof(BffOptions)).Bind(options));
 
@@ -122,6 +127,36 @@ public static class Startup
     private static IEndpointConventionBuilder MapHealthCheck(this IEndpointRouteBuilder endpoints) =>
         endpoints.MapHealthChecks("/api/health").RequireAuthorization();
 
+
+    // Registers AWS Secrets Manager as a source for configuration values.
+    private static ConfigurationManager AddAwsSecretsManager(this ConfigurationManager configuration, IWebHostEnvironment webHostEnvironment)
+    {
+        string[] allowedPrefixes =
+        {
+            $"{webHostEnvironment.EnvironmentName}/{webHostEnvironment.ApplicationName}/",
+            $"{webHostEnvironment.EnvironmentName}/EiromplaysIdentityServer/",
+            "Dev/EiromplaysIdentityServer"
+        };
+
+        configuration.AddSecretsManager(configurator: config =>
+        {
+            config.KeyGenerator = (_, name) =>
+            {
+                string prefix = allowedPrefixes.First(name.StartsWith);
+
+                name = name.Replace(prefix, string.Empty).Replace("__", ":");
+                if (name.StartsWith(":"))
+                    name = name[1..];
+
+                return name;
+            };
+
+            config.SecretFilter = secret => allowedPrefixes.Any(allowed => secret.Name.StartsWith(allowed));
+        });
+
+        return configuration;
+    }
+
     /*
         Configures custom classes for config files, so they can be retrieved from DI using IOptions<T>
         Information:
@@ -130,8 +165,10 @@ public static class Startup
         Find more avatar styles here: https://avatars.dicebear.com/styles/
         You can also use a custom provider
     */
-    private static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddConfigurations(this IServiceCollection services, ConfigurationManager configuration, IWebHostEnvironment webHostEnvironment)
     {
+        configuration.AddAwsSecretsManager(webHostEnvironment);
+
         return services.Configure<AccountConfiguration>(configuration.GetSection(nameof(AccountConfiguration)))
             .Configure<IdentityServerData>(configuration.GetSection(nameof(IdentityServerData)))
             .Configure<IdentityData>(configuration.GetSection(nameof(IdentityData)));

@@ -1,4 +1,4 @@
-import { axios, MutationConfig } from 'eiromplays-ui';
+import { axios, MutationConfig, queryClient } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
@@ -14,7 +14,8 @@ type UseForgetTwoFactorClientOptions = {
 
 export const useForgetTwoFactorClient = ({ config }: UseForgetTwoFactorClientOptions = {}) => {
   return useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['two-factor-authentication']);
       toast.success(
         'The current browser has been forgotten. Next time you login from this browser you will be prompted for a 2fa code.'
       );

@@ -19,8 +19,7 @@ export const AuthRoutes: Route<LocationGenerics> = {
   children: [
     { path: 'register', element: <Register /> },
     { path: 'login', element: <Login /> },
-    { path: 'login2fa/:rememberMe/:returnUrl', element: <Login2fa /> },
-    { path: 'login2fa/:rememberMe', element: <Login2fa /> },
+    { path: 'login2fa', element: <Login2fa /> },
     {
       path: 'external-login-confirmation/:email/:userName/:loginProvider',
       element: <ExternalLoginConfirmation />,

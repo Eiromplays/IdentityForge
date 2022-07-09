@@ -48,7 +48,7 @@ internal partial class UserService
 
         if (await _userManager.CountRecoveryCodesAsync(user) != 0)
         {
-            return new Result<EnableAuthenticatorResponse>();
+            return new Result<EnableAuthenticatorResponse>(response);
         }
 
         var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);

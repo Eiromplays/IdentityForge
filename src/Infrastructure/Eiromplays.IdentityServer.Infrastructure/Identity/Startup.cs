@@ -53,7 +53,6 @@ internal static class Startup
                         return Task.CompletedTask;
                     }
                 };
-
             });
     }
 

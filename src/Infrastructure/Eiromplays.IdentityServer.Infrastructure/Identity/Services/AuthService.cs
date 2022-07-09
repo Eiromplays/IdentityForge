@@ -135,7 +135,7 @@ public class AuthService : IAuthService
         {
             if (loginResult.RequiresTwoFactor)
             {
-                response.TwoFactorReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/login2fa/{request.RememberMe}/{request.ReturnUrl}";
+                response.TwoFactorReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/login2fa?rememberMe={request.RememberMe}&returnUrl={request.ReturnUrl}";
                 return new Result<LoginResponse>(response);
             }
 
@@ -166,7 +166,7 @@ public class AuthService : IAuthService
         string authenticatorCode = request.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
 
         var result =
-            await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, request.RememberMe, request.RememberMachine);
+            await _signInManager.TwoFactorSignInAsync(request.Provider, authenticatorCode, request.RememberMe, request.RememberMachine);
 
         if (!result.Succeeded) return new Result<LoginResponse>(new BadRequestException("Invalid authentication code"));
 
@@ -197,7 +197,7 @@ public class AuthService : IAuthService
 
         switch (request.Provider)
         {
-            case nameof(TwoFactorAuthenticationProviders.Sms):
+            case nameof(TwoFactorAuthenticationProviders.Phone):
                 var smsRequest = new SmsRequest(
                         new List<string> { user.PhoneNumber },
                         message);
@@ -225,7 +225,7 @@ public class AuthService : IAuthService
         });
     }
 
-    public async Task<Result<IList<string>>> GetSend2FaVerificationCodeAsync()
+    public async Task<Result<IList<string>>> GetValidTwoFactorProvidersAsync()
     {
         var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
         if (user is null)

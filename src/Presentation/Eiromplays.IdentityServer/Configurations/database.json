@@ -1,7 +1,7 @@
 {
   "DatabaseConfiguration": {
     "DatabaseProvider": "PostgreSql",
-    "ApplyDefaultSeeds": false,
+    "ApplyDefaultSeeds": true,
     "ApplyDatabaseMigrations": true,
     "ConnectionStringsConfiguration": {
       "ApplicationDbConnection": "Server=localhost;Database=EiromplaysIdentityServer;User Id=postgres;Password=1234;",

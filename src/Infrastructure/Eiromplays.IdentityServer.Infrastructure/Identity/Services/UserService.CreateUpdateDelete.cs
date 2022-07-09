@@ -258,7 +258,7 @@ internal partial class UserService
         }
 
         if (request.RevokeUserSessions)
-            await RemoveSessionsAsync(userId, cancellationToken);
+            await RemoveBffSessionsAsync(userId, cancellationToken);
     }
 
     public async Task DeleteAsync(string userId)

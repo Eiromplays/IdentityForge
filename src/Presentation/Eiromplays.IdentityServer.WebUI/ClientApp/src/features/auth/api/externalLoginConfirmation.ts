@@ -29,11 +29,13 @@ export const externalLoginConfirmation = ({
   );
 };
 
-type UseRevokeGrantOptions = {
+type UseExternalLoginConfirmationOptions = {
   config?: MutationConfig<typeof externalLoginConfirmation>;
 };
 
-export const useExternalLoginConfirmation = ({ config }: UseRevokeGrantOptions = {}) => {
+export const useExternalLoginConfirmation = ({
+  config,
+}: UseExternalLoginConfirmationOptions = {}) => {
   return useMutation({
     onSuccess: (response) => {
       toast.success('Successfully created account');

@@ -3,8 +3,9 @@ import React from 'react';
 import Select from 'react-select';
 import * as z from 'zod';
 
-import { useGetSend2FaVerificationCode } from '@/features/auth/api/send2FaVerificationCode';
-import { AuthenticatorSelectOption } from '@/features/users/components/AddAuthenticator';
+import { AuthenticatorSelectOption } from '../../users/components/AddAuthenticator';
+import { useGetValidTwoFactorProviders } from '../api/getValidTwoFactorProviders';
+import { Send2FaVerificationCodeForm } from '../components/Send2FaVerificationCodeForm';
 
 const schema = z.object({
   twoFactorCode: z.string().max(7, 'Required').min(6, 'Required'),
@@ -12,6 +13,7 @@ const schema = z.object({
 });
 
 type LoginValues = {
+  provider: string;
   twoFactorCode: string;
   rememberMachine: boolean;
   returnUrl?: string;
@@ -29,7 +31,7 @@ const defaultOptions = [{ value: 'App', label: 'App' }];
 export const Login2faForm = ({ rememberMe, returnUrl, onSuccess }: LoginFormProps) => {
   const [provider, setProvider] = React.useState<string>('App');
   const { login2fa, isLoggingIn } = useAuth();
-  const getSend2FaVerificationCode = useGetSend2FaVerificationCode();
+  const getSend2FaVerificationCode = useGetValidTwoFactorProviders();
   const { currentTheme } = useDarkMode();
 
   if (getSend2FaVerificationCode.isLoading)
@@ -44,10 +46,9 @@ export const Login2faForm = ({ rememberMe, returnUrl, onSuccess }: LoginFormProp
     ...(getSend2FaVerificationCode.data?.map((item) => ({ value: item, label: item })) || []),
   ];
 
-  console.log(getSend2FaVerificationCode.data);
-
   return (
     <div>
+      {provider?.toLowerCase() !== 'app' && <Send2FaVerificationCodeForm provider={provider} />}
       {options?.length > 0 && (
         <Select
           options={options}
@@ -76,6 +77,7 @@ export const Login2faForm = ({ rememberMe, returnUrl, onSuccess }: LoginFormProp
       )}
       <Form<LoginValues, typeof schema>
         onSubmit={async (values) => {
+          values.provider = provider;
           values.returnUrl = returnUrl;
           values.rememberMe = rememberMe;
           const response = await login2fa(values);

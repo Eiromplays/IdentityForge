@@ -1,15 +1,14 @@
 import { Table, Spinner, Link, useAuth, formatDate } from 'eiromplays-ui';
 
-import { useUserSessions } from '../api/getUserSessions';
-import { UserSession } from '../types';
+import { useServerSideSessions } from '../api/getServerSideSessions';
+import { DeleteServerSideSession } from '../components/DeleteServerSideSession';
+import { ServerSideSession } from '../types';
 
-import { DeleteUserSession } from './DeleteUserSession';
-
-export const UserSessionsList = () => {
+export const ServerSideSessionsList = () => {
   const { user } = useAuth();
-  const userSessionsQuery = useUserSessions();
+  const serverSideSessionsQuery = useServerSideSessions();
 
-  if (userSessionsQuery.isLoading) {
+  if (serverSideSessionsQuery.isLoading) {
     return (
       <div className="w-full h-48 flex justify-center items-center">
         <Spinner size="lg" />
@@ -17,11 +16,11 @@ export const UserSessionsList = () => {
     );
   }
 
-  if (!userSessionsQuery.data || !user) return null;
+  if (!serverSideSessionsQuery.data || !user) return null;
 
   return (
-    <Table<UserSession>
-      data={userSessionsQuery.data}
+    <Table<ServerSideSession>
+      data={serverSideSessionsQuery.data.results}
       columns={[
         {
           title: 'Session Id',
@@ -55,7 +54,7 @@ export const UserSessionsList = () => {
           title: '',
           field: 'key',
           Cell({ entry: { key } }) {
-            return <Link to={`./${key}`}>View</Link>;
+            return <Link to={`./server/${key}`}>View</Link>;
           },
         },
         {
@@ -63,8 +62,8 @@ export const UserSessionsList = () => {
           field: 'key',
           Cell({ entry: { key, sessionId } }) {
             return (
-              <DeleteUserSession
-                userSessionKey={key}
+              <DeleteServerSideSession
+                serverSideSessionKey={key}
                 currentSession={user.sessionId === sessionId}
               />
             );

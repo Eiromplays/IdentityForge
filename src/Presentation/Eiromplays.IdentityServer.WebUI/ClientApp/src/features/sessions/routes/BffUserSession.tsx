@@ -3,16 +3,16 @@ import { MDPreview, Spinner, Head, ContentLayout, useAuth, formatDate } from 'ei
 
 import { LocationGenerics } from '@/App';
 
-import { useUserSession } from '../api/getUserSession';
-import { DeleteUserSession } from '../components/DeleteUserSession';
+import { useBffUserSession } from '../api/getBffUserSession';
+import { DeleteBffUserSession } from '../components/DeleteBffUserSession';
 
-export const UserSession = () => {
+export const BffUserSession = () => {
   const { user } = useAuth();
   const {
     params: { key },
   } = useMatch<LocationGenerics>();
 
-  const userSessionQuery = useUserSession({ key: key });
+  const userSessionQuery = useBffUserSession({ key: key });
 
   if (userSessionQuery.isLoading) {
     return (
@@ -36,7 +36,7 @@ export const UserSession = () => {
           {formatDate(userSessionQuery.data.created)} - {formatDate(userSessionQuery.data.expires)}
         </span>
         <div className="mt-6 flex flex-col space-y-16">
-          <DeleteUserSession
+          <DeleteBffUserSession
             userSessionKey={userSessionQuery.data.key}
             currentSession={isCurrentSession}
           />

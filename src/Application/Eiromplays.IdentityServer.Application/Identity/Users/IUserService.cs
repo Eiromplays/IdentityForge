@@ -55,14 +55,14 @@ public interface IUserService : ITransientService
 
     Task<Stream> ExportPersonalDataAsync(string userId, bool includeLogins = true);
 
-    Task<bool> RemoveSessionsAsync(string userId, CancellationToken cancellationToken = default);
+    Task<bool> RemoveBffSessionsAsync(string userId, CancellationToken cancellationToken = default);
 
-    Task<List<UserSessionDto>> GetAllUserSessions(CancellationToken cancellationToken = default);
-    Task<List<UserSessionDto>> GetUserSessionsAsync(string userId, CancellationToken cancellationToken = default);
-    Task<UserSessionDto> GetUserSessionAsync(string key, string? userId = default, CancellationToken cancellationToken = default);
-    Task<string> DeleteUserSessionAsync(string key, string? userId = default,  CancellationToken cancellationToken = default);
+    Task<List<UserSessionDto>> GetAllBffUserSessions(CancellationToken cancellationToken = default);
+    Task<List<UserSessionDto>> GetBffUserSessionsAsync(string userId, CancellationToken cancellationToken = default);
+    Task<UserSessionDto> GetBffUserSessionAsync(string key, string? userId = default, CancellationToken cancellationToken = default);
+    Task<string> DeleteBffUserSessionAsync(string key, string? userId = default,  CancellationToken cancellationToken = default);
 
-    Task<PaginationResponse<UserSessionDto>> SearchSessionsAsync(UserSessionListFilter filter, CancellationToken cancellationToken = default);
+    Task<PaginationResponse<UserSessionDto>> SearchBffSessionsAsync(UserSessionListFilter filter, CancellationToken cancellationToken = default);
 
     Task DeleteAsync(string userId);
 

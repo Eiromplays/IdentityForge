@@ -9,25 +9,26 @@ import { UserSession } from './UserSession';
 import { UserSessions } from './UserSessions';
 
 export const UserSessionsRoutes: Route<LocationGenerics> = {
-  path: 'user-sessions',
+  path: 'sessions',
   children: [
     {
       path: '/',
       element: <UserSessions />,
       loader: async ({ search: { pagination, searchFilter } }) =>
-        await queryClient.getQueryData([
-          'user-sessions',
+        (await queryClient.getQueryData([
+          'sessions',
           pagination?.index ?? 1,
           pagination?.size ?? 10,
-        ]) ??
-        await queryClient
-          .fetchQuery(['user-sessions', pagination?.index ?? 1, pagination?.size ?? 10], () =>
+        ])) ??
+        (await queryClient.fetchQuery(
+          ['sessions', pagination?.index ?? 1, pagination?.size ?? 10],
+          () =>
             searchPagination(
               '/user-sessions/search',
               { pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 },
               searchFilter
             )
-          ),
+        )),
     },
     {
       path: ':key',

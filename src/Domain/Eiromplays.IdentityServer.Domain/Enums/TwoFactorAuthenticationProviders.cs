@@ -2,7 +2,7 @@
 
 public enum TwoFactorAuthenticationProviders
 {
-    Sms,
+    Phone,
     Email,
     App,
 }

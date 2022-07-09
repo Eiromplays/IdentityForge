@@ -1,4 +1,4 @@
-import { Button, Form, InputField } from 'eiromplays-ui';
+import { Button, Form } from 'eiromplays-ui';
 import React from 'react';
 import * as z from 'zod';
 
@@ -22,7 +22,7 @@ export const EnableAuthenticator = ({ provider }: EnableAuthenticatorProps) => {
   return (
     <>
       {provider?.toLowerCase() === 'app' && <AddAppAuthenticator />}
-      {provider && (
+      {provider && (addAuthenticatorMutation.data?.recoveryCodes || []).length <= 0 && (
         <div className="flex flex-column flex-wrap gap-5 pl-5 pb-5">
           <Form<EnableAuthenticatorRequest, typeof schema>
             id="add-authenticator"
@@ -37,15 +37,8 @@ export const EnableAuthenticator = ({ provider }: EnableAuthenticatorProps) => {
             }}
             schema={schema}
           >
-            {({ register, formState }) => (
+            {() => (
               <>
-                {provider === 'app' && (
-                  <InputField
-                    label="Code"
-                    error={formState.errors['code']}
-                    registration={register('code')}
-                  />
-                )}
                 <Button
                   className="mt-5"
                   form="add-authenticator"
@@ -60,9 +53,10 @@ export const EnableAuthenticator = ({ provider }: EnableAuthenticatorProps) => {
           </Form>
         </div>
       )}
-      {addAuthenticatorMutation.data && addAuthenticatorMutation.data.length > 0 && (
-        <ShowRecoveryCodes codes={addAuthenticatorMutation.data} />
-      )}
+      {addAuthenticatorMutation.data &&
+        addAuthenticatorMutation.data?.recoveryCodes?.length > 0 && (
+          <ShowRecoveryCodes codes={addAuthenticatorMutation.data?.recoveryCodes} />
+        )}
     </>
   );
 };

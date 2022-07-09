@@ -1,7 +1,7 @@
 using Eiromplays.IdentityServer.Application.Identity.Sessions;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.UserSessions.GetUserSessionByKey;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.BffUserSessions.GetUserSessionByKey;
 
 public class Endpoint : Endpoint<Models.Request, UserSessionDto>
 {
@@ -30,7 +30,7 @@ public class Endpoint : Endpoint<Models.Request, UserSessionDto>
             return;
         }
 
-        Response = await _userService.GetUserSessionAsync(req.Key, userId, ct);
+        Response = await _userService.GetBffUserSessionAsync(req.Key, userId, ct);
 
         await SendAsync(Response, cancellation: ct);
     }

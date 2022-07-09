@@ -59,7 +59,7 @@ export const AddAuthenticator = ({ options = [] }: AddAuthenticatorProps) => {
         <ConfirmationDialog
           icon="info"
           title="Add Authenticator"
-          body="Please choose your authenticator type"
+          body="You will need to add an authenticator to your account to use this feature."
           triggerButton={
             <Button startIcon={<HiOutlinePlus />} size="sm" variant="primary">
               Add Authenticator
