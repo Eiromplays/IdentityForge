@@ -19,7 +19,7 @@ public interface IUserService : ITransientService
 
     Task<int> GetCountAsync(CancellationToken cancellationToken);
 
-    Task<UserDetailsDto> GetAsync(string userId, CancellationToken cancellationToken);
+    Task<UserDetailsDto> GetAsync(string userId, CancellationToken cancellationToken, string? baseProfilePictureUrl = null);
 
     Task<List<UserRoleDto>> GetRolesAsync(string userId, CancellationToken cancellationToken);
     Task<string> AssignRolesAsync(string userId, UserRolesRequest request, CancellationToken cancellationToken);
@@ -32,8 +32,9 @@ public interface IUserService : ITransientService
 
     Task<string> GetOrCreateFromPrincipalAsync(ClaimsPrincipal principal);
     Task<CreateUserResponse> CreateAsync(CreateUserRequest request, string origin);
-    Task<CreateUserResponse> CreateExternalAsync(CreateExternalUserRequest request, string origin);
     Task UpdateAsync(UpdateUserRequest request, string userId, CancellationToken cancellationToken = default);
+
+    Task<UpdateProfileResponse> UpdateAsync(UpdateProfileRequest request, string userId, string origin, CancellationToken cancellationToken = default);
 
     Task<ConfirmEmailResponse> ConfirmEmailAsync(ConfirmEmailRequest request, string origin, CancellationToken cancellationToken = default);
     Task<ConfirmPhoneNumberResponse> ConfirmPhoneNumberAsync(string userId, string code);

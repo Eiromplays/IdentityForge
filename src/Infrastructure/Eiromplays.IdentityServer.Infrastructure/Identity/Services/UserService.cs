@@ -14,6 +14,7 @@ using Eiromplays.IdentityServer.Application.Common.Sms;
 using Eiromplays.IdentityServer.Application.Common.Specification;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Domain.Identity;
+using Eiromplays.IdentityServer.Infrastructure.Common.Helpers;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
 using FluentSMS.Core;
@@ -116,7 +117,7 @@ internal partial class UserService : IUserService
 
     public async Task<bool> ExistsWithPhoneNumberAsync(string phoneNumber, string? exceptId = null)
     {
-        return await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber) is { } user && user.Id != exceptId;
+        return await _userManager.Users.AsNoTracking().FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber) is { } user && user.Id != exceptId;
     }
 
     public async Task<List<UserDetailsDto>> GetListAsync(CancellationToken cancellationToken) =>
@@ -128,7 +129,7 @@ internal partial class UserService : IUserService
     public Task<int> GetCountAsync(CancellationToken cancellationToken) =>
         _userManager.Users.AsNoTracking().CountAsync(cancellationToken);
 
-    public async Task<UserDetailsDto> GetAsync(string userId, CancellationToken cancellationToken)
+    public async Task<UserDetailsDto> GetAsync(string userId, CancellationToken cancellationToken, string? baseProfilePictureUrl = null)
     {
         var user = await _userManager.Users
             .AsNoTracking()
@@ -136,6 +137,8 @@ internal partial class UserService : IUserService
             .FirstOrDefaultAsync(cancellationToken);
 
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
+
+        user.ProfilePicture = ProfilePictureHelper.GetProfilePicture(user, baseProfilePictureUrl: baseProfilePictureUrl);
 
         return user.Adapt<UserDetailsDto>();
     }

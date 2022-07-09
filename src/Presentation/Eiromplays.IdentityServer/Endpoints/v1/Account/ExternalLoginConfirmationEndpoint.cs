@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Eiromplays.IdentityServer.Endpoints.v1.Account;
 
-public class ExternalLoginConfirmationEndpoint : Endpoint<CreateExternalUserRequest, ExternalLoginConfirmationResponse>
+public class ExternalLoginConfirmationEndpoint : Endpoint<CreateUserRequest, ExternalLoginConfirmationResponse>
 {
     private readonly IUserService _userService;
     private readonly SignInManager<ApplicationUser> _signInManager;
@@ -34,7 +34,7 @@ public class ExternalLoginConfirmationEndpoint : Endpoint<CreateExternalUserRequ
         ScopedValidator();
     }
 
-    public override async Task HandleAsync(CreateExternalUserRequest req, CancellationToken ct)
+    public override async Task HandleAsync(CreateUserRequest req, CancellationToken ct)
     {
         // Get the information about the user from the external login provider
         var info = await _signInManager.GetExternalLoginInfoAsync();
@@ -44,7 +44,7 @@ public class ExternalLoginConfirmationEndpoint : Endpoint<CreateExternalUserRequ
             return;
         }
 
-        var createUserResponse = await _userService.CreateExternalAsync(req, BaseURL);
+        var createUserResponse = await _userService.CreateAsync(req, BaseURL);
 
         string addLoginMessage = await _userService.AddLoginAsync(createUserResponse.UserId, info.Adapt<UserLoginInfoDto>());
 
@@ -60,7 +60,7 @@ public class ExternalLoginConfirmationEndpoint : Endpoint<CreateExternalUserRequ
         string? url = !string.IsNullOrWhiteSpace(req.ReturnUrl) ? Uri.UnescapeDataString(req.ReturnUrl) : null;
         var context = await _interaction.GetAuthorizationContextAsync(url);
 
-        if (context != null && !string.IsNullOrWhiteSpace(url))
+        if (context is not null && !string.IsNullOrWhiteSpace(url))
         {
             // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
             response.ReturnUrl = url;

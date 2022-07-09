@@ -21,7 +21,7 @@ public class CreateUserRequestValidator : Validator<CreateUserRequest>
             .MustAsync(async (email, _) =>
                 !await userService.ExistsWithEmailAsync(email))
                 .WithMessage((_, email) => T["Email {0} is already registered.", email])
-            .When((req, _) => ((req.Provider == AccountProviders.Email.ToString() || req.Provider == AccountProviders.External.ToString()) &&
+            .When((req, _) => (req.Provider is nameof(AccountProviders.Email) or nameof(AccountProviders.External) &&
                               !string.IsNullOrWhiteSpace(req.Email)) || identityOptions.Value.SignIn.RequireConfirmedEmail);
 
         RuleFor(u => u.UserName).Cascade(CascadeMode.Stop)
@@ -30,14 +30,16 @@ public class CreateUserRequestValidator : Validator<CreateUserRequest>
             .MustAsync(async (name, _) => !await userService.ExistsWithNameAsync(name))
                 .WithMessage((_, name) => T["Username {0} is already taken.", name]);
 
+        var phoneNumberUtil = PhoneNumbers.PhoneNumberUtil.GetInstance();
         RuleFor(u => u.PhoneNumber).Cascade(CascadeMode.Stop)
             .MustAsync(async (phone, _) => !await userService.ExistsWithPhoneNumberAsync(phone!))
                 .WithMessage((_, phone) => T["Phone number {0} is already registered.", phone!])
                 .Unless(u =>
-                string.IsNullOrWhiteSpace(u.PhoneNumber) && u.Provider != AccountProviders.Phone.ToString() &&
+                string.IsNullOrWhiteSpace(u.PhoneNumber) && u.Provider != nameof(AccountProviders.Phone) &&
                 !identityOptions.Value.SignIn.RequireConfirmedPhoneNumber)
+            .Must(phoneNumber => phoneNumberUtil.IsValidNumber(phoneNumberUtil.Parse(phoneNumber, null)))
             .NotEmpty()
-            .When(u => (!string.IsNullOrWhiteSpace(u.PhoneNumber) && u.Provider == AccountProviders.Phone.ToString()) || identityOptions.Value.SignIn.RequireConfirmedPhoneNumber);
+            .When(u => (!string.IsNullOrWhiteSpace(u.PhoneNumber) && u.Provider == nameof(AccountProviders.Phone)) || identityOptions.Value.SignIn.RequireConfirmedPhoneNumber);
 
         RuleFor(p => p.FirstName).Cascade(CascadeMode.Stop)
             .NotEmpty();
@@ -48,11 +50,11 @@ public class CreateUserRequestValidator : Validator<CreateUserRequest>
         RuleFor(p => p.Password).Cascade(CascadeMode.Stop)
             .NotEmpty()
             .MinimumLength(6)
-            .When(u => u.Provider == AccountProviders.Email.ToString() || !string.IsNullOrWhiteSpace(u.Password));
+            .When(u => u.Provider == nameof(AccountProviders.Email) || !string.IsNullOrWhiteSpace(u.Password));
 
         RuleFor(p => p.ConfirmPassword).Cascade(CascadeMode.Stop)
             .NotEmpty()
             .Equal(p => p.Password)
-            .When(u => u.Provider == AccountProviders.Email.ToString() || !string.IsNullOrWhiteSpace(u.ConfirmPassword));
+            .When(u => u.Provider == nameof(AccountProviders.Email) || !string.IsNullOrWhiteSpace(u.ConfirmPassword));
     }
 }

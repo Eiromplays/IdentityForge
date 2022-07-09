@@ -2,7 +2,7 @@ using Eiromplays.IdentityServer.Application.Identity.Users;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.Personal.UpdateProfile;
 
-public class Endpoint : Endpoint<UpdateUserRequest>
+public class Endpoint : Endpoint<UpdateProfileRequest, UpdateProfileResponse>
 {
     private readonly IUserService _userService;
 
@@ -22,7 +22,7 @@ public class Endpoint : Endpoint<UpdateUserRequest>
         ScopedValidator();
     }
 
-    public override async Task HandleAsync(UpdateUserRequest req, CancellationToken ct)
+    public override async Task HandleAsync(UpdateProfileRequest req, CancellationToken ct)
     {
         if (User.GetUserId() is not { } userId || string.IsNullOrEmpty(userId))
         {
@@ -30,8 +30,8 @@ public class Endpoint : Endpoint<UpdateUserRequest>
             return;
         }
 
-        await _userService.UpdateAsync(req, userId, ct);
+        Response = await _userService.UpdateAsync(req, userId, BaseURL, ct);
 
-        await SendNoContentAsync(cancellation: ct);
+        await SendOkAsync(Response, cancellation: ct);
     }
 }

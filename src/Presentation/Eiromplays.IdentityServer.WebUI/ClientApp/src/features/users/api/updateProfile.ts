@@ -1,9 +1,10 @@
-import { axios, MutationConfig } from 'eiromplays-ui';
+import { axios, MessageResponse, MutationConfig } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
 export type UpdateProfileDTO = {
   data: {
+    id: string;
     username: string;
     firstName: string;
     lastName: string;
@@ -22,7 +23,7 @@ const toBase64 = (file: File) =>
     reader.onerror = (error) => reject(error);
   });
 
-export const updateProfile = async ({ data }: UpdateProfileDTO) => {
+export const updateProfile = async ({ data }: UpdateProfileDTO): Promise<MessageResponse> => {
   if (data.image instanceof File) {
     const fileExtension = `.${data.image.name.slice(
       ((data.image.name.lastIndexOf('.') - 1) >>> 0) + 2
@@ -44,9 +45,8 @@ type UseUpdateProfileOptions = {
 
 export const useUpdateProfile = ({ config }: UseUpdateProfileOptions = {}) => {
   const updateProfileMutation = useMutation({
-    onSuccess: async () => {
-      toast.success('User Updated');
-      window.location.href = '/';
+    onSuccess: async (response) => {
+      toast.success(response.message);
     },
     onError: (error) => {
       toast.error('Failed to update user');

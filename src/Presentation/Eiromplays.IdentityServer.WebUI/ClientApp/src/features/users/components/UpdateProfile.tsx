@@ -66,6 +66,7 @@ export const UpdateProfile = () => {
           id="update-profile"
           onSubmit={async (values) => {
             values.image = profilePicture;
+            values.id = user.id;
             await updateProfileMutation.mutateAsync({ data: values });
           }}
           options={{

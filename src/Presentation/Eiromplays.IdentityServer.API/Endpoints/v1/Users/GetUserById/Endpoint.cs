@@ -24,7 +24,7 @@ public class Endpoint : Endpoint<Models.Request, UserDetailsDto>
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        Response = await _userService.GetAsync(req.Id, ct);
+        Response = await _userService.GetAsync(req.Id, ct, BaseURL);
 
         await SendAsync(Response, cancellation: ct);
     }

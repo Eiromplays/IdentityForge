@@ -5,16 +5,16 @@ namespace Eiromplays.IdentityServer.Infrastructure.Common.Helpers;
 
 public class ProfilePictureHelper
 {
-    public static string GetProfilePicture(ApplicationUser user, AccountConfiguration? accountConfiguration = null)
+    public static string GetProfilePicture(ApplicationUser user, AccountConfiguration? accountConfiguration = null, string? baseProfilePictureUrl = null)
     {
         if (!string.IsNullOrWhiteSpace(user.ProfilePicture))
         {
-            return user.ProfilePicture.StartsWith(accountConfiguration?.ProfilePictureConfiguration.DefaultUrl ?? string.Empty)
-                ? user.ProfilePicture
-                : $"{accountConfiguration?.ProfilePictureConfiguration.BaseUrl}{user.ProfilePicture}";
+            return user.ProfilePicture.StartsWith(accountConfiguration?.ProfilePictureConfiguration.DefaultUrl ?? baseProfilePictureUrl ?? string.Empty)
+                ? $"{accountConfiguration?.ProfilePictureConfiguration.BaseUrl ?? baseProfilePictureUrl}{user.ProfilePicture}"
+                : user.ProfilePicture;
         }
 
-        string? email = user.GravatarEmail ?? user.Email;
+        string email = user.GravatarEmail ?? user.Email;
 
         return GetGravatarUrl(email);
     }

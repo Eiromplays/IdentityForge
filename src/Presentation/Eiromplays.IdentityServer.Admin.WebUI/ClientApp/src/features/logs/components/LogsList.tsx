@@ -42,6 +42,10 @@ export const LogsList = () => {
           field: 'id',
         },
         {
+          title: 'TableName',
+          field: 'tableName',
+        },
+        {
           title: 'Type',
           field: 'type',
           Cell({ entry: { type } }) {

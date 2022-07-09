@@ -5,7 +5,7 @@ namespace Eiromplays.IdentityServer.Application.Identity.Users;
 public class CreateUserRequest
 {
     // Provider used to create the user. Defaults to Email.
-    public string Provider { get; set; } = AccountProviders.Email.ToString();
+    public string Provider { get; set; } = nameof(AccountProviders.Email);
     public string FirstName { get; set; } = default!;
     public string LastName { get; set; } = default!;
     public string Email { get; set; } = default!;
@@ -14,4 +14,6 @@ public class CreateUserRequest
     public string Password { get; set; } = default!;
     public string ConfirmPassword { get; set; } = default!;
     public string? PhoneNumber { get; set; }
+
+    public string ReturnUrl { get; set; } = default!;
 }
