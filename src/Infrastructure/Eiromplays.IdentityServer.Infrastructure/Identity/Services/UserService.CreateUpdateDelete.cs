@@ -5,6 +5,7 @@ using Eiromplays.IdentityServer.Application.Common.Mailing;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Domain.Common;
 using Eiromplays.IdentityServer.Domain.Identity;
+using Eiromplays.IdentityServer.Infrastructure.Common.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Identity;
@@ -173,8 +174,15 @@ internal partial class UserService
 
             if (request.DeleteCurrentImage && !string.IsNullOrEmpty(currentImage))
             {
-                string root = Directory.GetCurrentDirectory();
-                _fileStorage.Remove(Path.Combine(root, currentImage));
+                if (currentImage.IsValidUri())
+                {
+                    await _fileStorage.RemoveAsync(currentImage, cancellationToken);
+                }
+                else
+                {
+                    string root = Directory.GetCurrentDirectory();
+                    await _fileStorage.RemoveAsync(Path.Combine(root, currentImage), cancellationToken);
+                }
             }
         }
 
@@ -248,8 +256,15 @@ internal partial class UserService
                 await _fileStorage.UploadAsync<ApplicationUser>(request.Image, FileType.Image, cancellationToken);
             if (request.DeleteCurrentImage && !string.IsNullOrEmpty(currentImage))
             {
-                string root = Directory.GetCurrentDirectory();
-                _fileStorage.Remove(Path.Combine(root, currentImage));
+                if (currentImage.IsValidUri())
+                {
+                    await _fileStorage.RemoveAsync(currentImage, cancellationToken);
+                }
+                else
+                {
+                    string root = Directory.GetCurrentDirectory();
+                    await _fileStorage.RemoveAsync(Path.Combine(root, currentImage), cancellationToken);
+                }
             }
         }
 

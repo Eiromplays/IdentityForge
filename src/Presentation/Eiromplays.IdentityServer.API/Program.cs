@@ -1,4 +1,5 @@
 using Eiromplays.IdentityServer.API.Configurations;
+using Eiromplays.IdentityServer.API.Services;
 using Eiromplays.IdentityServer.Application;
 using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure;
@@ -19,7 +20,8 @@ try
 
     builder.Services.AddControllers();
 
-    builder.Services.AddInfrastructure(builder.Configuration, builder.Environment, ProjectType.Api);
+    builder.Services.AddInfrastructure(builder.Configuration, builder.Environment, ProjectType.Api)
+        .AddCloudflareImagesStorageService(builder.Configuration);
 
     builder.Services.AddApplication();
     builder.Services.AddAuthentication(options =>

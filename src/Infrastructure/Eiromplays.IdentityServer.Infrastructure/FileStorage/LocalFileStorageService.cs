@@ -37,8 +37,8 @@ public class LocalFileStorageService : IFileStorageService
         }
 
         if (!supportedFileType.GetDescriptionList().Contains(request.Extension.ToLower()) &&
-            (!_accountConfiguration.ProfilePictureConfiguration.AllowedFileExtensions.Contains(
-                request.Extension.ToLower()) && supportedFileType is FileType.ProfilePicture))
+            !_accountConfiguration.ProfilePictureConfiguration.AllowedFileExtensions.Contains(
+                request.Extension.ToLower()) && supportedFileType is FileType.ProfilePicture)
         {
             throw new InvalidOperationException("File Format Not Supported.");
         }
@@ -95,12 +95,18 @@ public class LocalFileStorageService : IFileStorageService
         return Regex.Replace(str, "[^a-zA-Z0-9_.]+", string.Empty, RegexOptions.Compiled);
     }
 
-    public void Remove(string? path)
+    public void Remove(string? path, CancellationToken cancellationToken = default)
     {
         if (File.Exists(path))
         {
             File.Delete(path);
         }
+    }
+
+    public Task RemoveAsync(string? path, CancellationToken cancellationToken = default)
+    {
+        Remove(path, cancellationToken);
+        return Task.CompletedTask;
     }
 
     private const string NumberPattern = "-{0}";

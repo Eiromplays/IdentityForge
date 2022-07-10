@@ -33,6 +33,8 @@ internal static class Startup
                 if (type.Service?.Name is "IAuthService" or "IConsentService") continue;
             }
 
+            if (type.Implementation.Name is "CloudflareImagesStorageService") continue;
+
             services.AddService(type.Service!, type.Implementation, lifetime);
         }
 

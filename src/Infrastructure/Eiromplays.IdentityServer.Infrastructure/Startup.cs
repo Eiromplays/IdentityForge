@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using Duende.Bff;
 using Duende.Bff.Yarp;
+using Eiromplays.IdentityServer.Application.Common.Caching;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Identity;
 using Eiromplays.IdentityServer.Domain.Enums;
@@ -171,7 +172,8 @@ public static class Startup
 
         return services.Configure<AccountConfiguration>(configuration.GetSection(nameof(AccountConfiguration)))
             .Configure<IdentityServerData>(configuration.GetSection(nameof(IdentityServerData)))
-            .Configure<IdentityData>(configuration.GetSection(nameof(IdentityData)));
+            .Configure<IdentityData>(configuration.GetSection(nameof(IdentityData)))
+            .Configure<CloudflareConfiguration>(configuration.GetSection(nameof(CloudflareConfiguration)));
     }
 
     private static IApplicationBuilder UseIdentityServer(this IApplicationBuilder builder, ProjectType projectType)
