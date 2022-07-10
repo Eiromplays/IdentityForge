@@ -21,7 +21,7 @@ export const AuthRoutes: Route<LocationGenerics> = {
     { path: 'login', element: <Login /> },
     { path: 'login2fa', element: <Login2fa /> },
     {
-      path: 'external-login-confirmation/:email/:userName/:loginProvider',
+      path: 'external-login-confirmation',
       element: <ExternalLoginConfirmation />,
     },
     { path: 'not-allowed', element: <NotAllowed /> },

@@ -1,4 +1,4 @@
-import { Table, Spinner, useAuth } from 'eiromplays-ui';
+import { Table, Spinner } from 'eiromplays-ui';
 
 import { useUserLogins } from '../api/getLogins';
 import { UserLogin } from '../types';
@@ -6,7 +6,6 @@ import { UserLogin } from '../types';
 import { RemoveUserLogin } from './RemoveUserLogin';
 
 export const UserLoginsList = () => {
-  const { user } = useAuth();
   const userLoginsQuery = useUserLogins();
 
   if (userLoginsQuery.isLoading) {
@@ -17,7 +16,7 @@ export const UserLoginsList = () => {
     );
   }
 
-  if (!userLoginsQuery.data || !user) return null;
+  if (!userLoginsQuery.data) return null;
 
   return (
     <Table<UserLogin>

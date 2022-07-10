@@ -159,7 +159,6 @@ internal partial class UserService
         return new CreateUserResponse(user.Id, string.Join(Environment.NewLine, messages));
     }
 
-    // TODO: Add support for changing email
     public async Task<UpdateUserResponse> UpdateAsync(UpdateUserRequest request, string userId, string origin, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(userId);
@@ -170,7 +169,8 @@ internal partial class UserService
         if (request.Image is not null || request.DeleteCurrentImage)
         {
             user.ProfilePicture =
-                await _fileStorage.UploadAsync<ApplicationUser>(request.Image, FileType.Image, cancellationToken);
+                await _fileStorage.UploadAsync<ApplicationUser>(request.Image, FileType.ProfilePicture, cancellationToken);
+
             if (request.DeleteCurrentImage && !string.IsNullOrEmpty(currentImage))
             {
                 string root = Directory.GetCurrentDirectory();

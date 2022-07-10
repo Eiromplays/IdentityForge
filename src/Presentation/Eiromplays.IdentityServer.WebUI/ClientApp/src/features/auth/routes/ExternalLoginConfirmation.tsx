@@ -1,4 +1,4 @@
-import { useMatch, useSearch } from '@tanstack/react-location';
+import { useSearch } from '@tanstack/react-location';
 import { Spinner } from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
@@ -8,9 +8,7 @@ import { ExternalLoginConfirmationForm } from '../components/ExternalLoginConfir
 import { Layout } from '../components/Layout';
 
 export const ExternalLoginConfirmation = () => {
-  const {
-    params: { email, userName, loginProvider },
-  } = useMatch<LocationGenerics>();
+  const { email, userName, loginProvider } = useSearch<LocationGenerics>();
 
   const { returnUrl } = useSearch<LocationGenerics>();
 

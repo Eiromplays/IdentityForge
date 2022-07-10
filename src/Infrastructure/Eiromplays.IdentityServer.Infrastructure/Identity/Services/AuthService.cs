@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text.Json;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Services;
 using Eiromplays.IdentityServer.Application.Common.Configurations;
@@ -329,10 +330,6 @@ public class AuthService : IAuthService
             return vm;
         }
 
-        // Helper methods
-    protected virtual SignOutResult SignOut(AuthenticationProperties properties, params string[] authenticationSchemes) =>
-            new(authenticationSchemes, properties);
-
     #endregion
 
     #region External Login
@@ -343,7 +340,11 @@ public class AuthService : IAuthService
         if (string.IsNullOrWhiteSpace(request.Provider))
             return new Result<AuthenticationProperties>(new BadRequestException("Provider is required"));
 
-        string? redirectUrl = _linkGenerator.GetUriByName(rsp.HttpContext, typeof(TEndpoint).EndpointName(), new { returnUrl = request.ReturnUrl });
+        var context = await _interaction.GetAuthorizationContextAsync(request.ReturnUrl);
+        string? redirectUrl = _linkGenerator.GetUriByName(
+            rsp.HttpContext,
+            typeof(TEndpoint).EndpointName(),
+            new { returnUrl = context is not null ? request.ReturnUrl : _serverUrls.BaseUrl });
 
         var properties = _signInManager.ConfigureExternalAuthenticationProperties(request.Provider, redirectUrl);
 
@@ -409,7 +410,7 @@ public class AuthService : IAuthService
         string? userName = info.Principal.Identity?.Name;
 
         response.ExternalLoginReturnUrl =
-            $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/external-login-confirmation/{email}/{userName}/{info.LoginProvider}?returnUrl={request.ReturnUrl}";
+            $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/external-login-confirmation?email={email}&username={userName}&loginProvider={info.LoginProvider}&returnUrl={request.ReturnUrl}";
         return new Result<LoginResponse>(response);
     }
 

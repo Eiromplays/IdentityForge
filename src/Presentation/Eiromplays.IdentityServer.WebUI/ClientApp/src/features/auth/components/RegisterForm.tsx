@@ -22,7 +22,8 @@ const schema = z
     path: ['confirmPassword'],
   });
 
-type RegisterValues = {
+export type RegisterDto = {
+  provider: string;
   firstName: string;
   lastName: string;
   userName: string;
@@ -41,7 +42,7 @@ export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
 
   return (
     <div>
-      <Form<RegisterValues, typeof schema>
+      <Form<RegisterDto, typeof schema>
         onSubmit={async (values) => {
           await register(values);
 

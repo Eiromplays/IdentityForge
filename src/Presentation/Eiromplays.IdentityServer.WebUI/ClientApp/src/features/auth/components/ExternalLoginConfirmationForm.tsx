@@ -1,19 +1,29 @@
-import { Link, Button, Form, InputField } from 'eiromplays-ui';
+import { Link, Button, Form, InputField, CustomInputField } from 'eiromplays-ui';
 import * as React from 'react';
+import { isPossiblePhoneNumber } from 'react-phone-number-input';
+import PhoneInputWithCountry from 'react-phone-number-input/react-hook-form';
 import * as z from 'zod';
 
-import {
-  ExternalLoginConfirmationViewModel,
-  useExternalLoginConfirmation,
-} from '../api/externalLoginConfirmation';
+import { useExternalLoginConfirmation } from '../api/externalLoginConfirmation';
+import { RegisterDto } from '../components/RegisterForm';
 
-const schema = z.object({
-  firstName: z.string().min(1, 'Required'),
-  lastName: z.string().min(1, 'Required'),
-  email: z.string().min(1, 'Required'),
-  userName: z.string().min(1, 'Required'),
-  phoneNumber: z.string().nullable(),
-});
+const schema = z
+  .object({
+    firstName: z.string().min(1, 'Required'),
+    lastName: z.string().min(1, 'Required'),
+    email: z.string().min(1, 'Required'),
+    userName: z.string().min(1, 'Required'),
+    password: z.string().nullable(),
+    confirmPassword: z.string().nullable(),
+    phoneNumber: z
+      .string()
+      .nullable()
+      .refine((v) => (v ? isPossiblePhoneNumber(v) : true), 'Invalid phone number'),
+  })
+  .refine((data) => data.confirmPassword === data.password, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  });
 
 type ExternalLoginConfirmationFormProps = {
   email?: string;
@@ -30,8 +40,9 @@ export const ExternalLoginConfirmationForm = ({
 
   return (
     <div>
-      <Form<ExternalLoginConfirmationViewModel, typeof schema>
+      <Form<RegisterDto, typeof schema>
         onSubmit={async (values) => {
+          values.provider = 'external';
           await externalLoginConfirmationMutation.mutateAsync({
             data: values,
             returnUrl: returnUrl,
@@ -46,7 +57,7 @@ export const ExternalLoginConfirmationForm = ({
           shouldUnregister: true,
         }}
       >
-        {({ register, formState }) => (
+        {({ register, formState, control }) => (
           <>
             <InputField
               type="text"
@@ -72,11 +83,31 @@ export const ExternalLoginConfirmationForm = ({
               error={formState.errors['userName']}
               registration={register('userName')}
             />
-            <InputField
-              type="tel"
-              label="Phone number"
+            <CustomInputField
+              label="Phone Number"
               error={formState.errors['phoneNumber']}
-              registration={register('phoneNumber')}
+              customInputField={
+                <PhoneInputWithCountry
+                  className="bg-white dark:bg-gray-900 block px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm',
+                  'placeholder-gray-400 dark:placeholder-white focus:outline-none focus:ring-blue-500 dark:focus:ring-indigo-700 focus:border-blue-500',
+                  'dark:focus:border-indigo-900 sm:text-sm"
+                  name="phoneNumber"
+                  control={control}
+                  register={register('phoneNumber')}
+                />
+              }
+            />
+            <InputField
+              type="password"
+              label="Password"
+              error={formState.errors['password']}
+              registration={register('password')}
+            />
+            <InputField
+              type="password"
+              label="Confirm Password"
+              error={formState.errors['confirmPassword']}
+              registration={register('confirmPassword')}
             />
             <div>
               <Button

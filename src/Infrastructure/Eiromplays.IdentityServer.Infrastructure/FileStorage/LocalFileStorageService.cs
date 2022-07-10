@@ -1,14 +1,27 @@
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Application.Common.FileStorage;
 using Eiromplays.IdentityServer.Domain.Common;
+using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure.Common.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace Eiromplays.IdentityServer.Infrastructure.FileStorage;
 
 public class LocalFileStorageService : IFileStorageService
 {
-    public async Task<string> UploadAsync<T>(FileUploadRequest? request, FileType supportedFileType, CancellationToken cancellationToken = default)
+    private readonly AccountConfiguration _accountConfiguration;
+
+    public LocalFileStorageService(IOptions<AccountConfiguration> accountConfiguration)
+    {
+        _accountConfiguration = accountConfiguration.Value;
+    }
+
+    public async Task<string> UploadAsync<T>(
+        FileUploadRequest? request,
+        FileType supportedFileType,
+        CancellationToken cancellationToken = default)
         where T : class
     {
         if (request?.Data is null)
@@ -16,8 +29,19 @@ public class LocalFileStorageService : IFileStorageService
             return string.Empty;
         }
 
-        if (!supportedFileType.GetDescriptionList().Contains(request.Extension.ToLower()))
+        if ((!_accountConfiguration.ProfilePictureConfiguration.Enabled ||
+             _accountConfiguration.ProfilePictureConfiguration.ProfilePictureUploadType is ProfilePictureUploadType
+                 .Disabled) && supportedFileType is FileType.ProfilePicture)
+        {
+            throw new NotSupportedException("Profile picture storage is disabled.");
+        }
+
+        if (!supportedFileType.GetDescriptionList().Contains(request.Extension.ToLower()) &&
+            (!_accountConfiguration.ProfilePictureConfiguration.AllowedFileExtensions.Contains(
+                request.Extension.ToLower()) && supportedFileType is FileType.ProfilePicture))
+        {
             throw new InvalidOperationException("File Format Not Supported.");
+        }
 
         if (request.Name is null)
             throw new InvalidOperationException("Name is required.");
@@ -38,6 +62,7 @@ public class LocalFileStorageService : IFileStorageService
         string folderName = supportedFileType switch
         {
             FileType.Image => Path.Combine("Files", "Images", folder),
+            FileType.ProfilePicture => Path.Combine("Files", "Images", "ProfilePictures", folder),
             _ => Path.Combine("Files", "Others", folder),
         };
 

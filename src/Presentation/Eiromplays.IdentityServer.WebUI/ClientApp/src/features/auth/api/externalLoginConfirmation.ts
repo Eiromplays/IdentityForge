@@ -4,13 +4,7 @@ import { toast } from 'react-toastify';
 
 import { identityServerUrl } from '@/utils/envVariables';
 
-export type ExternalLoginConfirmationViewModel = {
-  firstName: string;
-  lastName: string;
-  userName: string;
-  email: string;
-  phoneNumber?: string;
-};
+import { RegisterDto } from '../components/RegisterForm';
 
 export type ExternalLoginConfirmationResponse = MessageResponse & {
   returnUrl: string;
@@ -20,7 +14,7 @@ export const externalLoginConfirmation = ({
   returnUrl,
   data,
 }: {
-  data: ExternalLoginConfirmationViewModel;
+  data: RegisterDto;
   returnUrl?: string;
 }): Promise<ExternalLoginConfirmationResponse> => {
   return axios.post(

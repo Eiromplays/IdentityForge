@@ -20,13 +20,14 @@ type UseRemoveLoginOptions = {
 export const useRemoveLogin = ({ config }: UseRemoveLoginOptions = {}) => {
   return useMutation({
     onMutate: async (removedExternalLogin) => {
-      await queryClient.cancelQueries('external-logins');
+      await queryClient.cancelQueries(['external-logins']);
 
-      const previousExternalLoginResponse =
-        queryClient.getQueryData<ExternalLoginsResponse>('external-logins');
+      const previousExternalLoginResponse = queryClient.getQueryData<ExternalLoginsResponse>([
+        'external-logins',
+      ]);
 
       queryClient.setQueryData(
-        'external-logins',
+        ['external-logins'],
         previousExternalLoginResponse?.currentLogins?.filter(
           (userLogin) => userLogin.providerKey !== removedExternalLogin.providerKey
         )
@@ -34,13 +35,8 @@ export const useRemoveLogin = ({ config }: UseRemoveLoginOptions = {}) => {
 
       return { previousExternalLoginResponse };
     },
-    onError: (_, __, context: any) => {
-      if (context?.previousExternalLoginResponse) {
-        queryClient.setQueryData('external-logins', context.previousExternalLoginResponse);
-      }
-    },
     onSuccess: async () => {
-      await queryClient.invalidateQueries('external-logins');
+      await queryClient.invalidateQueries(['external-logins']);
       toast.success('External Login Removed');
     },
     ...config,

@@ -2,7 +2,6 @@ import { ReactLocation } from '@tanstack/react-location';
 import {
   AppProvider,
   axios,
-  CustomClaim,
   defaultAuthConfig,
   DefaultLocationGenerics,
   initializeAuth,
@@ -42,6 +41,9 @@ export type LocationGenerics = DefaultLocationGenerics & {
     errorId: string;
     logoutId: string;
     rememberMe: string;
+    email: string;
+    userName: string;
+    loginProvider: string;
   };
 };
 

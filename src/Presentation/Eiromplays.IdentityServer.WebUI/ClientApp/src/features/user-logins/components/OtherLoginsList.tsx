@@ -1,11 +1,10 @@
-import { Table, Spinner, useAuth } from 'eiromplays-ui';
+import { Table, Spinner } from 'eiromplays-ui';
 
 import { useUserLogins } from '../api/getLogins';
 import { AddUserLogin } from '../components/AddUserLogin';
 import { AuthenticationScheme } from '../types';
 
 export const OtherLoginsList = () => {
-  const { user } = useAuth();
   const userLoginsQuery = useUserLogins();
 
   if (userLoginsQuery.isLoading) {
@@ -16,7 +15,7 @@ export const OtherLoginsList = () => {
     );
   }
 
-  if (!userLoginsQuery.data || !user) return null;
+  if (!userLoginsQuery.data) return null;
 
   if (!userLoginsQuery.data.otherLogins || userLoginsQuery.data.otherLogins.length <= 0)
     return null;
