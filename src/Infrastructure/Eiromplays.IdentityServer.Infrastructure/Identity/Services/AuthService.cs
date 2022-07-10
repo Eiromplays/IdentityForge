@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using System.Text.Json;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Services;
 using Eiromplays.IdentityServer.Application.Common.Configurations;
@@ -21,7 +20,6 @@ using Mapster;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
@@ -131,12 +129,16 @@ public class AuthService : IAuthService
             : await _signInManager.PhoneNumberSignInAsync(user, request.Code, request.RememberMe, lockoutOnFailure: true);
 
         response.SignInResult = loginResult;
+        var context = await _interaction.GetAuthorizationContextAsync(request.ReturnUrl);
+
+        string? returnUrl = context is not null ? request.ReturnUrl : _serverUrls.BaseUrl;
 
         if (!loginResult.Succeeded)
         {
             if (loginResult.RequiresTwoFactor)
             {
-                response.TwoFactorReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/login2fa?rememberMe={request.RememberMe}&returnUrl={request.ReturnUrl}";
+                response.TwoFactorReturnUrl =
+                    $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/login2fa?rememberMe={request.RememberMe}&returnUrl={returnUrl}";
                 return new Result<LoginResponse>(response);
             }
 
@@ -150,9 +152,7 @@ public class AuthService : IAuthService
             return response;
         }
 
-        var context = await _interaction.GetAuthorizationContextAsync(request.ReturnUrl);
-
-        response.ValidReturnUrl = context is not null ? request.ReturnUrl : _serverUrls.BaseUrl;
+        response.ValidReturnUrl = returnUrl;
         return response;
     }
 
@@ -374,11 +374,13 @@ public class AuthService : IAuthService
         var result =
             await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: true);
 
+        var context = await _interaction.GetAuthorizationContextAsync(request.ReturnUrl);
+
+        string returnUrl = context is not null ? request.ReturnUrl : _spaConfiguration.IdentityServerUiBaseUrl;
+
         if (result.Succeeded)
         {
-            string? url = !string.IsNullOrWhiteSpace(request.ReturnUrl) ? Uri.UnescapeDataString(request.ReturnUrl) : null;
-
-            response.ExternalLoginReturnUrl = url ?? _spaConfiguration.IdentityServerUiBaseUrl;
+            response.ExternalLoginReturnUrl = returnUrl;
             return new Result<LoginResponse>(response);
         }
 
@@ -410,7 +412,7 @@ public class AuthService : IAuthService
         string? userName = info.Principal.Identity?.Name;
 
         response.ExternalLoginReturnUrl =
-            $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/external-login-confirmation?email={email}&username={userName}&loginProvider={info.LoginProvider}&returnUrl={request.ReturnUrl}";
+            $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/external-login-confirmation?email={email}&username={userName}&loginProvider={info.LoginProvider}&returnUrl={returnUrl}";
         return new Result<LoginResponse>(response);
     }
 

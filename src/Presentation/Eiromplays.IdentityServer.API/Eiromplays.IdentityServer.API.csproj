@@ -41,7 +41,7 @@
 
   <ItemGroup>
     <Folder Include="Files" />
-    <Folder Include="Files\Images\ApplicationUser" />
+    <Folder Include="Files\Images" />
     <Folder Include="Logs" />
     <Folder Include="wwwroot" />
   </ItemGroup>

@@ -2,6 +2,8 @@ import { Route } from '@tanstack/react-location';
 
 import { LocationGenerics } from '@/App';
 
+import { ResetPassword } from '../routes/ResetPassword';
+
 import { ConfirmedEmail } from './ConfirmedEmail';
 import { ConfirmedPhoneNumber } from './ConfirmedPhoneNumber';
 import { ConfirmPhoneNumber } from './ConfirmPhoneNumber';
@@ -29,6 +31,7 @@ export const AuthRoutes: Route<LocationGenerics> = {
     { path: 'confirmed-phone-number', element: <ConfirmedPhoneNumber /> },
     { path: 'verify-phone-number', element: <ConfirmPhoneNumber /> },
     { path: 'forgot-password', element: <ForgotPassword /> },
+    { path: 'reset-password', element: <ResetPassword /> },
     { path: 'logout', element: <Logout /> },
     { path: 'lockout', element: <Lockout /> },
   ],

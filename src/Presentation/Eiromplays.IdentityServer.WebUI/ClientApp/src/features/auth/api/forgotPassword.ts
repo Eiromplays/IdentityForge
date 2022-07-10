@@ -2,12 +2,14 @@ import { axios, MutationConfig, MessageResponse } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
+import { identityServerUrl } from '@/utils/envVariables';
+
 type ForgotPasswordDTO = {
   email: string;
 };
 
 export const forgotPassword = ({ data }: { data: ForgotPasswordDTO }): Promise<MessageResponse> => {
-  return axios.post(`/users/forgot-password`, data);
+  return axios.post(`${identityServerUrl}/api/v1/account/forgot-password`, data);
 };
 
 type UseForgotPasswordOptions = {

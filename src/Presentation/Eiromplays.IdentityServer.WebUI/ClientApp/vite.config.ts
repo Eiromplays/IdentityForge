@@ -25,11 +25,6 @@ export default defineConfig({
     port: 3000,
     https: true,
     proxy: {
-      '/users': {
-        target: target,
-        changeOrigin: false,
-        secure: false,
-      },
       '/roles': {
         target: target,
         changeOrigin: false,

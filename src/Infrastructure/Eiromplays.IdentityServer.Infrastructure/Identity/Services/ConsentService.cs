@@ -35,14 +35,15 @@ public class ConsentService : IConsentService
         var response = await ProcessConsent(request, user);
         if (response.IsRedirect)
         {
-            await _interaction.GetAuthorizationContextAsync(request.ReturnUrl);
             return new Result<ProcessConsentResponse>(response);
         }
 
         if (response.HasValidationError)
             return new Result<ProcessConsentResponse>(new BadRequestException(response.ValidationError));
 
-        return response.ShowResponse ? new Result<ProcessConsentResponse>(response) : new Result<ProcessConsentResponse>(new InternalServerException("Failed to get consent response"));
+        return response.ShowResponse
+            ? new Result<ProcessConsentResponse>(response)
+            : new Result<ProcessConsentResponse>(new InternalServerException("Failed to get consent response"));
     }
 
     #endregion
@@ -82,11 +83,11 @@ public class ConsentService : IConsentService
                 var scopes = model.ScopesConsented;
 
                 if (!ConsentOptions.EnableOfflineAccess)
-#pragma warning disable CS0162
+                #pragma warning disable CS0162
                 {
                     scopes = scopes.Where(x => x != Duende.IdentityServer.IdentityServerConstants.StandardScopes.OfflineAccess);
                 }
-#pragma warning restore CS0162
+                #pragma warning restore CS0162
 
                 grantedConsent = new Duende.IdentityServer.Models.ConsentResponse
                 {
