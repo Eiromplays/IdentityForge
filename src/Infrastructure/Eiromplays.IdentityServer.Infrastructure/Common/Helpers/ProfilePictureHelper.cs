@@ -9,9 +9,14 @@ public class ProfilePictureHelper
     {
         if (!string.IsNullOrWhiteSpace(user.ProfilePicture))
         {
-            return user.ProfilePicture.StartsWith(accountConfiguration?.ProfilePictureConfiguration.DefaultUrl ?? baseProfilePictureUrl ?? string.Empty)
-                ? $"{accountConfiguration?.ProfilePictureConfiguration.BaseUrl ?? baseProfilePictureUrl}{user.ProfilePicture}"
-                : user.ProfilePicture;
+            if (Uri.TryCreate(user.ProfilePicture, UriKind.Absolute, out var profilePictureUri) &&
+                (profilePictureUri.Scheme == Uri.UriSchemeHttp || profilePictureUri.Scheme == Uri.UriSchemeHttps))
+            {
+                return profilePictureUri.ToString();
+            }
+
+            return
+                $"{accountConfiguration?.ProfilePictureConfiguration.BaseUrl ?? baseProfilePictureUrl}{user.ProfilePicture}";
         }
 
         string email = user.GravatarEmail ?? user.Email;

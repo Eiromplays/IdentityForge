@@ -47,7 +47,7 @@ builder.Services.AddAuthentication(options =>
     options.ClaimActions.MapJsonKey("created_at", "created_at", "created_at");
     options.ClaimActions.MapUniqueJsonKey("given_name", "given_name", "given_name");
     options.ClaimActions.MapUniqueJsonKey("family_name", "family_name", "family_name");
-    options.ClaimActions.MapUniqueJsonKey(JwtClaimTypes.PhoneNumber, JwtClaimTypes.PhoneNumber, JwtClaimTypes.PhoneNumber);
+    options.ClaimActions.MapJsonKey(JwtClaimTypes.PhoneNumber, JwtClaimTypes.PhoneNumber);
     options.ClaimActions.MapUniqueJsonKey(JwtClaimTypes.PhoneNumberVerified, JwtClaimTypes.PhoneNumberVerified, ClaimValueTypes.Boolean);
 });
 

@@ -2,6 +2,8 @@ import { ReactLocation } from '@tanstack/react-location';
 import {
   AppProvider,
   axios,
+  CustomClaim,
+  defaultAuthConfig,
   DefaultLocationGenerics,
   initializeAuth,
   Spinner,
@@ -15,7 +17,7 @@ import {
   LoginCredentialsDTO,
   RegisterCredentialsDTO,
 } from '@/features/auth';
-import { loadUser, login2faFn, loginFn, logoutFn, registerFn } from '@/lib/auth';
+import { login2faFn, loginFn, logoutFn, registerFn } from '@/lib/auth';
 
 import { AppRoutes } from './routes';
 
@@ -54,7 +56,14 @@ const { AuthProvider } = initializeAuth<
   RegisterCredentialsDTO
 >({
   authConfig: {
-    loadUser,
+    loadUser: () => {
+      return defaultAuthConfig.loadUser<AuthUser>({
+        customClaims: [
+          { type: 'phone_number' },
+          { type: 'phone_number_verified', valueType: typeof true },
+        ],
+      });
+    },
     loginFn,
     login2faFn,
     registerFn,

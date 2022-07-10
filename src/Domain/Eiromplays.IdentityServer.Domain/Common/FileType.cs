@@ -4,6 +4,6 @@ namespace Eiromplays.IdentityServer.Domain.Common;
 
 public enum FileType
 {
-    [Description(".jpg,.png,.jpeg")]
+    [Description(".jpg,.png,.jpeg,.webp")]
     Image
 }

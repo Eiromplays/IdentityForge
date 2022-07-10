@@ -12,6 +12,7 @@ export type UpdateProfileDTO = {
     gravatarEmail: string;
     image: any;
     deleteCurrentImage?: boolean;
+    phoneNumber: string;
   };
 };
 

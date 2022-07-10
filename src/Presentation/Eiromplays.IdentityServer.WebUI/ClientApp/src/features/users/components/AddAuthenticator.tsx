@@ -1,4 +1,4 @@
-import { Button, ConfirmationDialog, useDarkMode } from 'eiromplays-ui';
+import { Button, ConfirmationDialog, useTheme } from 'eiromplays-ui';
 import React from 'react';
 import { HiOutlinePlus } from 'react-icons/hi';
 import Select from 'react-select';
@@ -19,7 +19,7 @@ export type AddAuthenticatorProps = {
 export const AddAuthenticator = ({ options = [] }: AddAuthenticatorProps) => {
   const [provider, setProvider] = React.useState<string>('App');
 
-  const { currentTheme } = useDarkMode();
+  const { currentTheme } = useTheme();
 
   defaultOptions.forEach((option) => {
     if (!options.includes(option)) {

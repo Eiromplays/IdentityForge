@@ -32,7 +32,8 @@ public interface IUserService : ITransientService
 
     Task<string> GetOrCreateFromPrincipalAsync(ClaimsPrincipal principal);
     Task<CreateUserResponse> CreateAsync(CreateUserRequest request, string origin);
-    Task UpdateAsync(UpdateUserRequest request, string userId, CancellationToken cancellationToken = default);
+    Task<UpdateUserResponse> UpdateAsync(UpdateUserRequest request, string userId, string origin,
+        CancellationToken cancellationToken = default);
 
     Task<UpdateProfileResponse> UpdateAsync(UpdateProfileRequest request, string userId, string origin, CancellationToken cancellationToken = default);
 

@@ -55,13 +55,6 @@ export const ServerSideSessionsList = () => {
           },
         },
         {
-          title: 'Renewed At',
-          field: 'renewed',
-          Cell({ entry: { renewed } }) {
-            return <span>{formatDate(renewed)}</span>;
-          },
-        },
-        {
           title: '',
           field: 'sessionId',
           Cell({ entry: { sessionId } }) {

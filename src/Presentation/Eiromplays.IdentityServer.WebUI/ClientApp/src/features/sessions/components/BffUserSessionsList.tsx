@@ -66,13 +66,6 @@ export const BffUserSessionsList = () => {
           },
         },
         {
-          title: 'Renewed At',
-          field: 'renewed',
-          Cell({ entry: { renewed } }) {
-            return <span>{formatDate(renewed)}</span>;
-          },
-        },
-        {
           title: '',
           field: 'key',
           Cell({ entry: { key, sessionId } }) {

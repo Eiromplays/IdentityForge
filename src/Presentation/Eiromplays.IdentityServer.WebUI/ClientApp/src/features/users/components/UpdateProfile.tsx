@@ -6,19 +6,26 @@ import {
   InputField,
   ImageCropper,
   useAuth,
+  CustomInputField,
 } from 'eiromplays-ui';
+import React from 'react';
 import { HiOutlinePencil } from 'react-icons/hi';
+import { isPossiblePhoneNumber } from 'react-phone-number-input';
+import PhoneInputWithCountry from 'react-phone-number-input/react-hook-form';
 import * as z from 'zod';
 
 import { UpdateProfileDTO, useUpdateProfile } from '../api/updateProfile';
 
 const schema = z.object({
-  username: z.string().min(1, 'Required'),
   firstName: z.string().min(1, 'Required'),
   lastName: z.string().min(1, 'Required'),
   email: z.string().min(1, 'Required'),
   gravatarEmail: z.string(),
   deleteCurrentImage: z.boolean(),
+  phoneNumber: z
+    .string()
+    .nullable()
+    .refine((v) => (v ? isPossiblePhoneNumber(v) : true), 'Invalid phone number'),
 });
 
 export const UpdateProfile = () => {
@@ -77,18 +84,14 @@ export const UpdateProfile = () => {
               email: user?.email,
               gravatarEmail: user?.gravatarEmail,
               deleteCurrentImage: false,
+              phoneNumber: user?.phone_number,
             },
           }}
           schema={schema}
           onChange={(_, file) => (files = file)}
         >
-          {({ register, formState }) => (
+          {({ register, formState, control }) => (
             <>
-              <InputField
-                label="Username"
-                error={formState.errors['username']}
-                registration={register('username')}
-              />
               <InputField
                 label="First Name"
                 error={formState.errors['firstName']}
@@ -110,6 +113,20 @@ export const UpdateProfile = () => {
                 type="email"
                 error={formState.errors['gravatarEmail']}
                 registration={register('gravatarEmail')}
+              />
+              <CustomInputField
+                label="Phone Number"
+                error={formState.errors['phoneNumber']}
+                customInputField={
+                  <PhoneInputWithCountry
+                    className="bg-white dark:bg-gray-900 block px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm',
+                  'placeholder-gray-400 dark:placeholder-white focus:outline-none focus:ring-blue-500 dark:focus:ring-indigo-700 focus:border-blue-500',
+                  'dark:focus:border-indigo-900 sm:text-sm"
+                    name="phoneNumber"
+                    control={control}
+                    register={register('phoneNumber')}
+                  />
+                }
               />
               <InputField
                 label="Profile Picture"

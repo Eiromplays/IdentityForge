@@ -1,4 +1,4 @@
-import { Link, Button, Form, InputField, useAuth, Spinner, useDarkMode } from 'eiromplays-ui';
+import { Link, Button, Form, InputField, useAuth, Spinner, useTheme } from 'eiromplays-ui';
 import React from 'react';
 import Select from 'react-select';
 import * as z from 'zod';
@@ -33,7 +33,7 @@ export const Login2faForm = ({ rememberMe, returnUrl, onSuccess }: LoginFormProp
   const [verificationCodeSent, setVerificationCodeSent] = React.useState<boolean>(false);
   const { login2fa, isLoggingIn } = useAuth();
   const getSend2FaVerificationCode = useGetValidTwoFactorProviders();
-  const { currentTheme } = useDarkMode();
+  const { currentTheme } = useTheme();
 
   if (getSend2FaVerificationCode.isLoading)
     return (

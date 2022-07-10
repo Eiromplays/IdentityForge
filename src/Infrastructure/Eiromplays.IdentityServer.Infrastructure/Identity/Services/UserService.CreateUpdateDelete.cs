@@ -160,7 +160,7 @@ internal partial class UserService
     }
 
     // TODO: Add support for changing email
-    public async Task UpdateAsync(UpdateUserRequest request, string userId, CancellationToken cancellationToken)
+    public async Task<UpdateUserResponse> UpdateAsync(UpdateUserRequest request, string userId, string origin, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
@@ -181,7 +181,6 @@ internal partial class UserService
         user.DisplayName = request.DisplayName;
         user.FirstName = request.FirstName;
         user.LastName = request.LastName;
-        user.PhoneNumber = request.PhoneNumber;
         user.PhoneNumberConfirmed = request.PhoneNumberConfirmed;
         user.EmailConfirmed = request.EmailConfirmed;
         user.IsActive = request.IsActive;
@@ -190,6 +189,36 @@ internal partial class UserService
 
         if (user.GravatarEmail != request.GravatarEmail)
             user.GravatarEmail = request.GravatarEmail;
+
+        var messages = new List<string> { string.Format(_t["User {0} Updated."], user.UserName) };
+
+        if (user.PhoneNumber?.Equals(request.PhoneNumber, StringComparison.OrdinalIgnoreCase) == false)
+        {
+            if (user.PhoneNumberConfirmed)
+            {
+                user.PhoneNumber = user.PhoneNumber;
+            }
+            else
+            {
+                string phoneNumberVerificationMessage = await SendPhoneNumberVerificationAsync(user);
+                if (!string.IsNullOrWhiteSpace(phoneNumberVerificationMessage))
+                    messages.Add(phoneNumberVerificationMessage);
+            }
+        }
+
+        if (!user.Email.Equals(request.Email, StringComparison.OrdinalIgnoreCase))
+        {
+            if (user.EmailConfirmed)
+            {
+                user.Email = request.Email;
+            }
+            else
+            {
+                string emailVerificationMessage = await SendEmailVerificationAsync(user, origin);
+                if (!string.IsNullOrWhiteSpace(emailVerificationMessage))
+                    messages.Add(emailVerificationMessage);
+            }
+        }
 
         var result = await _userManager.UpdateAsync(user);
 
@@ -202,6 +231,8 @@ internal partial class UserService
 
         if (request.RevokeUserSessions)
             await RemoveBffSessionsAsync(userId, cancellationToken);
+
+        return new UpdateUserResponse { Message = string.Join(Environment.NewLine, messages) };
     }
 
     public async Task<UpdateProfileResponse> UpdateAsync(UpdateProfileRequest request, string userId, string origin, CancellationToken cancellationToken)
@@ -240,18 +271,18 @@ internal partial class UserService
                 messages.Add(emailVerificationMessage);
         }
 
-        if (user.PhoneNumber?.Equals(user.PhoneNumber, StringComparison.OrdinalIgnoreCase) == false)
+        if (user.PhoneNumber?.Equals(request.PhoneNumber, StringComparison.OrdinalIgnoreCase) == false)
         {
             string phoneNumberVerificationMessage = await SendPhoneNumberVerificationAsync(user);
             if (!string.IsNullOrWhiteSpace(phoneNumberVerificationMessage))
                 messages.Add(phoneNumberVerificationMessage);
         }
 
-        if (!user.Email.Equals(user.Email, StringComparison.OrdinalIgnoreCase))
+        if (!user.Email.Equals(request.Email, StringComparison.OrdinalIgnoreCase))
         {
-            string phoneNumberVerificationMessage = await SendPhoneNumberVerificationAsync(user);
-            if (!string.IsNullOrWhiteSpace(phoneNumberVerificationMessage))
-                messages.Add(phoneNumberVerificationMessage);
+            string emailVerificationMessage = await SendEmailVerificationAsync(user, origin);
+            if (!string.IsNullOrWhiteSpace(emailVerificationMessage))
+                messages.Add(emailVerificationMessage);
         }
 
         var result = await _userManager.UpdateAsync(user);

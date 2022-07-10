@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Security.Claims;
+using System.Text.Json;
 using Duende.IdentityServer.AspNetIdentity;
 using Duende.IdentityServer.Models;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Account;

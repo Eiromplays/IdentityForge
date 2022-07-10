@@ -26,7 +26,7 @@ public class Endpoint : Endpoint<Models.Request>
     {
         if (User.GetUserId() == req.Id) ThrowError("You cannot update your own user.");
 
-        await _userService.UpdateAsync(req.UpdateUserRequest, req.Id, ct);
+        await _userService.UpdateAsync(req.UpdateUserRequest, req.Id, BaseURL, ct);
 
         await SendNoContentAsync(cancellation: ct);
     }
