@@ -10,9 +10,8 @@ export const Landing = () => {
   const handleStart = () => {
     if (user) {
       navigate({ to: '/app', replace: true });
-      console.log('navigate to /app');
     } else {
-      window.location.href = `/bff/login?returnUrl=${window.location.pathname}`;
+      window.location.href = '/bff/login?returnUrl=/app';
     }
   };
 
