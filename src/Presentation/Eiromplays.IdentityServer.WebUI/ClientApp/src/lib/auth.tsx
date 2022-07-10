@@ -36,7 +36,7 @@ export const loginFn = async (data: LoginCredentialsDTO): Promise<AuthUser | nul
   if (response?.validReturnUrl) {
     window.location.href = response?.validReturnUrl;
   } else if (response?.signInResult?.succeeded) {
-    window.location.href = '/bff/login';
+    window.location.href = `/bff/login?returnUrl=${window.location.pathname}`;
   }
 
   if (response?.signInResult?.isLockedOut) {
@@ -62,7 +62,7 @@ export const login2faFn = async (data: Login2faCredentialsDto): Promise<AuthUser
   if (response?.validReturnUrl) {
     window.location.href = response?.validReturnUrl;
   } else if (response?.signInResult?.succeeded) {
-    window.location.href = '/bff/login';
+    window.location.href = `/bff/login?returnUrl=${window.location.pathname}`;
   }
 
   if (response?.signInResult?.isLockedOut) {

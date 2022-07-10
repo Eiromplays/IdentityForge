@@ -48,7 +48,7 @@ export const UpdateProfile = () => {
           <ConfirmationDialog
             icon="warning"
             title="Update Profile"
-            body="Are you sure you want to update your profile? This will require you to log back in."
+            body="Are you sure you want to update your profile? This might require you to re-login."
             triggerButton={
               <Button size="sm" isLoading={updateProfileMutation.isLoading}>
                 Submit

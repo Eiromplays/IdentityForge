@@ -12,8 +12,7 @@ export const Landing = () => {
       navigate({ to: '/app', replace: true });
       console.log('navigate to /app');
     } else {
-      window.location.assign('/bff/login');
-      console.log('navigate to /bff/login');
+      window.location.href = `/bff/login?returnUrl=${window.location.pathname}`;
     }
   };
 

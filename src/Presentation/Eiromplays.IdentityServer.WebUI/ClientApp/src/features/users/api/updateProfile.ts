@@ -47,6 +47,7 @@ type UseUpdateProfileOptions = {
 export const useUpdateProfile = ({ config }: UseUpdateProfileOptions = {}) => {
   const updateProfileMutation = useMutation({
     onSuccess: async (response) => {
+      window.location.href = `/bff/login?returnUrl=${window.location.pathname}`;
       toast.success(response.message);
     },
     onError: (error) => {
