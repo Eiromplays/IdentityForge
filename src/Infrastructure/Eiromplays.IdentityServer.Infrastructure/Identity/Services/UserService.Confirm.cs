@@ -50,12 +50,12 @@ internal partial class UserService
     }
 
 
-    private async Task<string> SendPhoneNumberVerificationAsync(ApplicationUser user)
+    private async Task<string> SendPhoneNumberVerificationAsync(ApplicationUser user, string? newPhoneNumber = null)
     {
-        string? phoneVerificationCode = await _userManager.GenerateChangePhoneNumberTokenAsync(user, user.PhoneNumber);
+        string? phoneVerificationCode = await _userManager.GenerateChangePhoneNumberTokenAsync(user, newPhoneNumber ?? user.PhoneNumber);
 
         var smsRequest = new SmsRequest(
-            new List<string> { user.PhoneNumber },
+            new List<string> { newPhoneNumber ?? user.PhoneNumber },
             _t[$"Please confirm your account by entering this code: {phoneVerificationCode}"]);
 
         _jobService.Enqueue(() => _smsService.SendAsync(smsRequest, CancellationToken.None));

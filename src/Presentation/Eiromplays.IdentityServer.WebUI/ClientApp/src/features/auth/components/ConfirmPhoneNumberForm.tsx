@@ -12,8 +12,7 @@ const schema = z.object({
 });
 
 export const ConfirmPhoneNumberForm = () => {
-  const { returnUrl, ReturnUrl, userId } = useSearch<LocationGenerics>();
-  console.log(returnUrl || ReturnUrl);
+  const { userId } = useSearch<LocationGenerics>();
 
   const confirmPhoneNumberMutation = useConfirmPhoneNUmber();
 

@@ -271,33 +271,38 @@ internal partial class UserService
         user.DisplayName = request.DisplayName;
         user.FirstName = request.FirstName;
         user.LastName = request.LastName;
-        user.PhoneNumber = request.PhoneNumber;
 
         if (user.GravatarEmail != request.GravatarEmail)
             user.GravatarEmail = request.GravatarEmail;
 
         var messages = new List<string> { string.Format(_t["User {0} Updated."], user.UserName) };
 
-        if (!user.Email.Equals(user.Email, StringComparison.OrdinalIgnoreCase))
-        {
-            string emailVerificationMessage = await SendEmailVerificationAsync(user, origin);
-
-            if (!string.IsNullOrWhiteSpace(emailVerificationMessage))
-                messages.Add(emailVerificationMessage);
-        }
+        var response = new UpdateProfileResponse { Message = string.Join(Environment.NewLine, messages) };
 
         if (user.PhoneNumber?.Equals(request.PhoneNumber, StringComparison.OrdinalIgnoreCase) == false)
         {
-            string phoneNumberVerificationMessage = await SendPhoneNumberVerificationAsync(user);
-            if (!string.IsNullOrWhiteSpace(phoneNumberVerificationMessage))
-                messages.Add(phoneNumberVerificationMessage);
+            user.PhoneNumberConfirmed = false;
+            user.PhoneNumber = request.PhoneNumber;
+            response.LogoutRequired = true;
+            if (!string.IsNullOrWhiteSpace(request.PhoneNumber))
+            {
+                string phoneNumberVerificationMessage = await SendPhoneNumberVerificationAsync(user);
+                if (!string.IsNullOrWhiteSpace(phoneNumberVerificationMessage))
+                    messages.Add(phoneNumberVerificationMessage);
+
+                response.ReturnUrl =
+                    $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/verify-phone-number?userId={user.Id}";
+            }
         }
 
         if (!user.Email.Equals(request.Email, StringComparison.OrdinalIgnoreCase))
         {
+            user.EmailConfirmed = false;
             string emailVerificationMessage = await SendEmailVerificationAsync(user, origin);
             if (!string.IsNullOrWhiteSpace(emailVerificationMessage))
                 messages.Add(emailVerificationMessage);
+
+            response.LogoutRequired = true;
         }
 
         var result = await _userManager.UpdateAsync(user);
@@ -312,7 +317,7 @@ internal partial class UserService
         if (request.RevokeUserSessions)
             await RemoveBffSessionsAsync(userId, cancellationToken);
 
-        return new UpdateProfileResponse { Message = string.Join(Environment.NewLine, messages) };
+        return response;
     }
 
     public async Task DeleteAsync(string userId)

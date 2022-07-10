@@ -1,19 +1,19 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Personal.UpdateProfile;
+namespace Eiromplays.IdentityServer.Endpoints.v1.Manage;
 
-public class Endpoint : Endpoint<UpdateProfileRequest, UpdateProfileResponse>
+public class UpdateProfileEndpoint : Endpoint<UpdateProfileRequest, UpdateProfileResponse>
 {
     private readonly IUserService _userService;
 
-    public Endpoint(IUserService userService)
+    public UpdateProfileEndpoint(IUserService userService)
     {
         _userService = userService;
     }
 
     public override void Configure()
     {
-        Put("/personal/profile");
+        Put("/manage/update-profile");
         Summary(s =>
         {
             s.Summary = "Update profile details of currently logged in user.";

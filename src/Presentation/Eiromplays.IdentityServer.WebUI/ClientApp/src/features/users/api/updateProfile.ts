@@ -1,6 +1,8 @@
-import { axios, MessageResponse, MutationConfig } from 'eiromplays-ui';
+import { axios, MessageResponse, MutationConfig, useAuth } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
+
+import { identityServerUrl } from '@/utils/envVariables';
 
 export type UpdateProfileDTO = {
   data: {
@@ -24,7 +26,12 @@ const toBase64 = (file: File) =>
     reader.onerror = (error) => reject(error);
   });
 
-export const updateProfile = async ({ data }: UpdateProfileDTO): Promise<MessageResponse> => {
+export type UpdateProfileResponse = MessageResponse & {
+  logoutRequired: boolean;
+  returnUrl: string;
+};
+
+export const updateProfile = async ({ data }: UpdateProfileDTO): Promise<UpdateProfileResponse> => {
   if (data.image instanceof File) {
     const fileExtension = `.${data.image.name.slice(
       ((data.image.name.lastIndexOf('.') - 1) >>> 0) + 2
@@ -37,7 +44,7 @@ export const updateProfile = async ({ data }: UpdateProfileDTO): Promise<Message
     data.deleteCurrentImage = data.image ? true : data.deleteCurrentImage;
   }
 
-  return axios.put(`/personal/profile`, data);
+  return axios.put(`${identityServerUrl}/api/v1/manage/update-profile`, data);
 };
 
 type UseUpdateProfileOptions = {
@@ -45,10 +52,18 @@ type UseUpdateProfileOptions = {
 };
 
 export const useUpdateProfile = ({ config }: UseUpdateProfileOptions = {}) => {
+  const { logout } = useAuth();
+
   const updateProfileMutation = useMutation({
     onSuccess: async (response) => {
-      window.location.href = `/bff/login?returnUrl=${window.location.pathname}`;
+      console.log(response);
       toast.success(response.message);
+      if (response.logoutRequired) {
+        await logout();
+        window.location.href = response.returnUrl;
+      } else {
+        window.location.href = `/bff/login?returnUrl=${window.location.pathname}`;
+      }
     },
     onError: (error) => {
       toast.error('Failed to update user');
