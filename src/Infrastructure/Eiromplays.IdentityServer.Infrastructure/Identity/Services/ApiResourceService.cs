@@ -116,6 +116,9 @@ internal class ApiResourceService : IApiResourceService
         return string.Format(_t["ApiResource {0} Registered."], apiResource.Id);
     }
 
+    public Task<int> GetCountAsync(CancellationToken cancellationToken) =>
+        _db.ApiResources.AsNoTracking().CountAsync(cancellationToken);
+
     #region Entity Queries
 
     // TODO: Move to repository or something like that :)

@@ -1,4 +1,5 @@
 import { Button, ConfirmationDialog } from 'eiromplays-ui';
+import { HiOutlineTrash } from 'react-icons/hi';
 
 import { useDeleteApiScope } from '../api/deleteApiScope';
 
@@ -14,7 +15,11 @@ export const DeleteApiScope = ({ apiScopeId }: DeleteIdentityResourceProps) => {
       icon="danger"
       title="Delete ApiScope"
       body="Are you sure you want to delete this ApiScope?"
-      triggerButton={<Button variant="danger">Delete</Button>}
+      triggerButton={
+        <Button variant="danger" startIcon={<HiOutlineTrash className="h-4 w-4" />}>
+          Delete
+        </Button>
+      }
       confirmButton={
         <Button
           isLoading={deleteApiScopeMutation.isLoading}

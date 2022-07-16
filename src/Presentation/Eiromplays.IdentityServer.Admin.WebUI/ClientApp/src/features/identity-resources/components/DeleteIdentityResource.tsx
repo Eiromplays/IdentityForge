@@ -1,4 +1,5 @@
 import { Button, ConfirmationDialog } from 'eiromplays-ui';
+import { HiOutlineTrash } from 'react-icons/hi';
 
 import { useDeleteIdentityResource } from '../api/deleteIdentityResource';
 
@@ -14,7 +15,11 @@ export const DeleteIdentityResource = ({ identityResourceId }: DeleteIdentityRes
       icon="danger"
       title="Delete IdentityResource"
       body="Are you sure you want to delete this IdentityResource?"
-      triggerButton={<Button variant="danger">Delete</Button>}
+      triggerButton={
+        <Button variant="danger" startIcon={<HiOutlineTrash className="h-4 w-4" />}>
+          Delete
+        </Button>
+      }
       confirmButton={
         <Button
           isLoading={deleteIdentityResourceMutation.isLoading}

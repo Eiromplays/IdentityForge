@@ -1,10 +1,13 @@
 import { ContentLayout, useAuth, StatsList, Spinner, LineChart } from 'eiromplays-ui';
+import { AiOutlineTags, BiTargetLock } from 'react-icons/all';
 import {
   HiLockClosed,
   HiOutlineCollection,
+  HiOutlineShieldCheck,
   HiOutlineShoppingCart,
   HiOutlineUsers,
 } from 'react-icons/hi';
+import { MdOutlineDevicesOther } from 'react-icons/md';
 
 import { useDashboardStats } from '../api/getDashboardStats';
 
@@ -87,6 +90,38 @@ export const Dashboard = () => {
             description: 'Total number of roles',
             smallIcon: <HiLockClosed className="text-blue-600 w-full h-full" />,
             largeIcon: <HiLockClosed className="text-blue-600 w-full h-full" />,
+          },
+          {
+            title: 'Clients',
+            value: dashboardStatsQuery.data.clientCount,
+            countUpProps: { duration: 3, end: dashboardStatsQuery.data.clientCount },
+            description: 'Total number of clients',
+            smallIcon: <MdOutlineDevicesOther className="text-yellow-600 w-full h-full" />,
+            largeIcon: <MdOutlineDevicesOther className="text-yellow-600 w-full h-full" />,
+          },
+          {
+            title: 'Identity Resources',
+            value: dashboardStatsQuery.data.identityResourceCount,
+            countUpProps: { duration: 3, end: dashboardStatsQuery.data.identityResourceCount },
+            description: 'Total number of identity resources',
+            smallIcon: <AiOutlineTags className="text-red-600 w-full h-full" />,
+            largeIcon: <AiOutlineTags className="text-red-600 w-full h-full" />,
+          },
+          {
+            title: 'Api Resources',
+            value: dashboardStatsQuery.data.apiResourceCount,
+            countUpProps: { duration: 3, end: dashboardStatsQuery.data.apiResourceCount },
+            description: 'Total number of api resources',
+            smallIcon: <HiOutlineShieldCheck className="text-purple-600 w-full h-full" />,
+            largeIcon: <HiOutlineShieldCheck className="text-purple-600 w-full h-full" />,
+          },
+          {
+            title: 'Api Scopes',
+            value: dashboardStatsQuery.data.apiScopeCount,
+            countUpProps: { duration: 3, end: dashboardStatsQuery.data.apiScopeCount },
+            description: 'Total number of identity api scopes',
+            smallIcon: <BiTargetLock className="text-cyan-600 w-full h-full" />,
+            largeIcon: <BiTargetLock className="text-cyan-600 w-full h-full" />,
           },
         ]}
       />

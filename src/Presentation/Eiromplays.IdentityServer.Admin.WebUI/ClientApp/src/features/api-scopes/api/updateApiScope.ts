@@ -2,6 +2,8 @@ import { MutationConfig, queryClient, axios } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
+import { ApiScope } from '@/features/api-scopes';
+
 export type UpdateApiScopeDTO = {
   apiScopeId: number;
   data: {
@@ -27,13 +29,35 @@ type UseUpdateApiScopeOptions = {
 
 export const useUpdateApiScope = ({ config }: UseUpdateApiScopeOptions = {}) => {
   return useMutation({
-    onSuccess: async (_, variables) => {
-      await queryClient.invalidateQueries(['api-scope', variables.apiScopeId]);
-      toast.success('ApiScope Updated');
+    onMutate: async (updatingApiScope) => {
+      await queryClient.cancelQueries(['api-scope', updatingApiScope?.apiScopeId]);
+
+      const previousApiScope = queryClient.getQueryData<ApiScope>([
+        'api-scope',
+        updatingApiScope?.apiScopeId,
+      ]);
+
+      queryClient.setQueryData(['api-scope', updatingApiScope?.apiScopeId], {
+        ...previousApiScope,
+        ...updatingApiScope.data,
+        id: updatingApiScope.apiScopeId,
+      });
+
+      return { previousApiScope };
     },
-    onError: (error) => {
+    onError: (error, __, context: any) => {
       toast.error('Failed to update ApiScope');
       toast.error(error.response?.data);
+      if (context?.previousApiScope) {
+        queryClient.setQueryData(
+          ['api-scope', context.previousApiScope.id],
+          context.previousApiScope
+        );
+      }
+    },
+    onSuccess: async (response, variables) => {
+      await queryClient.refetchQueries(['api-scope', variables.apiScopeId]);
+      toast.success('ApiScope Updated');
     },
     ...config,
     mutationFn: updateApiScope,

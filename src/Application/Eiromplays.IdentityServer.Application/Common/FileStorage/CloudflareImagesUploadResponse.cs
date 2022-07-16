@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Eiromplays.IdentityServer.API.Responses;
+namespace Eiromplays.IdentityServer.Application.Common.FileStorage;
 
 public class CloudflareImagesUploadResult
 {

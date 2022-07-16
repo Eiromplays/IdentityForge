@@ -17,7 +17,7 @@ export const DeletePersistedGrant = ({ persistedGrantKey }: RevokePersistedGrant
       body="Are you sure you want to delete this persisted grant?"
       triggerButton={
         <Button variant="danger" startIcon={<HiOutlineTrash className="h-4 w-4" />}>
-          Delete Persisted Grant
+          Delete
         </Button>
       }
       confirmButton={

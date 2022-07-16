@@ -29,6 +29,8 @@ public static class EiaResource
     public const string IdentityResources = nameof(IdentityResources);
     public const string ApiResources = nameof(ApiResources);
     public const string ApiScopes = nameof(ApiScopes);
+    public const string UserSessions = nameof(UserSessions);
+    public const string ServerSideSessions = nameof(ServerSideSessions);
 }
 
 public static class EiaPermissions
@@ -80,6 +82,16 @@ public static class EiaPermissions
         new("Create ApiScopes", EiaAction.Create, EiaResource.ApiScopes),
         new("Update ApiScopes", EiaAction.Update, EiaResource.ApiScopes),
         new("Delete ApiScopes", EiaAction.Delete, EiaResource.ApiScopes),
+        new("Search user sessions", EiaAction.Search, EiaResource.UserSessions),
+        new("View user sessions", EiaAction.View, EiaResource.UserSessions),
+        new("Create user sessions", EiaAction.Create, EiaResource.UserSessions),
+        new("Update user sessions", EiaAction.Update, EiaResource.UserSessions),
+        new("Delete user sessions", EiaAction.Delete, EiaResource.UserSessions),
+        new("Search server-side sessions", EiaAction.Search, EiaResource.ServerSideSessions),
+        new("View server-side sessions", EiaAction.View, EiaResource.ServerSideSessions),
+        new("Create server-side sessions", EiaAction.Create, EiaResource.ServerSideSessions),
+        new("Update server-side sessions", EiaAction.Update, EiaResource.ServerSideSessions),
+        new("Delete server-side sessions", EiaAction.Delete, EiaResource.ServerSideSessions)
     };
 
     public static IReadOnlyList<EiaPermission> All { get; } = new ReadOnlyCollection<EiaPermission>(AllPermissions);
@@ -93,7 +105,7 @@ public static class EiaPermissions
 
 public record EiaPermission(string Description, string Action, string Resource, bool IsBasic = false, bool IsRoot = false)
 {
-    public string Name => NameFor(this.Action, this.Resource);
+    public string Name => NameFor(Action, Resource);
 
     public static string NameFor(string action, string resource) => $"Permissions.{resource}.{action}";
 }

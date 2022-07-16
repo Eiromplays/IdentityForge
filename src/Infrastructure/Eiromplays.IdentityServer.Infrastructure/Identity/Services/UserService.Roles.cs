@@ -70,6 +70,10 @@ internal partial class UserService
             }
         }
 
+        // Revoke all sessions for the user, to update the roles.
+        if (request.RevokeUserSessions)
+            await RemoveBffSessionsAsync(userId, cancellationToken);
+
         await _events.PublishAsync(new ApplicationUserUpdatedEvent(user.Id, true));
 
         return _t["User Roles Updated Successfully."];

@@ -19,17 +19,12 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
             s.Summary = "Delete a user session.";
         });
         Version(1);
+        Policies(EiaPermission.NameFor(EiaAction.Delete, EiaResource.UserSessions));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)
     {
-        if (User.GetUserId() is not { } userId || string.IsNullOrEmpty(userId))
-        {
-            await SendUnauthorizedAsync(ct);
-            return;
-        }
-
-        Response.Message = await _userService.DeleteBffUserSessionAsync(req.Key, userId, ct);
+        Response.Message = await _userService.DeleteBffUserSessionAsync(req.Key, cancellationToken: ct);
 
         await SendAsync(Response, cancellation: ct);
     }

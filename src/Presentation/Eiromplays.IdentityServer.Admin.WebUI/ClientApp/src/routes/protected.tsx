@@ -19,7 +19,7 @@ import { IdentityResourcesRoutes } from '@/features/identity-resources';
 import { LogsRoutes } from '@/features/logs';
 import { PersistedGrantsRoutes } from '@/features/persisted-grants';
 import { RolesRoutes } from '@/features/roles';
-import { UserSessionsRoutes } from '@/features/user-sessions';
+import { UserSessionsRoutes } from '@/features/sessions';
 import { UsersRoutes } from '@/features/users';
 import { ROLES, useAuthorization } from '@/lib/authorization';
 import { identityServerUiUrl, identityServerUrl } from '@/utils/envVariables';

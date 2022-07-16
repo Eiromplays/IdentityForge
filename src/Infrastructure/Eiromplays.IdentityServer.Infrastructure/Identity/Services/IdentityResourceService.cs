@@ -116,6 +116,9 @@ internal class IdentityResourceService : IIdentityResourceService
         return string.Format(_t["IdentityResource {0} Registered."], identityResource.Id);
     }
 
+    public Task<int> GetCountAsync(CancellationToken cancellationToken) =>
+        _db.IdentityResources.AsNoTracking().CountAsync(cancellationToken);
+
     #region Entity Queries
 
     // TODO: Move to repository or something like that :)

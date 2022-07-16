@@ -62,12 +62,21 @@ public interface IUserService : ITransientService
 
     Task<bool> RemoveBffSessionsAsync(string userId, CancellationToken cancellationToken = default);
 
-    Task<List<UserSessionDto>> GetAllBffUserSessions(CancellationToken cancellationToken = default);
+    Task<List<UserSessionDto>> GetAllBffUserSessionsAsync(CancellationToken cancellationToken = default);
     Task<List<UserSessionDto>> GetBffUserSessionsAsync(string userId, CancellationToken cancellationToken = default);
     Task<UserSessionDto> GetBffUserSessionAsync(string key, string? userId = default, CancellationToken cancellationToken = default);
     Task<string> DeleteBffUserSessionAsync(string key, string? userId = default,  CancellationToken cancellationToken = default);
 
     Task<PaginationResponse<UserSessionDto>> SearchBffSessionsAsync(UserSessionListFilter filter, CancellationToken cancellationToken = default);
+
+    Task<bool> RemoveServerSideSessionsAsync(string userId, CancellationToken cancellationToken = default);
+
+    Task<List<ServerSideSessionDto>> GetAllServerSideSessionsAsync(CancellationToken cancellationToken = default);
+    Task<List<ServerSideSessionDto>> GetServerSideSessionsAsync(string userId, CancellationToken cancellationToken = default);
+    Task<ServerSideSessionDto> GetServerSideSessionAsync(string key, string? userId = default, CancellationToken cancellationToken = default);
+    Task<string> DeleteServerSideSessionAsync(string key, string? userId = default,  CancellationToken cancellationToken = default);
+
+    Task<PaginationResponse<ServerSideSessionDto>> SearchServerSideSessionsAsync(ServerSideSessionListFilter filter, CancellationToken cancellationToken = default);
 
     Task DeleteAsync(string userId);
 

@@ -4,8 +4,7 @@ import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
 import { LocationGenerics } from '@/App';
-
-import { User } from '../types';
+import { User } from '@/features/users';
 
 export type DeleteUserDTO = {
   userId: string;
@@ -23,6 +22,22 @@ export const useDeleteUser = ({ config }: UseDeleteUserOptions = {}) => {
   const { pagination } = useSearch<LocationGenerics>();
 
   return useMutation({
+    onMutate: async (deletedUser) => {
+      await queryClient.cancelQueries(['search-users']);
+
+      const previousUsers = queryClient.getQueryData<PaginationResponse<User>>([
+        'search-roles',
+        pagination?.index ?? 1,
+        pagination?.size ?? 10,
+      ]);
+
+      queryClient.setQueryData(
+        ['search-users', pagination?.index ?? 1, pagination?.size ?? 10],
+        previousUsers?.data?.filter((user) => user.id !== deletedUser.userId)
+      );
+
+      return { previousUsers };
+    },
     onError: (_, __, context: any) => {
       if (context?.previousUsers) {
         queryClient.setQueryData(
@@ -32,7 +47,7 @@ export const useDeleteUser = ({ config }: UseDeleteUserOptions = {}) => {
       }
     },
     onSuccess: async () => {
-      await queryClient.refetchQueries([
+      await queryClient.invalidateQueries([
         'search-users',
         pagination?.index ?? 1,
         pagination?.size ?? 10,

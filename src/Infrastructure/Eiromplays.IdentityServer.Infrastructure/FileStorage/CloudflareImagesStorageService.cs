@@ -1,6 +1,5 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using Eiromplays.IdentityServer.API.Responses;
 using Eiromplays.IdentityServer.Application.Common.Caching;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Application.Common.FileStorage;
@@ -9,7 +8,7 @@ using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure.Common.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace Eiromplays.IdentityServer.API.Services;
+namespace Eiromplays.IdentityServer.Infrastructure.FileStorage;
 
 public class CloudflareImagesStorageService : IFileStorageService
 {

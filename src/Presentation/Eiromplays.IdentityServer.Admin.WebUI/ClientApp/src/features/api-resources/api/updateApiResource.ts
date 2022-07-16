@@ -2,6 +2,8 @@ import { MutationConfig, queryClient, axios } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
+import { ApiResource } from '@/features/api-resources';
+
 export type UpdateApiResourceDTO = {
   apiResourceId: number;
   data: {
@@ -21,19 +23,41 @@ export const updateApiResource = async ({ apiResourceId, data }: UpdateApiResour
   return axios.put(`/api-resources/${apiResourceId}`, data);
 };
 
-type UseUpdateApiResourceOptions = {
+export type UseUpdateApiResourceOptions = {
   config?: MutationConfig<typeof updateApiResource>;
 };
 
 export const useUpdateApiResource = ({ config }: UseUpdateApiResourceOptions = {}) => {
   return useMutation({
-    onSuccess: async (_, variables) => {
-      await queryClient.invalidateQueries(['api-resource', variables.apiResourceId]);
-      toast.success('ApiResource Updated');
+    onMutate: async (updatingApiResource) => {
+      await queryClient.cancelQueries(['api-resource', updatingApiResource?.apiResourceId]);
+
+      const previousApiResource = queryClient.getQueryData<ApiResource>([
+        'api-resource',
+        updatingApiResource?.apiResourceId,
+      ]);
+
+      queryClient.setQueryData(['api-resource', updatingApiResource?.apiResourceId], {
+        ...previousApiResource,
+        ...updatingApiResource.data,
+        id: updatingApiResource.apiResourceId,
+      });
+
+      return { previousApiResource };
     },
-    onError: (error) => {
+    onError: (error, __, context: any) => {
       toast.error('Failed to update ApiResource');
       toast.error(error.response?.data);
+      if (context?.previousApiResource) {
+        queryClient.setQueryData(
+          ['api-resource', context.previousApiResource.id],
+          context.previousApiResource
+        );
+      }
+    },
+    onSuccess: async (response, variables) => {
+      await queryClient.refetchQueries(['api-resource', variables.apiResourceId]);
+      toast.success('ApiResource Updated');
     },
     ...config,
     mutationFn: updateApiResource,

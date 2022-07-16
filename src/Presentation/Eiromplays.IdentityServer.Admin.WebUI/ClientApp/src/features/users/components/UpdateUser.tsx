@@ -6,8 +6,11 @@ import {
   FormDrawer,
   InputField,
   ImageCropper,
+  CustomInputField,
 } from 'eiromplays-ui';
 import { HiOutlinePencil } from 'react-icons/hi';
+import { isPossiblePhoneNumber } from 'react-phone-number-input';
+import PhoneInputWithCountry from 'react-phone-number-input/react-hook-form';
 import * as z from 'zod';
 
 import { useUser } from '../api/getUser';
@@ -18,6 +21,10 @@ const schema = z.object({
   displayName: z.string().min(1, 'Required'),
   firstName: z.string().min(1, 'Required'),
   lastName: z.string().min(1, 'Required'),
+  phoneNumber: z
+    .string()
+    .nullable()
+    .refine((v) => (v ? isPossiblePhoneNumber(v) : true), 'Invalid phone number'),
   email: z.string().min(1, 'Required'),
   gravatarEmail: z.string().nullable(),
   deleteCurrentImage: z.boolean(),
@@ -35,7 +42,7 @@ type UpdateUserProps = {
 
 export const UpdateUser = ({ id }: UpdateUserProps) => {
   const userQuery = useUser({ userId: id || '' });
-  const { updateUserMutation } = useUpdateUser();
+  const updateUserMutation = useUpdateUser();
 
   if (userQuery.isLoading) {
     return (
@@ -97,6 +104,7 @@ export const UpdateUser = ({ id }: UpdateUserProps) => {
               username: userQuery.data?.userName,
               firstName: userQuery.data?.firstName,
               lastName: userQuery.data?.lastName,
+              phoneNumber: userQuery.data?.phoneNumber,
               email: userQuery.data?.email,
               gravatarEmail: userQuery.data?.gravatarEmail,
               deleteCurrentImage: false,
@@ -111,7 +119,7 @@ export const UpdateUser = ({ id }: UpdateUserProps) => {
           schema={schema}
           onChange={(_, file) => (files = file)}
         >
-          {({ register, formState }) => (
+          {({ register, formState, control }) => (
             <>
               <InputField
                 label="Username"
@@ -133,10 +141,19 @@ export const UpdateUser = ({ id }: UpdateUserProps) => {
                 error={formState.errors['lastName']}
                 registration={register('lastName')}
               />
-              <InputField
+              <CustomInputField
                 label="Phone Number"
                 error={formState.errors['phoneNumber']}
-                registration={register('phoneNumber')}
+                customInputField={
+                  <PhoneInputWithCountry
+                    className="bg-white dark:bg-gray-900 block px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm',
+                  'placeholder-gray-400 dark:placeholder-white focus:outline-none focus:ring-blue-500 dark:focus:ring-indigo-700 focus:border-blue-500',
+                  'dark:focus:border-indigo-900 sm:text-sm"
+                    name="phoneNumber"
+                    control={control}
+                    register={register('phoneNumber')}
+                  />
+                }
               />
               <InputField
                 label="Email Address"

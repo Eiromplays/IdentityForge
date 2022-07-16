@@ -83,8 +83,8 @@ export const UpdateProfile = () => {
               lastName: user?.lastName,
               email: user?.email,
               gravatarEmail: user?.gravatarEmail,
-              deleteCurrentImage: false,
               phoneNumber: user?.phone_number,
+              deleteCurrentImage: false,
             },
           }}
           schema={schema}

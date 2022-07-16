@@ -1,6 +1,10 @@
-import { axios, MutationConfig, queryClient } from 'eiromplays-ui';
+import { useSearch } from '@tanstack/react-location';
+import { axios, MutationConfig, PaginationResponse, queryClient } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
+
+import { LocationGenerics } from '@/App';
+import { ServerSideSession } from '@/features/sessions';
 
 import { Role } from '../types';
 
@@ -17,26 +21,39 @@ type UseDeleteRoleOptions = {
 };
 
 export const useDeleteRole = ({ config }: UseDeleteRoleOptions = {}) => {
-  return useMutation({
-    onMutate: async (deletedUser) => {
-      await queryClient.cancelQueries('roles');
+  const { pagination } = useSearch<LocationGenerics>();
 
-      const previousRoles = queryClient.getQueryData<Role[]>('roles');
+  return useMutation({
+    onMutate: async (deletedRole) => {
+      await queryClient.cancelQueries(['search-roles']);
+
+      const previousRoles = queryClient.getQueryData<PaginationResponse<Role>>([
+        'search-roles',
+        pagination?.index ?? 1,
+        pagination?.size ?? 10,
+      ]);
 
       queryClient.setQueryData(
-        'roles',
-        previousRoles?.filter((discussion) => discussion.id !== deletedUser.roleId)
+        ['search-roles', pagination?.index ?? 1, pagination?.size ?? 10],
+        previousRoles?.data?.filter((role) => role.id !== deletedRole.roleId)
       );
 
       return { previousRoles };
     },
     onError: (_, __, context: any) => {
       if (context?.previousRoles) {
-        queryClient.setQueryData('roles', context.previousRoles);
+        queryClient.setQueryData(
+          ['search-roles', pagination?.index ?? 1, pagination?.size ?? 10],
+          context.previousRoles
+        );
       }
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries('roles');
+      await queryClient.invalidateQueries([
+        'search-roles',
+        pagination?.index ?? 1,
+        pagination?.size ?? 10,
+      ]);
       toast.success('Role deleted');
     },
     ...config,

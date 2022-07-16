@@ -2,6 +2,8 @@ import { MutationConfig, queryClient, axios } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
+import { Client } from '@/features/clients';
+
 export type UpdateClientDTO = {
   clientId: number;
   data: {
@@ -27,13 +29,29 @@ type UseUpdateClientOptions = {
 
 export const useUpdateClient = ({ config }: UseUpdateClientOptions = {}) => {
   return useMutation({
-    onSuccess: async (_, variables) => {
-      await queryClient.invalidateQueries(['client', variables.clientId]);
-      toast.success('Client Updated');
+    onMutate: async (updatingClient) => {
+      await queryClient.cancelQueries(['client', updatingClient?.clientId]);
+
+      const previousClient = queryClient.getQueryData<Client>(['client', updatingClient?.clientId]);
+
+      queryClient.setQueryData(['client', updatingClient?.clientId], {
+        ...previousClient,
+        ...updatingClient.data,
+        id: updatingClient.clientId,
+      });
+
+      return { previousClient };
     },
-    onError: (error) => {
+    onError: (error, __, context: any) => {
       toast.error('Failed to update client');
       toast.error(error.response?.data);
+      if (context?.previousClient) {
+        queryClient.setQueryData(['client', context.previousClient.id], context.previousClient);
+      }
+    },
+    onSuccess: async (response, variables) => {
+      await queryClient.refetchQueries(['client', variables.clientId]);
+      toast.success('Client Updated');
     },
     ...config,
     mutationFn: updateClient,

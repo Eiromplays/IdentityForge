@@ -60,6 +60,11 @@ export default defineConfig({
         changeOrigin: false,
         secure: false,
       },
+      '/server-side-sessions': {
+        target: target,
+        changeOrigin: false,
+        secure: false,
+      },
       '/logs': {
         target: target,
         changeOrigin: false,

@@ -8,6 +8,7 @@ export type UpdateUserRolesDTO = {
   userId: string;
   data: {
     userRoles: UserRole[];
+    revokeUserSessions?: boolean;
   };
 };
 
@@ -21,13 +22,32 @@ type UseUpdateUserRolesOptions = {
 
 export const useUpdateUserRoles = ({ config }: UseUpdateUserRolesOptions = {}) => {
   return useMutation({
+    onMutate: async (updatingUserRoles) => {
+      await queryClient.cancelQueries(['user', updatingUserRoles.userId, 'roles']);
+
+      const previousUserRoles = queryClient.getQueryData<UserRole[]>([
+        'user',
+        updatingUserRoles.userId,
+        'roles',
+      ]);
+
+      queryClient.setQueryData(
+        ['user', updatingUserRoles.userId, 'roles'],
+        [...(updatingUserRoles?.data?.userRoles || [])]
+      );
+
+      return { previousUserRoles };
+    },
+    onError: (error, __, context: any) => {
+      toast.error('Failed to update user roles');
+      toast.error(error.response?.data);
+      if (context?.previousUserRoles) {
+        queryClient.setQueryData('discussions', context.previousUserRoles);
+      }
+    },
     onSuccess: async (_, variables) => {
       await queryClient.refetchQueries(['user', variables.userId, 'roles']);
       toast.success(`${variables.userId}'s roles has been updated successfully`);
-    },
-    onError: (error) => {
-      toast.error('Failed to update user roles');
-      toast.error(error.response?.data);
     },
     ...config,
     mutationFn: updateUserRoles,

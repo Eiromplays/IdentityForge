@@ -23,8 +23,6 @@ export const UserSessionsList = () => {
   const page = search.pagination?.index || defaultPageIndex;
   const pageSize = search.pagination?.size || defaultPageSize;
 
-  if (!user) return null;
-
   const searchFilter: SearchFilter = {
     customProperties: [],
     orderBy: ['id', 'subjectId', 'sessionId', 'applicationName'],
@@ -57,6 +55,24 @@ export const UserSessionsList = () => {
           },
         },
         {
+          title: 'Subject Id',
+          field: 'subjectId',
+        },
+        {
+          title: 'ApplicationName',
+          field: 'applicationName',
+          Cell({ entry: { applicationName } }) {
+            return (
+              <span>
+                {applicationName
+                  ?.split('/')
+                  ?.filter((x) => x)
+                  ?.pop()}
+              </span>
+            );
+          },
+        },
+        {
           title: 'Created At',
           field: 'created',
           Cell({ entry: { created } }) {
@@ -71,19 +87,10 @@ export const UserSessionsList = () => {
           },
         },
         {
-          title: '',
-          field: 'key',
-          Cell({ entry: { key } }) {
-            return (
-              <Link to={key} search={search} className="block">
-                <pre className={`text-sm`}>
-                  View{' '}
-                  <MatchRoute to={key} pending>
-                    <Spinner size="md" className="inline-block" />
-                  </MatchRoute>
-                </pre>
-              </Link>
-            );
+          title: 'Renewed At',
+          field: 'renewed',
+          Cell({ entry: { renewed } }) {
+            return <span>{formatDate(renewed)}</span>;
           },
         },
         {

@@ -64,7 +64,8 @@ public static class Startup
             .AddAuth(config, projectType)
             .AddRequestLogging(config)
             .AddRouting(options => options.LowercaseUrls = true)
-            .AddServices(projectType);
+            .AddServices(projectType)
+            .AddCloudflareImagesStorageService(config);
     }
 
     private static IServiceCollection AddInfrastructureSpa(this IServiceCollection services, ConfigurationManager config, IWebHostEnvironment webHostEnvironment, ProjectType projectType)

@@ -1,9 +1,16 @@
 import { useSearch } from '@tanstack/react-location';
-import { axios, MessageResponse, MutationConfig, queryClient } from 'eiromplays-ui';
+import {
+  axios,
+  MessageResponse,
+  MutationConfig,
+  PaginationResponse,
+  queryClient,
+} from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
 import { LocationGenerics } from '@/App';
+import { User } from '@/features/users';
 
 export type CreateUserDTO = {
   data: {
@@ -30,18 +37,40 @@ export const useCreateUser = ({ config }: UseCreateUserOptions = {}) => {
   const { pagination } = useSearch<LocationGenerics>();
 
   return useMutation({
-    onSuccess: async (response) => {
-      await queryClient.refetchQueries([
+    onMutate: async (newUser) => {
+      await queryClient.cancelQueries(['search-users']);
+
+      const previousUsers = queryClient.getQueryData<PaginationResponse<User>>([
         'search-users',
         pagination?.index ?? 1,
         pagination?.size ?? 10,
       ]);
-      toast.success('User Created');
-      toast.success(response.message);
+
+      queryClient.setQueryData(
+        ['search-users', pagination?.index ?? 1, pagination?.size ?? 10],
+        [...(previousUsers?.data || []), newUser.data]
+      );
+
+      return { previousUsers };
     },
-    onError: (error) => {
+    onError: (error, __, context: any) => {
       toast.error('Failed to create user');
       toast.error(error.response?.data);
+      if (context?.previousUsers) {
+        queryClient.setQueryData(
+          ['search-users', pagination?.index ?? 1, pagination?.size ?? 10],
+          context.previousUsers
+        );
+      }
+    },
+    onSuccess: async (response) => {
+      await queryClient.invalidateQueries([
+        'search-users',
+        pagination?.index ?? 1,
+        pagination?.size ?? 10,
+      ]);
+      toast.success('User created');
+      toast.success(response.message);
     },
     ...config,
     mutationFn: createUser,

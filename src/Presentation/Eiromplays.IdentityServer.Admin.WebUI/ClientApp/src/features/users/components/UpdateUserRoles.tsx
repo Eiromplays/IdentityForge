@@ -15,9 +15,10 @@ const userRoleSchema = z.object({
 
 const schema = z.object({
   userRoles: z.array(userRoleSchema),
+  revokeUserSessions: z.boolean(),
 });
 
-type UpdateUserRolesProps = {
+export type UpdateUserRolesProps = {
   id: string;
   roles: UserRole[];
 };
@@ -28,7 +29,7 @@ export const UpdateUserRoles = ({ id, roles }: UpdateUserRolesProps) => {
   if (!roles) return null;
 
   return (
-    <>
+    <div className="mt-4">
       <FormDrawer
         isDone={updateUserRolesMutation.isSuccess}
         triggerButton={
@@ -70,13 +71,14 @@ export const UpdateUserRoles = ({ id, roles }: UpdateUserRolesProps) => {
           options={{
             defaultValues: {
               userRoles: roles,
+              revokeUserSessions: true,
             },
           }}
           schema={schema}
         >
           {({ register, formState }) => (
             <>
-              {roles.map((role, index) => (
+              {roles?.map((role, index) => (
                 <InputField
                   key={role.roleId}
                   label={role.roleName}
@@ -85,10 +87,18 @@ export const UpdateUserRoles = ({ id, roles }: UpdateUserRolesProps) => {
                   error={formState.errors.userRoles && formState.errors.userRoles[index].roleId}
                 />
               ))}
+              <div className="mt-7">
+                <InputField
+                  label="Revoke User Session(s)"
+                  type="checkbox"
+                  error={formState.errors['revokeUserSessions']}
+                  registration={register('revokeUserSessions')}
+                />
+              </div>
             </>
           )}
         </Form>
       </FormDrawer>
-    </>
+    </div>
   );
 };

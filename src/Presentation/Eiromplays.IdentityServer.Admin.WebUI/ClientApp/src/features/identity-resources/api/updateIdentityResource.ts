@@ -2,6 +2,8 @@ import { MutationConfig, queryClient, axios } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
+import { IdentityResource } from '@/features/identity-resources';
+
 export type UpdateIdentityResourceDTO = {
   identityResourceId: number;
   data: {
@@ -30,13 +32,41 @@ type UseUpdateIdentityResourceOptions = {
 
 export const useUpdateIdentityResource = ({ config }: UseUpdateIdentityResourceOptions = {}) => {
   return useMutation({
-    onSuccess: async (_, variables) => {
-      await queryClient.invalidateQueries(['identity-resource', variables.identityResourceId]);
-      toast.success('IdentityResource Updated');
+    onMutate: async (updatingIdentityResource) => {
+      await queryClient.cancelQueries([
+        'identity-resource',
+        updatingIdentityResource?.identityResourceId,
+      ]);
+
+      const previousIdentityResource = queryClient.getQueryData<IdentityResource>([
+        'identity-resource',
+        updatingIdentityResource?.identityResourceId,
+      ]);
+
+      queryClient.setQueryData(
+        ['identity-resource', updatingIdentityResource?.identityResourceId],
+        {
+          ...previousIdentityResource,
+          ...updatingIdentityResource.data,
+          id: updatingIdentityResource.identityResourceId,
+        }
+      );
+
+      return { previousIdentityResource };
     },
-    onError: (error) => {
+    onError: (error, __, context: any) => {
       toast.error('Failed to update IdentityResource');
       toast.error(error.response?.data);
+      if (context?.previousIdentityResource) {
+        queryClient.setQueryData(
+          ['identity-resource', context.previousIdentityResource.id],
+          context.previousIdentityResource
+        );
+      }
+    },
+    onSuccess: async (response, variables) => {
+      await queryClient.refetchQueries(['identity-resource', variables.identityResourceId]);
+      toast.success('IdentityResource Updated');
     },
     ...config,
     mutationFn: updateIdentityResource,

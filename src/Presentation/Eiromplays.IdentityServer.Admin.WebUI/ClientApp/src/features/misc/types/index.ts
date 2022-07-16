@@ -3,6 +3,10 @@ export type DashboardStats = {
   brandCount: number;
   userCount: number;
   roleCount: number;
+  clientCount: number;
+  identityResourceCount: number;
+  apiResourceCount: number;
+  apiScopeCount: number;
   DataEnterBarChart: ChartSeries[];
 };
 

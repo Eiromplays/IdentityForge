@@ -7,9 +7,9 @@ export const getDashboardStats = (): Promise<DashboardStats> => {
   return axios.get(`/dashboard/stats`);
 };
 
-type QueryFnType = typeof getDashboardStats;
+export type QueryFnType = typeof getDashboardStats;
 
-type UseStatsOptions = {
+export type UseStatsOptions = {
   config?: QueryConfig<QueryFnType>;
 };
 

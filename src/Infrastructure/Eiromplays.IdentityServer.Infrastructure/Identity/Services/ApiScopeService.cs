@@ -116,6 +116,9 @@ internal class ApiScopeService : IApiScopeService
         return string.Format(_t["ApiScope {0} Registered."], apiScope.Id);
     }
 
+    public Task<int> GetCountAsync(CancellationToken cancellationToken) =>
+        _db.ApiScopes.AsNoTracking().CountAsync(cancellationToken);
+
     #region Entity Queries
 
     // TODO: Move to repository or something like that :)

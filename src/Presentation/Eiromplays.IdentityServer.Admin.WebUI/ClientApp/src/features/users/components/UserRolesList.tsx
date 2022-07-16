@@ -19,12 +19,12 @@ export const UserRolesList = ({ id }: UserRolesListProps) => {
     );
   }
 
-  if (!userRolesQuery.data) return null;
+  if (!userRolesQuery?.data) return null;
 
   return (
     <>
       <Table<UserRole>
-        data={userRolesQuery.data}
+        data={userRolesQuery?.data || []}
         columns={[
           {
             title: 'Id',
@@ -51,7 +51,7 @@ export const UserRolesList = ({ id }: UserRolesListProps) => {
           },
         ]}
       />
-      <UpdateUserRoles id={id} roles={userRolesQuery.data} />
+      <UpdateUserRoles id={id} roles={userRolesQuery?.data || []} />
     </>
   );
 };

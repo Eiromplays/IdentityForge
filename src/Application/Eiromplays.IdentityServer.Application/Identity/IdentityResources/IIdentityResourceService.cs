@@ -11,4 +11,6 @@ public interface IIdentityResourceService : ITransientService
     Task DeleteAsync(int identityResourceId, CancellationToken cancellationToken = default);
 
     Task<string> CreateAsync(CreateIdentityResourceRequest request, CancellationToken cancellationToken = default);
+
+    Task<int> GetCountAsync(CancellationToken cancellationToken = default);
 }

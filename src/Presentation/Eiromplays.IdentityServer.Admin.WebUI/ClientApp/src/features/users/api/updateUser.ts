@@ -2,6 +2,8 @@ import { axios, MutationConfig, queryClient } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
+import { User } from '@/features/users';
+
 export type UpdateUserDTO = {
   userId: string;
   data: {
@@ -48,23 +50,37 @@ export const updateUser = async ({ userId, data }: UpdateUserDTO) => {
   return axios.put(`/users/${userId}`, { UpdateUserRequest: data });
 };
 
-type UseUpdateUserOptions = {
+export type UseUpdateUserOptions = {
   config?: MutationConfig<typeof updateUser>;
 };
 
 export const useUpdateUser = ({ config }: UseUpdateUserOptions = {}) => {
-  const updateProfileMutation = useMutation({
+  return useMutation({
+    onMutate: async (updatingUser) => {
+      await queryClient.cancelQueries(['user', updatingUser?.userId]);
+
+      const previousUser = queryClient.getQueryData<User>(['user', updatingUser?.userId]);
+
+      queryClient.setQueryData(['user', updatingUser?.userId], {
+        ...previousUser,
+        ...updatingUser.data,
+        id: updatingUser.userId,
+      });
+
+      return { previousUser };
+    },
+    onError: (error, __, context: any) => {
+      toast.error('Failed to update user');
+      toast.error(error.response?.data);
+      if (context?.previousUser) {
+        queryClient.setQueryData(['user', context.previousUser.id], context.previousUser);
+      }
+    },
     onSuccess: async (_, variables) => {
       await queryClient.refetchQueries(['user', variables.userId]);
       toast.success(`${variables.data?.username} has been updated successfully`);
     },
-    onError: (error) => {
-      toast.error('Failed to update user');
-      toast.error(error.response?.data);
-    },
     ...config,
     mutationFn: updateUser,
   });
-
-  return { updateUserMutation: updateProfileMutation };
 };

@@ -42,6 +42,8 @@ internal static class Startup
                 .AddJsonFile($"{configurationsDirectory}/identitydata.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"{configurationsDirectory}/spa.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"{configurationsDirectory}/spa.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"{configurationsDirectory}/cloudflare.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"{configurationsDirectory}/cloudflare.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();
         });
         return host;

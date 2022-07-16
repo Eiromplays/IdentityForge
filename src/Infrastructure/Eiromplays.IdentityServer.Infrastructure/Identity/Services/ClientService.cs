@@ -114,6 +114,9 @@ internal class ClientService : IClientService
         return string.Format(_t["Client {0} Registered."], client.Id);
     }
 
+    public Task<int> GetCountAsync(CancellationToken cancellationToken) =>
+        _db.Clients.AsNoTracking().CountAsync(cancellationToken);
+
     #region Entity Queries
 
     public async Task<bool> ExistsWithClientIdAsync(string clientId, CancellationToken cancellationToken, int? exceptId = null)

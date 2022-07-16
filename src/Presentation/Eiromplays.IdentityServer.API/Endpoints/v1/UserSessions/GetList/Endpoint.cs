@@ -20,12 +20,12 @@ public class Endpoint : EndpointWithoutRequest<List<UserSessionDto>>
             s.Summary = "Get a list of all user sessions.";
         });
         Version(1);
-        Policies(EiaPermission.NameFor(EiaAction.View, EiaResource.Users));
+        Policies(EiaPermission.NameFor(EiaAction.View, EiaResource.UserSessions));
     }
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        Response = await _userService.GetAllBffUserSessions(ct);
+        Response = await _userService.GetAllBffUserSessionsAsync(ct);
 
         await SendAsync(Response, cancellation: ct);
     }

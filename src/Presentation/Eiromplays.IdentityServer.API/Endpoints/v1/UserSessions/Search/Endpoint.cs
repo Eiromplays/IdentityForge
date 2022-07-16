@@ -21,7 +21,7 @@ public class Endpoint : Endpoint<UserSessionListFilter, PaginationResponse<UserS
             s.Summary = "Search user sessions using available filters.";
         });
         Version(1);
-        Policies(EiaPermission.NameFor(EiaAction.Search, EiaResource.PersistedGrants));
+        Policies(EiaPermission.NameFor(EiaAction.Search, EiaResource.UserSessions));
     }
 
     public override async Task HandleAsync(UserSessionListFilter request, CancellationToken ct)

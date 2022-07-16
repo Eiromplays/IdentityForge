@@ -13,4 +13,6 @@ public interface IClientService : ITransientService
     Task<string> CreateAsync(CreateClientRequest request, CancellationToken cancellationToken = default);
 
     Task<bool> ExistsWithClientIdAsync(string clientId, CancellationToken cancellationToken = default, int? exceptId = null);
+
+    Task<int> GetCountAsync(CancellationToken cancellationToken);
 }
