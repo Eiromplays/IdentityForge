@@ -35,7 +35,7 @@ internal partial class UserService
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        var user = await _userManager.Users.Where(u => u.Id == userId).FirstOrDefaultAsync(cancellationToken);
+        var user = await _userManager.FindByIdAsync(userId);
 
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
 
@@ -46,9 +46,12 @@ internal partial class UserService
             // Get count of users in Admin Role
             int adminCount = (await _userManager.GetUsersInRoleAsync(EIARoles.Administrator)).Count;
 
-            if (adminCount <= 2)
+            // TODO: Add an option to specify the number of admins required to exist in the system.
+            // TODO: Add an option to specify the maximum number of admins that can exist in the system.
+            // If there is only one admin user, throw an error to prevent disabling the last admin user.
+            if (adminCount <= 1)
             {
-                throw new ConflictException(_t["Tenant should have at least 2 Admins."]);
+                throw new BadRequestException(_t["Cannot remove the last admin."]);
             }
         }
 
@@ -70,7 +73,7 @@ internal partial class UserService
             }
         }
 
-        // Revoke all sessions for the user, to update the roles.
+        // Revoke all user sessions for the user, to update their roles.
         if (request.RevokeUserSessions)
             await RemoveBffSessionsAsync(userId, cancellationToken);
 

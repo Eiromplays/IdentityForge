@@ -21,6 +21,7 @@ public static class EiaResource
     public const string Hangfire = nameof(Hangfire);
     public const string Users = nameof(Users);
     public const string UserRoles = nameof(UserRoles);
+    public const string UserClaims = nameof(UserClaims);
     public const string Roles = nameof(Roles);
     public const string RoleClaims = nameof(RoleClaims);
     public const string PersistedGrants = nameof(PersistedGrants);
@@ -47,6 +48,10 @@ public static class EiaPermissions
         new("Export Users", EiaAction.Export, EiaResource.Users),
         new("View UserRoles", EiaAction.View, EiaResource.UserRoles),
         new("Update UserRoles", EiaAction.Update, EiaResource.UserRoles),
+        new("View UserClaims", EiaAction.View, EiaResource.UserClaims),
+        new("Create UserClaims", EiaAction.Create, EiaResource.UserClaims),
+        new("Update UserClaims", EiaAction.Update, EiaResource.UserClaims),
+        new("Delete UserClaims", EiaAction.Delete, EiaResource.UserClaims),
         new("Search Roles", EiaAction.Search, EiaResource.Roles),
         new("View Roles", EiaAction.View, EiaResource.Roles),
         new("Create Roles", EiaAction.Create, EiaResource.Roles),

@@ -24,3 +24,10 @@ export type UserRole = {
   description: string;
   enabled: boolean;
 };
+
+export type UserClaim = {
+  type: string;
+  value: string;
+  valueType: string;
+  issuer: string;
+};

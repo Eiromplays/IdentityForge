@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.TwoFactorAuthentication;
 using Eiromplays.IdentityServer.Application.Identity.Sessions;
+using Eiromplays.IdentityServer.Application.Identity.Users.Claims;
 using Eiromplays.IdentityServer.Application.Identity.Users.Logins;
 using Eiromplays.IdentityServer.Application.Identity.Users.Password;
 
@@ -85,4 +86,16 @@ public interface IUserService : ITransientService
     Task<string> DisableTwoFactorAsync(string? userId);
     Task<Result<TwoFactorAuthenticationResponse>> GetTwoFactorAuthenticationAsync(ClaimsPrincipal claimsPrincipal);
     Task<IList<string>> GetValidTwoFactorProvidersAsync(string? userId);
+
+    #region User Claims
+
+    Task<List<UserClaimDto>> GetClaimsAsync(string userId);
+
+    Task<string> AddClaimAsync(string userId, AddUserClaimRequest request);
+
+    Task<string> RemoveClaimAsync(string userId, RemoveUserClaimRequest request);
+
+    Task<string> UpdateClaimAsync(string userId, UpdateUserClaimRequest request);
+
+    #endregion
 }
