@@ -250,21 +250,23 @@ internal partial class UserService
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
 
         string currentImage = user.ProfilePicture ?? string.Empty;
-        if (request.Image is not null || request.DeleteCurrentImage)
+        if (request.Image is not null)
         {
+            request.Image.Name = $"{user.Id}_{request.Image.Name}";
             user.ProfilePicture =
                 await _fileStorage.UploadAsync<ApplicationUser>(request.Image, FileType.Image, cancellationToken);
-            if (request.DeleteCurrentImage && !string.IsNullOrEmpty(currentImage))
+        }
+
+        if ((request.Image is not null || request.DeleteCurrentImage) && !string.IsNullOrWhiteSpace(currentImage))
+        {
+            if (!currentImage.IsValidUri())
             {
-                if (currentImage.IsValidUri())
-                {
-                    await _fileStorage.RemoveAsync(currentImage, cancellationToken);
-                }
-                else
-                {
-                    string root = Directory.GetCurrentDirectory();
-                    await _fileStorage.RemoveAsync(Path.Combine(root, currentImage), cancellationToken);
-                }
+                string root = Directory.GetCurrentDirectory();
+                await _fileStorage.RemoveAsync(Path.Combine(root, currentImage), cancellationToken);
+            }
+            else
+            {
+                await _fileStorage.RemoveAsync(currentImage, cancellationToken);
             }
         }
 

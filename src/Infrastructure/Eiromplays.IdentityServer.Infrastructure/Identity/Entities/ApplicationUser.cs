@@ -5,9 +5,9 @@ namespace Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 
 public class ApplicationUser : IdentityUser, IAuditableEntity
 {
-    [PersonalData]
+    [ProtectedPersonalData]
     public string FirstName { get; set; } = default!;
-    [PersonalData]
+    [ProtectedPersonalData]
     public string LastName { get; set; } = default!;
 
     public bool IsActive { get; set; }
@@ -23,12 +23,6 @@ public class ApplicationUser : IdentityUser, IAuditableEntity
 
     [PersonalData]
     public string? GravatarEmail { get; set; }
-
-    [PersonalData]
-    public double Credits { get; set; }
-
-    [PersonalData]
-    public string? DiscordId { get; set; }
 
     public DateTime CreatedOn { get; set;  }
     public string? CreatedBy { get; set; }

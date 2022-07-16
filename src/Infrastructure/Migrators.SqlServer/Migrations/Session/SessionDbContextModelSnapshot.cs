@@ -3,12 +3,12 @@ using System;
 using Duende.Bff.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Migrators.PostgreSql.Migrations.Session
+namespace Migrators.SqlServer.Migrations.Session
 {
     [DbContext(typeof(SessionDbContext))]
     partial class SessionDbContextModelSnapshot : ModelSnapshot
@@ -18,9 +18,9 @@ namespace Migrators.PostgreSql.Migrations.Session
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.7")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("Duende.Bff.EntityFramework.UserSessionEntity", b =>
                 {
@@ -28,50 +28,53 @@ namespace Migrators.PostgreSql.Migrations.Session
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<string>("ApplicationName")
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("Expires")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Key")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime>("Renewed")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("SessionId")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("SubjectId")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Ticket")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Expires");
 
                     b.HasIndex("ApplicationName", "Key")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[ApplicationName] IS NOT NULL");
 
                     b.HasIndex("ApplicationName", "SessionId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[ApplicationName] IS NOT NULL AND [SessionId] IS NOT NULL");
 
                     b.HasIndex("ApplicationName", "SubjectId", "SessionId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[ApplicationName] IS NOT NULL AND [SessionId] IS NOT NULL");
 
                     b.ToTable("UserSessions");
                 });

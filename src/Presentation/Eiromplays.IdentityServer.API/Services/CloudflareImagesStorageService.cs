@@ -33,9 +33,7 @@ public class CloudflareImagesStorageService : IFileStorageService
         where T : class
     {
         if (request?.Data is null)
-        {
             return string.Empty;
-        }
 
         if ((!_accountConfiguration.ProfilePictureConfiguration.Enabled ||
              _accountConfiguration.ProfilePictureConfiguration.ProfilePictureUploadType is ProfilePictureUploadType
@@ -60,13 +58,17 @@ public class CloudflareImagesStorageService : IFileStorageService
             _httpClient.BaseAddress,
             new MultipartFormDataContent
             {
-                { new ByteArrayContent(Convert.FromBase64String(base64Data)), "\"file\"", $"\"{request.Name}.{request.Extension}\""}
+                { new ByteArrayContent(Convert.FromBase64String(base64Data)), "\"file\"", $"\"{request.Name}{request.Extension}\""}
             },
             cancellationToken);
 
         string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
 
+        Console.WriteLine($"Response {responseContent}");
         var responseObject = JsonSerializer.Deserialize<CloudflareImagesUploadResponse>(responseContent);
+
+        Console.WriteLine($"Response Object {JsonSerializer.Serialize(responseObject)}");
+
         return responseObject?.Result.Variants[0] ?? string.Empty;
     }
 

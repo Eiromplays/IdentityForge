@@ -1,9 +1,12 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using Amazon;
+using Amazon.Runtime;
 using Duende.Bff;
 using Duende.Bff.Yarp;
 using Eiromplays.IdentityServer.Application.Common.Caching;
+using Eiromplays.IdentityServer.Application.Common.Configurations;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Identity;
 using Eiromplays.IdentityServer.Domain.Enums;
@@ -132,6 +135,10 @@ public static class Startup
     // Registers AWS Secrets Manager as a source for configuration values.
     private static ConfigurationManager AddAwsSecretsManager(this ConfigurationManager configuration, IWebHostEnvironment webHostEnvironment)
     {
+        var awsSecretsManagerConfiguration = configuration.GetSection(nameof(AwsSecretsManagerConfiguration)).Get<AwsSecretsManagerConfiguration>();
+
+        if (awsSecretsManagerConfiguration is null or { Enabled: false}) return configuration;
+
         string[] allowedPrefixes =
         {
             $"{webHostEnvironment.EnvironmentName}/{webHostEnvironment.ApplicationName}/",
@@ -139,21 +146,22 @@ public static class Startup
             "Dev/EiromplaysIdentityServer"
         };
 
-        configuration.AddSecretsManager(configurator: config =>
-        {
-            config.KeyGenerator = (_, name) =>
+        configuration.AddSecretsManager(
+            configurator: config =>
             {
-                string prefix = allowedPrefixes.First(name.StartsWith);
+                config.KeyGenerator = (_, name) =>
+                {
+                    string prefix = allowedPrefixes.First(name.StartsWith);
 
-                name = name.Replace(prefix, string.Empty).Replace("__", ":");
-                if (name.StartsWith(":"))
-                    name = name[1..];
+                    name = name.Replace(prefix, string.Empty).Replace("__", ":");
+                    if (name.StartsWith(":"))
+                        name = name[1..];
 
-                return name;
-            };
+                    return name;
+                };
 
-            config.SecretFilter = secret => allowedPrefixes.Any(allowed => secret.Name.StartsWith(allowed));
-        });
+                config.SecretFilter = secret => allowedPrefixes.Any(allowed => secret.Name.StartsWith(allowed));
+            });
 
         return configuration;
     }
@@ -173,7 +181,8 @@ public static class Startup
         return services.Configure<AccountConfiguration>(configuration.GetSection(nameof(AccountConfiguration)))
             .Configure<IdentityServerData>(configuration.GetSection(nameof(IdentityServerData)))
             .Configure<IdentityData>(configuration.GetSection(nameof(IdentityData)))
-            .Configure<CloudflareConfiguration>(configuration.GetSection(nameof(CloudflareConfiguration)));
+            .Configure<CloudflareConfiguration>(configuration.GetSection(nameof(CloudflareConfiguration)))
+            .Configure<AwsSecretsManagerConfiguration>(configuration.GetSection(nameof(AwsSecretsManagerConfiguration)));
     }
 
     private static IApplicationBuilder UseIdentityServer(this IApplicationBuilder builder, ProjectType projectType)

@@ -35,10 +35,13 @@ environment=${environment:-Development}
 prerequisites=${prerequisites:-true}
 dbcontext=${dbcontext:-ALL}
 
-appsettingsFile="appsettings.$environment.json"
+appsettingsFile="database.json"
 
 # Set the path to the startup project
 cd $PWD/../src/Presentation/Eiromplays.IdentityServer
+
+# Make sure dotnet-ef is up to date
+dotnet tool update --global dotnet-ef
 
 databaseProviders=(PostgreSql SqlServer MySql Sqlite)
 
@@ -50,25 +53,22 @@ readarray -t dbContexts <<<"$dbContextList"
 unset dbContexts[0]
 unset dbContexts[1]
 
-# If prerequisites is enabled, then install all the required dependencies
-if [ "$prerequisites" = "true" ]; then
-    echo "Installing prerequisites"
-    sudo apt-get install jq -y
-    echo "Successfully installed prerequisites"
-fi
 
 currentDatabaseProvider=$(jq -r '.DatabaseConfiguration.DatabaseProvider' $appsettingsFile)
 currentApplyDefaultSeeds=$(jq -r '.DatabaseConfiguration.ApplyDefaultSeeds' $appsettingsFile)
 
 for databaseProvider in "${databaseProviders[@]}"
 do
-    echo "$databaseProvider"
     if [ "$migrationProvider" = "ALL" ] || [ "$databaseProvider" = "$migrationProvider" ]; then
         cat <<< $(jq --arg databaseProvider "$databaseProvider" '.DatabaseConfiguration.DatabaseProvider |= $databaseProvider' $appsettingsFile) > $appsettingsFile
-        echo "Starting migrations for: $databaseProvider"
+        echo "Starting migrations for: $databaseProvider $dbContexts[@]"
         for dbContext in "${dbContexts[@]}"
         do
             dbContextName=${dbContext##*.}
+            if [ "X""$dbContextName" == "X" ]
+            then
+                continue
+            fi
             echo "name: $dbContextName context: $dbcontext"
             if [ "$dbContextName" != "$dbcontext" ] && [ "$dbcontext" != "ALL" ]; then
                 continue

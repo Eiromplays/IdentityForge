@@ -1,10 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Migrators.PostgreSql.Migrations.Session
+namespace Migrators.SqlServer.Migrations.Session
 {
     public partial class Initial : Migration
     {
@@ -15,15 +14,15 @@ namespace Migrators.PostgreSql.Migrations.Session
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ApplicationName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
-                    SubjectId = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    SessionId = table.Column<string>(type: "text", nullable: true),
-                    Created = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    Renewed = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    Expires = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    Ticket = table.Column<string>(type: "text", nullable: false),
-                    Key = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ApplicationName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    SubjectId = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    SessionId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Renewed = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Expires = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Ticket = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Key = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -34,19 +33,27 @@ namespace Migrators.PostgreSql.Migrations.Session
                 name: "IX_UserSessions_ApplicationName_Key",
                 table: "UserSessions",
                 columns: new[] { "ApplicationName", "Key" },
-                unique: true);
+                unique: true,
+                filter: "[ApplicationName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserSessions_ApplicationName_SessionId",
                 table: "UserSessions",
                 columns: new[] { "ApplicationName", "SessionId" },
-                unique: true);
+                unique: true,
+                filter: "[ApplicationName] IS NOT NULL AND [SessionId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserSessions_ApplicationName_SubjectId_SessionId",
                 table: "UserSessions",
                 columns: new[] { "ApplicationName", "SubjectId", "SessionId" },
-                unique: true);
+                unique: true,
+                filter: "[ApplicationName] IS NOT NULL AND [SessionId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserSessions_Expires",
+                table: "UserSessions",
+                column: "Expires");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

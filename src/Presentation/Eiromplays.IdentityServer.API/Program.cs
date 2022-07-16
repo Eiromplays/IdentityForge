@@ -10,7 +10,6 @@ using Eiromplays.IdentityServer.Infrastructure.Common;
 try
 {
     var builder = WebApplication.CreateBuilder(args);
-
     builder.Host.AddConfigurations();
     builder.Host.UseSerilog((_, config) =>
     {
