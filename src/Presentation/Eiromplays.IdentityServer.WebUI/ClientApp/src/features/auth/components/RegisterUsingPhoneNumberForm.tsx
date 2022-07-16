@@ -68,7 +68,6 @@ export const RegisterUsingPhoneNumberForm = ({ onSuccess }: RegisterUsingPhoneNu
               error={formState.errors['email']}
               registration={register('email')}
             />
-
             <CustomInputField
               label="Phone Number"
               error={formState.errors['phoneNumber']}

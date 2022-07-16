@@ -2,10 +2,13 @@ using System.Text;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Mailing;
 using Eiromplays.IdentityServer.Application.Common.Sms;
+using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Login;
+using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Login;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Infrastructure.Common;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Models;
+using LanguageExt.Common;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 
@@ -49,6 +52,15 @@ internal partial class UserService
         return _t[$"Please check {user.Email} to verify your account!"];
     }
 
+    public async Task<Result<ResendEmailVerificationResponse>> ResendEmailVerificationAsync(ResendEmailVerificationRequest request, string origin)
+    {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+
+        return user is null
+            ? new Result<ResendEmailVerificationResponse>(
+                new InternalServerException(_t["An error occurred while trying to resend email verification."]))
+            : new Result<ResendEmailVerificationResponse>(new ResendEmailVerificationResponse { Message = await SendEmailVerificationAsync(user, origin)});
+    }
 
     private async Task<string> SendPhoneNumberVerificationAsync(ApplicationUser user, string? newPhoneNumber = null)
     {
@@ -61,6 +73,21 @@ internal partial class UserService
         _jobService.Enqueue(() => _smsService.SendAsync(smsRequest, CancellationToken.None));
 
         return _t["A verification code has been sent to your phone number."];
+    }
+
+    public async Task<Result<ResendPhoneNumberVerificationResponse>> ResendPhoneNumberVerificationAsync(ResendPhoneNumberVerificationRequest request, CancellationToken cancellationToken)
+    {
+        var user = await _userManager.Users.FirstOrDefaultAsync(
+            x => x.PhoneNumber.Equals(request.PhoneNumber), cancellationToken);
+
+        return user is null
+            ? new Result<ResendPhoneNumberVerificationResponse>(
+                new InternalServerException(_t["An error occurred while trying to resend phone number verification."]))
+            : new Result<ResendPhoneNumberVerificationResponse>(new ResendPhoneNumberVerificationResponse
+            {
+                Message = await SendPhoneNumberVerificationAsync(user), ReturnUrl =
+                $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/verify-phone-number?userId={user.Id}"
+            });
     }
 
     public async Task<ConfirmEmailResponse> ConfirmEmailAsync(ConfirmEmailRequest request, string origin, CancellationToken cancellationToken)

@@ -1,13 +1,11 @@
 ﻿using System.Security.Claims;
 using Duende.IdentityServer.Extensions;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
-using Eiromplays.IdentityServer.Application.Common.Mailing;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Domain.Common;
 using Eiromplays.IdentityServer.Domain.Identity;
 using Eiromplays.IdentityServer.Infrastructure.Common.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
-using Eiromplays.IdentityServer.Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Shared.Authorization;
@@ -146,9 +144,7 @@ internal partial class UserService
                 messages.Add(emailVerificationMessage);
         }
 
-        if (_signInManager.Options.SignIn.RequireConfirmedPhoneNumber &&
-            !_signInManager.Options.SignIn.RequireConfirmedEmail &&
-            !string.IsNullOrWhiteSpace(user.PhoneNumber))
+        if (_signInManager.Options.SignIn.RequireConfirmedPhoneNumber && !string.IsNullOrWhiteSpace(user.PhoneNumber))
         {
             string phoneNumberVerificationMessage = await SendPhoneNumberVerificationAsync(user);
             if (!string.IsNullOrWhiteSpace(phoneNumberVerificationMessage))
@@ -281,12 +277,13 @@ internal partial class UserService
 
         var response = new UpdateProfileResponse { Message = string.Join(Environment.NewLine, messages) };
 
-        if (user.PhoneNumber?.Equals(request.PhoneNumber, StringComparison.OrdinalIgnoreCase) == false)
+        if (user.PhoneNumber?.Equals(request.PhoneNumber, StringComparison.OrdinalIgnoreCase) == false && !string.IsNullOrWhiteSpace(request.PhoneNumber))
         {
             user.PhoneNumberConfirmed = false;
             user.PhoneNumber = request.PhoneNumber;
             response.LogoutRequired = true;
-            if (!string.IsNullOrWhiteSpace(request.PhoneNumber))
+
+            if (_signInManager.Options.SignIn.RequireConfirmedPhoneNumber)
             {
                 string phoneNumberVerificationMessage = await SendPhoneNumberVerificationAsync(user);
                 if (!string.IsNullOrWhiteSpace(phoneNumberVerificationMessage))
@@ -297,14 +294,21 @@ internal partial class UserService
             }
         }
 
-        if (!user.Email.Equals(request.Email, StringComparison.OrdinalIgnoreCase))
+        if (!user.Email.Equals(request.Email, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(request.Email))
         {
             user.EmailConfirmed = false;
-            string emailVerificationMessage = await SendEmailVerificationAsync(user, origin);
-            if (!string.IsNullOrWhiteSpace(emailVerificationMessage))
-                messages.Add(emailVerificationMessage);
-
             response.LogoutRequired = true;
+
+            if (_signInManager.Options.SignIn.RequireConfirmedEmail)
+            {
+                string emailVerificationMessage = await SendEmailVerificationAsync(user, origin);
+                if (!string.IsNullOrWhiteSpace(emailVerificationMessage))
+                    messages.Add(emailVerificationMessage);
+            }
+            else
+            {
+                user.Email = request.Email;
+            }
         }
 
         var result = await _userManager.UpdateAsync(user);

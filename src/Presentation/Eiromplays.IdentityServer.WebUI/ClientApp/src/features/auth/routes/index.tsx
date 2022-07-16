@@ -15,6 +15,8 @@ import { Login2fa } from './Login2fa';
 import { Logout } from './Logout';
 import { NotAllowed } from './NotAllowed';
 import { Register } from './Register';
+import { ResendEmailConfirmation } from './ResendEmailConfirmation';
+import { ResendPhoneNumberConfirmation } from './ResendPhoneNumberConfirmation';
 
 export const AuthRoutes: Route<LocationGenerics> = {
   path: 'auth',
@@ -34,5 +36,7 @@ export const AuthRoutes: Route<LocationGenerics> = {
     { path: 'reset-password', element: <ResetPassword /> },
     { path: 'logout', element: <Logout /> },
     { path: 'lockout', element: <Lockout /> },
+    { path: 'resend-email-confirmation', element: <ResendEmailConfirmation /> },
+    { path: 'resend-phone-number-confirmation', element: <ResendPhoneNumberConfirmation /> },
   ],
 };

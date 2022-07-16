@@ -29,12 +29,12 @@ public class UserResolver : IUserResolver<ApplicationUser>
             LoginPolicy.Username => await _userManager.FindByNameAsync(identifier),
             LoginPolicy.Email => await _userManager.FindByEmailAsync(identifier),
             LoginPolicy.PhoneNumber => await _userManager.Users.FirstOrDefaultAsync(
-                x => x.PhoneNumber.ToLower().Equals(identifier.ToLower()), ct),
+                x => x.PhoneNumber.Equals(identifier), ct),
             LoginPolicy.Id => await _userManager.FindByIdAsync(identifier),
             LoginPolicy.All => await _userManager.FindByEmailAsync(identifier) ??
                                await _userManager.FindByNameAsync(identifier) ??
                                await _userManager.Users.FirstOrDefaultAsync(
-                                   x => x.PhoneNumber.ToLower().Equals(identifier.ToLower()), ct) ??
+                                   x => x.PhoneNumber.Equals(identifier), ct) ??
                                await _userManager.FindByIdAsync(identifier),
             _ => null
         };

@@ -94,6 +94,14 @@ export const LoginWithPhoneNumberForm = () => {
             Register
           </Link>
         </div>
+        <div className="text-sm">
+          <Link
+            to="../resend-phone-number-confirmation"
+            className="font-medium text-blue-600 hover:text-blue-500"
+          >
+            Resend Phone Number confirmation (SMS)
+          </Link>
+        </div>
       </div>
     </div>
   );

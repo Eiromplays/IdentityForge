@@ -59,7 +59,7 @@ export const LoginForm = () => {
           </>
         )}
       </Form>
-      <div className="mt-2 gap-5 flex items-center justify-center">
+      <div className="mt-2 gap-5 flex flex-wrap items-center justify-center">
         <div className="text-sm">
           <Link to="../forgot-password" className="font-medium text-blue-600 hover:text-blue-500">
             Forgot password?
@@ -68,6 +68,14 @@ export const LoginForm = () => {
         <div className="text-sm">
           <Link to="../register" className="font-medium text-blue-600 hover:text-blue-500">
             Register
+          </Link>
+        </div>
+        <div className="text-sm">
+          <Link
+            to="../resend-email-confirmation"
+            className="font-medium text-blue-600 hover:text-blue-500"
+          >
+            Resend email confirmation
           </Link>
         </div>
       </div>

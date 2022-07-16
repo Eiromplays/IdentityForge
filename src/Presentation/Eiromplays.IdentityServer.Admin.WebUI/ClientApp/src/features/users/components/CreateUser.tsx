@@ -1,5 +1,7 @@
-import { Button, Form, FormDrawer, InputField } from 'eiromplays-ui';
+import { Button, CustomInputField, Form, FormDrawer, InputField } from 'eiromplays-ui';
 import { HiOutlinePencil } from 'react-icons/hi';
+import { isPossiblePhoneNumber } from 'react-phone-number-input';
+import PhoneInputWithCountry from 'react-phone-number-input/react-hook-form';
 import * as z from 'zod';
 
 import { CreateUserDTO, useCreateUser } from '../api/createUser';
@@ -12,7 +14,10 @@ const schema = z
     email: z.string().min(1, 'Required'),
     password: z.string().min(1, 'Required'),
     confirmPassword: z.string().min(1, 'Required'),
-    phoneNumber: z.string(),
+    phoneNumber: z
+      .string()
+      .nullable()
+      .refine((v) => (v ? isPossiblePhoneNumber(v) : true), 'Invalid phone number'),
   })
   .refine((data) => data.confirmPassword === data.password, {
     message: 'Passwords do not match',
@@ -50,7 +55,7 @@ export const CreateUser = () => {
           }}
           schema={schema}
         >
-          {({ register, formState }) => (
+          {({ register, formState, control }) => (
             <>
               <InputField
                 label="Username"
@@ -85,11 +90,19 @@ export const CreateUser = () => {
                 error={formState.errors['confirmPassword']}
                 registration={register('confirmPassword')}
               />
-              <InputField
+              <CustomInputField
                 label="Phone Number"
-                type="tel"
                 error={formState.errors['phoneNumber']}
-                registration={register('phoneNumber')}
+                customInputField={
+                  <PhoneInputWithCountry
+                    className="bg-white dark:bg-gray-900 block px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm',
+                  'placeholder-gray-400 dark:placeholder-white focus:outline-none focus:ring-blue-500 dark:focus:ring-indigo-700 focus:border-blue-500',
+                  'dark:focus:border-indigo-900 sm:text-sm"
+                    name="phoneNumber"
+                    control={control}
+                    register={register('phoneNumber')}
+                  />
+                }
               />
             </>
           )}
