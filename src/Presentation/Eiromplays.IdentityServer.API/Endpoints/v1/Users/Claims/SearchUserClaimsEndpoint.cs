@@ -2,13 +2,13 @@ using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Application.Identity.Users.Claims;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.SearchUserClaims;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.Claims;
 
-public class Endpoint : Endpoint<UserClaimListFilter, PaginationResponse<UserClaimDto>>
+public class SearchUserClaimsEndpoint : Endpoint<UserClaimListFilter, PaginationResponse<UserClaimDto>>
 {
     private readonly IUserService _userService;
 
-    public Endpoint(IUserService userService)
+    public SearchUserClaimsEndpoint(IUserService userService)
     {
         _userService = userService;
     }

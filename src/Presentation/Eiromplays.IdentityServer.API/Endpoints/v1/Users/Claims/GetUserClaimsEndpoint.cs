@@ -1,13 +1,13 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Application.Identity.Users.Claims;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.GetUserClaims;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.Claims;
 
-public class Endpoint : Endpoint<Models.Request, List<UserClaimDto>>
+public class GetUserClaimsEndpoint : Endpoint<GetUserClaimsRequest, List<UserClaimDto>>
 {
     private readonly IUserService _userService;
 
-    public Endpoint(IUserService userService)
+    public GetUserClaimsEndpoint(IUserService userService)
     {
         _userService = userService;
     }
@@ -23,7 +23,7 @@ public class Endpoint : Endpoint<Models.Request, List<UserClaimDto>>
         Policies(EiaPermission.NameFor(EiaAction.View, EiaResource.UserClaims));
     }
 
-    public override async Task HandleAsync(Models.Request req, CancellationToken ct)
+    public override async Task HandleAsync(GetUserClaimsRequest req, CancellationToken ct)
     {
         Response = await _userService.GetClaimsAsync(req.Id);
 

@@ -115,6 +115,22 @@ export const UsersList = () => {
             title: '',
             field: 'id',
             Cell({ entry: { id } }) {
+              return (
+                <Link to={`${id}/providers`} search={search} className="block">
+                  <pre className={`text-sm`}>
+                    Providers{' '}
+                    <MatchRoute to={`${id}/providers`} pending>
+                      <Spinner size="md" className="inline-block" />
+                    </MatchRoute>
+                  </pre>
+                </Link>
+              );
+            },
+          },
+          {
+            title: '',
+            field: 'id',
+            Cell({ entry: { id } }) {
               return user.id !== id ? (
                 <Link to={id} search={search} className="block">
                   <pre className={`text-sm`}>

@@ -1,12 +1,12 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.UpdateUserClaim;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.Claims;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class UpdateUserClaimEndpoint : Endpoint<UpdateUserClaimModels.Request, UpdateUserClaimModels.Response>
 {
     private readonly IUserService _userService;
 
-    public Endpoint(IUserService userService)
+    public UpdateUserClaimEndpoint(IUserService userService)
     {
         _userService = userService;
     }
@@ -22,7 +22,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         Policies(EiaPermission.NameFor(EiaAction.Update, EiaResource.UserClaims));
     }
 
-    public override async Task HandleAsync(Models.Request req, CancellationToken ct)
+    public override async Task HandleAsync(UpdateUserClaimModels.Request req, CancellationToken ct)
     {
         Response.Message = await _userService.UpdateClaimAsync(req.Id, req.UpdateUserClaimRequest);
 

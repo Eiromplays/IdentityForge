@@ -5,12 +5,12 @@ import { UserClaim } from '@/features/users';
 
 import { useDeleteUserClaim } from '../api/deleteUserClaim';
 
-export type DeleteUserProps = {
+export type DeleteUserClaimProps = {
   id: string;
   userClaim: UserClaim;
 };
 
-export const DeleteUserClaim = ({ id, userClaim }: DeleteUserProps) => {
+export const DeleteUserClaim = ({ id, userClaim }: DeleteUserClaimProps) => {
   const deleteUserClaimMutation = useDeleteUserClaim();
 
   return (

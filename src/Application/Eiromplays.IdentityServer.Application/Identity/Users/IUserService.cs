@@ -104,4 +104,10 @@ public interface IUserService : ITransientService
     Task<string> UpdateClaimAsync(string userId, UpdateUserClaimRequest request);
 
     #endregion
+
+    #region User Logins
+
+    Task<PaginationResponse<UserLoginInfoDto>> SearchUserProvidersAsync(UserProviderListFilter filter, CancellationToken cancellationToken = default);
+
+    #endregion
 }

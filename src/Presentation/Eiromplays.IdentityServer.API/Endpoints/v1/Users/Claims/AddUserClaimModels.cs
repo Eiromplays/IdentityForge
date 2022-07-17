@@ -1,8 +1,8 @@
 using Eiromplays.IdentityServer.Application.Identity.Users.Claims;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.AddUserClaim;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.Claims;
 
-public class Models
+public class AddUserClaimModels
 {
     public class Request
     {

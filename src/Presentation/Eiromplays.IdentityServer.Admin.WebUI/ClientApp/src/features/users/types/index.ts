@@ -33,3 +33,9 @@ export type UserClaim = {
   createdOn: number;
   lastModifiedOn: number;
 };
+
+export type UserProvider = {
+  loginProvider: string;
+  providerKey: string;
+  providerDisplayName: string;
+};

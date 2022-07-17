@@ -78,6 +78,14 @@ export const User = () => {
                 </MatchRoute>
               </pre>
             </Link>
+            <Link to={`providers`} search={search} className="block">
+              <pre className={`text-sm`}>
+                Providers{' '}
+                <MatchRoute to={`providers`} pending>
+                  <Spinner size="md" className="inline-block" />
+                </MatchRoute>
+              </pre>
+            </Link>
           </div>
           <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-white">
             Personal details of the user.

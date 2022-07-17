@@ -1,12 +1,12 @@
 using Eiromplays.IdentityServer.Application.Identity.Users;
 
-namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.RemoveUserClaim;
+namespace Eiromplays.IdentityServer.API.Endpoints.v1.Users.Claims;
 
-public class Endpoint : Endpoint<Models.Request, Models.Response>
+public class RemoverUserClaimEndpoint : Endpoint<RemoveUserClaimModels.Request, RemoveUserClaimModels.Response>
 {
     private readonly IUserService _userService;
 
-    public Endpoint(IUserService userService)
+    public RemoverUserClaimEndpoint(IUserService userService)
     {
         _userService = userService;
     }
@@ -22,7 +22,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
         Policies(EiaPermission.NameFor(EiaAction.Delete, EiaResource.UserClaims));
     }
 
-    public override async Task HandleAsync(Models.Request req, CancellationToken ct)
+    public override async Task HandleAsync(RemoveUserClaimModels.Request req, CancellationToken ct)
     {
         Response.Message = await _userService.RemoveClaimAsync(req.Id, req.RemoveUserClaimRequest);
 
