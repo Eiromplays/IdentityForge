@@ -35,7 +35,7 @@ environment=${environment:-Development}
 prerequisites=${prerequisites:-true}
 dbcontext=${dbcontext:-ALL}
 
-appsettingsFile="database.json"
+appsettingsFile="Configurations/database.json"
 
 # Set the path to the startup project
 cd $PWD/../src/Presentation/Eiromplays.IdentityServer

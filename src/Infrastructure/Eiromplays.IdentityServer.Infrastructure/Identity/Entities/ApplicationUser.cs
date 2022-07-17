@@ -24,7 +24,7 @@ public class ApplicationUser : IdentityUser, IAuditableEntity
     [PersonalData]
     public string? GravatarEmail { get; set; }
 
-    public DateTime CreatedOn { get; set;  }
+    public DateTime CreatedOn { get; set; }
     public string? CreatedBy { get; set; }
 
     public string? LastModifiedBy { get; set; }

@@ -162,7 +162,8 @@ internal class RoleService : IRoleService
                 RoleId = role.Id,
                 ClaimType = EiaClaims.Permission,
                 ClaimValue = permission,
-                CreatedBy = _currentUser.GetUserId()
+                CreatedBy = _currentUser.GetUserId(),
+                LastModifiedBy = _currentUser.GetUserId()
             });
             await _db.SaveChangesAsync(cancellationToken);
         }

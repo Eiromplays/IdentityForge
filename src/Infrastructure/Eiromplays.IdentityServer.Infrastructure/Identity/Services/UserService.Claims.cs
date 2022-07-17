@@ -1,11 +1,30 @@
 ﻿using System.Security.Claims;
+using Ardalis.Specification.EntityFrameworkCore;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
+using Eiromplays.IdentityServer.Application.Common.Models;
+using Eiromplays.IdentityServer.Application.Common.Specification;
 using Eiromplays.IdentityServer.Application.Identity.Users.Claims;
+using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
+using Mapster;
+using Microsoft.EntityFrameworkCore;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
 internal partial class UserService
 {
+    public async Task<PaginationResponse<UserClaimDto>> SearchUserClaimsAsync(UserClaimListFilter filter, CancellationToken cancellationToken)
+    {
+        var spec = new EntitiesByPaginationFilterSpec<ApplicationUserClaim>(filter);
+
+        var sessions = await _db.UserClaims.WithSpecification(spec).ProjectToType<UserClaimDto>()
+            .ToListAsync(cancellationToken);
+
+        int count = await _db.UserClaims
+            .CountAsync(cancellationToken);
+
+        return new PaginationResponse<UserClaimDto>(sessions, count, filter.PageNumber, filter.PageSize);
+    }
+
     public async Task<List<UserClaimDto>> GetClaimsAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);

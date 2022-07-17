@@ -81,13 +81,19 @@ public interface IUserService : ITransientService
 
     Task DeleteAsync(string userId);
 
+    #region TwoFactorAuthentication
+
     Task<Result<GetEnableAuthenticatorResponse>> GetEnableTwoFactorAsync(string? userId);
     Task<Result<EnableAuthenticatorResponse>> EnableTwoFactorAsync(EnableAuthenticatorRequest req, ClaimsPrincipal claimsPrincipal);
     Task<string> DisableTwoFactorAsync(string? userId);
     Task<Result<TwoFactorAuthenticationResponse>> GetTwoFactorAuthenticationAsync(ClaimsPrincipal claimsPrincipal);
     Task<IList<string>> GetValidTwoFactorProvidersAsync(string? userId);
 
+    #endregion
+
     #region User Claims
+
+    Task<PaginationResponse<UserClaimDto>> SearchUserClaimsAsync(UserClaimListFilter filter, CancellationToken cancellationToken = default);
 
     Task<List<UserClaimDto>> GetClaimsAsync(string userId);
 

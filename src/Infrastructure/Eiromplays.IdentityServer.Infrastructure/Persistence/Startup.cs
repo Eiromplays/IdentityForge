@@ -93,9 +93,21 @@ internal static class Startup
                      e.MigrationsAssembly("Migrators.SqlServer"));
 
             case DatabaseProvider.MySql:
-                return builder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), e =>
-                     e.MigrationsAssembly("Migrators.MySql")
-                      .SchemaBehavior(MySqlSchemaBehavior.Ignore));
+                try
+                {
+                    return builder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), e =>
+                        e.MigrationsAssembly("Migrators.MySql")
+                            .SchemaBehavior(MySqlSchemaBehavior.Ignore));
+                }
+                catch (Exception exception)
+                {
+                    Logger.Error(
+                        exception,
+                        "Error while detecting MySQL server version, using latest supported version {MySqlServerVersion} instead",
+                        MySqlServerVersion.LatestSupportedServerVersion);
+                }
+
+                return builder.UseMySql(connectionString, MySqlServerVersion.LatestSupportedServerVersion, e => e.MigrationsAssembly("Migrators.MySql"));
 
             case DatabaseProvider.Sqlite:
                 return builder.UseSqlite(connectionString, e => e.MigrationsAssembly("Migrators.Sqlite"));
