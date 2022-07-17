@@ -4,7 +4,7 @@ import { useUserRoles } from '../api/getUserRoles';
 import { UpdateUserRoles } from '../components/UpdateUserRoles';
 import { UserRole } from '../types';
 
-type UserRolesListProps = {
+export type UserRolesListProps = {
   id: string;
 };
 

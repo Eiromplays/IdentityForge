@@ -2,4 +2,5 @@
 
 public class UserClaimListFilter : PaginationFilter
 {
+    public string UserId { get; set; } = default!;
 }

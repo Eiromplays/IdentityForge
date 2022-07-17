@@ -1,5 +1,12 @@
 import { useSearch } from '@tanstack/react-location';
-import { axios, MutationConfig, PaginationResponse, queryClient } from 'eiromplays-ui';
+import {
+  axios,
+  defaultPageIndex,
+  defaultPageSize,
+  MutationConfig,
+  PaginationResponse,
+  queryClient,
+} from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
@@ -27,10 +34,18 @@ export const useDeleteIdentityResource = ({ config }: UseDeleteIdentityResourceO
 
       const previousIdentityResources = queryClient.getQueryData<
         PaginationResponse<IdentityResource>
-      >(['search-identity-resources', pagination?.index ?? 1, pagination?.size ?? 10]);
+      >([
+        'search-identity-resources',
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
+      ]);
 
       queryClient.setQueryData(
-        ['search-identity-resources', pagination?.index ?? 1, pagination?.size ?? 10],
+        [
+          'search-identity-resources',
+          pagination?.index || defaultPageIndex,
+          pagination?.size || defaultPageSize,
+        ],
         previousIdentityResources?.data?.filter(
           (identityResource) => identityResource.id !== deletedIdentityResource.identityResourceId
         )
@@ -41,7 +56,11 @@ export const useDeleteIdentityResource = ({ config }: UseDeleteIdentityResourceO
     onError: (_, __, context: any) => {
       if (context?.previousIdentityResources) {
         queryClient.setQueryData(
-          ['search-identity-resources', pagination?.index ?? 1, pagination?.size ?? 10],
+          [
+            'search-identity-resources',
+            pagination?.index || defaultPageIndex,
+            pagination?.size || defaultPageSize,
+          ],
           context.previousIdentityResources
         );
       }
@@ -49,8 +68,8 @@ export const useDeleteIdentityResource = ({ config }: UseDeleteIdentityResourceO
     onSuccess: async () => {
       await queryClient.invalidateQueries([
         'search-identity-resources',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
       toast.success('IdentityResource deleted');
     },

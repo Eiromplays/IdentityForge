@@ -1,5 +1,12 @@
 import { useSearch } from '@tanstack/react-location';
-import { axios, MutationConfig, PaginationResponse, queryClient } from 'eiromplays-ui';
+import {
+  axios,
+  defaultPageIndex,
+  defaultPageSize,
+  MutationConfig,
+  PaginationResponse,
+  queryClient,
+} from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
@@ -14,7 +21,7 @@ export const deleteUser = ({ userId }: DeleteUserDTO) => {
   return axios.delete(`/users/${userId}`);
 };
 
-type UseDeleteUserOptions = {
+export type UseDeleteUserOptions = {
   config?: MutationConfig<typeof deleteUser>;
 };
 
@@ -23,16 +30,24 @@ export const useDeleteUser = ({ config }: UseDeleteUserOptions = {}) => {
 
   return useMutation({
     onMutate: async (deletedUser) => {
-      await queryClient.cancelQueries(['search-users']);
+      await queryClient.cancelQueries([
+        'search-users',
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
+      ]);
 
       const previousUsers = queryClient.getQueryData<PaginationResponse<User>>([
-        'search-roles',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        'search-users',
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
 
       queryClient.setQueryData(
-        ['search-users', pagination?.index ?? 1, pagination?.size ?? 10],
+        [
+          'search-users',
+          pagination?.index || defaultPageIndex,
+          pagination?.size || defaultPageSize,
+        ],
         previousUsers?.data?.filter((user) => user.id !== deletedUser.userId)
       );
 
@@ -41,7 +56,11 @@ export const useDeleteUser = ({ config }: UseDeleteUserOptions = {}) => {
     onError: (_, __, context: any) => {
       if (context?.previousUsers) {
         queryClient.setQueryData(
-          ['search-users', pagination?.index ?? 1, pagination?.size ?? 10],
+          [
+            'search-users',
+            pagination?.index || defaultPageIndex,
+            pagination?.size || defaultPageSize,
+          ],
           context.previousUsers
         );
       }
@@ -49,8 +68,8 @@ export const useDeleteUser = ({ config }: UseDeleteUserOptions = {}) => {
     onSuccess: async () => {
       await queryClient.invalidateQueries([
         'search-users',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
       toast.success('User deleted');
     },

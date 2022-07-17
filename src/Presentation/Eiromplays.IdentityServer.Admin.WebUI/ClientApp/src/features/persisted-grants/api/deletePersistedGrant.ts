@@ -1,5 +1,12 @@
 import { useSearch } from '@tanstack/react-location';
-import { axios, MutationConfig, PaginationResponse, queryClient } from 'eiromplays-ui';
+import {
+  axios,
+  defaultPageIndex,
+  defaultPageSize,
+  MutationConfig,
+  PaginationResponse,
+  queryClient,
+} from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
@@ -24,12 +31,16 @@ export const useDeletePersistedGrant = ({ config }: UseDeletePersistedGrantOptio
 
       const previousPersistedGrants = queryClient.getQueryData<PaginationResponse<PersistedGrant>>([
         'search-persisted-grants',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
 
       queryClient.setQueryData(
-        ['search-persisted-grants', pagination?.index ?? 1, pagination?.size ?? 10],
+        [
+          'search-persisted-grants',
+          pagination?.index || defaultPageIndex,
+          pagination?.size || defaultPageSize,
+        ],
         previousPersistedGrants?.data?.filter(
           (persistedGrant) => persistedGrant.key !== deletedPersistedGrant.persistedGrantKey
         )
@@ -40,7 +51,11 @@ export const useDeletePersistedGrant = ({ config }: UseDeletePersistedGrantOptio
     onError: (_, __, context: any) => {
       if (context?.previousPersistedGrants) {
         queryClient.setQueryData(
-          ['search-persisted-grants', pagination?.index ?? 1, pagination?.size ?? 10],
+          [
+            'search-persisted-grants',
+            pagination?.index || defaultPageIndex,
+            pagination?.size || defaultPageSize,
+          ],
           context.previousPersistedGrants
         );
       }
@@ -48,8 +63,8 @@ export const useDeletePersistedGrant = ({ config }: UseDeletePersistedGrantOptio
     onSuccess: async () => {
       await queryClient.invalidateQueries([
         'search-persisted-grants',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
       toast.success('Persisted Grant deleted');
     },

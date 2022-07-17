@@ -5,6 +5,8 @@ import {
   MessageResponse,
   queryClient,
   PaginationResponse,
+  defaultPageIndex,
+  defaultPageSize,
 } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
@@ -44,12 +46,16 @@ export const useCreateApiResource = ({ config }: UseCreateApiResourceOptions = {
 
       const previousApiResources = queryClient.getQueryData<PaginationResponse<ApiResource>>([
         'search-api-resources',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
 
       queryClient.setQueryData(
-        ['search-api-resources', pagination?.index ?? 1, pagination?.size ?? 10],
+        [
+          'search-api-resources',
+          pagination?.index || defaultPageIndex,
+          pagination?.size || defaultPageSize,
+        ],
         [...(previousApiResources?.data || []), newApiResource.data]
       );
 
@@ -60,7 +66,11 @@ export const useCreateApiResource = ({ config }: UseCreateApiResourceOptions = {
       toast.error(error.response?.data);
       if (context?.previousApiResources) {
         queryClient.setQueryData(
-          ['search-api-resources', pagination?.index ?? 1, pagination?.size ?? 10],
+          [
+            'search-api-resources',
+            pagination?.index || defaultPageIndex,
+            pagination?.size || defaultPageSize,
+          ],
           context.previousApiResources
         );
       }
@@ -68,8 +78,8 @@ export const useCreateApiResource = ({ config }: UseCreateApiResourceOptions = {
     onSuccess: async () => {
       await queryClient.invalidateQueries([
         'search-api-resources',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
       toast.success('ApiResource created');
     },

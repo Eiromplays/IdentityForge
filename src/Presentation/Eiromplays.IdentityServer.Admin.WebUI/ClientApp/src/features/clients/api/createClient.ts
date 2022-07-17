@@ -5,6 +5,8 @@ import {
   MessageResponse,
   queryClient,
   PaginationResponse,
+  defaultPageIndex,
+  defaultPageSize,
 } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
@@ -42,12 +44,16 @@ export const useCreateClient = ({ config }: UseCreateClientOptions = {}) => {
 
       const previousClients = queryClient.getQueryData<PaginationResponse<Client>>([
         'search-clients',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
 
       queryClient.setQueryData(
-        ['search-clients', pagination?.index ?? 1, pagination?.size ?? 10],
+        [
+          'search-clients',
+          pagination?.index || defaultPageIndex,
+          pagination?.size || defaultPageSize,
+        ],
         [...(previousClients?.data || []), newClient.data]
       );
 
@@ -58,7 +64,11 @@ export const useCreateClient = ({ config }: UseCreateClientOptions = {}) => {
       toast.error(error.response?.data);
       if (context?.previousClients) {
         queryClient.setQueryData(
-          ['search-clients', pagination?.index ?? 1, pagination?.size ?? 10],
+          [
+            'search-clients',
+            pagination?.index || defaultPageIndex,
+            pagination?.size || defaultPageSize,
+          ],
           context.previousClients
         );
       }
@@ -66,8 +76,8 @@ export const useCreateClient = ({ config }: UseCreateClientOptions = {}) => {
     onSuccess: async () => {
       await queryClient.invalidateQueries([
         'search-api-clients',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
       toast.success('Client created');
     },

@@ -13,7 +13,7 @@ public class Endpoint : Endpoint<Models.Request, Models.Response>
 
     public override void Configure()
     {
-        Delete("/users/{Id}/claims");
+        Post("/users/{Id}/claims-delete");
         Summary(s =>
         {
             s.Summary = "Remove a claim from a user";

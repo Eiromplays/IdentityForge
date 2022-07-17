@@ -1,5 +1,12 @@
 import { useSearch } from '@tanstack/react-location';
-import { axios, MutationConfig, PaginationResponse, queryClient } from 'eiromplays-ui';
+import {
+  axios,
+  defaultPageIndex,
+  defaultPageSize,
+  MutationConfig,
+  PaginationResponse,
+  queryClient,
+} from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
@@ -27,12 +34,16 @@ export const useDeleteApiResource = ({ config }: UseDeleteApiResourceResourceOpt
 
       const previousApiResources = queryClient.getQueryData<PaginationResponse<ApiResource>>([
         'search-api-resources',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
 
       queryClient.setQueryData(
-        ['search-api-resources', pagination?.index ?? 1, pagination?.size ?? 10],
+        [
+          'search-api-resources',
+          pagination?.index || defaultPageIndex,
+          pagination?.size || defaultPageSize,
+        ],
         previousApiResources?.data?.filter(
           (apiResource) => apiResource.id !== deletedApiResource.apiResourceId
         )
@@ -43,7 +54,11 @@ export const useDeleteApiResource = ({ config }: UseDeleteApiResourceResourceOpt
     onError: (_, __, context: any) => {
       if (context?.previousApiResources) {
         queryClient.setQueryData(
-          ['search-api-resources', pagination?.index ?? 1, pagination?.size ?? 10],
+          [
+            'search-api-resources',
+            pagination?.index || defaultPageIndex,
+            pagination?.size || defaultPageSize,
+          ],
           context.previousApiResources
         );
       }
@@ -51,8 +66,8 @@ export const useDeleteApiResource = ({ config }: UseDeleteApiResourceResourceOpt
     onSuccess: async () => {
       await queryClient.invalidateQueries([
         'search-api-resources',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
       toast.success('ApiResource deleted');
     },

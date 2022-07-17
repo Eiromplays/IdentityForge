@@ -9,7 +9,7 @@ import { ConsentForm } from '../components/ConsentForm';
 export const Consent = () => {
   const { returnUrl: returnUrl } = useSearch<LocationGenerics>();
 
-  const consentQuery = useConsent({ returnUrl: encodeURIComponent(returnUrl ?? '') });
+  const consentQuery = useConsent({ returnUrl: encodeURIComponent(returnUrl || '') });
 
   if (consentQuery.isLoading) {
     return (

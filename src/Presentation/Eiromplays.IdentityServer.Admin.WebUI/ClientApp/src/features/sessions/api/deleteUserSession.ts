@@ -1,5 +1,12 @@
 import { useSearch } from '@tanstack/react-location';
-import { axios, MutationConfig, PaginationResponse, queryClient } from 'eiromplays-ui';
+import {
+  axios,
+  defaultPageIndex,
+  defaultPageSize,
+  MutationConfig,
+  PaginationResponse,
+  queryClient,
+} from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
@@ -25,16 +32,24 @@ export const useDeleteUserSession = ({ config }: UseDeleteUserSessionOptions = {
 
   return useMutation({
     onMutate: async (deletedUserSession) => {
-      await queryClient.cancelQueries(['search-user-sessions']);
+      await queryClient.cancelQueries([
+        'search-user-sessions',
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
+      ]);
 
       const previousUserSessions = queryClient.getQueryData<PaginationResponse<UserSession>>([
         'search-user-sessions',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
 
       queryClient.setQueryData(
-        ['search-user-sessions', pagination?.index ?? 1, pagination?.size ?? 10],
+        [
+          'search-user-sessions',
+          pagination?.index || defaultPageIndex,
+          pagination?.size || defaultPageSize,
+        ],
         previousUserSessions?.data?.filter(
           (userSession) => userSession.key !== deletedUserSession.userSessionKey
         )
@@ -45,7 +60,11 @@ export const useDeleteUserSession = ({ config }: UseDeleteUserSessionOptions = {
     onError: (_, __, context: any) => {
       if (context?.previousUserSessions) {
         queryClient.setQueryData(
-          ['search-user-sessions', pagination?.index ?? 1, pagination?.size ?? 10],
+          [
+            'search-user-sessions',
+            pagination?.index || defaultPageIndex,
+            pagination?.size || defaultPageSize,
+          ],
           context.previousUserSessions
         );
       }
@@ -58,8 +77,8 @@ export const useDeleteUserSession = ({ config }: UseDeleteUserSessionOptions = {
 
       await queryClient.invalidateQueries([
         'search-user-sessions',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
       toast.success('User Session Deleted');
     },

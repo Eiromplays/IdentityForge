@@ -1,29 +1,47 @@
-import { Spinner, Table } from 'eiromplays-ui';
+import { useSearch } from '@tanstack/react-location';
+import {
+  defaultPageIndex,
+  defaultPageSize,
+  formatDate,
+  PaginatedTable,
+  SearchFilter,
+} from 'eiromplays-ui';
+import React from 'react';
 
-import { useUserClaims } from '../api/getUserClaims';
+import { LocationGenerics } from '@/App';
+
+import { SearchUserClaimsDTO } from '../api/searchUserClaims';
+import { UpdateUserClaim } from '../components/UpdateUserClaim';
 import { UserClaim } from '../types';
 
-type UserRolesListProps = {
+import { DeleteUserClaim } from './DeleteUserClaim';
+
+export type UserClaimsListProps = {
   id: string;
 };
 
-export const UserClaimsList = ({ id }: UserRolesListProps) => {
-  const userClaimsQuery = useUserClaims({ userId: id });
+export const UserClaimsList = ({ id }: UserClaimsListProps) => {
+  const search = useSearch<LocationGenerics>();
+  const page = search.pagination?.index || defaultPageIndex;
+  const pageSize = search.pagination?.size || defaultPageSize;
 
-  if (userClaimsQuery.isLoading) {
-    return (
-      <div className="w-full h-48 flex justify-center items-center">
-        <Spinner size="lg" />
-      </div>
-    );
-  }
-
-  if (!userClaimsQuery?.data) return null;
+  const searchFilter: SearchFilter = {
+    customProperties: [],
+    orderBy: ['claimType', 'claimValue', 'createdOn', 'lastModifiedOn Desc'],
+    advancedSearch: {
+      fields: ['claimType', 'claimValue'],
+      keyword: '',
+    },
+    keyword: '',
+  };
 
   return (
     <>
-      <Table<UserClaim>
-        data={userClaimsQuery?.data || []}
+      <PaginatedTable<SearchUserClaimsDTO, UserClaim>
+        url={`/users/${id}/claims-search`}
+        queryKeyName={`search-user-claims-${id}`}
+        searchData={{ pageNumber: page, pageSize: pageSize }}
+        searchFilter={searchFilter}
         columns={[
           {
             title: 'Type',
@@ -34,12 +52,64 @@ export const UserClaimsList = ({ id }: UserRolesListProps) => {
             field: 'value',
           },
           {
-            title: 'ValueType',
+            title: 'Value Type',
             field: 'valueType',
           },
           {
             title: 'Issuer',
             field: 'issuer',
+          },
+          {
+            title: 'Created',
+            field: 'createdOn',
+            Cell({ entry: { createdOn } }) {
+              return <span>{formatDate(createdOn)}</span>;
+            },
+          },
+          {
+            title: 'Last Modified',
+            field: 'lastModifiedOn',
+            Cell({ entry: { lastModifiedOn } }) {
+              return <span>{formatDate(lastModifiedOn)}</span>;
+            },
+          },
+          {
+            title: '',
+            field: 'type',
+            Cell({ entry: { type, value, valueType, issuer, createdOn, lastModifiedOn } }) {
+              return (
+                <UpdateUserClaim
+                  id={id}
+                  userClaim={{
+                    type: type,
+                    value: value,
+                    valueType: valueType,
+                    issuer: issuer,
+                    createdOn: createdOn,
+                    lastModifiedOn: lastModifiedOn,
+                  }}
+                />
+              );
+            },
+          },
+          {
+            title: '',
+            field: 'type',
+            Cell({ entry: { type, value, valueType, issuer, createdOn, lastModifiedOn } }) {
+              return (
+                <DeleteUserClaim
+                  id={id}
+                  userClaim={{
+                    type: type,
+                    value: value,
+                    valueType: valueType,
+                    issuer: issuer,
+                    createdOn: createdOn,
+                    lastModifiedOn: lastModifiedOn,
+                  }}
+                />
+              );
+            },
           },
         ]}
       />

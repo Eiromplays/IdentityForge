@@ -3,7 +3,7 @@ import { HiOutlineTrash } from 'react-icons/hi';
 
 import { useDeleteUser } from '../api/deleteUser';
 
-type DeleteUserProps = {
+export type DeleteUserProps = {
   id: string;
 };
 

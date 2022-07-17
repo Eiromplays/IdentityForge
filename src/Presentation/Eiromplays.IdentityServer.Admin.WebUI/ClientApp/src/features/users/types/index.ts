@@ -30,4 +30,6 @@ export type UserClaim = {
   value: string;
   valueType: string;
   issuer: string;
+  createdOn: number;
+  lastModifiedOn: number;
 };

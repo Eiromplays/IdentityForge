@@ -1,5 +1,6 @@
-import { useMatch } from '@tanstack/react-location';
-import { ContentLayout, Spinner, useAuth } from 'eiromplays-ui';
+import { MatchRoute, useMatch, useSearch } from '@tanstack/react-location';
+import { ContentLayout, Link, Spinner, useAuth } from 'eiromplays-ui';
+import React from 'react';
 
 import { LocationGenerics } from '@/App';
 
@@ -29,6 +30,7 @@ const PictureEntry = ({ label, value }: EntryProps) => (
 
 export const User = () => {
   const { user } = useAuth();
+  const search = useSearch<LocationGenerics>();
 
   const {
     params: { userId },
@@ -60,6 +62,22 @@ export const User = () => {
               User Information
             </h3>
             <UpdateUser id={userId} />
+            <Link to={`roles`} search={search} className="block">
+              <pre className={`text-sm`}>
+                Roles{' '}
+                <MatchRoute to={`roles`} pending>
+                  <Spinner size="md" className="inline-block" />
+                </MatchRoute>
+              </pre>
+            </Link>
+            <Link to={`claims`} search={search} className="block">
+              <pre className={`text-sm`}>
+                Claims{' '}
+                <MatchRoute to={`claims`} pending>
+                  <Spinner size="md" className="inline-block" />
+                </MatchRoute>
+              </pre>
+            </Link>
           </div>
           <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-white">
             Personal details of the user.

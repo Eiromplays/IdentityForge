@@ -1,5 +1,5 @@
 import { Navigate, Route } from '@tanstack/react-location';
-import { queryClient, searchPagination } from 'eiromplays-ui';
+import { defaultPageIndex, defaultPageSize, queryClient, searchPagination } from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
@@ -15,19 +15,27 @@ export const ClientsRoutes: Route<LocationGenerics> = {
       path: '/',
       element: <Clients />,
       loader: async ({ search: { pagination, searchFilter } }) =>
-        await queryClient.getQueryData([
+        (await queryClient.getQueryData([
           'search-clients',
-          pagination?.index ?? 1,
-          pagination?.size ?? 10,
-        ]) ??
-        await queryClient
-          .fetchQuery(['search-clients', pagination?.index ?? 1, pagination?.size ?? 10], () =>
+          pagination?.index || defaultPageIndex,
+          pagination?.size || defaultPageSize,
+        ])) ??
+        (await queryClient.fetchQuery(
+          [
+            'search-clients',
+            pagination?.index || defaultPageIndex,
+            pagination?.size || defaultPageSize,
+          ],
+          () =>
             searchPagination(
               '/clients/search',
-              { pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 },
+              {
+                pageNumber: pagination?.index || defaultPageIndex,
+                pageSize: pagination?.size || defaultPageSize,
+              },
               searchFilter
             )
-          ),
+        )),
     },
     {
       path: ':clientId',

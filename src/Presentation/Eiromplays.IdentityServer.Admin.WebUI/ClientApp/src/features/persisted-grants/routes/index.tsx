@@ -1,5 +1,5 @@
 import { Navigate, Route } from '@tanstack/react-location';
-import { queryClient, searchPagination } from 'eiromplays-ui';
+import { defaultPageIndex, defaultPageSize, queryClient, searchPagination } from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
@@ -15,21 +15,27 @@ export const PersistedGrantsRoutes: Route<LocationGenerics> = {
       path: '/',
       element: <PersistedGrants />,
       loader: async ({ search: { pagination, searchFilter } }) =>
-        await queryClient.getQueryData([
+        (await queryClient.getQueryData([
           'search-persisted-grants',
-          pagination?.index ?? 1,
-          pagination?.size ?? 10,
-        ]) ??
-        await queryClient
-          .fetchQuery(
-            ['search-persisted-grants', pagination?.index ?? 1, pagination?.size ?? 10],
-            () =>
-              searchPagination(
-                '/persisted-grants/search',
-                { pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 },
-                searchFilter
-              )
-          ),
+          pagination?.index || defaultPageIndex,
+          pagination?.size || defaultPageSize,
+        ])) ??
+        (await queryClient.fetchQuery(
+          [
+            'search-persisted-grants',
+            pagination?.index || defaultPageIndex,
+            pagination?.size || defaultPageSize,
+          ],
+          () =>
+            searchPagination(
+              '/persisted-grants/search',
+              {
+                pageNumber: pagination?.index || defaultPageIndex,
+                pageSize: pagination?.size || defaultPageSize,
+              },
+              searchFilter
+            )
+        )),
     },
     {
       path: ':key',

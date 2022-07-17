@@ -15,7 +15,7 @@ public class Endpoint : Endpoint<UserClaimListFilter, PaginationResponse<UserCla
 
     public override void Configure()
     {
-        Get("/users/{Id}/claims-search");
+        Post("/users/{UserId}/claims-search", "/users/claims-search");
         Summary(s =>
         {
             s.Summary = "Search for user claims";

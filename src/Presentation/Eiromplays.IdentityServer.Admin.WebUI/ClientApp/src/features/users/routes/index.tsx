@@ -1,10 +1,9 @@
 import { Navigate, Route } from '@tanstack/react-location';
-import { queryClient, searchPagination } from 'eiromplays-ui';
+import { defaultPageIndex, defaultPageSize, queryClient, searchPagination } from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
 import { getUser } from '../api/getUser';
-import { getUserClaims } from '../api/getUserClaims';
 import { getUserRoles } from '../api/getUserRoles';
 import { UserClaims } from '../routes/UserClaims';
 
@@ -22,15 +21,22 @@ export const UsersRoutes: Route<LocationGenerics> = {
         return (
           (await queryClient.getQueryData([
             'search-users',
-            pagination?.index ?? 1,
-            pagination?.size ?? 10,
+            pagination?.index || defaultPageIndex,
+            pagination?.size || defaultPageSize,
           ])) ??
           (await queryClient.fetchQuery(
-            ['search-users', pagination?.index ?? 1, pagination?.size ?? 10],
+            [
+              'search-users',
+              pagination?.index || defaultPageIndex,
+              pagination?.size || defaultPageSize,
+            ],
             () =>
               searchPagination(
                 '/users/search',
-                { pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 },
+                {
+                  pageNumber: pagination?.index || defaultPageIndex,
+                  pageSize: pagination?.size || defaultPageSize,
+                },
                 searchFilter
               )
           ))
@@ -49,11 +55,31 @@ export const UsersRoutes: Route<LocationGenerics> = {
     {
       path: ':userId/claims',
       element: <UserClaims />,
-      loader: async ({ params: { userId } }) =>
-        queryClient.getQueryData(['user', userId, 'claims']) ??
-        (await queryClient.fetchQuery(['user', userId, 'claims'], () =>
-          getUserClaims({ userId: userId })
-        )),
+      loader: async ({ params: { userId }, search: { pagination, searchFilter } }) => {
+        return (
+          (await queryClient.getQueryData([
+            `search-user-claims-${userId}`,
+            pagination?.index || defaultPageIndex,
+            pagination?.size || defaultPageSize,
+          ])) ??
+          (await queryClient.fetchQuery(
+            [
+              `search-user-claims-${userId}`,
+              pagination?.index || defaultPageIndex,
+              pagination?.size || defaultPageSize,
+            ],
+            () =>
+              searchPagination(
+                `/users/${userId}/claims-search`,
+                {
+                  pageNumber: pagination?.index || defaultPageIndex,
+                  pageSize: pagination?.size || defaultPageSize,
+                },
+                searchFilter
+              )
+          ))
+        );
+      },
     },
     {
       path: ':userId',

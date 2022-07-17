@@ -1,5 +1,12 @@
 import { useSearch } from '@tanstack/react-location';
-import { axios, MutationConfig, PaginationResponse, queryClient } from 'eiromplays-ui';
+import {
+  axios,
+  defaultPageIndex,
+  defaultPageSize,
+  MutationConfig,
+  PaginationResponse,
+  queryClient,
+} from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
@@ -24,14 +31,26 @@ export const useDeleteServerSideSession = ({ config }: UseDeleteServerSideSessio
 
   return useMutation({
     onMutate: async (deletedServerSideSession) => {
-      await queryClient.cancelQueries(['search-server-side-sessions']);
+      await queryClient.cancelQueries([
+        'search-server-side-sessions',
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
+      ]);
 
       const previousServerSideSessions = queryClient.getQueryData<
         PaginationResponse<ServerSideSession>
-      >(['search-server-side-sessions', pagination?.index ?? 1, pagination?.size ?? 10]);
+      >([
+        'search-server-side-sessions',
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
+      ]);
 
       queryClient.setQueryData(
-        ['search-server-side-sessions', pagination?.index ?? 1, pagination?.size ?? 10],
+        [
+          'search-server-side-sessions',
+          pagination?.index || defaultPageIndex,
+          pagination?.size || defaultPageSize,
+        ],
         previousServerSideSessions?.data?.filter(
           (serverSideSession) =>
             serverSideSession.key !== deletedServerSideSession.serverSideSessionKey
@@ -43,7 +62,11 @@ export const useDeleteServerSideSession = ({ config }: UseDeleteServerSideSessio
     onError: (_, __, context: any) => {
       if (context?.previousServerSideSessions) {
         queryClient.setQueryData(
-          ['search-server-side-sessions', pagination?.index ?? 1, pagination?.size ?? 10],
+          [
+            'search-server-side-sessions',
+            pagination?.index || defaultPageIndex,
+            pagination?.size || defaultPageSize,
+          ],
           context.previousServerSideSessions
         );
       }
@@ -56,8 +79,8 @@ export const useDeleteServerSideSession = ({ config }: UseDeleteServerSideSessio
 
       await queryClient.invalidateQueries([
         'search-server-side-sessions',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
       toast.success('Server-side Session Deleted');
     },

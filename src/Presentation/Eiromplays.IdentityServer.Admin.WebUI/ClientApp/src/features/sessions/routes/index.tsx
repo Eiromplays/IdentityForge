@@ -1,5 +1,5 @@
 import { Navigate, Route } from '@tanstack/react-location';
-import { queryClient, searchPagination } from 'eiromplays-ui';
+import { defaultPageIndex, defaultPageSize, queryClient, searchPagination } from 'eiromplays-ui';
 
 import { LocationGenerics } from '@/App';
 
@@ -21,15 +21,22 @@ export const UserSessionsRoutes: Route<LocationGenerics> = {
       loader: async ({ search: { pagination, searchFilter } }) =>
         (await queryClient.getQueryData([
           'user-sessions',
-          pagination?.index ?? 1,
-          pagination?.size ?? 10,
+          pagination?.index || defaultPageIndex,
+          pagination?.size || defaultPageSize,
         ])) ??
         (await queryClient.fetchQuery(
-          ['user-sessions', pagination?.index ?? 1, pagination?.size ?? 10],
+          [
+            'user-sessions',
+            pagination?.index || defaultPageIndex,
+            pagination?.size || defaultPageSize,
+          ],
           () =>
             searchPagination(
               '/user-sessions/search',
-              { pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 },
+              {
+                pageNumber: pagination?.index || defaultPageIndex,
+                pageSize: pagination?.size || defaultPageSize,
+              },
               searchFilter
             )
         )),
@@ -40,15 +47,22 @@ export const UserSessionsRoutes: Route<LocationGenerics> = {
       loader: async ({ search: { pagination, searchFilter } }) =>
         (await queryClient.getQueryData([
           'server-side-sessions',
-          pagination?.index ?? 1,
-          pagination?.size ?? 10,
+          pagination?.index || defaultPageIndex,
+          pagination?.size || defaultPageSize,
         ])) ??
         (await queryClient.fetchQuery(
-          ['server-side-sessions', pagination?.index ?? 1, pagination?.size ?? 10],
+          [
+            'server-side-sessions',
+            pagination?.index || defaultPageIndex,
+            pagination?.size || defaultPageSize,
+          ],
           () =>
             searchPagination(
               '/server-side-sessions/search',
-              { pageNumber: pagination?.index ?? 1, pageSize: pagination?.size ?? 10 },
+              {
+                pageNumber: pagination?.index || defaultPageIndex,
+                pageSize: pagination?.size || defaultPageSize,
+              },
               searchFilter
             )
         )),

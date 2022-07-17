@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using System.Text.Json;
 using Ardalis.Specification.EntityFrameworkCore;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Models;
@@ -16,13 +17,19 @@ internal partial class UserService
     {
         var spec = new EntitiesByPaginationFilterSpec<ApplicationUserClaim>(filter);
 
-        var sessions = await _db.UserClaims.WithSpecification(spec).ProjectToType<UserClaimDto>()
+        var userClaims = await _db.UserClaims
+            .Where(uc => uc.UserId == filter.UserId || string.IsNullOrWhiteSpace(filter.UserId))
+            .WithSpecification(spec)
+            .Select(x => x.ToClaim())
+            .ProjectToType<UserClaimDto>()
             .ToListAsync(cancellationToken);
 
         int count = await _db.UserClaims
-            .CountAsync(cancellationToken);
+            .CountAsync(
+                uc => uc.UserId == filter.UserId || string.IsNullOrWhiteSpace(filter.UserId),
+                cancellationToken: cancellationToken);
 
-        return new PaginationResponse<UserClaimDto>(sessions, count, filter.PageNumber, filter.PageSize);
+        return new PaginationResponse<UserClaimDto>(userClaims, count, filter.PageNumber, filter.PageSize);
     }
 
     public async Task<List<UserClaimDto>> GetClaimsAsync(string userId)
@@ -32,14 +39,7 @@ internal partial class UserService
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
         var claims = await _userManager.GetClaimsAsync(user);
 
-        return claims.Select(claim => new UserClaimDto
-            {
-                Type = claim.Type,
-                Value = claim.Value,
-                ValueType = claim.ValueType,
-                Issuer = claim.Issuer,
-            })
-            .ToList();
+        return claims.Adapt<List<UserClaimDto>>();
     }
 
     // TODO: Add event for claim added

@@ -5,6 +5,8 @@ import {
   MessageResponse,
   queryClient,
   PaginationResponse,
+  defaultPageIndex,
+  defaultPageSize,
 } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
@@ -42,12 +44,16 @@ export const useCreateApiScope = ({ config }: UseCreateApiScopeOptions = {}) => 
 
       const previousApiScopes = queryClient.getQueryData<PaginationResponse<ApiScope>>([
         'search-api-scopes',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
 
       queryClient.setQueryData(
-        ['search-api-scopes', pagination?.index ?? 1, pagination?.size ?? 10],
+        [
+          'search-api-scopes',
+          pagination?.index || defaultPageIndex,
+          pagination?.size || defaultPageSize,
+        ],
         [...(previousApiScopes?.data || []), newApiScope.data]
       );
 
@@ -58,7 +64,11 @@ export const useCreateApiScope = ({ config }: UseCreateApiScopeOptions = {}) => 
       toast.error(error.response?.data);
       if (context?.previousApiScopes) {
         queryClient.setQueryData(
-          ['search-api-scopes', pagination?.index ?? 1, pagination?.size ?? 10],
+          [
+            'search-api-scopes',
+            pagination?.index || defaultPageIndex,
+            pagination?.size || defaultPageSize,
+          ],
           context.previousApiScopes
         );
       }
@@ -66,8 +76,8 @@ export const useCreateApiScope = ({ config }: UseCreateApiScopeOptions = {}) => 
     onSuccess: async () => {
       await queryClient.invalidateQueries([
         'search-api-scopes',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
       toast.success('ApiScope created');
     },

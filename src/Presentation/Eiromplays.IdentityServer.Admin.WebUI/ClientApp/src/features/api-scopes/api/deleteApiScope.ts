@@ -1,5 +1,12 @@
 import { useSearch } from '@tanstack/react-location';
-import { axios, MutationConfig, PaginationResponse, queryClient } from 'eiromplays-ui';
+import {
+  axios,
+  defaultPageIndex,
+  defaultPageSize,
+  MutationConfig,
+  PaginationResponse,
+  queryClient,
+} from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
@@ -27,12 +34,16 @@ export const useDeleteApiScope = ({ config }: UseDeleteApiScopeOptions = {}) => 
 
       const previousApiScopes = queryClient.getQueryData<PaginationResponse<ApiScope>>([
         'search-api-scopes',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
 
       queryClient.setQueryData(
-        ['search-api-scopes', pagination?.index ?? 1, pagination?.size ?? 10],
+        [
+          'search-api-scopes',
+          pagination?.index || defaultPageIndex,
+          pagination?.size || defaultPageSize,
+        ],
         previousApiScopes?.data?.filter((apiScope) => apiScope.id !== deletedApiScope.apiScopeId)
       );
 
@@ -41,7 +52,11 @@ export const useDeleteApiScope = ({ config }: UseDeleteApiScopeOptions = {}) => 
     onError: (_, __, context: any) => {
       if (context?.previousApiScopes) {
         queryClient.setQueryData(
-          ['search-api-scopes', pagination?.index ?? 1, pagination?.size ?? 10],
+          [
+            'search-api-scopes',
+            pagination?.index || defaultPageIndex,
+            pagination?.size || defaultPageSize,
+          ],
           context.previousApiScopes
         );
       }
@@ -49,8 +64,8 @@ export const useDeleteApiScope = ({ config }: UseDeleteApiScopeOptions = {}) => 
     onSuccess: async () => {
       await queryClient.invalidateQueries([
         'search-api-scopes',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
       toast.success('ApiScope deleted');
     },

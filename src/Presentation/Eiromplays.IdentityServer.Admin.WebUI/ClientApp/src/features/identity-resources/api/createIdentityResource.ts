@@ -5,6 +5,8 @@ import {
   MessageResponse,
   queryClient,
   PaginationResponse,
+  defaultPageIndex,
+  defaultPageSize,
 } from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
@@ -44,10 +46,18 @@ export const useCreateIdentityResource = ({ config }: UseCreateIdentityResourceO
 
       const previousIdentityResources = queryClient.getQueryData<
         PaginationResponse<IdentityResource>
-      >(['search-identity-resources', pagination?.index ?? 1, pagination?.size ?? 10]);
+      >([
+        'search-identity-resources',
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
+      ]);
 
       queryClient.setQueryData(
-        ['search-identity-resources', pagination?.index ?? 1, pagination?.size ?? 10],
+        [
+          'search-identity-resources',
+          pagination?.index || defaultPageIndex,
+          pagination?.size || defaultPageSize,
+        ],
         [...(previousIdentityResources?.data || []), newIdentityResource.data]
       );
 
@@ -58,7 +68,11 @@ export const useCreateIdentityResource = ({ config }: UseCreateIdentityResourceO
       toast.error(error.response?.data);
       if (context?.previousIdentityResources) {
         queryClient.setQueryData(
-          ['search-identity-resources', pagination?.index ?? 1, pagination?.size ?? 10],
+          [
+            'search-identity-resources',
+            pagination?.index || defaultPageIndex,
+            pagination?.size || defaultPageSize,
+          ],
           context.previousIdentityResources
         );
       }
@@ -66,8 +80,8 @@ export const useCreateIdentityResource = ({ config }: UseCreateIdentityResourceO
     onSuccess: async () => {
       await queryClient.invalidateQueries([
         'search-identity-resources',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
       toast.success('IdentityResource created');
     },

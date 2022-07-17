@@ -49,6 +49,7 @@ public static class EiaPermissions
         new("View UserRoles", EiaAction.View, EiaResource.UserRoles),
         new("Update UserRoles", EiaAction.Update, EiaResource.UserRoles),
         new("View UserClaims", EiaAction.View, EiaResource.UserClaims),
+        new("Search UserClaims", EiaAction.Search, EiaResource.UserClaims),
         new("Create UserClaims", EiaAction.Create, EiaResource.UserClaims),
         new("Update UserClaims", EiaAction.Update, EiaResource.UserClaims),
         new("Delete UserClaims", EiaAction.Delete, EiaResource.UserClaims),

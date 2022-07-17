@@ -1,6 +1,8 @@
 import { useSearch } from '@tanstack/react-location';
 import {
   axios,
+  defaultPageIndex,
+  defaultPageSize,
   MessageResponse,
   MutationConfig,
   PaginationResponse,
@@ -42,12 +44,16 @@ export const useCreateUser = ({ config }: UseCreateUserOptions = {}) => {
 
       const previousUsers = queryClient.getQueryData<PaginationResponse<User>>([
         'search-users',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
 
       queryClient.setQueryData(
-        ['search-users', pagination?.index ?? 1, pagination?.size ?? 10],
+        [
+          'search-users',
+          pagination?.index || defaultPageIndex,
+          pagination?.size || defaultPageSize,
+        ],
         [...(previousUsers?.data || []), newUser.data]
       );
 
@@ -58,7 +64,11 @@ export const useCreateUser = ({ config }: UseCreateUserOptions = {}) => {
       toast.error(error.response?.data);
       if (context?.previousUsers) {
         queryClient.setQueryData(
-          ['search-users', pagination?.index ?? 1, pagination?.size ?? 10],
+          [
+            'search-users',
+            pagination?.index || defaultPageIndex,
+            pagination?.size || defaultPageSize,
+          ],
           context.previousUsers
         );
       }
@@ -66,8 +76,8 @@ export const useCreateUser = ({ config }: UseCreateUserOptions = {}) => {
     onSuccess: async (response) => {
       await queryClient.invalidateQueries([
         'search-users',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
       toast.success('User created');
       toast.success(response.message);

@@ -1,5 +1,12 @@
 import { useSearch } from '@tanstack/react-location';
-import { axios, MutationConfig, PaginationResponse, queryClient } from 'eiromplays-ui';
+import {
+  axios,
+  defaultPageIndex,
+  defaultPageSize,
+  MutationConfig,
+  PaginationResponse,
+  queryClient,
+} from 'eiromplays-ui';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
@@ -29,12 +36,16 @@ export const useDeleteRole = ({ config }: UseDeleteRoleOptions = {}) => {
 
       const previousRoles = queryClient.getQueryData<PaginationResponse<Role>>([
         'search-roles',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
 
       queryClient.setQueryData(
-        ['search-roles', pagination?.index ?? 1, pagination?.size ?? 10],
+        [
+          'search-roles',
+          pagination?.index || defaultPageIndex,
+          pagination?.size || defaultPageSize,
+        ],
         previousRoles?.data?.filter((role) => role.id !== deletedRole.roleId)
       );
 
@@ -43,7 +54,11 @@ export const useDeleteRole = ({ config }: UseDeleteRoleOptions = {}) => {
     onError: (_, __, context: any) => {
       if (context?.previousRoles) {
         queryClient.setQueryData(
-          ['search-roles', pagination?.index ?? 1, pagination?.size ?? 10],
+          [
+            'search-roles',
+            pagination?.index || defaultPageIndex,
+            pagination?.size || defaultPageSize,
+          ],
           context.previousRoles
         );
       }
@@ -51,8 +66,8 @@ export const useDeleteRole = ({ config }: UseDeleteRoleOptions = {}) => {
     onSuccess: async () => {
       await queryClient.invalidateQueries([
         'search-roles',
-        pagination?.index ?? 1,
-        pagination?.size ?? 10,
+        pagination?.index || defaultPageIndex,
+        pagination?.size || defaultPageSize,
       ]);
       toast.success('Role deleted');
     },
