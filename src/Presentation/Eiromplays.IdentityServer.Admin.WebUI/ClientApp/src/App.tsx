@@ -7,6 +7,7 @@ import {
   DefaultLocationGenerics,
   initializeAuth,
 } from 'eiromplays-ui';
+import * as React from 'react';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
 import { AppRoutes } from './routes';

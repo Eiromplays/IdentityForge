@@ -1,5 +1,5 @@
-import { Outlet } from '@tanstack/react-location';
-import { lazyImport, MainLayout, NotAllowed, Spinner } from 'eiromplays-ui';
+import { Outlet, useMatches } from '@tanstack/react-location';
+import { Breadcrumbs, lazyImport, Link, MainLayout, NotAllowed, Spinner } from 'eiromplays-ui';
 import { Suspense } from 'react';
 import { AiOutlineTags, BiTargetLock, MdOutlineVerified } from 'react-icons/all';
 import {
@@ -11,6 +11,7 @@ import {
 } from 'react-icons/hi';
 import { MdOutlineDevicesOther, MdOutlineHistory } from 'react-icons/md';
 
+import { LocationGenerics } from '@/App';
 import logo from '@/assets/logo.svg';
 import { ApiResourcesRoutes } from '@/features/api-resources';
 import { ApiScopesRoutes } from '@/features/api-scopes';
@@ -64,6 +65,7 @@ const App = () => {
           </div>
         }
       >
+        <Breadcrumbs />
         <Outlet />
       </Suspense>
     </MainLayout>
