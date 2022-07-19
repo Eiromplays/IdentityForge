@@ -10,6 +10,9 @@ import { IdentityResources } from './IdentityResources';
 
 export const IdentityResourcesRoutes: Route<LocationGenerics> = {
   path: 'identity-resources',
+  meta: {
+    breadcrumb: () => 'Identity Resources',
+  },
   children: [
     {
       path: '/',
@@ -45,6 +48,9 @@ export const IdentityResourcesRoutes: Route<LocationGenerics> = {
         (await queryClient.fetchQuery(['identity-resource', identityResourceId], () =>
           getIdentityResource({ identityResourceId: parseInt(identityResourceId, 10) })
         )),
+      meta: {
+        breadcrumb: (params: any) => params.identityResourceId,
+      },
     },
     {
       path: '*',

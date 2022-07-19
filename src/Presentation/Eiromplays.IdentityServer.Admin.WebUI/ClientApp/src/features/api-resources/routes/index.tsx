@@ -10,6 +10,9 @@ import { ApiResources } from './ApiResources';
 
 export const ApiResourcesRoutes: Route<LocationGenerics> = {
   path: 'api-resources',
+  meta: {
+    breadcrumb: () => 'Api Resources',
+  },
   children: [
     {
       path: '/',
@@ -45,6 +48,9 @@ export const ApiResourcesRoutes: Route<LocationGenerics> = {
         (await queryClient.fetchQuery(['api-resource', apiResourceId], () =>
           getApiResource({ apiResourceId: parseInt(apiResourceId, 10) })
         )),
+      meta: {
+        breadcrumb: (params: any) => params.apiResourceId,
+      },
     },
     {
       path: '*',

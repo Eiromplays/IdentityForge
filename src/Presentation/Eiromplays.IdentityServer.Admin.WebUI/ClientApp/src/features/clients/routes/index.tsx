@@ -10,6 +10,9 @@ import { Clients } from './Clients';
 
 export const ClientsRoutes: Route<LocationGenerics> = {
   path: 'clients',
+  meta: {
+    breadcrumb: () => 'Clients',
+  },
   children: [
     {
       path: '/',
@@ -45,6 +48,9 @@ export const ClientsRoutes: Route<LocationGenerics> = {
         (await queryClient.fetchQuery(['client', clientId], () =>
           getClient({ clientId: parseInt(clientId, 10) })
         )),
+      meta: {
+        breadcrumb: (params) => params.clientId,
+      },
     },
     {
       path: '*',

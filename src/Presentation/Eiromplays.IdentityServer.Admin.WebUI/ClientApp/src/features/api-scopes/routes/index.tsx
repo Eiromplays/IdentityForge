@@ -10,6 +10,9 @@ import { ApiScopes } from './ApiScopes';
 
 export const ApiScopesRoutes: Route<LocationGenerics> = {
   path: 'api-scopes',
+  meta: {
+    breadcrumb: () => 'Api Scopes',
+  },
   children: [
     {
       path: '/',
@@ -45,6 +48,9 @@ export const ApiScopesRoutes: Route<LocationGenerics> = {
         (await queryClient.fetchQuery(['api-scope', apiScopeId], () =>
           getApiScope({ apiScopeId: parseInt(apiScopeId, 10) })
         )),
+      meta: {
+        breadcrumb: (params: any) => params.apiScopeId,
+      },
     },
     {
       path: '*',

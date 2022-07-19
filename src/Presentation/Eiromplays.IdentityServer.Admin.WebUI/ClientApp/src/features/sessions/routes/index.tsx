@@ -10,6 +10,9 @@ import { Sessions } from './Sessions';
 
 export const UserSessionsRoutes: Route<LocationGenerics> = {
   path: 'sessions',
+  meta: {
+    breadcrumb: () => 'Sessions',
+  },
   children: [
     {
       path: '/',
@@ -40,6 +43,9 @@ export const UserSessionsRoutes: Route<LocationGenerics> = {
               searchFilter
             )
         )),
+      meta: {
+        breadcrumb: () => 'User Sessions',
+      },
     },
     {
       path: 'server-side-session',
@@ -66,6 +72,9 @@ export const UserSessionsRoutes: Route<LocationGenerics> = {
               searchFilter
             )
         )),
+      meta: {
+        breadcrumb: () => 'Server-side Sessions',
+      },
     },
     {
       path: '*',

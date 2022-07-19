@@ -1,4 +1,4 @@
-import { ReactLocation } from '@tanstack/react-location';
+import { ReactLocation, RouteMatch } from '@tanstack/react-location';
 import {
   AppProvider,
   AuthProviderConfig,
@@ -25,6 +25,9 @@ export type LocationGenerics = DefaultLocationGenerics & {
     apiResourceId: string;
     productId: string;
     brandId: string;
+  };
+  RouteMeta: {
+    breadcrumb: (params: LocationGenerics['Params']) => React.ReactElement | string;
   };
 };
 

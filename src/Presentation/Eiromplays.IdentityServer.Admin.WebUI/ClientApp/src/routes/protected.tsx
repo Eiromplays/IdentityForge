@@ -65,7 +65,7 @@ const App = () => {
           </div>
         }
       >
-        <Breadcrumbs />
+        <Breadcrumbs<LocationGenerics> />
         <Outlet />
       </Suspense>
     </MainLayout>

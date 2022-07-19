@@ -10,6 +10,9 @@ import { Roles } from './Roles';
 
 export const RolesRoutes: Route<LocationGenerics> = {
   path: 'roles',
+  meta: {
+    breadcrumb: () => 'Roles',
+  },
   children: [
     {
       path: '/',
@@ -43,6 +46,9 @@ export const RolesRoutes: Route<LocationGenerics> = {
       loader: async ({ params: { roleId } }) =>
         queryClient.getQueryData(['role', roleId]) ??
         (await queryClient.fetchQuery(['role', roleId], () => getRole({ roleId: roleId }))),
+      meta: {
+        breadcrumb: (params) => params.roleId,
+      },
     },
     {
       path: '*',

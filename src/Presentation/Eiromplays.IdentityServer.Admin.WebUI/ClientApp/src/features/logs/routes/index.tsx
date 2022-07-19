@@ -10,6 +10,9 @@ import { Logs } from './Logs';
 
 export const LogsRoutes: Route<LocationGenerics> = {
   path: 'logs',
+  meta: {
+    breadcrumb: () => 'Logs',
+  },
   children: [
     {
       path: '/',
@@ -43,6 +46,9 @@ export const LogsRoutes: Route<LocationGenerics> = {
       loader: async ({ params: { logId } }) =>
         (await queryClient.getQueryData(['logs', logId])) ??
         (await queryClient.fetchQuery(['logs', logId], () => getLog({ logId: logId }))),
+      meta: {
+        breadcrumb: (params) => params.logId,
+      },
     },
     {
       path: '*',

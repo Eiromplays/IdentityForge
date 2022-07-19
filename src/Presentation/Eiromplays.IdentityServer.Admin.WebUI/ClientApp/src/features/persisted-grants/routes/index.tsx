@@ -10,6 +10,9 @@ import { PersistedGrants } from './PersistedGrants';
 
 export const PersistedGrantsRoutes: Route<LocationGenerics> = {
   path: 'persisted-grants',
+  meta: {
+    breadcrumb: () => 'Persisted Grants',
+  },
   children: [
     {
       path: '/',
@@ -45,6 +48,9 @@ export const PersistedGrantsRoutes: Route<LocationGenerics> = {
         (await queryClient.fetchQuery(['persisted-grant', key], () =>
           getPersistedGrant({ persistedGrantKey: key })
         )),
+      meta: {
+        breadcrumb: (params) => params.key,
+      },
     },
     {
       path: '*',
