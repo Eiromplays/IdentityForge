@@ -39,7 +39,7 @@ export const UserClaimsList = ({ id }: UserClaimsListProps) => {
     <>
       <PaginatedTable<SearchUserClaimsDTO, UserClaim>
         url={`/users/${id}/claims-search`}
-        queryKeyName={`search-user-claims-${id}`}
+        queryKeyName={[`search-user-claims-${id}`]}
         searchData={{ pageNumber: page, pageSize: pageSize }}
         searchFilter={searchFilter}
         columns={[

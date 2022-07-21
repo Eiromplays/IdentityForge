@@ -1,5 +1,5 @@
+import { useMutation } from '@tanstack/react-query';
 import { axios, MutationConfig, queryClient } from 'eiromplays-ui';
-import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
 import { identityServerUrl } from '@/utils/envVariables';
@@ -17,12 +17,12 @@ type UseRevokeGrantOptions = {
 export const useRevokeGrant = ({ config }: UseRevokeGrantOptions = {}) => {
   return useMutation({
     onMutate: async (revokedGrant) => {
-      await queryClient.cancelQueries('grants');
+      await queryClient.cancelQueries(['grants']);
 
-      const previousGrants = queryClient.getQueryData<Grant[]>('grants');
+      const previousGrants = queryClient.getQueryData<Grant[]>(['grants']);
 
       queryClient.setQueryData(
-        'grants',
+        ['grants'],
         previousGrants?.filter((grant) => grant.clientId !== revokedGrant.clientId)
       );
 
@@ -30,11 +30,11 @@ export const useRevokeGrant = ({ config }: UseRevokeGrantOptions = {}) => {
     },
     onError: (_, __, context: any) => {
       if (context?.previousGrants) {
-        queryClient.setQueryData('grants', context.previousGrants);
+        queryClient.setQueryData(['grants'], context.previousGrants);
       }
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries('grants');
+      await queryClient.invalidateQueries(['grants']);
       toast.success('Grant Revoked');
     },
     ...config,

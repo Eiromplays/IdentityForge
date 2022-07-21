@@ -46,7 +46,7 @@ export const ApiResourcesList = () => {
   return (
     <PaginatedTable<SearchApiResourceDTO, ApiResource>
       url="/api-resources/search"
-      queryKeyName="search-api-resources"
+      queryKeyName={['search-api-resources']}
       searchData={{ pageNumber: page, pageSize: pageSize }}
       searchFilter={searchFilter}
       columns={[

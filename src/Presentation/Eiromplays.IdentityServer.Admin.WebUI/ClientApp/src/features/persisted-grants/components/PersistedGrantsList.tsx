@@ -34,7 +34,7 @@ export const PersistedGrantsList = () => {
   return (
     <PaginatedTable<SearchPersistedGrantDTO, PersistedGrant>
       url="/persisted-grants/search"
-      queryKeyName="search-persisted-grants"
+      queryKeyName={['search-persisted-grants']}
       searchData={{ pageNumber: page, pageSize: pageSize }}
       searchFilter={searchFilter}
       columns={[

@@ -1,4 +1,5 @@
 import { useSearch } from '@tanstack/react-location';
+import { useMutation } from '@tanstack/react-query';
 import {
   MutationConfig,
   axios,
@@ -8,7 +9,6 @@ import {
   defaultPageIndex,
   defaultPageSize,
 } from 'eiromplays-ui';
-import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
 import { LocationGenerics } from '@/App';

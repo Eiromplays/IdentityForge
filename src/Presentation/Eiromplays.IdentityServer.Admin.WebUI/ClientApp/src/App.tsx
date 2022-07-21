@@ -1,4 +1,5 @@
-import { ReactLocation, RouteMatch } from '@tanstack/react-location';
+import { ReactLocation } from '@tanstack/react-location';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
   AppProvider,
   AuthProviderConfig,
@@ -8,7 +9,6 @@ import {
   initializeAuth,
 } from 'eiromplays-ui';
 import * as React from 'react';
-import { ReactQueryDevtools } from 'react-query/devtools';
 
 import { AppRoutes } from './routes';
 

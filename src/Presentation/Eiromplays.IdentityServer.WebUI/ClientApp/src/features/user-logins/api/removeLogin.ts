@@ -1,5 +1,5 @@
+import { useMutation } from '@tanstack/react-query';
 import { axios, MutationConfig, queryClient } from 'eiromplays-ui';
-import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
 import { ExternalLoginsResponse } from '../types';

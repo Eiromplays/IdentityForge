@@ -1,5 +1,5 @@
+import { useQuery } from '@tanstack/react-query';
 import { axios, ExtractFnReturnType, QueryConfig } from 'eiromplays-ui';
-import { useQuery } from 'react-query';
 
 import { PersistedGrant } from '../types';
 

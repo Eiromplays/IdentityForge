@@ -33,7 +33,7 @@ export const LogsList = () => {
   return (
     <PaginatedTable<SearchLogsDTO, Log>
       url="/logs/search"
-      queryKeyName="search-logs"
+      queryKeyName={['search-logs']}
       searchData={{ pageNumber: page, pageSize: pageSize }}
       searchFilter={searchFilter}
       columns={[

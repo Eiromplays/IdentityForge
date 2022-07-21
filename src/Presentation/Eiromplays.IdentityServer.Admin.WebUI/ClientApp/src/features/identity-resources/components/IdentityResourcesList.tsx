@@ -32,7 +32,7 @@ export const IdentityResourcesList = () => {
   return (
     <PaginatedTable<SearchIdentityResourceDTO, IdentityResource>
       url="/identity-resources/search"
-      queryKeyName="search-identity-resources"
+      queryKeyName={['search-identity-resources']}
       searchData={{ pageNumber: page, pageSize: pageSize }}
       searchFilter={searchFilter}
       columns={[

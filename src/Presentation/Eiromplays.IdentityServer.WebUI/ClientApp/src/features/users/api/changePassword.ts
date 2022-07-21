@@ -1,5 +1,5 @@
+import { useMutation } from '@tanstack/react-query';
 import { useAuth, axios, MutationConfig, MessageResponse } from 'eiromplays-ui';
-import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
 export type ChangePasswordDTO = {

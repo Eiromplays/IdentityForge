@@ -38,7 +38,7 @@ export const UsersList = () => {
     <>
       <PaginatedTable<SearchUserDTO, User>
         url="/users/search"
-        queryKeyName="search-users"
+        queryKeyName={['search-users']}
         searchData={{ pageNumber: page, pageSize: pageSize }}
         searchFilter={searchFilter}
         columns={[

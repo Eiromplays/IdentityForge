@@ -1,4 +1,5 @@
 import { ReactLocation } from '@tanstack/react-location';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
   AppProvider,
   axios,
@@ -8,7 +9,6 @@ import {
   Spinner,
 } from 'eiromplays-ui';
 import React from 'react';
-import { ReactQueryDevtools } from 'react-query/devtools';
 
 import {
   AuthUser,

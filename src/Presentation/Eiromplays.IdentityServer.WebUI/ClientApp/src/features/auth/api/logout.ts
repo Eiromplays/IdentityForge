@@ -1,6 +1,6 @@
 import { useSearch } from '@tanstack/react-location';
+import { useQuery } from '@tanstack/react-query';
 import { ExtractFnReturnType, QueryConfig, axios } from 'eiromplays-ui';
-import { useQuery } from 'react-query';
 
 import { LocationGenerics } from '@/App';
 import { identityServerUrl } from '@/utils/envVariables';

@@ -1,15 +1,21 @@
-import { Outlet, useMatches } from '@tanstack/react-location';
-import { Breadcrumbs, lazyImport, Link, MainLayout, NotAllowed, Spinner } from 'eiromplays-ui';
+import { Outlet } from '@tanstack/react-location';
+import { Breadcrumbs, lazyImport, MainLayout, NotAllowed, Spinner } from 'eiromplays-ui';
 import { Suspense } from 'react';
-import { AiOutlineTags, BiTargetLock, MdOutlineVerified } from 'react-icons/all';
+import * as React from 'react';
+import {
+  AiOutlineTags,
+  BiTargetLock,
+  HiOutlineHome,
+  MdOutlineHistory,
+  MdOutlineVerified,
+} from 'react-icons/all';
 import {
   HiLockClosed,
   HiOutlineDocumentText,
-  HiOutlineHome,
   HiOutlineShieldCheck,
   HiOutlineUsers,
 } from 'react-icons/hi';
-import { MdOutlineDevicesOther, MdOutlineHistory } from 'react-icons/md';
+import { MdOutlineDevicesOther } from 'react-icons/md';
 
 import { LocationGenerics } from '@/App';
 import logo from '@/assets/logo.svg';

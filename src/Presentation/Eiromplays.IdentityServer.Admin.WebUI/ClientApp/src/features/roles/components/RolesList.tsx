@@ -33,7 +33,7 @@ export const RolesList = () => {
   return (
     <PaginatedTable<SearchRoleDTO, Role>
       url="/roles/search"
-      queryKeyName="search-roles"
+      queryKeyName={['search-roles']}
       searchData={{ pageNumber: page, pageSize: pageSize }}
       searchFilter={searchFilter}
       columns={[

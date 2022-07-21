@@ -32,7 +32,7 @@ export const ClientsList = () => {
   return (
     <PaginatedTable<SearchClientDTO, Client>
       url="/clients/search"
-      queryKeyName="search-clients"
+      queryKeyName={['search-clients']}
       searchData={{ pageNumber: page, pageSize: pageSize }}
       searchFilter={searchFilter}
       columns={[

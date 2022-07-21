@@ -32,7 +32,7 @@ export const ApiScopesList = () => {
   return (
     <PaginatedTable<SearchApiScopeDTO, ApiScope>
       url="/api-scopes/search"
-      queryKeyName="search-api-scopes"
+      queryKeyName={['search-api-scopes']}
       searchData={{ pageNumber: page, pageSize: pageSize }}
       searchFilter={searchFilter}
       columns={[

@@ -1,5 +1,5 @@
+import { useMutation } from '@tanstack/react-query';
 import { axios, MessageResponse, MutationConfig, useAuth } from 'eiromplays-ui';
-import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
 import { identityServerUrl } from '@/utils/envVariables';

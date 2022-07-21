@@ -1,5 +1,5 @@
+import { useMutation } from '@tanstack/react-query';
 import { axios, MutationConfig, queryClient } from 'eiromplays-ui';
-import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
 import { UserRole } from '@/features/users';
@@ -38,11 +38,11 @@ export const useUpdateUserRoles = ({ config }: UseUpdateUserRolesOptions = {}) =
 
       return { previousUserRoles };
     },
-    onError: (error, __, context: any) => {
+    onError: (error, variables, context: any) => {
       toast.error('Failed to update user roles');
       toast.error(error.response?.data);
       if (context?.previousUserRoles) {
-        queryClient.setQueryData('discussions', context.previousUserRoles);
+        queryClient.setQueryData(['user', variables.userId, 'roles'], context.previousUserRoles);
       }
     },
     onSuccess: async (_, variables) => {

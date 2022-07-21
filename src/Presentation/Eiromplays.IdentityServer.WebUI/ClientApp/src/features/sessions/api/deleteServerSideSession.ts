@@ -1,12 +1,10 @@
+import { useMutation } from '@tanstack/react-query';
 import { axios, MutationConfig, queryClient } from 'eiromplays-ui';
-import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
 import { identityServerUrl } from '@/utils/envVariables';
 
 export const deleteServerSideSession = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  currentSession,
   sessionId,
 }: {
   currentSession: boolean;
@@ -26,7 +24,7 @@ export const useDeleteServerSideSession = ({ config }: UseDeleteServerSideSessio
         window.location.href = '/';
         return;
       }
-      await queryClient.invalidateQueries('server-side-sessions');
+      await queryClient.invalidateQueries(['server-side-sessions']);
       toast.success('Server-side Session Deleted');
     },
     ...config,

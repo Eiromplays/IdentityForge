@@ -1,5 +1,5 @@
+import { useMutation } from '@tanstack/react-query';
 import { axios, MutationConfig, queryClient, useAuth } from 'eiromplays-ui';
-import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
 import { UserSession } from '../types';
@@ -24,12 +24,12 @@ export const useDeleteBffUserSession = ({ config }: UseDeleteBffUserSessionOptio
 
   return useMutation({
     onMutate: async (deletedUserSession) => {
-      await queryClient.cancelQueries('bff-sessions');
+      await queryClient.cancelQueries(['bff-sessions']);
 
-      const previousUserSessions = queryClient.getQueryData<UserSession[]>('bff-sessions');
+      const previousUserSessions = queryClient.getQueryData<UserSession[]>(['bff-sessions']);
 
       queryClient.setQueryData(
-        'bff-sessions',
+        ['bff-sessions'],
         previousUserSessions?.filter(
           (userSession) => userSession.key !== deletedUserSession.userSessionKey
         )
@@ -39,7 +39,7 @@ export const useDeleteBffUserSession = ({ config }: UseDeleteBffUserSessionOptio
     },
     onError: (_, __, context: any) => {
       if (context?.previousUserSessions) {
-        queryClient.setQueryData('bff-sessions', context.previousUserSessions);
+        queryClient.setQueryData(['bff-sessions'], context.previousUserSessions);
       }
     },
     onSuccess: async (_, variables) => {
@@ -48,7 +48,7 @@ export const useDeleteBffUserSession = ({ config }: UseDeleteBffUserSessionOptio
         window.location.href = '/';
         return;
       }
-      await queryClient.invalidateQueries('bff-sessions');
+      await queryClient.invalidateQueries(['bff-sessions']);
       toast.success('Bff User Session Deleted');
     },
     ...config,

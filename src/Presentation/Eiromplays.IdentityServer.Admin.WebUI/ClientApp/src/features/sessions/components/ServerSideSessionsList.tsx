@@ -36,7 +36,7 @@ export const ServerSideSessionsList = () => {
   return (
     <PaginatedTable<SearchServerSideSessionDTO, ServerSideSession>
       url="/server-side-sessions/search"
-      queryKeyName="search-server-side-sessions"
+      queryKeyName={['search-server-side-sessions']}
       searchData={{ pageNumber: page, pageSize: pageSize }}
       searchFilter={searchFilter}
       columns={[
