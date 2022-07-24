@@ -13,7 +13,7 @@ public class UpdateUserClaimEndpoint : Endpoint<UpdateUserClaimModels.Request, U
 
     public override void Configure()
     {
-        Put("/users/{Id}/claims");
+        Put("/users/{Id}/claims/{ClaimId}", "/users/{Id}/claims");
         Summary(s =>
         {
             s.Summary = "Update user claim";
@@ -24,7 +24,7 @@ public class UpdateUserClaimEndpoint : Endpoint<UpdateUserClaimModels.Request, U
 
     public override async Task HandleAsync(UpdateUserClaimModels.Request req, CancellationToken ct)
     {
-        Response.Message = await _userService.UpdateClaimAsync(req.Id, req.UpdateUserClaimRequest);
+        Response.Message = await _userService.UpdateClaimAsync(req.Id, req.ClaimId, req.UpdateUserClaimRequest);
 
         await SendOkAsync(Response, cancellation: ct);
     }

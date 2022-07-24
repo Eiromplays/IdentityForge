@@ -23,7 +23,7 @@ export const ClientInfo = () => {
     params: { clientId: id },
   } = useMatch<LocationGenerics>();
 
-  const clientId = parseInt(id, 10);
+  const clientId = +id;
 
   const clientQuery = useClient({ clientId: clientId });
 

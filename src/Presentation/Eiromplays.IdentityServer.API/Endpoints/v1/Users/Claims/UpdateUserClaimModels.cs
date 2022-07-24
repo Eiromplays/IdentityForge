@@ -8,6 +8,8 @@ public class UpdateUserClaimModels
     {
         public string Id { get; set; } = default!;
 
+        public int ClaimId { get; set; }
+
         public UpdateUserClaimRequest UpdateUserClaimRequest { get; set; } = default!;
     }
 

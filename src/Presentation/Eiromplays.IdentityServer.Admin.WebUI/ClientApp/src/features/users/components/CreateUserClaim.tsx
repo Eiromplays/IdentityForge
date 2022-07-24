@@ -1,9 +1,8 @@
-import { Button, CustomInputField, Form, FormDrawer, InputField } from 'eiromplays-ui';
+import { Button, Form, FormDrawer, InputField } from 'eiromplays-ui';
 import { HiOutlinePencil } from 'react-icons/hi';
-import PhoneInputWithCountry from 'react-phone-number-input/react-hook-form';
 import * as z from 'zod';
 
-import { CreateUserClaimDTO, useCreateUserClaim } from '../api/createUseClaim';
+import { CreateUserClaimDTO, useCreateUserClaim } from '../api/createUserClaim';
 
 const schema = z.object({
   type: z.string().min(1, 'Required'),
@@ -25,10 +24,10 @@ export const CreateUserClaim = ({ id }: CreateUserClaimProps) => {
         isDone={createUserClaimMutation.isSuccess}
         triggerButton={
           <Button startIcon={<HiOutlinePencil className="h-4 w-4" />} size="sm">
-            Create UserClaim
+            Create User Claim
           </Button>
         }
-        title="Create UserClaim"
+        title="Create User Claim"
         submitButton={
           <Button
             form="create-user-claim"

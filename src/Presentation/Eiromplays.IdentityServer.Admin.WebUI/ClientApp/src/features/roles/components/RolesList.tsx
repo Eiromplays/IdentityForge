@@ -7,6 +7,7 @@ import {
   defaultPageSize,
   SearchFilter,
 } from 'eiromplays-ui';
+import React from 'react';
 
 import { LocationGenerics } from '@/App';
 
@@ -54,6 +55,22 @@ export const RolesList = () => {
           field: 'id',
           Cell({ entry: { id } }) {
             return <DeleteRole id={id} />;
+          },
+        },
+        {
+          title: '',
+          field: 'id',
+          Cell({ entry: { id } }) {
+            return (
+              <Link to={`${id}/claims`} search={search} className="block">
+                <pre className={`text-sm`}>
+                  Claims{' '}
+                  <MatchRoute to={`${id}/claims`} pending>
+                    <Spinner size="md" className="inline-block" />
+                  </MatchRoute>
+                </pre>
+              </Link>
+            );
           },
         },
         {

@@ -23,7 +23,7 @@ export const ApiResourceInfo = () => {
     params: { apiResourceId: id },
   } = useMatch<LocationGenerics>();
 
-  const apiResourceId = parseInt(id, 10);
+  const apiResourceId = +id;
 
   const apiResourceQuery = useApiResource({ apiResourceId: apiResourceId });
 

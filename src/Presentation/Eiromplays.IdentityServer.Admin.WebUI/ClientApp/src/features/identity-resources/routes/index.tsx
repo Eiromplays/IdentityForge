@@ -19,13 +19,13 @@ export const IdentityResourcesRoutes: Route<LocationGenerics> = {
       element: <IdentityResources />,
       loader: async ({ search: { pagination, searchFilter } }) =>
         (await queryClient.getQueryData([
-          'identity-resources',
+          'search-identity-resources',
           pagination?.index || defaultPageIndex,
           pagination?.size || defaultPageSize,
         ])) ??
         (await queryClient.fetchQuery(
           [
-            'identity-resources',
+            'search-identity-resources',
             pagination?.index || defaultPageIndex,
             pagination?.size || defaultPageSize,
           ],
@@ -46,7 +46,7 @@ export const IdentityResourcesRoutes: Route<LocationGenerics> = {
       loader: async ({ params: { identityResourceId } }) =>
         queryClient.getQueryData(['identity-resource', identityResourceId]) ??
         (await queryClient.fetchQuery(['identity-resource', identityResourceId], () =>
-          getIdentityResource({ identityResourceId: parseInt(identityResourceId, 10) })
+          getIdentityResource({ identityResourceId: +identityResourceId })
         )),
       meta: {
         breadcrumb: (params: any) => params.identityResourceId,

@@ -19,13 +19,13 @@ export const ApiResourcesRoutes: Route<LocationGenerics> = {
       element: <ApiResources />,
       loader: async ({ search: { pagination, searchFilter } }) =>
         (await queryClient.getQueryData([
-          'api-resources',
+          'search-api-resources',
           pagination?.index || defaultPageIndex,
           pagination?.size || defaultPageSize,
         ])) ??
         (await queryClient.fetchQuery(
           [
-            'api-resources',
+            'search-api-resources',
             pagination?.index || defaultPageIndex,
             pagination?.size || defaultPageSize,
           ],
@@ -46,7 +46,7 @@ export const ApiResourcesRoutes: Route<LocationGenerics> = {
       loader: async ({ params: { apiResourceId } }) =>
         queryClient.getQueryData(['api-resource', apiResourceId]) ??
         (await queryClient.fetchQuery(['api-resource', apiResourceId], () =>
-          getApiResource({ apiResourceId: parseInt(apiResourceId, 10) })
+          getApiResource({ apiResourceId: +apiResourceId })
         )),
       meta: {
         breadcrumb: (params: any) => params.apiResourceId,

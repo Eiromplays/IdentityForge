@@ -13,9 +13,9 @@ export const getIdentityResource = ({
   return axios.get(`/identity-resources/${identityResourceId}`);
 };
 
-type QueryFnType = typeof getIdentityResource;
+export type QueryFnType = typeof getIdentityResource;
 
-type UseIdentityResourceOptions = {
+export type UseIdentityResourceOptions = {
   identityResourceId: number;
   config?: QueryConfig<QueryFnType>;
 };

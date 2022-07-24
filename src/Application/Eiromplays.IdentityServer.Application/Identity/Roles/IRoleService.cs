@@ -1,3 +1,5 @@
+using Eiromplays.IdentityServer.Application.Identity.Roles.Claims;
+
 namespace Eiromplays.IdentityServer.Application.Identity.Roles;
 
 public interface IRoleService : ITransientService
@@ -18,4 +20,18 @@ public interface IRoleService : ITransientService
     Task<string> UpdatePermissionsAsync(UpdateRolePermissionsRequest request, CancellationToken cancellationToken = default);
 
     Task<string> DeleteAsync(string id);
+
+    #region Claims
+
+    Task<PaginationResponse<RoleClaimDto>> SearchClaims(RoleClaimListFilter filter, CancellationToken cancellationToken);
+
+    Task<List<RoleClaimDto>> GetClaimsAsync(string roleId);
+
+    Task<string> AddClaimAsync(string roleId, AddRoleClaimRequest request);
+
+    Task<string> RemoveClaimAsync(string roleId, int claimId);
+
+    Task<string> UpdateClaimAsync(string roleId, int claimId, UpdateRoleClaimRequest request);
+
+    #endregion
 }

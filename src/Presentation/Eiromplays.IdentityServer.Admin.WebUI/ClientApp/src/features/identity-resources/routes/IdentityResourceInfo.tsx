@@ -23,7 +23,7 @@ export const IdentityResourceInfo = () => {
     params: { identityResourceId: id },
   } = useMatch<LocationGenerics>();
 
-  const identityResourceId = parseInt(id, 10);
+  const identityResourceId = +id;
 
   const identityResourceQuery = useIdentityResource({ identityResourceId: identityResourceId });
 

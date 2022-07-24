@@ -13,7 +13,7 @@ public class RemoverUserClaimEndpoint : Endpoint<RemoveUserClaimModels.Request, 
 
     public override void Configure()
     {
-        Post("/users/{Id}/claims-delete");
+        Delete("/users/{Id}/claims/{ClaimId}", "/users/{Id}/claims");
         Summary(s =>
         {
             s.Summary = "Remove a claim from a user";
@@ -24,7 +24,7 @@ public class RemoverUserClaimEndpoint : Endpoint<RemoveUserClaimModels.Request, 
 
     public override async Task HandleAsync(RemoveUserClaimModels.Request req, CancellationToken ct)
     {
-        Response.Message = await _userService.RemoveClaimAsync(req.Id, req.RemoveUserClaimRequest);
+        Response.Message = await _userService.RemoveClaimAsync(req.Id, req.ClaimId);
 
         await SendOkAsync(Response, cancellation: ct);
     }

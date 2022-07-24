@@ -15,14 +15,11 @@ import { UserClaim } from '@/features/users';
 
 export type DeleteUserClaimDTO = {
   userId: string;
-  removeUserClaimRequest: {
-    type: string;
-    value: string;
-  };
+  claimId: number;
 };
 
 export const deleteUserClaim = (data: DeleteUserClaimDTO) => {
-  return axios.post(`/users/${data.userId}/claims-delete`, data);
+  return axios.delete(`/users/${data.userId}/claims/${data.claimId}`);
 };
 
 export type UseDeleteUserOptions = {
@@ -53,9 +50,7 @@ export const useDeleteUserClaim = ({ config }: UseDeleteUserOptions = {}) => {
           pagination?.size || defaultPageSize,
         ],
         previousUserClaims?.data?.filter(
-          (userClaim) =>
-            userClaim.value !== deletedUserClaim.removeUserClaimRequest.value &&
-            userClaim.type !== deletedUserClaim.removeUserClaimRequest.type
+          (userClaim) => userClaim.id !== deletedUserClaim.claimId
         ) ?? []
       );
 
@@ -79,7 +74,7 @@ export const useDeleteUserClaim = ({ config }: UseDeleteUserOptions = {}) => {
         pagination?.index || defaultPageIndex,
         pagination?.size || defaultPageSize,
       ]);
-      toast.success('UserClaim deleted');
+      toast.success('User claim deleted');
     },
     ...config,
     mutationFn: deleteUserClaim,

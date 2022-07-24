@@ -1,9 +1,15 @@
+using Eiromplays.IdentityServer.Application.Identity.Claims;
+
 namespace Eiromplays.IdentityServer.Application.Identity.Users.Claims;
 
 public class UserClaimDto
 {
-    public string? Type { get; set; }
-    public string? Value { get; set; }
-    public string? ValueType { get; set; }
-    public string? Issuer { get; set; }
+    public int Id { get; set; }
+
+    public string? CreatedBy { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public string? LastModifiedBy { get; set; }
+    public DateTime? LastModifiedOn { get; set; }
+
+    public ClaimDto Claim { get; set; } = default!;
 }

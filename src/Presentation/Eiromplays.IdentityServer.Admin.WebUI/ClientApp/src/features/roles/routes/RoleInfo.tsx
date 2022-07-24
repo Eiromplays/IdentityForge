@@ -43,7 +43,7 @@ export const RoleInfo = () => {
             <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
               Role Information
             </h3>
-            <UpdateRole id={roleId} />
+            <UpdateRole roleId={roleId} />
           </div>
           <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-white">
             Details abut the role.

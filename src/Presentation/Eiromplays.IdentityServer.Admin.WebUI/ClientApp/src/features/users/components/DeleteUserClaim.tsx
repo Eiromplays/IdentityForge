@@ -1,16 +1,14 @@
 import { Button, ConfirmationDialog } from 'eiromplays-ui';
 import { HiOutlineTrash } from 'react-icons/hi';
 
-import { UserClaim } from '@/features/users';
-
 import { useDeleteUserClaim } from '../api/deleteUserClaim';
 
 export type DeleteUserClaimProps = {
-  id: string;
-  userClaim: UserClaim;
+  userId: string;
+  claimId: number;
 };
 
-export const DeleteUserClaim = ({ id, userClaim }: DeleteUserClaimProps) => {
+export const DeleteUserClaim = ({ userId, claimId }: DeleteUserClaimProps) => {
   const deleteUserClaimMutation = useDeleteUserClaim();
 
   return (
@@ -30,8 +28,8 @@ export const DeleteUserClaim = ({ id, userClaim }: DeleteUserClaimProps) => {
           className="bg-red-600"
           onClick={() =>
             deleteUserClaimMutation.mutate({
-              userId: id,
-              removeUserClaimRequest: { type: userClaim.type, value: userClaim.value },
+              userId: userId,
+              claimId: claimId,
             })
           }
         >

@@ -15,18 +15,15 @@ import { UserClaim } from '@/features/users';
 
 export type UpdateUserClaimDTO = {
   userId: string;
+  claimId: number;
   data: {
-    newType: string;
-    newValue: string;
-    oldType: string;
-    oldValue: string;
-    valueType?: string;
-    issuer?: string;
+    type: string;
+    value: string;
   };
 };
 
-export const updateUserClaim = async ({ userId, data }: UpdateUserClaimDTO) => {
-  return axios.put(`/users/${userId}/claims`, { UpdateUserClaimRequest: data });
+export const updateUserClaim = async ({ userId, claimId, data }: UpdateUserClaimDTO) => {
+  return axios.put(`/users/${userId}/claims/${claimId}`, { UpdateUserClaimRequest: data });
 };
 
 export type UseUpdateUserClaimOptions = {
@@ -57,9 +54,7 @@ export const useUpdateUserClaim = ({ config }: UseUpdateUserClaimOptions = {}) =
           pagination?.size || defaultPageSize,
         ],
         previousUserClaims?.data?.filter(
-          (userClaim) =>
-            userClaim.type !== updatingUserClaim.data?.oldType &&
-            userClaim.value !== updatingUserClaim.data?.oldValue
+          (userClaim) => userClaim.id !== updatingUserClaim.claimId
         ) ?? []
       );
 

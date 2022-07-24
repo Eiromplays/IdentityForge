@@ -19,8 +19,6 @@ export type CreateUserClaimDTO = {
   addUserClaimRequest: {
     type: string;
     value: string;
-    valueType?: string;
-    issuer?: string;
   };
 };
 
@@ -61,7 +59,7 @@ export const useCreateUserClaim = ({ config }: UseCreateUserClaimOptions = {}) =
       return { previousUserClaims };
     },
     onError: (error, variables, context: any) => {
-      toast.error('Failed to add UserClaim');
+      toast.error('Failed to add user claim');
       toast.error(error.response?.data);
       if (context?.previousUserClaims) {
         queryClient.setQueryData(
@@ -80,7 +78,7 @@ export const useCreateUserClaim = ({ config }: UseCreateUserClaimOptions = {}) =
         pagination?.index || defaultPageIndex,
         pagination?.size || defaultPageSize,
       ]);
-      toast.success('UserClaim added');
+      toast.success('User claim added');
       toast.success(response.message);
     },
     ...config,

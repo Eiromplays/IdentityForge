@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using System.Text.Json;
 using Ardalis.Specification.EntityFrameworkCore;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Models;
@@ -20,7 +19,7 @@ internal partial class UserService
         var userClaims = await _db.UserClaims
             .Where(uc => uc.UserId == filter.UserId || string.IsNullOrWhiteSpace(filter.UserId))
             .WithSpecification(spec)
-            .Select(x => x.ToClaim())
+            .Select(c => new { c.Id, c.CreatedBy, c.CreatedOn, c.LastModifiedBy, c.LastModifiedOn, Claim = c.ToClaim()})
             .ProjectToType<UserClaimDto>()
             .ToListAsync(cancellationToken);
 
@@ -48,7 +47,7 @@ internal partial class UserService
         var user = await _userManager.FindByIdAsync(userId);
 
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
-        var result = await _userManager.AddClaimAsync(user, new Claim(request.Type, request.Value, request.ValueType, request.Issuer));
+        var result = await _userManager.AddClaimAsync(user, new Claim(request.Type, request.Value));
 
         if (!result.Succeeded)
             throw new InternalServerException(_t["Adding user claim failed"], result.GetErrors(_t));
@@ -57,12 +56,13 @@ internal partial class UserService
     }
 
     // TODO: Add event for claim removed
-    public async Task<string> RemoveClaimAsync(string userId, RemoveUserClaimRequest request)
+    public async Task<string> RemoveClaimAsync(string userId, int claimId)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
-        var result = await _userManager.RemoveClaimAsync(user, new Claim(request.Type, request.Value));
+        var userClaim = await _db.UserClaims.FirstOrDefaultAsync(uc => uc.Id == claimId);
+        var result = await _userManager.RemoveClaimAsync(user, userClaim?.ToClaim());
 
         if (!result.Succeeded)
             throw new InternalServerException(_t["Removing user claim failed"], result.GetErrors(_t));
@@ -71,12 +71,13 @@ internal partial class UserService
     }
 
     // TODO: Add event for claim updated
-    public async Task<string> UpdateClaimAsync(string userId, UpdateUserClaimRequest request)
+    public async Task<string> UpdateClaimAsync(string userId, int claimId, UpdateUserClaimRequest request)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
-        var result = await _userManager.ReplaceClaimAsync(user, new Claim(request.OldType, request.OldValue), new Claim(request.NewType, request.NewValue));
+        var userClaim = await _db.UserClaims.FirstOrDefaultAsync(uc => uc.Id == claimId);
+        var result = await _userManager.ReplaceClaimAsync(user, userClaim?.ToClaim(), new Claim(request.Type, request.Value));
 
         if (!result.Succeeded)
             throw new InternalServerException(_t["Updating user claim failed"], result.GetErrors(_t));

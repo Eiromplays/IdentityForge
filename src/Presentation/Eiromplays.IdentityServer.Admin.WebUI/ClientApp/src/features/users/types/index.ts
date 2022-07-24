@@ -1,3 +1,5 @@
+import { ClaimDto } from '@/types';
+
 export type User = {
   id: string;
   userName: string;
@@ -26,12 +28,10 @@ export type UserRole = {
 };
 
 export type UserClaim = {
-  type: string;
-  value: string;
-  valueType: string;
-  issuer: string;
+  id: number;
   createdOn: number;
   lastModifiedOn: number;
+  claim: ClaimDto;
 };
 
 export type UserProvider = {

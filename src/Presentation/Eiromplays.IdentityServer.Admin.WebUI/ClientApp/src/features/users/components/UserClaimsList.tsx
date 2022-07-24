@@ -17,10 +17,10 @@ import { UserClaim } from '../types';
 import { DeleteUserClaim } from './DeleteUserClaim';
 
 export type UserClaimsListProps = {
-  id: string;
+  userId: string;
 };
 
-export const UserClaimsList = ({ id }: UserClaimsListProps) => {
+export const UserClaimsList = ({ userId }: UserClaimsListProps) => {
   const search = useSearch<LocationGenerics>();
   const page = search.pagination?.index || defaultPageIndex;
   const pageSize = search.pagination?.size || defaultPageSize;
@@ -38,26 +38,42 @@ export const UserClaimsList = ({ id }: UserClaimsListProps) => {
   return (
     <>
       <PaginatedTable<SearchUserClaimsDTO, UserClaim>
-        url={`/users/${id}/claims-search`}
-        queryKeyName={[`search-user-claims-${id}`]}
+        url={`/users/${userId}/claims-search`}
+        queryKeyName={[`search-user-claims-${userId}`]}
         searchData={{ pageNumber: page, pageSize: pageSize }}
         searchFilter={searchFilter}
         columns={[
           {
+            title: 'Id',
+            field: 'id',
+          },
+          {
             title: 'Type',
-            field: 'type',
+            field: 'claim',
+            Cell({ entry: { claim } }) {
+              return <span>{claim.type}</span>;
+            },
           },
           {
             title: 'Value',
-            field: 'value',
+            field: 'claim',
+            Cell({ entry: { claim } }) {
+              return <span>{claim.value}</span>;
+            },
           },
           {
             title: 'Value Type',
-            field: 'valueType',
+            field: 'claim',
+            Cell({ entry: { claim } }) {
+              return <span>{claim.valueType}</span>;
+            },
           },
           {
             title: 'Issuer',
-            field: 'issuer',
+            field: 'claim',
+            Cell({ entry: { claim } }) {
+              return <span>{claim.issuer}</span>;
+            },
           },
           {
             title: 'Created',
@@ -75,18 +91,16 @@ export const UserClaimsList = ({ id }: UserClaimsListProps) => {
           },
           {
             title: '',
-            field: 'type',
-            Cell({ entry: { type, value, valueType, issuer, createdOn, lastModifiedOn } }) {
+            field: 'id',
+            Cell({ entry: { claim, id } }) {
               return (
                 <UpdateUserClaim
-                  id={id}
+                  userId={userId}
                   userClaim={{
-                    type: type,
-                    value: value,
-                    valueType: valueType,
-                    issuer: issuer,
-                    createdOn: createdOn,
-                    lastModifiedOn: lastModifiedOn,
+                    createdOn: 0,
+                    lastModifiedOn: 0,
+                    id: id,
+                    claim: claim,
                   }}
                 />
               );
@@ -94,21 +108,9 @@ export const UserClaimsList = ({ id }: UserClaimsListProps) => {
           },
           {
             title: '',
-            field: 'type',
-            Cell({ entry: { type, value, valueType, issuer, createdOn, lastModifiedOn } }) {
-              return (
-                <DeleteUserClaim
-                  id={id}
-                  userClaim={{
-                    type: type,
-                    value: value,
-                    valueType: valueType,
-                    issuer: issuer,
-                    createdOn: createdOn,
-                    lastModifiedOn: lastModifiedOn,
-                  }}
-                />
-              );
+            field: 'id',
+            Cell({ entry: { id } }) {
+              return <DeleteUserClaim userId={userId} claimId={id} />;
             },
           },
         ]}

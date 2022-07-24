@@ -142,9 +142,8 @@ public static class Startup
 
         string[] allowedPrefixes =
         {
-            $"{webHostEnvironment.EnvironmentName}/{webHostEnvironment.ApplicationName}/",
-            $"{webHostEnvironment.EnvironmentName}/EiromplaysIdentityServer/",
-            "Dev/EiromplaysIdentityServer"
+            $"{webHostEnvironment.EnvironmentName}/{webHostEnvironment.ApplicationName}",
+            $"{webHostEnvironment.EnvironmentName}/EiromplaysIdentityServer",
         };
 
         configuration.AddSecretsManager(

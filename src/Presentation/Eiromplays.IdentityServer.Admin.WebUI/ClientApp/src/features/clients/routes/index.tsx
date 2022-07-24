@@ -46,7 +46,7 @@ export const ClientsRoutes: Route<LocationGenerics> = {
       loader: async ({ params: { clientId } }) =>
         queryClient.getQueryData(['client', clientId]) ??
         (await queryClient.fetchQuery(['client', clientId], () =>
-          getClient({ clientId: parseInt(clientId, 10) })
+          getClient({ clientId: +clientId })
         )),
       meta: {
         breadcrumb: (params) => params.clientId,

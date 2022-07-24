@@ -10,12 +10,12 @@ const schema = z.object({
   description: z.string().optional(),
 });
 
-type UpdateRoleProps = {
-  id: string;
+export type UpdateRoleProps = {
+  roleId: string;
 };
 
-export const UpdateRole = ({ id }: UpdateRoleProps) => {
-  const roleQuery = useRole({ roleId: id || '' });
+export const UpdateRole = ({ roleId }: UpdateRoleProps) => {
+  const roleQuery = useRole({ roleId: roleId || '' });
   const updateRoleMutation = useUpdateRole();
 
   if (roleQuery.isLoading) {
@@ -66,7 +66,7 @@ export const UpdateRole = ({ id }: UpdateRoleProps) => {
         <Form<UpdateRoleDTO['data'], typeof schema>
           id="update-role"
           onSubmit={async (values) => {
-            values.id = id;
+            values.id = roleId;
             await updateRoleMutation.mutateAsync({ data: values });
           }}
           options={{

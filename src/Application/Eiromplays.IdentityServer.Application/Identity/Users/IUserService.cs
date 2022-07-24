@@ -99,9 +99,9 @@ public interface IUserService : ITransientService
 
     Task<string> AddClaimAsync(string userId, AddUserClaimRequest request);
 
-    Task<string> RemoveClaimAsync(string userId, RemoveUserClaimRequest request);
+    Task<string> RemoveClaimAsync(string userId, int claimId);
 
-    Task<string> UpdateClaimAsync(string userId, UpdateUserClaimRequest request);
+    Task<string> UpdateClaimAsync(string userId, int claimId, UpdateUserClaimRequest request);
 
     #endregion
 

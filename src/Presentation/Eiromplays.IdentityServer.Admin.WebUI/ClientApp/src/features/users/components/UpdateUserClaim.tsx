@@ -7,18 +7,16 @@ import { UserClaim } from '@/features/users';
 import { UpdateUserClaimDTO, useUpdateUserClaim } from '../api/updateUserClaim';
 
 const schema = z.object({
-  newType: z.string().min(1, 'Required'),
-  newValue: z.string().min(1, 'Required'),
-  valueType: z.string().nullable(),
-  issuer: z.string().nullable(),
+  type: z.string().min(1, 'Required'),
+  value: z.string().min(1, 'Required'),
 });
 
 export type UpdateUserClaimProps = {
-  id: string;
+  userId: string;
   userClaim: UserClaim;
 };
 
-export const UpdateUserClaim = ({ id, userClaim }: UpdateUserClaimProps) => {
+export const UpdateUserClaim = ({ userId, userClaim }: UpdateUserClaimProps) => {
   const updateUserClaimMutation = useUpdateUserClaim();
 
   return (
@@ -27,14 +25,14 @@ export const UpdateUserClaim = ({ id, userClaim }: UpdateUserClaimProps) => {
         isDone={updateUserClaimMutation.isSuccess}
         triggerButton={
           <Button startIcon={<HiOutlinePencil className="h-4 w-4" />} size="sm">
-            Update UserClaim
+            Update User Claim
           </Button>
         }
-        title={`Update UserClaim`}
+        title={`Update User Claim`}
         submitButton={
           <ConfirmationDialog
             icon="warning"
-            title="Update UserClaim"
+            title="Update User Claim"
             body="Are you sure you want to update this claim?"
             triggerButton={
               <Button size="sm" isLoading={updateUserClaimMutation.isLoading}>
@@ -50,7 +48,7 @@ export const UpdateUserClaim = ({ id, userClaim }: UpdateUserClaimProps) => {
                 size="sm"
                 isLoading={updateUserClaimMutation.isLoading}
               >
-                Update UserClaim
+                Update User Claim
               </Button>
             }
           />
@@ -59,16 +57,16 @@ export const UpdateUserClaim = ({ id, userClaim }: UpdateUserClaimProps) => {
         <Form<UpdateUserClaimDTO['data'], typeof schema>
           id="update-user-claim"
           onSubmit={async (values) => {
-            values.oldType = userClaim.type;
-            values.oldValue = userClaim.value;
-            await updateUserClaimMutation.mutateAsync({ userId: id, data: values });
+            await updateUserClaimMutation.mutateAsync({
+              userId: userId,
+              claimId: userClaim.id,
+              data: values,
+            });
           }}
           options={{
             defaultValues: {
-              newType: userClaim.type,
-              newValue: userClaim.value,
-              valueType: userClaim.valueType,
-              issuer: userClaim.issuer,
+              type: userClaim.claim.type,
+              value: userClaim.claim.value,
             },
           }}
           schema={schema}
@@ -77,23 +75,13 @@ export const UpdateUserClaim = ({ id, userClaim }: UpdateUserClaimProps) => {
             <>
               <InputField
                 label="Type"
-                error={formState.errors['newType']}
-                registration={register('newType')}
+                error={formState.errors['type']}
+                registration={register('type')}
               />
               <InputField
                 label="Value"
-                error={formState.errors['newValue']}
-                registration={register('newValue')}
-              />
-              <InputField
-                label="ValueType"
-                error={formState.errors['valueType']}
-                registration={register('valueType')}
-              />
-              <InputField
-                label="Issuer"
-                error={formState.errors['issuer']}
-                registration={register('issuer')}
+                error={formState.errors['value']}
+                registration={register('value')}
               />
             </>
           )}

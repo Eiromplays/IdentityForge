@@ -23,7 +23,7 @@ export const ApiScopeInfo = () => {
     params: { apiScopeId: id },
   } = useMatch<LocationGenerics>();
 
-  const apiScopeId = parseInt(id, 10);
+  const apiScopeId = +id;
 
   const apiScopeQuery = useApiScope({ apiScopeId: apiScopeId });
 

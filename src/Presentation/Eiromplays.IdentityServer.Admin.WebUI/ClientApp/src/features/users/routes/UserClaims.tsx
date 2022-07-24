@@ -20,7 +20,7 @@ export const UserClaims = () => {
           allowedRoles={[ROLES.ADMINISTRATOR]}
         >
           <CreateUserClaim id={userId} />
-          <UserClaimsList id={userId} />
+          <UserClaimsList userId={userId} />
         </Authorization>
       </div>
     </ContentLayout>

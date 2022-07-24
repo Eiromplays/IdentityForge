@@ -19,13 +19,13 @@ export const ApiScopesRoutes: Route<LocationGenerics> = {
       element: <ApiScopes />,
       loader: async ({ search: { pagination, searchFilter } }) =>
         (await queryClient.getQueryData([
-          'api-scopes',
+          'search-api-scopes',
           pagination?.index || defaultPageIndex,
           pagination?.size || defaultPageSize,
         ])) ??
         (await queryClient.fetchQuery(
           [
-            'api-scopes',
+            'search-api-scopes',
             pagination?.index || defaultPageIndex,
             pagination?.size || defaultPageSize,
           ],
@@ -46,7 +46,7 @@ export const ApiScopesRoutes: Route<LocationGenerics> = {
       loader: async ({ params: { apiScopeId } }) =>
         queryClient.getQueryData(['api-scope', apiScopeId]) ??
         (await queryClient.fetchQuery(['api-scope', apiScopeId], () =>
-          getApiScope({ apiScopeId: parseInt(apiScopeId, 10) })
+          getApiScope({ apiScopeId: +apiScopeId })
         )),
       meta: {
         breadcrumb: (params: any) => params.apiScopeId,

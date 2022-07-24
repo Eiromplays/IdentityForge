@@ -8,7 +8,7 @@ public class RemoveUserClaimModels
     {
         public string Id { get; set; } = default!;
 
-        public RemoveUserClaimRequest RemoveUserClaimRequest { get; set; } = default!;
+        public int ClaimId { get; set; }
     }
 
     public class Response
