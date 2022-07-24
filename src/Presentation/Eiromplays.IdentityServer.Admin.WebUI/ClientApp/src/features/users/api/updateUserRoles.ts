@@ -16,7 +16,7 @@ export const updateUserRoles = async ({ userId, data }: UpdateUserRolesDTO) => {
   return axios.post(`/users/${userId}/roles`, { UserRolesRequest: data });
 };
 
-type UseUpdateUserRolesOptions = {
+export type UseUpdateUserRolesOptions = {
   config?: MutationConfig<typeof updateUserRoles>;
 };
 

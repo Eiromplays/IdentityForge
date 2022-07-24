@@ -16,14 +16,22 @@ import { Client } from '@/features/clients';
 
 export type CreateClientDTO = {
   data: {
+    enabled: boolean;
     clientId: string;
+    protocolType: string;
+    requireClientSecret: boolean;
     clientName: string;
     description: string;
     clientUri: string;
     logoUri: string;
-    enabled: boolean;
     requireConsent: boolean;
     allowRememberConsent: boolean;
+    alwaysIncludeUserClaimsInIdToken: boolean;
+    allowedGrantTypes: string[];
+    requirePkce: boolean;
+    allowPlainTextPkce: boolean;
+    requireRequestObject: boolean;
+    allowAccessTokensViaBrowser: boolean;
   };
 };
 

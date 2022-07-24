@@ -1,5 +1,7 @@
 using Ardalis.Specification.EntityFrameworkCore;
 using Duende.IdentityServer.EntityFramework.Entities;
+using Duende.IdentityServer.EntityFramework.Mappers;
+using Duende.IdentityServer.Models;
 using Eiromplays.IdentityServer.Application.Common.Events;
 using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Models;
@@ -10,6 +12,7 @@ using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Client = Duende.IdentityServer.EntityFramework.Entities.Client;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
@@ -91,17 +94,25 @@ internal class ClientService : IClientService
 
     public async Task<string> CreateAsync(CreateClientRequest request, CancellationToken cancellationToken)
     {
-        var client = new Client
+        var client = new Duende.IdentityServer.Models.Client
         {
+            Enabled = request.Enabled,
             ClientId = request.ClientId,
+            ProtocolType = request.ProtocolType,
+            RequireClientSecret = request.RequireClientSecret,
             ClientName = request.ClientName,
             Description = request.Description,
             ClientUri = request.ClientUri,
             LogoUri = request.LogoUri,
-            Enabled = request.Enabled,
             RequireConsent = request.RequireConsent,
-            AllowRememberConsent = request.AllowRememberConsent
-        };
+            AllowRememberConsent = request.AllowRememberConsent,
+            AlwaysIncludeUserClaimsInIdToken = request.AlwaysIncludeUserClaimsInIdToken,
+            AllowedGrantTypes = request.AllowedGrantTypes,
+            RequirePkce = request.RequirePkce,
+            AllowPlainTextPkce = request.AllowPlainTextPkce,
+            RequireRequestObject = request.RequireRequestObject,
+            AllowAccessTokensViaBrowser = request.AllowAccessTokensViaBrowser,
+        }.ToEntity();
 
         await _db.Clients.AddAsync(client, cancellationToken);
 

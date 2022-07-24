@@ -11,9 +11,9 @@ export const getUserRoles = ({ userId }: GetUserRolesDTO): Promise<UserRole[]> =
   return axios.get(`/users/${userId}/roles`);
 };
 
-type QueryFnType = typeof getUserRoles;
+export type QueryFnType = typeof getUserRoles;
 
-type UseUserRolesOptions = {
+export type UseUserRolesOptions = {
   userId: string;
   config?: QueryConfig<QueryFnType>;
 };
