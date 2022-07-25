@@ -81,13 +81,13 @@ export const useCreateClient = ({ config }: UseCreateClientOptions = {}) => {
         );
       }
     },
-    onSuccess: async () => {
+    onSuccess: async (response) => {
       await queryClient.invalidateQueries([
-        'search-api-clients',
+        'search-clients',
         pagination?.index || defaultPageIndex,
         pagination?.size || defaultPageSize,
       ]);
-      toast.success('Client created');
+      toast.success(response.message);
     },
     ...config,
     mutationFn: createClient,

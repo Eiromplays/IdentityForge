@@ -14,8 +14,8 @@ const schema = z.object({
   requireClientSecret: z.boolean(),
   clientName: z.string().min(1, 'Required'),
   description: z.string(),
-  clientUri: z.string().url('Invalid URL').optional(),
-  logoUri: z.string().url('Invalid URL').optional().nullable(),
+  clientUri: z.string().url('Invalid URL').optional().or(z.literal('')),
+  logoUri: z.string().url('Invalid URL').optional().or(z.literal('')),
   requireConsent: z.boolean(),
   allowRememberConsent: z.boolean(),
   alwaysIncludeUserClaimsInIdToken: z.boolean(),
@@ -31,6 +31,14 @@ const animatedComponents = makeAnimated();
 export const CreateClient = () => {
   const createClientMutation = useCreateClient();
   const { currentTheme } = useTheme();
+
+  const allowedGrantTypeOptions = [
+    { value: 'authorization_code', label: 'Authorization Code' },
+    { value: 'implicit', label: 'Implicit' },
+    { value: 'hybrid', label: 'Hybrid' },
+    { value: 'client_credentials', label: 'Client Credentials' },
+    { value: 'refresh_token', label: 'Refresh Token' },
+  ];
 
   return (
     <>
@@ -133,25 +141,15 @@ export const CreateClient = () => {
               />
               <Controller
                 control={control}
-                defaultValue={getValues('allowedGrantTypes')}
+                defaultValue={['authorization_code']}
                 name="allowedGrantTypes"
                 render={({ field: { onChange, ref } }) => (
                   <CreatableSelect
                     ref={ref}
-                    defaultValue={
-                      getValues('allowedGrantTypes').map((grantType) => ({
-                        value: grantType,
-                        label: grantType,
-                      })) as any
-                    }
+                    defaultValue={{ value: 'authorization_code', label: 'Authorization Code' }}
                     isMulti
-                    onChange={(val) => onChange(val.map((c: any) => c.value))}
-                    options={
-                      getValues('allowedGrantTypes').map((grantType) => ({
-                        value: grantType,
-                        label: grantType,
-                      })) as any
-                    }
+                    onChange={(val) => onChange(val.map((c) => c?.value))}
+                    options={allowedGrantTypeOptions}
                     components={animatedComponents as any}
                     theme={(theme) =>
                       currentTheme === 'dark'

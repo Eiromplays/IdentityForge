@@ -61,13 +61,13 @@ export const useDeleteClient = ({ config }: UseDeleteClientOptions = {}) => {
         );
       }
     },
-    onSuccess: async () => {
+    onSuccess: async (_, variables) => {
       await queryClient.invalidateQueries([
         'search-clients',
         pagination?.index || defaultPageIndex,
         pagination?.size || defaultPageSize,
       ]);
-      toast.success('Client deleted');
+      toast.success(`Client ${variables.clientId} deleted`);
     },
     ...config,
     mutationFn: deleteClient,

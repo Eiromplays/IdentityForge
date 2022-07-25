@@ -26,9 +26,6 @@ export type LocationGenerics = DefaultLocationGenerics & {
     productId: string;
     brandId: string;
   };
-  RouteMeta: {
-    breadcrumb: (params: LocationGenerics['Params']) => React.ReactElement | string;
-  };
 };
 
 const location = new ReactLocation<LocationGenerics>();
