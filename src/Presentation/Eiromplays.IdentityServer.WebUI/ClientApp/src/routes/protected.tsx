@@ -7,6 +7,7 @@ import {
   useAuth,
   ROLES,
   useAuthorization,
+  NotLoggedIn,
 } from 'eiromplays-ui';
 import { Suspense } from 'react';
 import {
@@ -38,14 +39,11 @@ const { TwoFactorAuthentication } = lazyImport(
 const { Password } = lazyImport(() => import('@/features/users'), 'Password');
 
 const App = () => {
-  const { user } = useAuth();
+  const { isLoggedIn } = useAuth();
   const { checkAccess } = useAuthorization();
   const isAdmin = checkAccess({ allowedRoles: [ROLES.ADMINISTRATOR] });
 
-  if (!user) {
-    window.location.href = '/';
-    return null;
-  }
+  if (!isLoggedIn) return <NotLoggedIn />;
 
   return (
     <MainLayout

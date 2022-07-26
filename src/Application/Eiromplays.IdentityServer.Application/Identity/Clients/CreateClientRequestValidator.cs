@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Duende.IdentityServer;
 using Duende.IdentityServer.Models;
 using IdentityModel;
@@ -36,19 +37,34 @@ public class CreateClientRequestValidator : Validator<CreateClientRequest>
             .WithMessage((_, protocol) => string.Format(T["Protocol {0} is not supported."], protocol));
 
         RuleFor(request => request.AllowedGrantTypes)
-            .Must(grantTypes => grantTypes.Exists(grantType => GrantTypes.Implicit.Contains(grantType) ||
-                                                               GrantTypes.ImplicitAndClientCredentials.Contains(
-                                                                   grantType) || GrantTypes.Code.Contains(grantType) ||
-                                                               GrantTypes.CodeAndClientCredentials
-                                                                   .Contains(grantType) ||
-                                                               GrantTypes.Hybrid.Contains(grantType) ||
-                                                               GrantTypes.HybridAndClientCredentials
-                                                                   .Contains(grantType) ||
-                                                               GrantTypes.ClientCredentials.Contains(grantType) ||
-                                                               GrantTypes.ResourceOwnerPassword.Contains(grantType) ||
-                                                               GrantTypes.ResourceOwnerPasswordAndClientCredentials.Contains(grantType) ||
-                                                               GrantTypes.DeviceFlow.Contains(grantType) ||
-                                                               GrantTypes.Ciba.Contains(grantType)))
-            .WithMessage((_, grantTypes) => string.Format(T["Grant types {0} are not valid."], grantTypes));
+            .Must(grantTypes => grantTypes.All(grantType => GrantTypes.Implicit.Contains(grantType) ||
+                                                           GrantTypes.ImplicitAndClientCredentials.Contains(
+                                                               grantType) || GrantTypes.Code.Contains(grantType) ||
+                                                           GrantTypes.CodeAndClientCredentials
+                                                               .Contains(grantType) ||
+                                                           GrantTypes.Hybrid.Contains(grantType) ||
+                                                           GrantTypes.HybridAndClientCredentials
+                                                               .Contains(grantType) ||
+                                                           GrantTypes.ClientCredentials.Contains(grantType) ||
+                                                           GrantTypes.ResourceOwnerPassword.Contains(grantType) ||
+                                                           GrantTypes.ResourceOwnerPasswordAndClientCredentials
+                                                               .Contains(grantType) ||
+                                                           GrantTypes.DeviceFlow.Contains(grantType) ||
+                                                           GrantTypes.Ciba.Contains(grantType)))
+            .WithMessage((_, grantTypes) => string.Format(T["Grant types {0} are not valid."], JsonSerializer.Serialize(
+                grantTypes.Where(grantType => !(GrantTypes.Implicit.Contains(grantType) ||
+                                                GrantTypes.ImplicitAndClientCredentials.Contains(
+                                                    grantType) || GrantTypes.Code.Contains(grantType) ||
+                                                GrantTypes.CodeAndClientCredentials
+                                                    .Contains(grantType) ||
+                                                GrantTypes.Hybrid.Contains(grantType) ||
+                                                GrantTypes.HybridAndClientCredentials
+                                                    .Contains(grantType) ||
+                                                GrantTypes.ClientCredentials.Contains(grantType) ||
+                                                GrantTypes.ResourceOwnerPassword.Contains(grantType) ||
+                                                GrantTypes.ResourceOwnerPasswordAndClientCredentials
+                                                    .Contains(grantType) ||
+                                                GrantTypes.DeviceFlow.Contains(grantType) ||
+                                                GrantTypes.Ciba.Contains(grantType))))));
     }
 }

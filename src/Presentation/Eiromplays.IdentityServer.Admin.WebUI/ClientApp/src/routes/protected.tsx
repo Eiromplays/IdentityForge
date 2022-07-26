@@ -1,5 +1,13 @@
 import { Outlet } from '@tanstack/react-location';
-import { Breadcrumbs, lazyImport, MainLayout, NotAllowed, Spinner } from 'eiromplays-ui';
+import {
+  Breadcrumbs,
+  lazyImport,
+  MainLayout,
+  NotAllowed,
+  NotLoggedIn,
+  Spinner,
+  useAuth,
+} from 'eiromplays-ui';
 import { Suspense } from 'react';
 import * as React from 'react';
 import {
@@ -34,7 +42,10 @@ import { identityServerUiUrl, identityServerUrl } from '@/utils/envVariables';
 const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
 
 const App = () => {
+  const { isLoggedIn } = useAuth();
   const { checkAccess } = useAuthorization();
+
+  if (!isLoggedIn) return <NotLoggedIn />;
 
   if (!checkAccess({ allowedRoles: [ROLES.ADMINISTRATOR] })) return <NotAllowed logo={logo} />;
 

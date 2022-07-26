@@ -69,7 +69,10 @@ export const useCreateClient = ({ config }: UseCreateClientOptions = {}) => {
     },
     onError: (error, __, context: any) => {
       toast.error('Failed to create Client');
-      toast.error(error.response?.data);
+      toast.error(error?.response?.data?.message);
+      Object.entries(error?.response?.data?.errors || {}).forEach(([, value]) => {
+        toast.error(`${value}`, { className: 'break-all' });
+      });
       if (context?.previousClients) {
         queryClient.setQueryData(
           [
