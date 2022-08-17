@@ -7,6 +7,7 @@ using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Common.Specification;
 using Eiromplays.IdentityServer.Application.Identity.Clients;
+using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Domain.Identity;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
 using Mapster;
@@ -96,22 +97,14 @@ internal class ClientService : IClientService
     {
         var client = new Duende.IdentityServer.Models.Client
         {
-            Enabled = request.Enabled,
             ClientId = request.ClientId,
-            ProtocolType = request.ProtocolType,
-            RequireClientSecret = request.RequireClientSecret,
             ClientName = request.ClientName,
             Description = request.Description,
             ClientUri = request.ClientUri,
             LogoUri = request.LogoUri,
             RequireConsent = request.RequireConsent,
-            AllowRememberConsent = request.AllowRememberConsent,
-            AlwaysIncludeUserClaimsInIdToken = request.AlwaysIncludeUserClaimsInIdToken,
-            AllowedGrantTypes = request.AllowedGrantTypes,
-            RequirePkce = request.RequirePkce,
-            AllowPlainTextPkce = request.AllowPlainTextPkce,
-            RequireRequestObject = request.RequireRequestObject,
-            AllowAccessTokensViaBrowser = request.AllowAccessTokensViaBrowser,
+            RedirectUris = request.RedirectUris,
+            PostLogoutRedirectUris = request.PostLogoutRedirectUris,
         }.ToEntity();
 
         await _db.Clients.AddAsync(client, cancellationToken);
@@ -123,6 +116,23 @@ internal class ClientService : IClientService
         await _events.PublishAsync(new ClientCreatedEvent(client.Id));
 
         return string.Format(_t["Client {0} Registered."], client.Id);
+    }
+
+    private Duende.IdentityServer.Models.Client ApplyClientType(CreateClientRequest request)
+    {
+        var client = new Duende.IdentityServer.Models.Client();
+        switch (request.ClientType)
+        {
+            case nameof(ClientTypes.Spa):
+                client.AllowedGrantTypes = GrantTypes.Code;
+                client.RequirePkce = true;
+                client.RequireClientSecret = false;
+                break;
+            case nameof(ClientTypes.Web):
+                break;
+        }
+
+        return client;
     }
 
     public Task<int> GetCountAsync(CancellationToken cancellationToken) =>

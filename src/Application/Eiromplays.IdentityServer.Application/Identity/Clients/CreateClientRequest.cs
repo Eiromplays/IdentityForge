@@ -1,17 +1,12 @@
-using Duende.IdentityServer;
-using Duende.IdentityServer.Models;
+using Eiromplays.IdentityServer.Domain.Enums;
 
 namespace Eiromplays.IdentityServer.Application.Identity.Clients;
 
 public class CreateClientRequest
 {
-    public bool Enabled { get; set; } = true;
+    public string ClientType { get; set; } = nameof(ClientTypes.Spa);
 
     public string ClientId { get; set; } = default!;
-
-    public string ProtocolType { get; set; } = IdentityServerConstants.ProtocolTypes.OpenIdConnect;
-
-    public bool RequireClientSecret { get; set; } = true;
 
     public string ClientName { get; set; } = default!;
 
@@ -23,14 +18,7 @@ public class CreateClientRequest
 
     public bool RequireConsent { get; set; } = false;
 
-    public bool AllowRememberConsent { get; set; } = true;
+    public List<string> RedirectUris { get; set; } = new();
 
-    public bool AlwaysIncludeUserClaimsInIdToken { get; set; }
-
-    public List<string> AllowedGrantTypes { get; set; } = GrantTypes.Code.ToList();
-
-    public bool RequirePkce { get; set; } = true;
-    public bool AllowPlainTextPkce { get; set; }
-    public bool RequireRequestObject { get; set; }
-    public bool AllowAccessTokensViaBrowser { get; set; }
+    public List<string> PostLogoutRedirectUris { get; set; } = new();
 }

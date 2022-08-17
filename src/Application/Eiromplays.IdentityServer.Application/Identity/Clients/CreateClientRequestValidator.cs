@@ -1,7 +1,5 @@
 using System.Text.Json;
-using Duende.IdentityServer;
-using Duende.IdentityServer.Models;
-using IdentityModel;
+using Eiromplays.IdentityServer.Domain.Enums;
 
 namespace Eiromplays.IdentityServer.Application.Identity.Clients;
 
@@ -30,41 +28,18 @@ public class CreateClientRequestValidator : Validator<CreateClientRequest>
             .Must(uri => Uri.TryCreate(uri, UriKind.Absolute, out _))
             .When(x => !string.IsNullOrEmpty(x.LogoUri));
 
-        RuleFor(c => c.ProtocolType)
-            .Must(protocol => protocol is IdentityServerConstants.ProtocolTypes.Saml2p
-                or IdentityServerConstants.ProtocolTypes.OpenIdConnect
-                or IdentityServerConstants.ProtocolTypes.WsFederation)
-            .WithMessage((_, protocol) => string.Format(T["Protocol {0} is not supported."], protocol));
+        RuleFor(request => request.ClientType)
+            .Must(clientType => Enum.TryParse<ClientTypes>(clientType, out _))
+            .WithMessage((_, clientType) => string.Format(T["Client type {0} is not valid."], clientType));
 
-        RuleFor(request => request.AllowedGrantTypes)
-            .Must(grantTypes => grantTypes.All(grantType => GrantTypes.Implicit.Contains(grantType) ||
-                                                           GrantTypes.ImplicitAndClientCredentials.Contains(
-                                                               grantType) || GrantTypes.Code.Contains(grantType) ||
-                                                           GrantTypes.CodeAndClientCredentials
-                                                               .Contains(grantType) ||
-                                                           GrantTypes.Hybrid.Contains(grantType) ||
-                                                           GrantTypes.HybridAndClientCredentials
-                                                               .Contains(grantType) ||
-                                                           GrantTypes.ClientCredentials.Contains(grantType) ||
-                                                           GrantTypes.ResourceOwnerPassword.Contains(grantType) ||
-                                                           GrantTypes.ResourceOwnerPasswordAndClientCredentials
-                                                               .Contains(grantType) ||
-                                                           GrantTypes.DeviceFlow.Contains(grantType) ||
-                                                           GrantTypes.Ciba.Contains(grantType)))
-            .WithMessage((_, grantTypes) => string.Format(T["Grant types {0} are not valid."], JsonSerializer.Serialize(
-                grantTypes.Where(grantType => !(GrantTypes.Implicit.Contains(grantType) ||
-                                                GrantTypes.ImplicitAndClientCredentials.Contains(
-                                                    grantType) || GrantTypes.Code.Contains(grantType) ||
-                                                GrantTypes.CodeAndClientCredentials
-                                                    .Contains(grantType) ||
-                                                GrantTypes.Hybrid.Contains(grantType) ||
-                                                GrantTypes.HybridAndClientCredentials
-                                                    .Contains(grantType) ||
-                                                GrantTypes.ClientCredentials.Contains(grantType) ||
-                                                GrantTypes.ResourceOwnerPassword.Contains(grantType) ||
-                                                GrantTypes.ResourceOwnerPasswordAndClientCredentials
-                                                    .Contains(grantType) ||
-                                                GrantTypes.DeviceFlow.Contains(grantType) ||
-                                                GrantTypes.Ciba.Contains(grantType))))));
+        RuleFor(req => req.RedirectUris)
+            .Must(redirectUrls => redirectUrls.All(redirectUrl =>
+                Uri.TryCreate(redirectUrl, UriKind.Absolute, out _)))
+            .WithMessage(req => T[$"Redirect uris {JsonSerializer.Serialize(req.RedirectUris.All(redirectUrl => !Uri.TryCreate(redirectUrl, UriKind.Absolute, out _)))} are not valid."]);
+
+        RuleFor(req => req.PostLogoutRedirectUris)
+            .Must(postLogoutRedirectUris => postLogoutRedirectUris.All(redirectUrl =>
+                Uri.TryCreate(redirectUrl, UriKind.Absolute, out _)))
+            .WithMessage(req => T[$"Post logout redirect uris {JsonSerializer.Serialize(req.PostLogoutRedirectUris.All(postLogoutRedirectUris => !Uri.TryCreate(postLogoutRedirectUris, UriKind.Absolute, out _)))} are not valid."]);
     }
 }

@@ -31,6 +31,7 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols;
@@ -80,6 +81,32 @@ public static class Startup
         bffBuilder.AddBffPersistence(config, projectType);
 
         return services;
+    }
+
+    private static IServiceCollection AddAzureKeyVaultConfiguration(this IConfiguration configuration, IConfigurationBuilder configurationBuilder)
+    {
+        if (configuration.GetSection(nameof(AzureKeyVaultConfiguration)).Exists())
+        {
+            var azureKeyVaultConfiguration = configuration.GetSection(nameof(AzureKeyVaultConfiguration)).Get<AzureKeyVaultConfiguration>();
+
+            if (azureKeyVaultConfiguration.ReadConfigurationFromKeyVault)
+            {
+                if (azureKeyVaultConfiguration.UseClientCredentials)
+                {
+                    configurationBuilder.AddAzureKeyVault(azureKeyVaultConfiguration.AzureKeyVaultEndpoint,
+                        azureKeyVaultConfiguration.ClientId, azureKeyVaultConfiguration.ClientSecret);
+                }
+                else
+                {
+                    var keyVaultClient = new KeyVaultClient(
+                        new KeyVaultClient.AuthenticationCallback(new AzureServiceTokenProvider()
+                            .KeyVaultTokenCallback));
+
+                    configurationBuilder.AddAzureKeyVault(azureKeyVaultConfiguration.AzureKeyVaultEndpoint,
+                        keyVaultClient, new DefaultKeyVaultSecretManager());
+                }
+            }
+        }
     }
 
     private static IServiceCollection AddHealthCheck(this IServiceCollection services) =>
@@ -144,6 +171,7 @@ public static class Startup
         {
             $"{webHostEnvironment.EnvironmentName}/{webHostEnvironment.ApplicationName}",
             $"{webHostEnvironment.EnvironmentName}/EiromplaysIdentityServer",
+            "Development/EiromplaysIdentityServer"
         };
 
         configuration.AddSecretsManager(

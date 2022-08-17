@@ -10,6 +10,7 @@
     <NoWarn>$(NoWarn);NU1701;NU1702;CS0436</NoWarn>
     <UserSecretsId>24bae999-c5dd-4ceb-a0e4-9d52e9676d04</UserSecretsId>
     <PreserveCompilationContext>true</PreserveCompilationContext>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
