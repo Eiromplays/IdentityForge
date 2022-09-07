@@ -6,6 +6,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Authors>Eirik Sjøløkken</Authors>
     <Nullable>enable</Nullable>
+    <Features>strict</Features>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <ImplicitUsings>enable</ImplicitUsings>
     <WarningsAsErrors>nullable</WarningsAsErrors>
     <NoWarn>$(NoWarn);NU1701;NU1702;CS0436</NoWarn>
     <UserSecretsId>24bae999-c5dd-4ceb-a0e4-9d52e9676d04</UserSecretsId>
@@ -14,16 +20,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation.AspNetCore" Version="11.1.2" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.2.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.7">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Serilog" Version="2.11.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="6.0.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.0.2-dev-00890" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>

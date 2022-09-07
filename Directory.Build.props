@@ -9,7 +9,22 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
     <ItemGroup>
+        <PackageReference Include="IDisposableAnalyzers" Version="4.0.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4-beta1.22362.3">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.3.44">
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
         <PackageReference Include="Roslynator.Analyzers" Version="4.1.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.1.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -19,6 +34,7 @@
         </PackageReference>
         <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="Properties\stylecop.json" />
         <AdditionalFiles Include="$(MSBuildThisFileDirectory).editorconfig" Link="Properties\.editorconfig" />
+        <AdditionalFiles Include="$(SolutionDir)\BannedSymbols.txt" />
     </ItemGroup>
     <ItemGroup>
         <!-- Define the global DefaultIdType here. -->

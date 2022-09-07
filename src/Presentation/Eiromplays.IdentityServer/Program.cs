@@ -24,21 +24,18 @@ try
     builder.Services.AddControllersWithViews();
 
     builder.Services.AddFastEndpoints()
-        .AddFluentValidation();
+        .AddFluentValidationAutoValidation();
 
     var app = builder.Build();
 
-    await app.Services.InitializeDatabasesAsync();
+    await app.Services.InitializeDatabasesAsync().ConfigureAwait(false);
 
     app.UseInfrastructure(builder.Configuration, ProjectType.IdentityServer, config =>
     {
-        config.RoutingOptions = options => options.Prefix = "api";
-        config.VersioningOptions = options =>
-        {
-            options.Prefix = "v";
-            options.SuffixedVersion = false;
-            options.DefaultVersion = 1;
-        };
+        config.Endpoints.RoutePrefix = "api";
+        config.Versioning.Prefix = "v";
+        config.Versioning.DefaultVersion = 1;
+        config.Versioning.PrependToRoute = true;
     });
 
     app.UseEndpoints(endpoints =>

@@ -3,9 +3,14 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <LangVersion>10.0</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
     <Authors>Eirik Sjøløkken</Authors>
     <Nullable>enable</Nullable>
+    <Features>strict</Features>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <ImplicitUsings>enable</ImplicitUsings>
     <WarningsAsErrors>nullable</WarningsAsErrors>
     <NoWarn>$(NoWarn);NU1701;NU1702;CS0436</NoWarn>
   </PropertyGroup>

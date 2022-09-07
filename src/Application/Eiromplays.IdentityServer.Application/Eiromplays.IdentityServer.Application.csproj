@@ -3,33 +3,38 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <LangVersion>10.0</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
     <Authors>Eirik Sjøløkken</Authors>
     <Nullable>enable</Nullable>
+    <Features>strict</Features>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <ImplicitUsings>enable</ImplicitUsings>
     <WarningsAsErrors>nullable</WarningsAsErrors>
     <NoWarn>$(NoWarn);NU1701;NU1702;CS0436</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Ardalis.Specification" Version="6.1.0" />
-    <PackageReference Include="Duende.IdentityServer" Version="6.1.2" />
-    <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.1.2" />
-    <PackageReference Include="FastEndpoints" Version="4.3.1" />
+    <PackageReference Include="Duende.IdentityServer" Version="6.1.5" />
+    <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.1.5" />
+    <PackageReference Include="FastEndpoints" Version="5.1.0-beta9" />
     <PackageReference Include="FluentEmail.Graph" Version="1.5.1" />
     <PackageReference Include="FluentEmail.Mailgun" Version="3.0.2" />
     <PackageReference Include="FluentEmail.MailKit" Version="3.0.2" />
     <PackageReference Include="FluentSms.Core" Version="1.0.3" />
     <PackageReference Include="FluentSms.Infobip" Version="1.0.3" />
     <PackageReference Include="FluentSms.Twilio" Version="1.0.3" />
-    <PackageReference Include="FluentValidation" Version="11.1.0" />
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.1.0" />
+    <PackageReference Include="FluentValidation" Version="11.2.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.2.1" />
     <PackageReference Include="LanguageExt.Core" Version="4.2.9" />
-    <PackageReference Include="libphonenumber-csharp" Version="8.12.51.1" />
+    <PackageReference Include="libphonenumber-csharp" Version="8.12.54" />
     <PackageReference Include="Mapster" Version="7.3.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.8" />
   </ItemGroup>
 
   <ItemGroup>

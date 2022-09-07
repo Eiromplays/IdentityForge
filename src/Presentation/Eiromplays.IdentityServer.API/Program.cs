@@ -5,6 +5,7 @@ using Eiromplays.IdentityServer.Infrastructure;
 using FluentValidation.AspNetCore;
 using Serilog;
 using Eiromplays.IdentityServer.Infrastructure.Common;
+using FluentEmail.Core;
 
 try
 {
@@ -54,7 +55,7 @@ try
     });
 
     builder.Services.AddFastEndpoints()
-        .AddFluentValidation();
+        .AddFluentValidationAutoValidation();
 
     var app = builder.Build();
 
@@ -62,16 +63,13 @@ try
 
     app.UseInfrastructure(builder.Configuration, ProjectType.Api, config =>
     {
-        config.GlobalEndpointOptions = (_, routeHandlerBuilder) =>
+        config.Endpoints.Configurator = ep =>
         {
-            routeHandlerBuilder.RequireAuthorization("RequireInteractiveUser");
+            ep.Options(b => b.RequireAuthorization("RequireInteractiveUser"));
         };
-        config.VersioningOptions = options =>
-        {
-            options.Prefix = "v";
-            options.SuffixedVersion = false;
-            options.DefaultVersion = 1;
-        };
+        config.Versioning.Prefix = "v";
+        config.Versioning.DefaultVersion = 1;
+        config.Versioning.PrependToRoute = true;
     });
 
     app.MapEndpoints();

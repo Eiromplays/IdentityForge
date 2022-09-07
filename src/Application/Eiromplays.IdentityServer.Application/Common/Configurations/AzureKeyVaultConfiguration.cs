@@ -1,8 +1,8 @@
 namespace Eiromplays.IdentityServer.Application.Common.Configurations;
 
-public class AwsSecretsManagerConfiguration
+public class AzureKeyVaultConfiguration
 {
     public bool Enabled { get; set; } = false;
 
-    public List<string> AllowedPrefixes { get; set; } = new();
+    public string KeyVaultUrl { get; set; } = default!;
 }

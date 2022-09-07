@@ -21,5 +21,11 @@
       "ApiScope": "api://<Your ClientId of the AzureAd Server App Registration>/access_as_user",
       "OpenIdClientId": "<Your ClientId of the AzureAd Client App Registration>"
     }
+  },
+  "SecretsConfiguration": {
+    "AzureKeyVaultConfiguration": {
+      "Enabled": true,
+      "KeyVaultUrl": "https://frozensoft-auth-dev.vault.azure.net/"
+    }
   }
 }

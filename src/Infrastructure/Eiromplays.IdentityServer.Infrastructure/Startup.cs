@@ -1,8 +1,5 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text.Json;
-using Amazon;
-using Amazon.Runtime;
 using Duende.Bff;
 using Duende.Bff.Yarp;
 using Eiromplays.IdentityServer.Application.Common.Caching;
@@ -31,10 +28,10 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Protocols;
+using Azure.Identity;
+using Eiromplays.IdentityServer.Application.Common;
 
 [assembly: InternalsVisibleTo("Infrastructure.Test")]
 
@@ -44,11 +41,11 @@ public static class Startup
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, ConfigurationManager config, IWebHostEnvironment webHostEnvironment, ProjectType projectType)
     {
-        if (projectType is ProjectType.Spa) return services.AddInfrastructureSpa(config, webHostEnvironment, projectType);
+        if (projectType is ProjectType.Spa) return services.AddInfrastructureSpa(config, projectType);
 
         MapsterSettings.Configure();
         return services
-            .AddConfigurations(config, webHostEnvironment)
+            .AddConfigurations(config)
             .AddBackgroundJobs(config)
             .AddCaching(config)
             .AddCorsPolicy(config)
@@ -69,11 +66,11 @@ public static class Startup
             .AddCloudflareImagesStorageService(config);
     }
 
-    private static IServiceCollection AddInfrastructureSpa(this IServiceCollection services, ConfigurationManager config, IWebHostEnvironment webHostEnvironment, ProjectType projectType)
+    private static IServiceCollection AddInfrastructureSpa(this IServiceCollection services, ConfigurationManager config, ProjectType projectType)
     {
         if (projectType is not ProjectType.Spa) return services;
 
-        config.AddAwsSecretsManager(webHostEnvironment);
+        config.AddExternalSecretProviders();
 
         var bffBuilder = services.AddBff(options => config.GetSection(nameof(BffOptions)).Bind(options));
 
@@ -83,31 +80,7 @@ public static class Startup
         return services;
     }
 
-    private static IServiceCollection AddAzureKeyVaultConfiguration(this IConfiguration configuration, IConfigurationBuilder configurationBuilder)
-    {
-        if (configuration.GetSection(nameof(AzureKeyVaultConfiguration)).Exists())
-        {
-            var azureKeyVaultConfiguration = configuration.GetSection(nameof(AzureKeyVaultConfiguration)).Get<AzureKeyVaultConfiguration>();
 
-            if (azureKeyVaultConfiguration.ReadConfigurationFromKeyVault)
-            {
-                if (azureKeyVaultConfiguration.UseClientCredentials)
-                {
-                    configurationBuilder.AddAzureKeyVault(azureKeyVaultConfiguration.AzureKeyVaultEndpoint,
-                        azureKeyVaultConfiguration.ClientId, azureKeyVaultConfiguration.ClientSecret);
-                }
-                else
-                {
-                    var keyVaultClient = new KeyVaultClient(
-                        new KeyVaultClient.AuthenticationCallback(new AzureServiceTokenProvider()
-                            .KeyVaultTokenCallback));
-
-                    configurationBuilder.AddAzureKeyVault(azureKeyVaultConfiguration.AzureKeyVaultEndpoint,
-                        keyVaultClient, new DefaultKeyVaultSecretManager());
-                }
-            }
-        }
-    }
 
     private static IServiceCollection AddHealthCheck(this IServiceCollection services) =>
         services.AddHealthChecks().Services;
@@ -118,7 +91,7 @@ public static class Startup
         using var scope = services.CreateScope();
 
         await scope.ServiceProvider.GetRequiredService<IDatabaseInitializer>()
-            .InitializeDatabasesAsync(cancellationToken);
+            .InitializeDatabasesAsync(cancellationToken).ConfigureAwait(false);
     }
 
     public static WebApplication UseInfrastructure(this WebApplication app, IConfiguration config, ProjectType projectType, Action<Config>? fastEndpointsConfigAction = null)
@@ -159,27 +132,41 @@ public static class Startup
     private static IEndpointConventionBuilder MapHealthCheck(this IEndpointRouteBuilder endpoints) =>
         endpoints.MapHealthChecks("/api/health").RequireAuthorization();
 
+    private static ConfigurationManager AddExternalSecretProviders(this ConfigurationManager configuration)
+    {
+        if (!configuration.GetSection(nameof(SecretsConfiguration)).Exists()) return configuration;
+
+        var secretsConfiguration = configuration.GetSection(nameof(SecretsConfiguration)).Get<SecretsConfiguration>();
+
+        if (secretsConfiguration is null) return configuration;
+        configuration.AddAwsSecretsManager(secretsConfiguration.AwsSecretsManagerConfiguration);
+
+        configuration.AddAzureKeyVaultConfiguration(secretsConfiguration.AzureKeyVaultConfiguration);
+
+        return configuration;
+    }
+
+    // Registers Azure Key Vault as a source for configuration values.
+    private static ConfigurationManager AddAzureKeyVaultConfiguration(this ConfigurationManager configuration, AzureKeyVaultConfiguration? azureKeyVaultConfiguration)
+    {
+        if (azureKeyVaultConfiguration is null or { Enabled: false}) return configuration;
+
+        configuration.AddAzureKeyVault(new Uri(azureKeyVaultConfiguration.KeyVaultUrl), new DefaultAzureCredential());
+
+        return configuration;
+    }
 
     // Registers AWS Secrets Manager as a source for configuration values.
-    private static ConfigurationManager AddAwsSecretsManager(this ConfigurationManager configuration, IWebHostEnvironment webHostEnvironment)
+    private static ConfigurationManager AddAwsSecretsManager(this ConfigurationManager configuration, AwsSecretsManagerConfiguration? awsSecretsManagerConfiguration)
     {
-        var awsSecretsManagerConfiguration = configuration.GetSection(nameof(AwsSecretsManagerConfiguration)).Get<AwsSecretsManagerConfiguration>();
-
         if (awsSecretsManagerConfiguration is null or { Enabled: false}) return configuration;
-
-        string[] allowedPrefixes =
-        {
-            $"{webHostEnvironment.EnvironmentName}/{webHostEnvironment.ApplicationName}",
-            $"{webHostEnvironment.EnvironmentName}/EiromplaysIdentityServer",
-            "Development/EiromplaysIdentityServer"
-        };
 
         configuration.AddSecretsManager(
             configurator: config =>
             {
                 config.KeyGenerator = (_, name) =>
                 {
-                    string prefix = allowedPrefixes.First(name.StartsWith);
+                    string prefix = awsSecretsManagerConfiguration.AllowedPrefixes.First(name.StartsWith);
 
                     name = name.Replace(prefix, string.Empty).Replace("__", ":");
                     if (name.StartsWith(":"))
@@ -188,7 +175,7 @@ public static class Startup
                     return name;
                 };
 
-                config.SecretFilter = secret => allowedPrefixes.Any(allowed => secret.Name.StartsWith(allowed));
+                config.SecretFilter = secret => awsSecretsManagerConfiguration.AllowedPrefixes.Any(allowed => secret.Name.StartsWith(allowed));
             });
 
         return configuration;
@@ -202,15 +189,15 @@ public static class Startup
         Find more avatar styles here: https://avatars.dicebear.com/styles/
         You can also use a custom provider
     */
-    private static IServiceCollection AddConfigurations(this IServiceCollection services, ConfigurationManager configuration, IWebHostEnvironment webHostEnvironment)
+    private static IServiceCollection AddConfigurations(this IServiceCollection services, ConfigurationManager configuration)
     {
-        configuration.AddAwsSecretsManager(webHostEnvironment);
+        configuration.AddExternalSecretProviders();
 
         return services.Configure<AccountConfiguration>(configuration.GetSection(nameof(AccountConfiguration)))
             .Configure<IdentityServerData>(configuration.GetSection(nameof(IdentityServerData)))
             .Configure<IdentityData>(configuration.GetSection(nameof(IdentityData)))
             .Configure<CloudflareConfiguration>(configuration.GetSection(nameof(CloudflareConfiguration)))
-            .Configure<AwsSecretsManagerConfiguration>(configuration.GetSection(nameof(AwsSecretsManagerConfiguration)));
+            .Configure<SecretsConfiguration>(configuration.GetSection(nameof(SecretsConfiguration)));
     }
 
     private static IApplicationBuilder UseIdentityServer(this IApplicationBuilder builder, ProjectType projectType)
