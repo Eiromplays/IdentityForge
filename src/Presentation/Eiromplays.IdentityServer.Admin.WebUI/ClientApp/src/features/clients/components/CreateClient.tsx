@@ -114,6 +114,7 @@ export const CreateClient = () => {
           { label: 'Test', subLabel: 'Information about you' },
           { label: 'Test 2', subLabel: 'This is just a test', icon: HiOutlinePencil },
           { label: 'Test 3', subLabel: 'Yet another test' },
+          { label: 'Test 4', subLabel: 'This is just test4', icon: HiOutlinePencil },
         ]}
       />
       <br />
