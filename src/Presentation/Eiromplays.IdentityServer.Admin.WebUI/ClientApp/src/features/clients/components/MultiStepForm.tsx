@@ -34,13 +34,17 @@ export const MultiStepForm = ({ steps, maxSteps = 10 }: MultiStepFormProps) => {
         <ol className="overflow-hidden text-sm text-gray-500 border border-gray-100 rounded-lg grid grid-cols-1 divide-x divide-gray-100 sm:grid-cols-3">
           {steps.map((step, i) => {
             const isCurrentStep = i === currentStep;
+            const isCompleted = i < currentStep;
+            const isLastStep = i === steps.length - 1;
+
             return (
               <Step
                 key={i}
                 step={step}
-                active={i === currentStep}
+                active={i === currentStep || isCompleted}
+                isCompleted={isCompleted}
                 hasNextStep={i >= 0 && isCurrentStep}
-                hasPreviousStep={i > 0 && i !== maxSteps}
+                hasPreviousStep={i > 0 && i !== maxSteps && !isLastStep}
               />
             );
           })}
