@@ -9,12 +9,17 @@ export type MultiStepFormProps = {
 
 export const MultiStepForm = ({ steps, maxSteps = 10 }: MultiStepFormProps) => {
   const [currentStep, setCurrentStep] = React.useState(0);
+  const [completedSteps, setCompletedSteps] = React.useState<number[]>([]);
 
   const handleNext = () => {
     setCurrentStep((prevStep) => prevStep + 1);
 
     if (currentStep >= maxSteps || currentStep >= steps.length - 1) {
       setCurrentStep(currentStep);
+    }
+
+    if (!completedSteps.includes(currentStep)) {
+      setCompletedSteps([...completedSteps, currentStep]);
     }
   };
 
@@ -23,6 +28,10 @@ export const MultiStepForm = ({ steps, maxSteps = 10 }: MultiStepFormProps) => {
 
     if (currentStep === 0) {
       setCurrentStep(currentStep);
+    }
+
+    if (completedSteps.includes(currentStep)) {
+      setCompletedSteps(completedSteps.filter((step) => step !== currentStep));
     }
   };
 
@@ -33,17 +42,17 @@ export const MultiStepForm = ({ steps, maxSteps = 10 }: MultiStepFormProps) => {
       <div>
         <ol className="overflow-hidden text-sm text-gray-500 border border-gray-100 rounded-lg grid grid-cols-1 divide-x divide-gray-100 sm:grid-cols-3">
           {steps.map((step, i) => {
-            const isCurrentStep = i === currentStep;
-            const isCompleted = i < currentStep;
             const isLastStep = i === steps.length - 1;
+            const isCompleted = completedSteps.includes(i);
+            const hasNextStep = i < steps.length - 1;
 
             return (
               <Step
                 key={i}
                 step={step}
-                active={i === currentStep || isCompleted}
+                active={isCompleted || currentStep === i}
                 isCompleted={isCompleted}
-                hasNextStep={i >= 0 && isCurrentStep}
+                hasNextStep={hasNextStep}
                 hasPreviousStep={i > 0 && i !== maxSteps && !isLastStep}
               />
             );
