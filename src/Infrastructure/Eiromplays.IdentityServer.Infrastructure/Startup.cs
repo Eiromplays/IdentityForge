@@ -151,7 +151,7 @@ public static class Startup
     {
         if (azureKeyVaultConfiguration is null or { Enabled: false}) return configuration;
 
-        configuration.AddAzureKeyVault(new Uri(azureKeyVaultConfiguration.KeyVaultUrl), new DefaultAzureCredential());
+        configuration.AddAzureKeyVault(new Uri(azureKeyVaultConfiguration.KeyVaultUrl), new DefaultAzureCredential(), new CustomKeyVaultSecretManager());
 
         return configuration;
     }
