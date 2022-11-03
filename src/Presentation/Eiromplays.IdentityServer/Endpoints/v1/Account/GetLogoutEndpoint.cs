@@ -5,7 +5,7 @@ using Eiromplays.IdentityServer.Domain.Constants;
 
 namespace Eiromplays.IdentityServer.Endpoints.v1.Account;
 
-public class GetLogoutEndpoint : Endpoint<GetLogoutRequest, GetLogoutResponse>
+public class GetLogoutEndpoint : Endpoint<GetLogoutRequest, Result<GetLogoutResponse>>
 {
     private readonly IAuthService _authService;
 
@@ -26,17 +26,12 @@ public class GetLogoutEndpoint : Endpoint<GetLogoutRequest, GetLogoutResponse>
 
     public override async Task HandleAsync(GetLogoutRequest req, CancellationToken ct)
     {
-        // Build a response so the logout page knows what to display
-        Response = await _authService.BuildLogoutResponseAsync(req.LogoutId, AccountOptions.ShowLogoutPrompt);
+        await this.ResultToResponseAsync(await _authService.BuildLogoutResponseAsync(req.LogoutId, AccountOptions.ShowLogoutPrompt), ct, customFunc: async (response) =>
+            {
+                if (!response.ShowLogoutPrompt) return false;
 
-        if (!Response.ShowLogoutPrompt)
-        {
-            // if the request for logout was properly authenticated from IdentityServer, then
-            // we don't need to show the prompt and can just log the user out directly.
-            await _authService.LogoutAsync<GetLogoutEndpoint>(new LogoutRequest { LogoutId = Response.LogoutId }, HttpContext);
-            return;
-        }
-
-        await SendOkAsync(Response, ct);
+                await this.ResultToResponseAsync(await _authService.LogoutAsync<GetLogoutEndpoint>(new LogoutRequest { LogoutId = response.LogoutId }, HttpContext), ct);
+                return true;
+            });
     }
 }

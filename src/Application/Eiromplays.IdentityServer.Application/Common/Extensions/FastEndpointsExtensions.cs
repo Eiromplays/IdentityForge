@@ -9,7 +9,8 @@ public static class FastEndpointsExtensions
         Result<TResponse> result,
         CancellationToken ct = default,
         string redirectPropertyName = "",
-        bool permanentRedirect = true)
+        bool permanentRedirect = true,
+        Func<TResponse, Task<bool>>? customFunc = null)
         where TResponse : notnull
     {
         var ctx = endpoint.HttpContext;
@@ -32,6 +33,12 @@ public static class FastEndpointsExtensions
                         await ctx.Response.SendRedirectAsync(redirectUrl, permanentRedirect, ct);
                         return;
                     }
+                }
+
+                if (customFunc is not null)
+                {
+                    if (await customFunc(x))
+                        return;
                 }
 
                 await ctx.Response.SendOkAsync(x, cancellation: ct);

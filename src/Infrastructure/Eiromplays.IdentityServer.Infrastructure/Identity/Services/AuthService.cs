@@ -272,7 +272,7 @@ public class AuthService : IAuthService
 
     #region Logout
 
-    public async Task<GetLogoutResponse> BuildLogoutResponseAsync(string logoutId, bool showLogoutPrompt = true)
+    public async Task<Result<GetLogoutResponse>> BuildLogoutResponseAsync(string logoutId, bool showLogoutPrompt = true)
         {
             var response = new GetLogoutResponse { LogoutId = logoutId, ShowLogoutPrompt = showLogoutPrompt };
 
@@ -280,7 +280,7 @@ public class AuthService : IAuthService
             {
                 // if the user is not authenticated, then just show logged out page
                 response.ShowLogoutPrompt = false;
-                return response;
+                return new Result<GetLogoutResponse>(response);
             }
 
             var context = await _interaction.GetLogoutContextAsync(logoutId);
@@ -288,14 +288,14 @@ public class AuthService : IAuthService
             // show the logout prompt. this prevents attacks where the user
             // is automatically signed out by another malicious web page.
             if (context?.ShowSignoutPrompt != false)
-                return response;
+                return new Result<GetLogoutResponse>(response);
 
             // it's safe to automatically sign-out
             response.ShowLogoutPrompt = false;
-            return response;
+            return new Result<GetLogoutResponse>(response);
         }
 
-    public async Task<LogoutResponse> LogoutAsync<TEndpoint>(LogoutRequest request, HttpContext httpContext)
+    public async Task<Result<LogoutResponse>> LogoutAsync<TEndpoint>(LogoutRequest request, HttpContext httpContext)
         where TEndpoint : IEndpoint
     {
         // build a response so the logged out page knows what to display
@@ -313,7 +313,7 @@ public class AuthService : IAuthService
         // check if we need to trigger sign-out at an upstream identity provider
         if (!response.TriggerExternalSignout)
         {
-            return response;
+            return new Result<LogoutResponse>(response);
         }
 
         // build a return URL so the upstream provider will redirect back
@@ -325,7 +325,7 @@ public class AuthService : IAuthService
         await httpContext.SignOutAsync(response.ExternalAuthenticationScheme, new AuthenticationProperties { RedirectUri = url });
 
         await httpContext.Response.CompleteAsync();
-        return response;
+        return new Result<LogoutResponse>(response);
     }
 
     private async Task<LogoutResponse> BuildLoggedOutResponseAsync(string logoutId, HttpContext httpContext, bool automaticRedirectAfterSignOut = true)

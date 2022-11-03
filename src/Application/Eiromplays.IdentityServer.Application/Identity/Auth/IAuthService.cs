@@ -6,9 +6,9 @@ namespace Eiromplays.IdentityServer.Application.Identity.Auth;
 
 public interface IAuthService : ITransientService
 {
-    Task<GetLogoutResponse> BuildLogoutResponseAsync(string logoutId, bool showLogoutPrompt = true);
+    Task<Result<GetLogoutResponse>> BuildLogoutResponseAsync(string logoutId, bool showLogoutPrompt = true);
 
-    Task<LogoutResponse> LogoutAsync<TEndpoint>(LogoutRequest request, HttpContext httpContext)
+    Task<Result<LogoutResponse>> LogoutAsync<TEndpoint>(LogoutRequest request, HttpContext httpContext)
         where TEndpoint : IEndpoint;
 
     Task<Result<LoginResponse>> LoginAsync(LoginRequest request, string origin);
