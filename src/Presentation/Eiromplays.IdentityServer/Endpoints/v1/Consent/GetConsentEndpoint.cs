@@ -1,4 +1,3 @@
-using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Identity.Auth;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Consent;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Consent;
@@ -26,6 +25,8 @@ public class GetConsentEndpoint : Endpoint<GetConsentRequest, ConsentResponse>
 
     public override async Task HandleAsync(GetConsentRequest req, CancellationToken ct)
     {
-        await this.ResultToResponseAsync(await _consentService.GetConsentAsync(req), ct);
+        await this.ResultToResponseAsync(
+            await _consentService.GetConsentAsync(req),
+            ct: ct);
     }
 }

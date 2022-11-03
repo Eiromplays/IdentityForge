@@ -26,13 +26,16 @@ public class ExternalLoginCallbackEndpoint : Endpoint<ExternalLoginCallbackReque
 
     public override async Task HandleAsync(ExternalLoginCallbackRequest req, CancellationToken ct)
     {
-        await this.ResultToResponseAsync(await _authService.ExternalLoginCallbackAsync(req, BaseURL), ct, async response =>
+        await this.ResultToResponseAsync(
+            await _authService.ExternalLoginCallbackAsync(req, BaseURL),
+            async response =>
         {
             if (string.IsNullOrWhiteSpace(response.ExternalLoginReturnUrl)) return false;
 
             await SendRedirectAsync(response.ExternalLoginReturnUrl, true, ct);
 
             return true;
-        });
+        },
+            ct);
     }
 }

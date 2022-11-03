@@ -30,7 +30,8 @@ public class LinkLoginCallbackEndpoint : EndpointWithoutRequest<LoginResponse>
             return;
         }
 
-        await this.ResultToResponseAsync(await _authService.LinkExternalLoginCallbackAsync(userId, HttpContext), ct,
+        await this.ResultToResponseAsync(
+            await _authService.LinkExternalLoginCallbackAsync(userId, HttpContext),
             async response =>
             {
                 if (string.IsNullOrWhiteSpace(response.ExternalLoginReturnUrl)) return false;
@@ -38,6 +39,7 @@ public class LinkLoginCallbackEndpoint : EndpointWithoutRequest<LoginResponse>
                 await SendRedirectAsync(response.ExternalLoginReturnUrl, true, ct);
 
                 return true;
-            });
+            },
+            ct);
     }
 }

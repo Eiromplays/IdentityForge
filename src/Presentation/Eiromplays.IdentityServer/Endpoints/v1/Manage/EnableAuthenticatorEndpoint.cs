@@ -27,6 +27,8 @@ public class EnableAuthenticatorEndpoint : Endpoint<EnableAuthenticatorRequest, 
 
     public override async Task HandleAsync(EnableAuthenticatorRequest req, CancellationToken ct)
     {
-        await this.ResultToResponseAsync(await _userService.EnableTwoFactorAsync(req, User), ct);
+        await this.ResultToResponseAsync(
+            await _userService.EnableTwoFactorAsync(req, User),
+            ct: ct);
     }
 }

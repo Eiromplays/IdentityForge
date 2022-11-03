@@ -26,6 +26,8 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
 
     public override async Task HandleAsync(LoginRequest req, CancellationToken ct)
     {
-        await this.ResultToResponseAsync(await _authService.LoginAsync(req, BaseURL), ct);
+        await this.ResultToResponseAsync(
+            await _authService.LoginAsync(req, BaseURL),
+            ct: ct);
     }
 }

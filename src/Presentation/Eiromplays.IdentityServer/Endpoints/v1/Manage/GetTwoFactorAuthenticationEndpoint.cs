@@ -26,6 +26,8 @@ public class GetTwoFactorAuthenticationEndpoint : EndpointWithoutRequest<TwoFact
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        await this.ResultToResponseAsync(await _userService.GetTwoFactorAuthenticationAsync(User), ct);
+        await this.ResultToResponseAsync(
+            await _userService.GetTwoFactorAuthenticationAsync(User),
+            ct: ct);
     }
 }

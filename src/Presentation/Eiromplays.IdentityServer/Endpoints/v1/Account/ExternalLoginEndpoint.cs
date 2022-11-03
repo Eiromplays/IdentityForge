@@ -27,6 +27,8 @@ public class ExternalLoginEndpoint : Endpoint<ExternalLoginRequest, Authenticati
 
     public override async Task HandleAsync(ExternalLoginRequest req, CancellationToken ct)
     {
-        await this.ResultToResponseAsync(await _authService.ExternalLoginAsync<ExternalLoginCallbackEndpoint>(req, HttpContext.Response), ct);
+        await this.ResultToResponseAsync(
+            await _authService.ExternalLoginAsync<ExternalLoginCallbackEndpoint>(req, HttpContext.Response),
+            ct: ct);
     }
 }

@@ -25,6 +25,8 @@ public class GetValidTwoFactorProvidersEndpoint : EndpointWithoutRequest<List<st
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        await this.ResultToResponseAsync(await _authService.GetValidTwoFactorProvidersAsync(), ct);
+        await this.ResultToResponseAsync(
+            await _authService.GetValidTwoFactorProvidersAsync(),
+            ct: ct);
     }
 }

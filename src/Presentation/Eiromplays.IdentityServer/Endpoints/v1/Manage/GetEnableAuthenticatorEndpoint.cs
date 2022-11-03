@@ -26,6 +26,8 @@ public class GetEnableAuthenticatorEndpoint : EndpointWithoutRequest<GetEnableAu
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        await this.ResultToResponseAsync(await _userService.GetEnableTwoFactorAsync(User.GetUserId() ?? string.Empty), ct);
+        await this.ResultToResponseAsync(
+            await _userService.GetEnableTwoFactorAsync(User.GetUserId() ?? string.Empty),
+            ct: ct);
     }
 }
