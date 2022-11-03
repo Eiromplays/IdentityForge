@@ -1,11 +1,10 @@
 using Eiromplays.IdentityServer.Application.Identity.Auth;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Login;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Login;
-using LanguageExt.Common;
 
 namespace Eiromplays.IdentityServer.Endpoints.v1.Account;
 
-public class LoginEndpoint : Endpoint<LoginRequest, Result<LoginResponse>>
+public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
 {
     private readonly IAuthService _authService;
 

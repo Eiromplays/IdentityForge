@@ -5,7 +5,7 @@ using Eiromplays.IdentityServer.Domain.Constants;
 
 namespace Eiromplays.IdentityServer.Endpoints.v1.Account;
 
-public class GetLogoutEndpoint : Endpoint<GetLogoutRequest, Result<GetLogoutResponse>>
+public class GetLogoutEndpoint : Endpoint<GetLogoutRequest, GetLogoutResponse>
 {
     private readonly IAuthService _authService;
 

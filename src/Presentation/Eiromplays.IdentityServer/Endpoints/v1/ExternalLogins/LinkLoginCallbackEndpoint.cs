@@ -1,4 +1,3 @@
-using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Identity.Auth;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Login;
 
@@ -31,6 +30,14 @@ public class LinkLoginCallbackEndpoint : EndpointWithoutRequest<LoginResponse>
             return;
         }
 
-        await this.ResultToResponseAsync(await _authService.LinkExternalLoginCallbackAsync(userId, HttpContext), ct, "ExternalLoginReturnUrl");
+        await this.ResultToResponseAsync(await _authService.LinkExternalLoginCallbackAsync(userId, HttpContext), ct,
+            async response =>
+            {
+                if (string.IsNullOrWhiteSpace(response.ExternalLoginReturnUrl)) return false;
+
+                await SendRedirectAsync(response.ExternalLoginReturnUrl, true, ct);
+
+                return true;
+            });
     }
 }

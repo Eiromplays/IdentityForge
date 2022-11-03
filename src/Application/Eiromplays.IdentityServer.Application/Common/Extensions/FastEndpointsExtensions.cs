@@ -8,8 +8,6 @@ public static class FastEndpointsExtensions
         this IEndpoint endpoint,
         Result<TResponse> result,
         CancellationToken ct = default,
-        string redirectPropertyName = "",
-        bool permanentRedirect = true,
         Func<TResponse, Task<bool>>? customFunc = null)
         where TResponse : notnull
     {
@@ -21,18 +19,6 @@ public static class FastEndpointsExtensions
                 {
                     Console.WriteLine($"Response has already started for {ctx.Request.Path}");
                     return;
-                }
-
-                if (!string.IsNullOrWhiteSpace(redirectPropertyName))
-                {
-                    string redirectUrl = x.GetType().GetProperty(redirectPropertyName)?.GetValue(x)?.ToString() ??
-                                         string.Empty;
-
-                    if (!string.IsNullOrWhiteSpace(redirectUrl))
-                    {
-                        await ctx.Response.SendRedirectAsync(redirectUrl, permanentRedirect, ct);
-                        return;
-                    }
                 }
 
                 if (customFunc is not null)

@@ -1,4 +1,3 @@
-using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Identity.Auth;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.ExternalLogins;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Login;
@@ -27,6 +26,13 @@ public class ExternalLoginCallbackEndpoint : Endpoint<ExternalLoginCallbackReque
 
     public override async Task HandleAsync(ExternalLoginCallbackRequest req, CancellationToken ct)
     {
-        await this.ResultToResponseAsync(await _authService.ExternalLoginCallbackAsync(req, BaseURL), ct, "ExternalLoginReturnUrl");
+        await this.ResultToResponseAsync(await _authService.ExternalLoginCallbackAsync(req, BaseURL), ct, async response =>
+        {
+            if (string.IsNullOrWhiteSpace(response.ExternalLoginReturnUrl)) return false;
+
+            await SendRedirectAsync(response.ExternalLoginReturnUrl, true, ct);
+
+            return true;
+        });
     }
 }
