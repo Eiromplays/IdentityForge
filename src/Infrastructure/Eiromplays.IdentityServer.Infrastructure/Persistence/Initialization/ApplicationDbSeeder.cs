@@ -42,10 +42,10 @@ internal class ApplicationDbSeeder
     {
         await SeedRolesAsync(dbContext);
         await SeedUsersAsync();
-        await SeedIdentityResources(dbContext);
-        await SeedApiScopes(dbContext);
-        await SeedClients(dbContext);
-        await SeedApiResources(dbContext);
+        await SeedIdentityResourcesAsync(dbContext);
+        await SeedApiScopesAsync(dbContext);
+        await SeedClientsAsync(dbContext);
+        await SeedApiResourcesAsync(dbContext);
         await _seederRunner.RunSeedersAsync(cancellationToken);
     }
 
@@ -129,7 +129,7 @@ internal class ApplicationDbSeeder
         }
     }
 
-    private async Task SeedIdentityResources(ApplicationDbContext dbContext)
+    private async Task SeedIdentityResourcesAsync(ApplicationDbContext dbContext)
     {
         foreach (var resource in _identityServerData.IdentityResources)
         {
@@ -147,7 +147,7 @@ internal class ApplicationDbSeeder
         await dbContext.SaveChangesAsync();
     }
 
-    private async Task SeedApiScopes(ApplicationDbContext dbContext)
+    private async Task SeedApiScopesAsync(ApplicationDbContext dbContext)
     {
         foreach (var apiScope in _identityServerData.ApiScopes)
         {
@@ -164,7 +164,7 @@ internal class ApplicationDbSeeder
         await dbContext.SaveChangesAsync();
     }
 
-    private async Task SeedApiResources(ApplicationDbContext dbContext)
+    private async Task SeedApiResourcesAsync(ApplicationDbContext dbContext)
     {
         foreach (var resource in _identityServerData.ApiResources)
         {
@@ -186,7 +186,7 @@ internal class ApplicationDbSeeder
         await dbContext.SaveChangesAsync();
     }
 
-    private async Task SeedClients(ApplicationDbContext dbContext)
+    private async Task SeedClientsAsync(ApplicationDbContext dbContext)
     {
         foreach (var client in _identityServerData.Clients)
         {
@@ -203,8 +203,7 @@ internal class ApplicationDbSeeder
             }
 
             client.Claims = client.ClientClaims
-                .Select(c => new ClientClaim(c.Type, c.Value))
-                .ToList();
+                .ConvertAll(c => new ClientClaim(c.Type, c.Value));
 
             await dbContext.Clients.AddAsync(client.ToEntity());
         }

@@ -168,14 +168,14 @@ public static class Startup
                 {
                     string prefix = awsSecretsManagerConfiguration.AllowedPrefixes.First(name.StartsWith);
 
-                    name = name.Replace(prefix, string.Empty).Replace("__", ":");
-                    if (name.StartsWith(":"))
+                    name = name.Replace(prefix, string.Empty, StringComparison.OrdinalIgnoreCase).Replace("__", ":", StringComparison.OrdinalIgnoreCase);
+                    if (name.StartsWith(":", StringComparison.OrdinalIgnoreCase))
                         name = name[1..];
 
                     return name;
                 };
 
-                config.SecretFilter = secret => awsSecretsManagerConfiguration.AllowedPrefixes.Any(allowed => secret.Name.StartsWith(allowed));
+                config.SecretFilter = secret => awsSecretsManagerConfiguration.AllowedPrefixes.Any(allowed => secret.Name.StartsWith(allowed, StringComparison.OrdinalIgnoreCase));
             });
 
         return configuration;

@@ -26,25 +26,6 @@ public class GetEnableAuthenticatorEndpoint : EndpointWithoutRequest<GetEnableAu
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var result = await _userService.GetEnableTwoFactorAsync(User.GetUserId() ?? string.Empty);
-
-        await result.Match(
-            async x =>
-            {
-                await SendOkAsync(x, cancellation: ct);
-            },
-            async exception =>
-            {
-                switch (exception)
-                {
-                    case NotFoundException notFoundException:
-                        AddError(notFoundException.Message);
-                        await SendErrorsAsync((int)notFoundException.StatusCode, ct);
-                        return;
-                    default:
-                        await SendErrorsAsync(cancellation: ct);
-                        break;
-                }
-            });
+        await this.ResultToResponseAsync(await _userService.GetEnableTwoFactorAsync(User.GetUserId() ?? string.Empty), ct);
     }
 }

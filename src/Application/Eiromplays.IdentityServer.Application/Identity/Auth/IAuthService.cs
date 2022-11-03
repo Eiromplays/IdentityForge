@@ -11,7 +11,7 @@ public interface IAuthService : ITransientService
     Task<LogoutResponse> LogoutAsync<TEndpoint>(LogoutRequest request, HttpContext httpContext)
         where TEndpoint : IEndpoint;
 
-    Task<Result<LoginResponse>> LoginAsync(LoginRequest request);
+    Task<Result<LoginResponse>> LoginAsync(LoginRequest request, string origin);
 
     Task<Result<LoginResponse>> Login2FaAsync(Login2FaRequest request);
 
@@ -23,7 +23,7 @@ public interface IAuthService : ITransientService
         where TEndpoint : IEndpoint;
 
     Task<Result<LoginResponse>> ExternalLoginCallbackAsync(
-        ExternalLoginCallbackRequest request);
+        ExternalLoginCallbackRequest request, string origin);
 
     Task LinkExternalLoginAsync<TEndpoint>(
         LinkExternalLoginRequest request, string userId, HttpResponse rsp)

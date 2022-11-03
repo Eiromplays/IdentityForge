@@ -27,16 +27,6 @@ public class Login2FaEndpoint : Endpoint<Login2FaRequest, LoginResponse>
 
     public override async Task HandleAsync(Login2FaRequest req, CancellationToken ct)
     {
-        var result = await _authService.Login2FaAsync(req);
-
-        await result.Match(async res => await SendOkAsync(res, ct), exception =>
-        {
-            if (exception is BadRequestException badRequestException)
-            {
-                ThrowError(badRequestException.Message);
-            }
-
-            return SendErrorsAsync(cancellation: ct);
-        });
+        await this.ResultToResponseAsync(await _authService.Login2FaAsync(req), ct);
     }
 }

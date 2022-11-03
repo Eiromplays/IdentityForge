@@ -1,11 +1,11 @@
-using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Identity.Auth;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Login;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Login;
+using LanguageExt.Common;
 
 namespace Eiromplays.IdentityServer.Endpoints.v1.Account;
 
-public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
+public class LoginEndpoint : Endpoint<LoginRequest, Result<LoginResponse>>
 {
     private readonly IAuthService _authService;
 
@@ -27,20 +27,6 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
 
     public override async Task HandleAsync(LoginRequest req, CancellationToken ct)
     {
-        var result = await _authService.LoginAsync(req);
-        await result.Match(
-            async x =>
-        {
-            await SendOkAsync(x, cancellation: ct);
-        },
-            exception =>
-        {
-            if (exception is BadRequestException badRequestException)
-            {
-                ThrowError(badRequestException.Message);
-            }
-
-            return SendErrorsAsync(cancellation: ct);
-        });
+        await this.ResultToResponseAsync(await _authService.LoginAsync(req, BaseURL), ct);
     }
 }

@@ -26,27 +26,6 @@ public class GetConsentEndpoint : Endpoint<GetConsentRequest, ConsentResponse>
 
     public override async Task HandleAsync(GetConsentRequest req, CancellationToken ct)
     {
-        var result = await _consentService.GetConsentAsync(req);
-
-        await result.Match(
-            async x =>
-        {
-            await SendOkAsync(x, cancellation: ct);
-        },
-            async exception =>
-        {
-            switch (exception)
-            {
-                case BadRequestException badRequestException:
-                    ThrowError(badRequestException.Message);
-                    return;
-                case InternalServerException internalServerException:
-                    AddError(internalServerException.Message);
-                    await SendErrorsAsync((int)internalServerException.StatusCode, ct);
-                    return;
-            }
-
-            await SendErrorsAsync(cancellation: ct);
-        });
+        await this.ResultToResponseAsync(await _consentService.GetConsentAsync(req), ct);
     }
 }

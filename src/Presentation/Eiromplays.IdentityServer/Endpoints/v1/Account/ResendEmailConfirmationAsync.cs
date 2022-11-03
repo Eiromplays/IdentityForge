@@ -28,26 +28,6 @@ public class ResendEmailConfirmationAsync : Endpoint<ResendEmailVerificationRequ
 
     public override async Task HandleAsync(ResendEmailVerificationRequest req, CancellationToken ct)
     {
-        var result = await _userService.ResendEmailVerificationAsync(req, BaseURL);
-        await result.Match(
-            async x =>
-            {
-                await SendOkAsync(x, cancellation: ct);
-            },
-            async exception =>
-            {
-                switch (exception)
-                {
-                    case BadRequestException badRequestException:
-                        ThrowError(badRequestException.Message);
-                        return;
-                    case InternalServerException internalServerException:
-                        AddError(internalServerException.Message);
-                        await SendErrorsAsync((int)internalServerException.StatusCode, cancellation: ct);
-                        return;
-                }
-
-                await SendErrorsAsync(cancellation: ct);
-            });
+        await this.ResultToResponseAsync(await _userService.ResendEmailVerificationAsync(req, BaseURL), ct);
     }
 }

@@ -27,28 +27,6 @@ public class EnableAuthenticatorEndpoint : Endpoint<EnableAuthenticatorRequest, 
 
     public override async Task HandleAsync(EnableAuthenticatorRequest req, CancellationToken ct)
     {
-        var result = await _userService.EnableTwoFactorAsync(req, User);
-
-        await result.Match(
-            async x =>
-            {
-                await SendOkAsync(x, cancellation: ct);
-            },
-            async exception =>
-            {
-                switch (exception)
-                {
-                    case NotFoundException notFoundException:
-                        AddError(notFoundException.Message);
-                        await SendErrorsAsync((int)notFoundException.StatusCode, ct);
-                        return;
-                    case BadRequestException badRequestException:
-                        ThrowError(badRequestException.Message);
-                        return;
-                    default:
-                        await SendErrorsAsync(cancellation: ct);
-                        break;
-                }
-            });
+        await this.ResultToResponseAsync(await _userService.EnableTwoFactorAsync(req, User), ct);
     }
 }

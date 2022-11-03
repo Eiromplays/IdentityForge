@@ -149,8 +149,7 @@ export const UpdateProfile = () => {
                     <ImageCropper
                       cropLabel="Crop:"
                       previewLabel="Preview:"
-                      imgSrc={URL.createObjectURL(files[0][0])}
-                      fileName={files[0][0].name}
+                      image={URL.createObjectURL(files[0][0])}
                       onFileCreated={(file: File) => {
                         profilePicture = file;
                       }}

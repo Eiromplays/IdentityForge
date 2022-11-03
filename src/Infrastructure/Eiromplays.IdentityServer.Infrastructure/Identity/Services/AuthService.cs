@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text.Json;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Services;
 using Eiromplays.IdentityServer.Application.Common.Configurations;
@@ -111,7 +112,7 @@ public class AuthService : IAuthService
         });
     }
 
-    public async Task<Result<LoginResponse>> LoginAsync(LoginRequest request)
+    public async Task<Result<LoginResponse>> LoginAsync(LoginRequest request, string origin)
     {
         var response = new LoginResponse();
 
@@ -145,6 +146,36 @@ public class AuthService : IAuthService
             if (loginResult.IsLockedOut)
             {
                 // TODO: Option to send email to user to notify them of their account being locked
+                return new Result<LoginResponse>(response);
+            }
+
+            if (loginResult.IsNotAllowed)
+            {
+                if (_signInManager.Options.SignIn.RequireConfirmedPhoneNumber &&
+                    !string.IsNullOrWhiteSpace(user.PhoneNumber) && !user.PhoneNumberConfirmed)
+                {
+                    await _userService.ResendPhoneNumberVerificationAsync(new ResendPhoneNumberVerificationRequest
+                    {
+                        PhoneNumber = user.PhoneNumber
+                    });
+
+                    response.ValidReturnUrl =
+                        $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/verify-phone-number?userId={user.Id}&returnUrl={request.ReturnUrl}";
+
+                    return new Result<LoginResponse>(response);
+                }
+
+                if (_signInManager.Options.SignIn.RequireConfirmedEmail &&
+                    !string.IsNullOrWhiteSpace(user.Email) && !user.EmailConfirmed)
+                {
+                    await _userService.ResendEmailVerificationAsync(new ResendEmailVerificationRequest
+                    {
+                        Email = user.Email
+                    }, origin);
+                }
+
+                response.ValidReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/not-allowed";
+
                 return new Result<LoginResponse>(response);
             }
 
@@ -356,7 +387,7 @@ public class AuthService : IAuthService
     }
 
     public async Task<Result<LoginResponse>> ExternalLoginCallbackAsync(
-        ExternalLoginCallbackRequest request)
+        ExternalLoginCallbackRequest request, string origin)
     {
         if (!string.IsNullOrWhiteSpace(request.RemoteError))
             return new Result<LoginResponse>(new BadRequestException("Error from external provider", new List<string> { request.RemoteError }));
@@ -377,6 +408,8 @@ public class AuthService : IAuthService
         var context = await _interaction.GetAuthorizationContextAsync(request.ReturnUrl);
 
         string returnUrl = context is not null ? request.ReturnUrl : _spaConfiguration.IdentityServerUiBaseUrl;
+
+        Console.WriteLine($"Result: {JsonSerializer.Serialize(result)}");
 
         if (result.Succeeded)
         {
@@ -402,6 +435,30 @@ public class AuthService : IAuthService
 
         if (result.IsNotAllowed)
         {
+            var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+            if (_signInManager.Options.SignIn.RequireConfirmedPhoneNumber &&
+                !string.IsNullOrWhiteSpace(user.PhoneNumber) && !user.PhoneNumberConfirmed)
+            {
+                await _userService.ResendPhoneNumberVerificationAsync(new ResendPhoneNumberVerificationRequest
+                {
+                    PhoneNumber = user.PhoneNumber
+                });
+
+                response.ExternalLoginReturnUrl =
+                    $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/verify-phone-number?userId={user.Id}&returnUrl={request.ReturnUrl}";
+
+                return new Result<LoginResponse>(response);
+            }
+
+            if (_signInManager.Options.SignIn.RequireConfirmedEmail &&
+                !string.IsNullOrWhiteSpace(user.Email) && !user.EmailConfirmed)
+            {
+                await _userService.ResendEmailVerificationAsync(new ResendEmailVerificationRequest
+                {
+                    Email = user.Email
+                }, origin);
+            }
+
             response.ExternalLoginReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/not-allowed";
 
             return new Result<LoginResponse>(response);
