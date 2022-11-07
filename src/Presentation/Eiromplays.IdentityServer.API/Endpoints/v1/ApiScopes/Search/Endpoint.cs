@@ -1,3 +1,4 @@
+using Eiromplays.IdentityServer.Application.Common.Extensions;
 using Eiromplays.IdentityServer.Application.Common.Models;
 using Eiromplays.IdentityServer.Application.Identity.ApiScopes;
 
@@ -25,8 +26,8 @@ public class Endpoint : Endpoint<ApiScopeListFilter, PaginationResponse<ApiScope
 
     public override async Task HandleAsync(ApiScopeListFilter request, CancellationToken ct)
     {
-        Response = await _apiScopeService.SearchAsync(request, ct);
-
-        await SendAsync(Response, cancellation: ct);
+        await this.ResultToResponseAsync(
+            await _apiScopeService.SearchAsync(request, ct),
+            cancellationToken: ct);
     }
 }

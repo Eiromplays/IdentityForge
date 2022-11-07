@@ -29,6 +29,6 @@ public class SendLoginVerificationCodeEndpoint : Endpoint<SendSmsLoginCodeReques
     {
         await this.ResultToResponseAsync(
             await _authService.SendLoginVerificationCodeAsync(req),
-            ct: ct);
+            cancellationToken: ct);
     }
 }

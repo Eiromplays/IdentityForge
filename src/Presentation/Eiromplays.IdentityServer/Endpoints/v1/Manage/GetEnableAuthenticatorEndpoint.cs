@@ -28,6 +28,6 @@ public class GetEnableAuthenticatorEndpoint : EndpointWithoutRequest<GetEnableAu
     {
         await this.ResultToResponseAsync(
             await _userService.GetEnableTwoFactorAsync(User.GetUserId() ?? string.Empty),
-            ct: ct);
+            cancellationToken: ct);
     }
 }

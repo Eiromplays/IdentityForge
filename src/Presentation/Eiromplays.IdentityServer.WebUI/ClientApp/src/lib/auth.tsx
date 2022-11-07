@@ -59,6 +59,8 @@ export const login2faFn = async (data: Login2faCredentialsDto): Promise<AuthUser
     toast.success('Login successful');
   }
 
+  console.log('response', response);
+
   if (response?.validReturnUrl) {
     window.location.href = response?.validReturnUrl;
   } else if (response?.signInResult?.succeeded) {

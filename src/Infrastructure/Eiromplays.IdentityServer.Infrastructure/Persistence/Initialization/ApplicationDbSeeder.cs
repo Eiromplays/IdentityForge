@@ -44,8 +44,8 @@ internal class ApplicationDbSeeder
         await SeedUsersAsync();
         await SeedIdentityResourcesAsync(dbContext);
         await SeedApiScopesAsync(dbContext);
-        await SeedClientsAsync(dbContext);
         await SeedApiResourcesAsync(dbContext);
+        await SeedClientsAsync(dbContext);
         await _seederRunner.RunSeedersAsync(cancellationToken);
     }
 

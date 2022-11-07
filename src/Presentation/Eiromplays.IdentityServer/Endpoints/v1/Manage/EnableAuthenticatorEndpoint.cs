@@ -29,6 +29,6 @@ public class EnableAuthenticatorEndpoint : Endpoint<EnableAuthenticatorRequest, 
     {
         await this.ResultToResponseAsync(
             await _userService.EnableTwoFactorAsync(req, User),
-            ct: ct);
+            cancellationToken: ct);
     }
 }

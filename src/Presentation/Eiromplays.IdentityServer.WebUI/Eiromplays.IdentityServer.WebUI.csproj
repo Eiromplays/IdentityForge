@@ -46,6 +46,7 @@
     <EmbeddedResource Remove="Controllers\**" />
     <TypeScriptCompile Remove="ClientApp\node_modules\**" />
     <TypeScriptCompile Remove="Controllers\**" />
+    <TypeScriptCompile Include="ClientApp\src\features\auth\routes\ConfirmEmail.tsx" />
   </ItemGroup>
 
   <ItemGroup>

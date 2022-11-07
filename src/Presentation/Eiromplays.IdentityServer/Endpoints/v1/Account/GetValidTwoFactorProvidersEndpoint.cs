@@ -27,6 +27,6 @@ public class GetValidTwoFactorProvidersEndpoint : EndpointWithoutRequest<List<st
     {
         await this.ResultToResponseAsync(
             await _authService.GetValidTwoFactorProvidersAsync(),
-            ct: ct);
+            cancellationToken: ct);
     }
 }

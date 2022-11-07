@@ -39,9 +39,9 @@ public interface IUserService : ITransientService
 
     Task<ConfirmEmailResponse> ConfirmEmailAsync(ConfirmEmailRequest request, string origin, CancellationToken cancellationToken = default);
     Task<ConfirmPhoneNumberResponse> ConfirmPhoneNumberAsync(string userId, string code);
-    Task<Result<ResendEmailVerificationResponse>> ResendEmailVerificationAsync(ResendEmailVerificationRequest request, string origin);
+    Task<ResendEmailVerificationResponse> ResendEmailVerificationAsync(ResendEmailVerificationRequest request, string origin);
 
-    Task<Result<ResendPhoneNumberVerificationResponse>> ResendPhoneNumberVerificationAsync(
+    Task<ResendPhoneNumberVerificationResponse> ResendPhoneNumberVerificationAsync(
         ResendPhoneNumberVerificationRequest request, CancellationToken cancellationToken = default);
 
     Task<string> ForgotPasswordAsync(ForgotPasswordRequest request, string origin);

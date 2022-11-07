@@ -34,7 +34,7 @@ public class GetLogoutEndpoint : Endpoint<GetLogoutRequest, GetLogoutResponse>
 
                 await this.ResultToResponseAsync(
                     await _authService.LogoutAsync<GetLogoutEndpoint>(new LogoutRequest { LogoutId = response.LogoutId }, HttpContext),
-                    ct: ct);
+                    cancellationToken: ct);
                 return true;
             },
             ct);

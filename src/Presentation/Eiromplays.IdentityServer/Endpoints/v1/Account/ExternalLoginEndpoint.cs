@@ -29,6 +29,6 @@ public class ExternalLoginEndpoint : Endpoint<ExternalLoginRequest, Authenticati
     {
         await this.ResultToResponseAsync(
             await _authService.ExternalLoginAsync<ExternalLoginCallbackEndpoint>(req, HttpContext.Response),
-            ct: ct);
+            cancellationToken: ct);
     }
 }

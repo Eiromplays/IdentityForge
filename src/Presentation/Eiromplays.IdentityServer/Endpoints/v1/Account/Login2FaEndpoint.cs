@@ -29,6 +29,6 @@ public class Login2FaEndpoint : Endpoint<Login2FaRequest, LoginResponse>
     {
         await this.ResultToResponseAsync(
             await _authService.Login2FaAsync(req),
-            ct: ct);
+            cancellationToken: ct);
     }
 }

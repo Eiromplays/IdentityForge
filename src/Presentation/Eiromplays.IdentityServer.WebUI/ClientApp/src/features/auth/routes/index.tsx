@@ -6,6 +6,7 @@ import { ResetPassword } from '../routes/ResetPassword';
 
 import { ConfirmedEmail } from './ConfirmedEmail';
 import { ConfirmedPhoneNumber } from './ConfirmedPhoneNumber';
+import { ConfirmEmail } from './ConfirmEmail';
 import { ConfirmPhoneNumber } from './ConfirmPhoneNumber';
 import { ExternalLoginConfirmation } from './ExternalLoginConfirmation';
 import { ForgotPassword } from './ForgotPassword';
@@ -30,6 +31,7 @@ export const AuthRoutes: Route<LocationGenerics> = {
     },
     { path: 'not-allowed', element: <NotAllowed /> },
     { path: 'confirmed-email', element: <ConfirmedEmail /> },
+    { path: 'confirm-email', element: <ConfirmEmail /> },
     { path: 'confirmed-phone-number', element: <ConfirmedPhoneNumber /> },
     { path: 'verify-phone-number', element: <ConfirmPhoneNumber /> },
     { path: 'forgot-password', element: <ForgotPassword /> },

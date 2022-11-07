@@ -52,14 +52,13 @@ internal partial class UserService
         return _t[$"Please check {user.Email} to verify your account!"];
     }
 
-    public async Task<Result<ResendEmailVerificationResponse>> ResendEmailVerificationAsync(ResendEmailVerificationRequest request, string origin)
+    public async Task<ResendEmailVerificationResponse> ResendEmailVerificationAsync(ResendEmailVerificationRequest request, string origin)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
 
         return user is null
-            ? new Result<ResendEmailVerificationResponse>(
-                new InternalServerException(_t["An error occurred while trying to resend email verification."]))
-            : new Result<ResendEmailVerificationResponse>(new ResendEmailVerificationResponse { Message = await SendEmailVerificationAsync(user, origin)});
+            ? throw new InternalServerException(_t["An error occurred while trying to resend email verification."])
+            : new ResendEmailVerificationResponse { Message = await SendEmailVerificationAsync(user, origin) };
     }
 
     private async Task<string> SendPhoneNumberVerificationAsync(ApplicationUser user, string? newPhoneNumber = null)
@@ -75,19 +74,18 @@ internal partial class UserService
         return _t["A verification code has been sent to your phone number."];
     }
 
-    public async Task<Result<ResendPhoneNumberVerificationResponse>> ResendPhoneNumberVerificationAsync(ResendPhoneNumberVerificationRequest request, CancellationToken cancellationToken)
+    public async Task<ResendPhoneNumberVerificationResponse> ResendPhoneNumberVerificationAsync(ResendPhoneNumberVerificationRequest request, CancellationToken cancellationToken)
     {
         var user = await _userManager.Users.FirstOrDefaultAsync(
             x => x.PhoneNumber.Equals(request.PhoneNumber), cancellationToken);
 
         return user is null
-            ? new Result<ResendPhoneNumberVerificationResponse>(
-                new InternalServerException(_t["An error occurred while trying to resend phone number verification."]))
-            : new Result<ResendPhoneNumberVerificationResponse>(new ResendPhoneNumberVerificationResponse
+            ? throw new InternalServerException(_t["An error occurred while trying to resend phone number verification."])
+            : new ResendPhoneNumberVerificationResponse
             {
                 Message = await SendPhoneNumberVerificationAsync(user), ReturnUrl =
                 $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/verify-phone-number?userId={user.Id}"
-            });
+            };
     }
 
     public async Task<ConfirmEmailResponse> ConfirmEmailAsync(ConfirmEmailRequest request, string origin, CancellationToken cancellationToken)

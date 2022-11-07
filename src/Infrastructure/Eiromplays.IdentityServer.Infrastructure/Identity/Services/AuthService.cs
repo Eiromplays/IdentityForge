@@ -151,30 +151,8 @@ public class AuthService : IAuthService
 
             if (loginResult.IsNotAllowed)
             {
-                if (_signInManager.Options.SignIn.RequireConfirmedPhoneNumber &&
-                    !string.IsNullOrWhiteSpace(user.PhoneNumber) && !user.PhoneNumberConfirmed)
-                {
-                    await _userService.ResendPhoneNumberVerificationAsync(new ResendPhoneNumberVerificationRequest
-                    {
-                        PhoneNumber = user.PhoneNumber
-                    });
-
-                    response.ValidReturnUrl =
-                        $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/verify-phone-number?userId={user.Id}&returnUrl={request.ReturnUrl}";
-
-                    return new Result<LoginResponse>(response);
-                }
-
-                if (_signInManager.Options.SignIn.RequireConfirmedEmail &&
-                    !string.IsNullOrWhiteSpace(user.Email) && !user.EmailConfirmed)
-                {
-                    await _userService.ResendEmailVerificationAsync(new ResendEmailVerificationRequest
-                    {
-                        Email = user.Email
-                    }, origin);
-                }
-
                 response.ValidReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/not-allowed";
+                response = await CheckUserVerifiedAsync(user, response, request.ReturnUrl, origin);
 
                 return new Result<LoginResponse>(response);
             }
@@ -426,7 +404,7 @@ public class AuthService : IAuthService
 
         if (result.IsLockedOut)
         {
-            // TODO: should probably send an email to the user
+            // TODO: We should probably send an email to the user
 
             response.ExternalLoginReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/lockout";
 
@@ -436,30 +414,13 @@ public class AuthService : IAuthService
         if (result.IsNotAllowed)
         {
             var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
-            if (_signInManager.Options.SignIn.RequireConfirmedPhoneNumber &&
-                !string.IsNullOrWhiteSpace(user.PhoneNumber) && !user.PhoneNumberConfirmed)
-            {
-                await _userService.ResendPhoneNumberVerificationAsync(new ResendPhoneNumberVerificationRequest
-                {
-                    PhoneNumber = user.PhoneNumber
-                });
-
-                response.ExternalLoginReturnUrl =
-                    $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/verify-phone-number?userId={user.Id}&returnUrl={request.ReturnUrl}";
-
-                return new Result<LoginResponse>(response);
-            }
-
-            if (_signInManager.Options.SignIn.RequireConfirmedEmail &&
-                !string.IsNullOrWhiteSpace(user.Email) && !user.EmailConfirmed)
-            {
-                await _userService.ResendEmailVerificationAsync(new ResendEmailVerificationRequest
-                {
-                    Email = user.Email
-                }, origin);
-            }
 
             response.ExternalLoginReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/not-allowed";
+
+            if (user is not null)
+            {
+                response = await CheckUserVerifiedAsync(user, response, request.ReturnUrl, origin);
+            }
 
             return new Result<LoginResponse>(response);
         }
@@ -510,6 +471,46 @@ public class AuthService : IAuthService
         response.Message = responseMessage;
 
         return new Result<LoginResponse>(response);
+    }
+
+    #endregion
+
+    #region Login Helper Methods
+
+    private async Task<LoginResponse> CheckUserVerifiedAsync(ApplicationUser user, LoginResponse response, string? returnUrl, string origin)
+    {
+        if (_signInManager.Options.SignIn.RequireConfirmedEmail &&
+            !string.IsNullOrWhiteSpace(user.Email) && !user.EmailConfirmed)
+        {
+            await _userService.ResendEmailVerificationAsync(
+                new ResendEmailVerificationRequest
+            {
+                Email = user.Email
+            }, origin);
+
+            response.ValidReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/confirm-email";
+            response.ExternalLoginReturnUrl = response.ValidReturnUrl;
+
+            return response;
+        }
+
+        if (_signInManager.Options.SignIn.RequireConfirmedPhoneNumber &&
+            !string.IsNullOrWhiteSpace(user.PhoneNumber) && !user.PhoneNumberConfirmed)
+        {
+            await _userService.ResendPhoneNumberVerificationAsync(
+                new ResendPhoneNumberVerificationRequest
+            {
+                PhoneNumber = user.PhoneNumber
+            });
+
+            response.ValidReturnUrl =
+                $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/verify-phone-number?userId={user.Id}&returnUrl={returnUrl}";
+            response.ExternalLoginReturnUrl = response.ValidReturnUrl;
+
+            return response;
+        }
+
+        return response;
     }
 
     #endregion

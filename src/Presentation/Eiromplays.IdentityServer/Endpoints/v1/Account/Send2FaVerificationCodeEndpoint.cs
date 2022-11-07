@@ -29,6 +29,6 @@ public class Send2FaVerificationCodeEndpoint : Endpoint<Send2FaVerificationCodeR
     {
         await this.ResultToResponseAsync(
             await _authService.Send2FaVerificationCodeAsync(req),
-            ct: ct);
+            cancellationToken: ct);
     }
 }

@@ -28,8 +28,8 @@ public class ResendPhoneNumberConfirmationAsync : Endpoint<ResendPhoneNumberVeri
 
     public override async Task HandleAsync(ResendPhoneNumberVerificationRequest req, CancellationToken ct)
     {
-        await this.ResultToResponseAsync(
-            await _userService.ResendPhoneNumberVerificationAsync(req, ct),
-            ct: ct);
+        Response = await _userService.ResendPhoneNumberVerificationAsync(req, ct);
+
+        await SendOkAsync(Response, cancellation: ct);
     }
 }

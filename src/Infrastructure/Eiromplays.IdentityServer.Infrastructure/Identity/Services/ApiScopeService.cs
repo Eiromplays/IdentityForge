@@ -26,7 +26,7 @@ internal class ApiScopeService : IApiScopeService
         _events = events;
     }
 
-    public async Task<PaginationResponse<ApiScopeDto>> SearchAsync(ApiScopeListFilter filter, CancellationToken cancellationToken)
+    public async Task<Result<PaginationResponse<ApiScopeDto>>> SearchAsync(ApiScopeListFilter filter, CancellationToken cancellationToken)
     {
         var spec = new EntitiesByPaginationFilterSpec<ApiScope>(filter);
 
@@ -38,14 +38,15 @@ internal class ApiScopeService : IApiScopeService
         int count = await _db.ApiScopes
             .CountAsync(cancellationToken);
 
-        return new PaginationResponse<ApiScopeDto>(apiScopes, count, filter.PageNumber, filter.PageSize);
+        return new Result<PaginationResponse<ApiScopeDto>>(
+            new PaginationResponse<ApiScopeDto>(apiScopes, count, filter.PageNumber, filter.PageSize));
     }
 
-    public async Task<ApiScopeDto> GetAsync(int apiScopeId, CancellationToken cancellationToken)
+    public async Task<Result<ApiScopeDto>> GetAsync(int apiScopeId, CancellationToken cancellationToken)
     {
         var apiScope = await FindApiScopeByIdAsync(apiScopeId, cancellationToken);
 
-        return apiScope.Adapt<ApiScopeDto>();
+        return new Result<ApiScopeDto>(apiScope.Adapt<ApiScopeDto>());
     }
 
     public async Task UpdateAsync(UpdateApiScopeRequest request, int apiScopeId, CancellationToken cancellationToken)
@@ -91,7 +92,7 @@ internal class ApiScopeService : IApiScopeService
         }
     }
 
-    public async Task<string> CreateAsync(CreateApiScopeRequest request, CancellationToken cancellationToken)
+    public async Task<Result<string>> CreateAsync(CreateApiScopeRequest request, CancellationToken cancellationToken)
     {
         var apiScope = new ApiScope
         {
@@ -109,19 +110,23 @@ internal class ApiScopeService : IApiScopeService
 
         bool success = await _db.SaveChangesAsync(cancellationToken) > 0;
 
-        if (!success) throw new InternalServerException(_t["Create ApiScope failed"], new List<string> { "Failed to create ApiScope" });
+        if (!success)
+        {
+            return new Result<string>(new InternalServerException(
+                _t["Create ApiScope failed"],
+                new List<string> { "Failed to create ApiScope" }));
+        }
 
         await _events.PublishAsync(new ApiScopeCreatedEvent(apiScope.Id));
 
-        return string.Format(_t["ApiScope {0} Registered."], apiScope.Id);
+        return new Result<string>(string.Format(_t["ApiScope {0} Registered."], apiScope.Id));
     }
 
-    public Task<int> GetCountAsync(CancellationToken cancellationToken) =>
-        _db.ApiScopes.AsNoTracking().CountAsync(cancellationToken);
+    public async Task<int> GetCountAsync(CancellationToken cancellationToken) =>
+        await _db.ApiScopes.AsNoTracking().CountAsync(cancellationToken);
 
     #region Entity Queries
 
-    // TODO: Move to repository or something like that :)
     private async Task<ApiScope> FindApiScopeByIdAsync(int apiScopeId, CancellationToken cancellationToken)
     {
         var apiScope = await _db.ApiScopes
@@ -131,9 +136,7 @@ internal class ApiScopeService : IApiScopeService
             .AsNoTracking()
             .FirstOrDefaultAsync(cancellationToken);
 
-        _ = apiScope ?? throw new NotFoundException(_t["ApiScope Not Found."]);
-
-        return apiScope;
+        return apiScope ?? throw new NotFoundException(_t["ApiScope Not Found."]);
     }
 
     #endregion

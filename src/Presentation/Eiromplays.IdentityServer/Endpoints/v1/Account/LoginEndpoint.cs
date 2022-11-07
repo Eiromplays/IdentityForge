@@ -28,6 +28,6 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
     {
         await this.ResultToResponseAsync(
             await _authService.LoginAsync(req, BaseURL),
-            ct: ct);
+            cancellationToken: ct);
     }
 }

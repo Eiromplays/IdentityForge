@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using FluentValidation.Results;
 
 namespace Eiromplays.IdentityServer.Application.Common.Extensions;
@@ -6,13 +5,14 @@ namespace Eiromplays.IdentityServer.Application.Common.Extensions;
 public static class FastEndpointsExtensions
 {
     public static async Task ResultToResponseAsync<TResponse>(
-        this IEndpoint endpoint,
+        this IEndpoint? endpoint,
         Result<TResponse> result,
         Func<TResponse, Task<bool>>? customFunc = null,
-        CancellationToken ct = default)
+        CancellationToken cancellationToken = default)
         where TResponse : notnull
     {
-        Debug.Assert(endpoint != null, nameof(endpoint) + " != null");
+        if (endpoint is null) return;
+
         var ctx = endpoint.HttpContext;
         await result.Match(
             async x =>
@@ -29,7 +29,7 @@ public static class FastEndpointsExtensions
                         return;
                 }
 
-                await ctx.Response.SendOkAsync(x, cancellation: ct).ConfigureAwait(false);
+                await ctx.Response.SendOkAsync(x, cancellation: cancellationToken).ConfigureAwait(false);
             },
             async exception =>
             {
@@ -47,7 +47,7 @@ public static class FastEndpointsExtensions
                         {
                             new("BadRequest", badRequestException.Message)
                         },
-                            cancellation: ct).ConfigureAwait(false);
+                            cancellation: cancellationToken).ConfigureAwait(false);
                         return;
                     case InternalServerException internalServerException:
                         await ctx.Response.SendErrorsAsync(
@@ -56,7 +56,7 @@ public static class FastEndpointsExtensions
                             new("InternalServerException", internalServerException.Message)
                         },
                             statusCode: (int)internalServerException.StatusCode,
-                            cancellation: ct).ConfigureAwait(false);
+                            cancellation: cancellationToken).ConfigureAwait(false);
                         return;
                     case NotFoundException notFoundException:
                         await ctx.Response.SendErrorsAsync(
@@ -65,7 +65,7 @@ public static class FastEndpointsExtensions
                             new("NotFoundException", notFoundException.Message)
                         },
                             statusCode: (int)notFoundException.StatusCode,
-                            cancellation: ct).ConfigureAwait(false);
+                            cancellation: cancellationToken).ConfigureAwait(false);
                         return;
                     case ForbiddenException forbiddenException:
                         await ctx.Response.SendErrorsAsync(
@@ -74,7 +74,7 @@ public static class FastEndpointsExtensions
                             new("ForbiddenException", forbiddenException.Message)
                         },
                             statusCode: (int)forbiddenException.StatusCode,
-                            cancellation: ct).ConfigureAwait(false);
+                            cancellation: cancellationToken).ConfigureAwait(false);
                         return;
                     case UnauthorizedException unauthorizedException:
                         await ctx.Response.SendErrorsAsync(
@@ -83,7 +83,7 @@ public static class FastEndpointsExtensions
                             new("UnauthorizedException", unauthorizedException.Message)
                         },
                             statusCode: (int)unauthorizedException.StatusCode,
-                            cancellation: ct).ConfigureAwait(false);
+                            cancellation: cancellationToken).ConfigureAwait(false);
                         return;
                     case ConflictException conflictException:
                         await ctx.Response.SendErrorsAsync(
@@ -92,11 +92,11 @@ public static class FastEndpointsExtensions
                             new("ConflictException", conflictException.Message)
                         },
                             statusCode: (int)conflictException.StatusCode,
-                            cancellation: ct).ConfigureAwait(false);
+                            cancellation: cancellationToken).ConfigureAwait(false);
                         return;
                 }
 
-                await ctx.Response.SendErrorsAsync(new List<ValidationFailure>(), cancellation: ct).ConfigureAwait(false);
+                await ctx.Response.SendErrorsAsync(new List<ValidationFailure>(), cancellation: cancellationToken).ConfigureAwait(false);
             }).ConfigureAwait(false);
     }
 }

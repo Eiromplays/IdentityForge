@@ -45,6 +45,7 @@ export type LocationGenerics = DefaultLocationGenerics & {
     userName: string;
     loginProvider: string;
     token: string;
+    message: string;
   };
 };
 

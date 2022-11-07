@@ -28,8 +28,8 @@ public class ResendEmailConfirmationAsync : Endpoint<ResendEmailVerificationRequ
 
     public override async Task HandleAsync(ResendEmailVerificationRequest req, CancellationToken ct)
     {
-        await this.ResultToResponseAsync(
-            await _userService.ResendEmailVerificationAsync(req, BaseURL),
-            ct: ct);
+        Response = await _userService.ResendEmailVerificationAsync(req, BaseURL);
+
+        await SendOkAsync(Response, cancellation: ct);
     }
 }

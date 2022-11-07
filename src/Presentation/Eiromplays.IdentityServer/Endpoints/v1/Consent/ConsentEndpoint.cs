@@ -27,6 +27,6 @@ public class ConsentEndpoint : Endpoint<ConsentResponse, ProcessConsentResponse>
     {
         await this.ResultToResponseAsync(
             await _consentService.ConsentAsync(req, User),
-            ct: ct);
+            cancellationToken: ct);
     }
 }

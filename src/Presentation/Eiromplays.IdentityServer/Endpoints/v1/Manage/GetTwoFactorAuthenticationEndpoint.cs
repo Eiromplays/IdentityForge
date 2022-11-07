@@ -28,6 +28,6 @@ public class GetTwoFactorAuthenticationEndpoint : EndpointWithoutRequest<TwoFact
     {
         await this.ResultToResponseAsync(
             await _userService.GetTwoFactorAuthenticationAsync(User),
-            ct: ct);
+            cancellationToken: ct);
     }
 }

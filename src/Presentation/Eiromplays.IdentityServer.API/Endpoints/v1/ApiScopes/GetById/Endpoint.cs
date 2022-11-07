@@ -1,3 +1,4 @@
+using Eiromplays.IdentityServer.Application.Common.Extensions;
 using Eiromplays.IdentityServer.Application.Identity.ApiScopes;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.ApiScopes.GetById;
@@ -24,8 +25,8 @@ public class Endpoint : Endpoint<Models.Request, ApiScopeDto>
 
     public override async Task HandleAsync(Models.Request request, CancellationToken ct)
     {
-        Response = await _apiScopeService.GetAsync(request.Id, ct);
-
-        await SendAsync(Response, cancellation: ct);
+        await this.ResultToResponseAsync(
+            await _apiScopeService.GetAsync(request.Id, ct),
+            cancellationToken: ct);
     }
 }
