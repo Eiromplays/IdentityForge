@@ -3,11 +3,14 @@ using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.IdentityModel.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAuthorization();
 builder.Services.AddInfrastructure(builder.Configuration, builder.Environment, ProjectType.Spa);
+
+IdentityModelEventSource.ShowPII = true;
 
 builder.Services.AddAuthentication(options =>
 {

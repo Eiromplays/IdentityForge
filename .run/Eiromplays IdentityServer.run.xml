@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Eiromplays IdentityServer" type="CompoundRunConfigurationType">
+    <toRun name="IdentityServer" type="LaunchSettings" />
     <toRun name="API" type="LaunchSettings" />
     <toRun name="Admin.WebUI" type="LaunchSettings" />
-    <toRun name="IdentityServer" type="LaunchSettings" />
     <toRun name="WebUI" type="LaunchSettings" />
     <toRun name="Mandatory third parties" type="docker-deploy" />
     <method v="2" />

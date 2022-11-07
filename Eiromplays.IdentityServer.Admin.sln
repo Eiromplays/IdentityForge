@@ -36,6 +36,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "src\Core\Shared\Shared.csproj", "{4117071C-C618-4215-A0CA-6208ABE64BCA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7285C346-0E87-4392-945B-9071DBD8508E}"
+	ProjectSection(SolutionItems) = preProject
+		src\docker-compose.yml = src\docker-compose.yml
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B7B3785C-D8AE-4E0D-BB36-21DC4300AD14}"
 	ProjectSection(SolutionItems) = preProject
