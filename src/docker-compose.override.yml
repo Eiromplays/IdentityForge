@@ -4,6 +4,8 @@ services:
   postgres:
     environment:
       POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
     ports:
       - "5432:5432"
     volumes:
@@ -16,8 +18,55 @@ services:
       - PORT=443
       - ASPNETCORE_Kestrel__Certificates__Default__Password=Docker1234
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/docker.pfx
+      - DatabaseConfiguration__ConnectionStringsConfiguration__ApplicationDbConnection=${EIROMPLAYS_ADMIN_IDENTITYSERVER_DB:-Server=postgres;Database=EiromplaysIdentityServer;User Id=postgres;Password=1234}
+      - DatabaseConfiguration__ConnectionStringsConfiguration__SessionDbConnection=${EIROMPLAYS_ADMIN_IDENTITYSERVER_DB:-Server=postgres;Database=EiromplaysIdentityServer;User Id=postgres;Password=1234}
+      - HangfireSettings__Storage__ConnectionString=${EIROMPLAYS_ADMIN_IDENTITYSERVER_DB:-Server=postgres;Database=EiromplaysIdentityServer;User Id=postgres;Password=1234}
     ports:
       - "7001:443"
+    volumes:
+      - ~/.aspnet/https:/https:ro
+      - ./:/app
+
+  api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://0.0.0.0:443
+      - PORT=443
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=Docker1234
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/docker.pfx
+      - DatabaseConfiguration__ConnectionStringsConfiguration__ApplicationDbConnection=${EIROMPLAYS_ADMIN_IDENTITYSERVER_DB:-Server=postgres;Database=EiromplaysIdentityServer;User Id=postgres;Password=1234}
+      - DatabaseConfiguration__ConnectionStringsConfiguration__SessionDbConnection=${EIROMPLAYS_ADMIN_IDENTITYSERVER_DB:-Server=postgres;Database=EiromplaysIdentityServer;User Id=postgres;Password=1234}
+      - HangfireSettings__Storage__ConnectionString=${EIROMPLAYS_ADMIN_IDENTITYSERVER_DB:-Server=postgres;Database=EiromplaysIdentityServer;User Id=postgres;Password=1234}
+    ports:
+      - "7003:443"
+    volumes:
+      - ~/.aspnet/https:/https:ro
+      - ./:/app
+
+  admin-ui:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://0.0.0.0:443
+      - PORT=443
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=Docker1234
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/docker.pfx
+      - DatabaseConfiguration__ConnectionStringsConfiguration__SessionDbConnection=${EIROMPLAYS_ADMIN_IDENTITYSERVER_DB:-Server=postgres;Database=EiromplaysIdentityServer;User Id=postgres;Password=1234}
+    ports:
+      - "7004:443"
+    volumes:
+      - ~/.aspnet/https:/https:ro
+      - ./:/app
+
+  web-ui:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://0.0.0.0:443
+      - PORT=443
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=Docker1234
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/docker.pfx
+      - DatabaseConfiguration__ConnectionStringsConfiguration__SessionDbConnection=${EIROMPLAYS_ADMIN_IDENTITYSERVER_DB:-Server=postgres;Database=EiromplaysIdentityServer;User Id=postgres;Password=1234}
+    ports:
+      - "7002:443"
     volumes:
       - ~/.aspnet/https:/https:ro
       - ./:/app
