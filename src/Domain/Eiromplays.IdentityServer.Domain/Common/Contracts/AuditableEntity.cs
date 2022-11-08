@@ -1,6 +1,6 @@
 namespace Eiromplays.IdentityServer.Domain.Common.Contracts;
 
-public abstract class AuditableEntity : AuditableEntity<DefaultIdType>
+public abstract class AuditableEntity : AuditableEntity<Guid>
 {
 }
 

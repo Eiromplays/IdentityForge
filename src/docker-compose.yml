@@ -1,10 +1,13 @@
-version: '3.8'
+version: '3.7'
+name: eiromplays-identityserver-admin
 
 services:
   postgres:
-    image: postgres
-    restart: always
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_PASSWORD: 1234
+    image: postgres:14.4-alpine
+
+  identityserver:
+    build:
+      context: .
+      dockerfile: Presentation/Eiromplays.IdentityServer/Dockerfile
+    depends_on:
+      - postgres

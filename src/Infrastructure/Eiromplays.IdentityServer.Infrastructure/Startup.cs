@@ -149,9 +149,16 @@ public static class Startup
     // Registers Azure Key Vault as a source for configuration values.
     private static ConfigurationManager AddAzureKeyVaultConfiguration(this ConfigurationManager configuration, AzureKeyVaultConfiguration? azureKeyVaultConfiguration)
     {
-        if (azureKeyVaultConfiguration is null or { Enabled: false}) return configuration;
+        try
+        {
+            if (azureKeyVaultConfiguration is null or { Enabled: false}) return configuration;
 
-        configuration.AddAzureKeyVault(new Uri(azureKeyVaultConfiguration.KeyVaultUrl), new DefaultAzureCredential(), new CustomKeyVaultSecretManager());
+            configuration.AddAzureKeyVault(new Uri(azureKeyVaultConfiguration.KeyVaultUrl), new DefaultAzureCredential(), new CustomKeyVaultSecretManager());
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Azure Key Vault configuration failed. {e.Message}");
+        }
 
         return configuration;
     }
@@ -161,22 +168,29 @@ public static class Startup
     {
         if (awsSecretsManagerConfiguration is null or { Enabled: false}) return configuration;
 
-        configuration.AddSecretsManager(
-            configurator: config =>
-            {
-                config.KeyGenerator = (_, name) =>
+        try
+        {
+            configuration.AddSecretsManager(
+                configurator: config =>
                 {
-                    string prefix = awsSecretsManagerConfiguration.AllowedPrefixes.First(name.StartsWith);
+                    config.KeyGenerator = (_, name) =>
+                    {
+                        string prefix = awsSecretsManagerConfiguration.AllowedPrefixes.First(name.StartsWith);
 
-                    name = name.Replace(prefix, string.Empty, StringComparison.OrdinalIgnoreCase).Replace("__", ":", StringComparison.OrdinalIgnoreCase);
-                    if (name.StartsWith(":", StringComparison.OrdinalIgnoreCase))
-                        name = name[1..];
+                        name = name.Replace(prefix, string.Empty, StringComparison.OrdinalIgnoreCase).Replace("__", ":", StringComparison.OrdinalIgnoreCase);
+                        if (name.StartsWith(":", StringComparison.OrdinalIgnoreCase))
+                            name = name[1..];
 
-                    return name;
-                };
+                        return name;
+                    };
 
-                config.SecretFilter = secret => awsSecretsManagerConfiguration.AllowedPrefixes.Any(allowed => secret.Name.StartsWith(allowed, StringComparison.OrdinalIgnoreCase));
-            });
+                    config.SecretFilter = secret => awsSecretsManagerConfiguration.AllowedPrefixes.Any(allowed => secret.Name.StartsWith(allowed, StringComparison.OrdinalIgnoreCase));
+                });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"AWS Secrets Manager configuration failed. {e.Message}");
+        }
 
         return configuration;
     }
