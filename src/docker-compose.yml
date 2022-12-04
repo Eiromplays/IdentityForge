@@ -5,6 +5,9 @@ services:
   postgres:
     image: postgres:14.4-alpine
 
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+
   identityserver:
     build:
       context: .

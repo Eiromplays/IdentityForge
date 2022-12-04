@@ -5,7 +5,7 @@
   "scripts": {
     "prestart": "node aspnetcore-https && node aspnetcore-react",
     "dev": "vite",
-    "start": "vite",
+    "start": "vite --host",
     "build": "tsc && vite build",
     "serve": "vite preview",
     "lint": "eslint --fix --ext .js,.ts,.tsx ./src --ignore-path .gitignore",

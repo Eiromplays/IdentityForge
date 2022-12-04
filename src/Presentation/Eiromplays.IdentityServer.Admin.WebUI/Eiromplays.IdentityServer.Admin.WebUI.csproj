@@ -14,7 +14,7 @@
         <IsPackable>false</IsPackable>
         <SpaRoot>ClientApp\</SpaRoot>
         <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
-        <SpaProxyServerUrl>https://localhost:3001</SpaProxyServerUrl>
+        <SpaProxyServerUrl>http://localhost:3001</SpaProxyServerUrl>
         <SpaProxyLaunchCommand>yarn start</SpaProxyLaunchCommand>
     </PropertyGroup>
 
@@ -60,6 +60,12 @@
     <ItemGroup>
       <AdditionalFiles Include="Pages\Error.cshtml" />
       <AdditionalFiles Include="Pages\_ViewImports.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.AspNetCore.Http.Features">
+        <HintPath>..\..\..\..\..\..\.nuget\packages\microsoft.aspnetcore.app.ref\6.0.11\ref\net6.0\Microsoft.AspNetCore.Http.Features.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

@@ -30,7 +30,7 @@ try
         })
         .AddJwtBearer("token", options =>
         {
-            options.Authority = "https://localhost:7001";
+            options.Authority = "http://auth.eiromplays.local.com";
             options.Audience = "api";
             options.MapInboundClaims = false;
             options.RequireHttpsMetadata = false;

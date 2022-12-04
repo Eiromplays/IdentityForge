@@ -11,7 +11,7 @@ const target = env.ASPNETCORE_HTTPS_PORT
   ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}`
   : env.ASPNETCORE_URLS
   ? env.ASPNETCORE_URLS.split(';')[0]
-  : 'https://localhost:7001';
+  : 'http://auth.eiromplays.local.com';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -23,7 +23,7 @@ export default defineConfig({
   },
   server: {
     port: 3001,
-    https: true,
+    https: false,
     proxy: {
       '/users': {
         target: target,

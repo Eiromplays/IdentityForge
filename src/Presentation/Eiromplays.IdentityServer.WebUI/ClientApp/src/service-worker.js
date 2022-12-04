@@ -65,7 +65,7 @@ registerRoute(
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener('message', async (event) => {
-    if (event.origin === self.location.origin || event.origin === 'https://localhost:3000') {
+    if (event.origin === self.location.origin || event.origin === 'http://localhost:3000' || event.origin === 'http://web.eiromplays.local.com') {
         if (event.data && event.data.type === 'SKIP_WAITING')
             await self.skipWaiting();
     }

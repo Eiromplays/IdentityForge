@@ -4,18 +4,13 @@ import { env } from 'process';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import envCompatible from 'vite-plugin-env-compatible';
-import mkcert from 'vite-plugin-mkcert';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
-const target = env.ASPNETCORE_HTTPS_PORT
-  ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}`
-  : env.ASPNETCORE_URLS
-  ? env.ASPNETCORE_URLS.split(';')[0]
-  : 'https://localhost:7001';
+const target = process.env.PROXY_TARGET || 'http://localhost:80';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), tsconfigPaths(), mkcert(), envCompatible()],
+  plugins: [react(), tsconfigPaths(), /*mkcert(),*/ envCompatible()],
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
@@ -23,7 +18,7 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    https: true,
+    https: false,
     proxy: {
       '/roles': {
         target: target,

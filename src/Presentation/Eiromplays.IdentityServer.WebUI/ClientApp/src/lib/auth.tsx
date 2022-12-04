@@ -15,7 +15,7 @@ export const loadUser = async () => {
   return await getUser({
     authenticatedProps: {
       useAuthenticated: false,
-      isAuthenticatedUrl: 'https://localhost:7001/api/v1/account/is-authenticated',
+      isAuthenticatedUrl: 'http://auth.eiromplays.local.com/api/v1/account/is-authenticated',
     },
   });
 };

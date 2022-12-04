@@ -41,7 +41,7 @@ internal static class Startup
                         x.Response.Redirect(!string.IsNullOrWhiteSpace(
                             identityServerOptions.UserInteraction.LoginUrl)
                             ? identityServerOptions.UserInteraction.LoginUrl :
-                            "https://localhost:3000/auth/login");
+                            "http://localhost:3000/auth/login");
                         return Task.CompletedTask;
                     },
                     OnRedirectToLogout = x =>
@@ -49,7 +49,7 @@ internal static class Startup
                         x.Response.Redirect(!string.IsNullOrWhiteSpace(
                             identityServerOptions.UserInteraction.LogoutUrl)
                             ? identityServerOptions.UserInteraction.LogoutUrl :
-                            "https://localhost:3000/auth/logout");
+                            "http://localhost:3000/auth/logout");
                         return Task.CompletedTask;
                     }
                 };

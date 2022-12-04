@@ -19,7 +19,7 @@ builder.Services.AddAuthentication(options =>
     options.Cookie.SameSite = SameSiteMode.Strict;
 }).AddOpenIdConnect("oidc", options =>
 {
-    options.Authority = "https://localhost:7001";
+    options.Authority = "http://auth.eiromplays.local.com";
     options.ClientId = "eiromplays_identity_admin_spa";
     options.ClientSecret = "secret";
     options.ResponseType = "code";
@@ -74,46 +74,46 @@ app.UseAuthorization();
 
 app.MapBffManagementEndpoints();
 
-app.MapRemoteBffApiEndpoint("/users", "https://localhost:7003/v1/users")
+app.MapRemoteBffApiEndpoint("/users", "http://api.eiromplays.local.com/v1/users")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/roles", "https://localhost:7003/v1/roles")
+app.MapRemoteBffApiEndpoint("/roles", "http://api.eiromplays.local.com/v1/roles")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/personal", "https://localhost:7003/v1/personal")
+app.MapRemoteBffApiEndpoint("/personal", "http://api.eiromplays.local.com/v1/personal")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/user-sessions", "https://localhost:7003/v1/user-sessions")
+app.MapRemoteBffApiEndpoint("/user-sessions", "http://api.eiromplays.local.com/v1/user-sessions")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/server-side-sessions", "https://localhost:7003/v1/server-side-sessions")
+app.MapRemoteBffApiEndpoint("/server-side-sessions", "http://api.eiromplays.local.com/v1/server-side-sessions")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/logs", "https://localhost:7003/v1/logs")
+app.MapRemoteBffApiEndpoint("/logs", "http://api.eiromplays.local.com/v1/logs")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/persisted-grants", "https://localhost:7003/v1/persisted-grants")
+app.MapRemoteBffApiEndpoint("/persisted-grants", "http://api.eiromplays.local.com/v1/persisted-grants")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/dashboard", "https://localhost:7003/v1/dashboard")
+app.MapRemoteBffApiEndpoint("/dashboard", "http://api.eiromplays.local.com/v1/dashboard")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/clients", "https://localhost:7003/v1/clients")
+app.MapRemoteBffApiEndpoint("/clients", "http://api.eiromplays.local.com/v1/clients")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/identity-resources", "https://localhost:7003/v1/identity-resources")
+app.MapRemoteBffApiEndpoint("/identity-resources", "http://api.eiromplays.local.com/v1/identity-resources")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/api-scopes", "https://localhost:7003/v1/api-scopes")
+app.MapRemoteBffApiEndpoint("/api-scopes", "http://api.eiromplays.local.com/v1/api-scopes")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/api-resources", "https://localhost:7003/v1/api-resources")
+app.MapRemoteBffApiEndpoint("/api-resources", "http://api.eiromplays.local.com/v1/api-resources")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/products", "https://localhost:7003/v1/products")
+app.MapRemoteBffApiEndpoint("/products", "http://api.eiromplays.local.com/v1/products")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/brands", "https://localhost:7003/v1/brands")
+app.MapRemoteBffApiEndpoint("/brands", "http://api.eiromplays.local.com/v1/brands")
     .RequireAccessToken();
 
 app.MapFallbackToFile("index.html");

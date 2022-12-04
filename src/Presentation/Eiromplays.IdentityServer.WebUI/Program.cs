@@ -1,16 +1,21 @@
 using System.Security.Claims;
 using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure;
+using Eiromplays.IdentityServer.WebUI.Configurations;
+using Hellang.Middleware.SpaFallback;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.IdentityModel.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSpaFallback();
 builder.Services.AddAuthorization();
 builder.Services.AddInfrastructure(builder.Configuration, builder.Environment, ProjectType.Spa);
 
 IdentityModelEventSource.ShowPII = true;
+
+var urlsConfiguration = builder.Configuration.GetSection(nameof(UrlsConfiguration)).Get<UrlsConfiguration>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -23,7 +28,7 @@ builder.Services.AddAuthentication(options =>
     options.Cookie.SameSite = SameSiteMode.Strict;
 }).AddOpenIdConnect("oidc", options =>
 {
-    options.Authority = "https://localhost:7001";
+    options.Authority = urlsConfiguration.IdentityServerBaseUrl;
     options.ClientId = "eiromplays_identity_spa";
     options.ClientSecret = "secret";
     options.ResponseType = "code";
@@ -32,6 +37,7 @@ builder.Services.AddAuthentication(options =>
     options.GetClaimsFromUserInfoEndpoint = true;
     options.MapInboundClaims = false;
     options.SaveTokens = true;
+    options.RequireHttpsMetadata = false;
 
     options.Scope.Clear();
     options.Scope.Add("openid");
@@ -54,6 +60,8 @@ builder.Services.AddAuthentication(options =>
 });
 
 var app = builder.Build();
+
+app.UseSpaFallback();
 
 await app.Services.InitializeDatabasesAsync();
 
@@ -81,16 +89,16 @@ app.UseAuthorization();
 
 app.MapBffManagementEndpoints();
 
-app.MapRemoteBffApiEndpoint("/roles", "https://localhost:7003/v1/roles")
+app.MapRemoteBffApiEndpoint("/roles", $"{urlsConfiguration.ApiBaseUrl}/v1/roles")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/personal", "https://localhost:7003/v1/personal")
+app.MapRemoteBffApiEndpoint("/personal", $"{urlsConfiguration.ApiBaseUrl}/v1/personal")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/user-sessions", "https://localhost:7003/v1/user-sessions")
+app.MapRemoteBffApiEndpoint("/user-sessions", $"{urlsConfiguration.ApiBaseUrl}/v1/user-sessions")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/logs", "https://localhost:7003/v1/logs")
+app.MapRemoteBffApiEndpoint("/logs", $"{urlsConfiguration.ApiBaseUrl}/v1/logs")
     .RequireAccessToken();
 
 app.MapFallbackToFile("index.html");

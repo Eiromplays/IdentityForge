@@ -109,22 +109,23 @@
       {
         "ClientId": "eiromplays_identity_spa",
         "ClientName": "eiromplays_identity_spa",
-        "ClientUri": "https://localhost:3000",
+        "ClientUri": "http://localhost:3000",
         "AllowedGrantTypes": [
           "authorization_code",
           "client_credentials"
         ],
         "RequireClientSecret": false,
+        "RequireHttpsMetadata": false,
         "RedirectUris": [
-          "https://localhost:3000/signin-oidc"
+          "http://localhost:3000/signin-oidc"
         ],
-        "FrontChannelLogoutUri": "https://localhost:3000/signout-oidc",
-        "BackChannelLogoutUri": "https://localhost:3000/bff/backchannel",
+        "FrontChannelLogoutUri": "http://localhost:3000/signout-oidc",
+        "BackChannelLogoutUri": "http://localhost:3000/bff/backchannel",
         "PostLogoutRedirectUris": [
-          "https://localhost:3000/signout-callback-oidc"
+          "http://localhost:3000/signout-callback-oidc"
         ],
         "AllowedCorsOrigins": [
-          "https://localhost:3000"
+          "http://localhost:3000"
         ],
         "AllowOfflineAccess": true,
         "AllowedScopes": [
@@ -140,22 +141,22 @@
       {
         "ClientId": "eiromplays_identity_admin_spa",
         "ClientName": "eiromplays_identity_admin_spa",
-        "ClientUri": "https://localhost:3001",
+        "ClientUri": "http://localhost:3001",
         "AllowedGrantTypes": [
           "authorization_code",
           "client_credentials"
         ],
         "RequireClientSecret": false,
         "RedirectUris": [
-          "https://localhost:3001/signin-oidc"
+          "http://localhost:3001/signin-oidc"
         ],
-        "FrontChannelLogoutUri": "https://localhost:3001/signout-oidc",
-        "BackChannelLogoutUri": "https://localhost:3001/bff/backchannel",
+        "FrontChannelLogoutUri": "http://localhost:3001/signout-oidc",
+        "BackChannelLogoutUri": "http://localhost:3001/bff/backchannel",
         "PostLogoutRedirectUris": [
-          "https://localhost:3001/signout-callback-oidc"
+          "http://localhost:3001/signout-callback-oidc"
         ],
         "AllowedCorsOrigins": [
-          "https://localhost:3001"
+          "http://localhost:3001"
         ],
         "AllowOfflineAccess": true,
         "AllowedScopes": [
@@ -176,13 +177,13 @@
         "RequireClientSecret": false,
         "RequirePkce": true,
         "RedirectUris": [
-          "https://localhost:7003/swagger/oauth2-redirect.html"
+          "http://api.eiromplays.local.com/swagger/oauth2-redirect.html"
         ],
         "AllowedScopes": [
           "api"
         ],
         "AllowedCorsOrigins": [
-          "https://localhost:7003"
+          "http://api.eiromplays.local.com"
         ]
       }
     ]
