@@ -5,6 +5,7 @@ using Eiromplays.IdentityServer.WebUI.Configurations;
 using Hellang.Middleware.SpaFallback;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.IdentityModel.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,7 +26,13 @@ builder.Services.AddAuthentication(options =>
 }).AddCookie("cookie", options =>
 {
     options.Cookie.Name = "__Host-bff";
-    options.Cookie.SameSite = SameSiteMode.Strict;
+
+    // add an instance of the patched manager to the options:
+    options.CookieManager = new ChunkingCookieManager();
+
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 }).AddOpenIdConnect("oidc", options =>
 {
     options.Authority = urlsConfiguration.IdentityServerBaseUrl;
@@ -37,7 +44,6 @@ builder.Services.AddAuthentication(options =>
     options.GetClaimsFromUserInfoEndpoint = true;
     options.MapInboundClaims = false;
     options.SaveTokens = true;
-    options.RequireHttpsMetadata = false;
 
     options.Scope.Clear();
     options.Scope.Add("openid");

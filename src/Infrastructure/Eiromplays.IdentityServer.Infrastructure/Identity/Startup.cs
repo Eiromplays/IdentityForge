@@ -6,6 +6,7 @@ using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,7 +42,7 @@ internal static class Startup
                         x.Response.Redirect(!string.IsNullOrWhiteSpace(
                             identityServerOptions.UserInteraction.LoginUrl)
                             ? identityServerOptions.UserInteraction.LoginUrl :
-                            "http://localhost:3000/auth/login");
+                            "https://localhost:3000/auth/login");
                         return Task.CompletedTask;
                     },
                     OnRedirectToLogout = x =>
@@ -49,7 +50,7 @@ internal static class Startup
                         x.Response.Redirect(!string.IsNullOrWhiteSpace(
                             identityServerOptions.UserInteraction.LogoutUrl)
                             ? identityServerOptions.UserInteraction.LogoutUrl :
-                            "http://localhost:3000/auth/logout");
+                            "https://localhost:3000/auth/logout");
                         return Task.CompletedTask;
                     }
                 };

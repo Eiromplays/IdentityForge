@@ -1,4 +1,4 @@
-namespace Eiromplays.IdentityServer.WebUI.Configurations;
+namespace Eiromplays.IdentityServer.Admin.WebUI.Configurations;
 
 public class UrlsConfiguration
 {

@@ -1,3 +1,4 @@
+using Eiromplays.IdentityServer.Admin.WebUI.Configurations;
 using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure;
 using Microsoft.AspNetCore.Authentication;
@@ -7,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddAuthorization();
 builder.Services.AddInfrastructure(builder.Configuration, builder.Environment, ProjectType.Spa);
+
+var urlsConfiguration = builder.Configuration.GetSection(nameof(UrlsConfiguration)).Get<UrlsConfiguration>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -19,7 +22,7 @@ builder.Services.AddAuthentication(options =>
     options.Cookie.SameSite = SameSiteMode.Strict;
 }).AddOpenIdConnect("oidc", options =>
 {
-    options.Authority = "http://auth.eiromplays.local.com";
+    options.Authority = urlsConfiguration.IdentityServerBaseUrl;
     options.ClientId = "eiromplays_identity_admin_spa";
     options.ClientSecret = "secret";
     options.ResponseType = "code";
@@ -74,46 +77,46 @@ app.UseAuthorization();
 
 app.MapBffManagementEndpoints();
 
-app.MapRemoteBffApiEndpoint("/users", "http://api.eiromplays.local.com/v1/users")
+app.MapRemoteBffApiEndpoint("/users", $"{urlsConfiguration.ApiBaseUrl}/v1/users")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/roles", "http://api.eiromplays.local.com/v1/roles")
+app.MapRemoteBffApiEndpoint("/roles", $"{urlsConfiguration.ApiBaseUrl}/v1/roles")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/personal", "http://api.eiromplays.local.com/v1/personal")
+app.MapRemoteBffApiEndpoint("/personal", $"{urlsConfiguration.ApiBaseUrl}/v1/personal")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/user-sessions", "http://api.eiromplays.local.com/v1/user-sessions")
+app.MapRemoteBffApiEndpoint("/user-sessions", $"{urlsConfiguration.ApiBaseUrl}/v1/user-sessions")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/server-side-sessions", "http://api.eiromplays.local.com/v1/server-side-sessions")
+app.MapRemoteBffApiEndpoint("/server-side-sessions", $"{urlsConfiguration.ApiBaseUrl}/v1/server-side-sessions")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/logs", "http://api.eiromplays.local.com/v1/logs")
+app.MapRemoteBffApiEndpoint("/logs", $"{urlsConfiguration.ApiBaseUrl}/v1/logs")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/persisted-grants", "http://api.eiromplays.local.com/v1/persisted-grants")
+app.MapRemoteBffApiEndpoint("/persisted-grants", $"{urlsConfiguration.ApiBaseUrl}/v1/persisted-grants")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/dashboard", "http://api.eiromplays.local.com/v1/dashboard")
+app.MapRemoteBffApiEndpoint("/dashboard", $"{urlsConfiguration.ApiBaseUrl}/v1/dashboard")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/clients", "http://api.eiromplays.local.com/v1/clients")
+app.MapRemoteBffApiEndpoint("/clients", $"{urlsConfiguration.ApiBaseUrl}/v1/clients")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/identity-resources", "http://api.eiromplays.local.com/v1/identity-resources")
+app.MapRemoteBffApiEndpoint("/identity-resources", $"{urlsConfiguration.ApiBaseUrl}/v1/identity-resources")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/api-scopes", "http://api.eiromplays.local.com/v1/api-scopes")
+app.MapRemoteBffApiEndpoint("/api-scopes", $"{urlsConfiguration.ApiBaseUrl}/v1/api-scopes")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/api-resources", "http://api.eiromplays.local.com/v1/api-resources")
+app.MapRemoteBffApiEndpoint("/api-resources", $"{urlsConfiguration.ApiBaseUrl}/v1/api-resources")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/products", "http://api.eiromplays.local.com/v1/products")
+app.MapRemoteBffApiEndpoint("/products", $"{urlsConfiguration.ApiBaseUrl}/v1/products")
     .RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/brands", "http://api.eiromplays.local.com/v1/brands")
+app.MapRemoteBffApiEndpoint("/brands", $"{urlsConfiguration.ApiBaseUrl}/v1/brands")
     .RequireAccessToken();
 
 app.MapFallbackToFile("index.html");

@@ -1,8 +1,8 @@
 {
   "CorsSettings": {
-    "Angular": "http://localhost:4200",
+    "Angular": "https://localhost:4200",
     "Blazor": "https://localhost:5002;https://www.mydomain.my",
-    "React": "http://localhost:3000;http://localhost:3001;http://web.eiromplays.local.com;http://admin.eiromplays.local.com",
-    "Other": "http://localhost:7003;http://api.eiromplays.local.com"
+    "React": "https://localhost:3000;https://localhost:3001;",
+    "Other": "https://localhost:7003;"
   }
 }

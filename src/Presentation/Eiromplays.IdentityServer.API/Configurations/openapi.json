@@ -16,8 +16,8 @@
     "Type": "oauth2",
     "Flows": {
       "AuthorizationCode": {
-        "AuthorizationUrl": "http://localhost:7001/connect/authorize",
-        "TokenUrl": "http://localhost:7001/connect/token",
+        "AuthorizationUrl": "https://localhost:7001/connect/authorize",
+        "TokenUrl": "https://localhost:7001/connect/token",
         "Scopes": {
           "api": "api"
         }

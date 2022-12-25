@@ -1,6 +1,6 @@
 {
   "SpaConfiguration": {
-    "IdentityServerUiBaseUrl": "http://web.eiromplays.local.com/",
-    "AdminUiBaseUrl": "http://admin.eiromplays.local.com/"
+    "IdentityServerUiBaseUrl": "https://localhost:3000/",
+    "AdminUiBaseUrl": "https://localhost:3001/"
   }
 }

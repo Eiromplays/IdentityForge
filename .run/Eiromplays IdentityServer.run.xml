@@ -4,6 +4,7 @@
     <toRun name="Admin.WebUI" type="LaunchSettings" />
     <toRun name="IdentityServer" type="LaunchSettings" />
     <toRun name="WebUI" type="LaunchSettings" />
+    <toRun name="Run Projects" type="docker-deploy" />
     <method v="2" />
   </configuration>
 </component>

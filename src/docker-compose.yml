@@ -4,39 +4,3 @@ name: eiromplays-identityserver-admin
 services:
   postgres:
     image: postgres:14.4-alpine
-
-  nginx-proxy:
-    image: jwilder/nginx-proxy
-
-  identityserver:
-    build:
-      context: .
-      dockerfile: Presentation/Eiromplays.IdentityServer/Dockerfile
-    depends_on:
-      - postgres
-
-  api:
-    build:
-      context: .
-      dockerfile: Presentation/Eiromplays.IdentityServer.API/Dockerfile
-    depends_on:
-      - postgres
-      - identityserver
-
-  admin-ui:
-    build:
-        context: .
-        dockerfile: Presentation/Eiromplays.IdentityServer.Admin.WebUI/Dockerfile
-    depends_on:
-        - postgres
-        - identityserver
-        - api
-
-  web-ui:
-    build:
-      context: .
-      dockerfile: Presentation/Eiromplays.IdentityServer.WebUI/Dockerfile
-    depends_on:
-      - postgres
-      - identityserver
-      - api

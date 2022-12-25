@@ -14,7 +14,7 @@
     <IsPackable>false</IsPackable>
     <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
-    <SpaProxyServerUrl>http://localhost:3000</SpaProxyServerUrl>
+    <SpaProxyServerUrl>https://localhost:3000</SpaProxyServerUrl>
     <SpaProxyLaunchCommand>yarn start</SpaProxyLaunchCommand>
   </PropertyGroup>
 
@@ -52,6 +52,18 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Infrastructure\Migrators.PostgreSql\Migrators.PostgreSql.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.AspNetCore.Authentication.Cookies">
+      <HintPath>..\..\..\..\..\..\.nuget\packages\microsoft.aspnetcore.app.ref\6.0.11\ref\net6.0\Microsoft.AspNetCore.Authentication.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Http.Abstractions">
+      <HintPath>..\..\..\..\..\..\.nuget\packages\microsoft.aspnetcore.app.ref\6.0.11\ref\net6.0\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Http.Features">
+      <HintPath>..\..\..\..\..\..\.nuget\packages\microsoft.aspnetcore.app.ref\6.0.11\ref\net6.0\Microsoft.AspNetCore.Http.Features.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

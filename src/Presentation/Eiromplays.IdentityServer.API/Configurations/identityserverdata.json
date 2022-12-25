@@ -99,22 +99,22 @@
       {
         "ClientId": "eiromplays_identity_spa",
         "ClientName": "eiromplays_identity_spa",
-        "ClientUri": "http://localhost:3000",
+        "ClientUri": "https://localhost:3000",
         "AllowedGrantTypes": [
           "authorization_code",
           "client_credentials"
         ],
         "RequireClientSecret": false,
         "RedirectUris": [
-          "http://localhost:3000/signin-oidc"
+          "https://localhost:3000/signin-oidc"
         ],
-        "FrontChannelLogoutUri": "http://localhost:3000/signout-oidc",
-        "BackChannelLogoutUri": "http://localhost:3000/bff/backchannel",
+        "FrontChannelLogoutUri": "https://localhost:3000/signout-oidc",
+        "BackChannelLogoutUri": "https://localhost:3000/bff/backchannel",
         "PostLogoutRedirectUris": [
-          "http://localhost:3000/signout-callback-oidc"
+          "https://localhost:3000/signout-callback-oidc"
         ],
         "AllowedCorsOrigins": [
-          "http://localhost:3000"
+          "https://localhost:3000"
         ],
         "AllowOfflineAccess": true,
         "AllowedScopes": [
@@ -129,22 +129,22 @@
       {
         "ClientId": "eiromplays_identity_admin_spa",
         "ClientName": "eiromplays_identity_admin_spa",
-        "ClientUri": "http://localhost:3001",
+        "ClientUri": "https://localhost:3001",
         "AllowedGrantTypes": [
           "authorization_code",
           "client_credentials"
         ],
         "RequireClientSecret": false,
         "RedirectUris": [
-          "http://localhost:3001/signin-oidc"
+          "https://localhost:3001/signin-oidc"
         ],
-        "FrontChannelLogoutUri": "http://localhost:3001/signout-oidc",
-        "BackChannelLogoutUri": "http://localhost:3001/bff/backchannel",
+        "FrontChannelLogoutUri": "https://localhost:3001/signout-oidc",
+        "BackChannelLogoutUri": "https://localhost:3001/bff/backchannel",
         "PostLogoutRedirectUris": [
-          "http://localhost:3001/signout-callback-oidc"
+          "https://localhost:3001/signout-callback-oidc"
         ],
         "AllowedCorsOrigins": [
-          "http://localhost:3001"
+          "https://localhost:3001"
         ],
         "AllowOfflineAccess": true,
         "AllowedScopes": [
