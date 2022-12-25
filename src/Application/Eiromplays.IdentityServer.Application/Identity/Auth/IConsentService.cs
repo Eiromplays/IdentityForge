@@ -6,7 +6,7 @@ namespace Eiromplays.IdentityServer.Application.Identity.Auth;
 
 public interface IConsentService : ITransientService
 {
-    Task<Result<ConsentResponse>> GetConsentAsync(GetConsentRequest request);
+    Task<ConsentResponse> GetConsentAsync(GetConsentRequest request);
 
-    Task<Result<ProcessConsentResponse>> ConsentAsync(ConsentRequest request, IPrincipal user);
+    Task<ProcessConsentResponse> ConsentAsync(ConsentRequest request, IPrincipal user);
 }

@@ -1,4 +1,3 @@
-using Eiromplays.IdentityServer.Application.Common.Extensions;
 using Eiromplays.IdentityServer.Application.Identity.ApiScopes;
 
 namespace Eiromplays.IdentityServer.API.Endpoints.v1.ApiScopes.Create;
@@ -26,8 +25,11 @@ public class Endpoint : Endpoint<CreateApiScopeRequest, Models.Response>
 
     public override async Task HandleAsync(CreateApiScopeRequest req, CancellationToken ct)
     {
-        await this.ResultToResponseAsync(
-            await _apiScopeService.CreateAsync(req, ct),
-            cancellationToken: ct);
+        await SendOkAsync(
+            new Models.Response
+        {
+            Message = await _apiScopeService.CreateAsync(req, ct)
+        },
+            ct);
     }
 }

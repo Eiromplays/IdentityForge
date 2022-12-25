@@ -28,7 +28,6 @@
     <PackageReference Include="FluentSms.Twilio" Version="1.0.3" />
     <PackageReference Include="FluentValidation" Version="11.2.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.2.1" />
-    <PackageReference Include="LanguageExt.Core" Version="4.2.9" />
     <PackageReference Include="libphonenumber-csharp" Version="8.12.54" />
     <PackageReference Include="Mapster" Version="7.3.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />

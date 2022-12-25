@@ -3,33 +3,29 @@ using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.TwoFactorAuthentication;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
-using LanguageExt.Common;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
 internal partial class UserService
 {
-    public async Task<Result<GetEnableAuthenticatorResponse>> GetEnableTwoFactorAsync(string? userId)
+    public async Task<GetEnableAuthenticatorResponse> GetEnableTwoFactorAsync(string? userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
-        if (user == null)
-            return new Result<GetEnableAuthenticatorResponse>(new NotFoundException("User not found"));
+        _ = user ?? throw new NotFoundException(_t["User Not Found."]);
 
         var response = new GetEnableAuthenticatorResponse();
 
         await LoadSharedKeyAndQrCodeUriAsync(user, response);
 
-        return new Result<GetEnableAuthenticatorResponse>(response);
+        return response;
     }
 
-    public async Task<Result<EnableAuthenticatorResponse>> EnableTwoFactorAsync(EnableAuthenticatorRequest req, ClaimsPrincipal claimsPrincipal)
+    public async Task<EnableAuthenticatorResponse> EnableTwoFactorAsync(EnableAuthenticatorRequest req, ClaimsPrincipal claimsPrincipal)
     {
         var user = await _userManager.GetUserAsync(claimsPrincipal);
-        if (user == null)
-        {
-            return new Result<EnableAuthenticatorResponse>(new NotFoundException("User not found"));
-        }
+
+        _ = user ?? throw new NotFoundException(_t["User Not Found."]);
 
         var validProvider = await _userManager.GetValidTwoFactorProvidersAsync(user);
 
@@ -40,7 +36,7 @@ internal partial class UserService
                                    user, req.Provider, verificationCode);
 
         if (!is2FaTokenValid)
-            return new Result<EnableAuthenticatorResponse>(new BadRequestException("Verification code is invalid"));
+            throw new BadRequestException("Verification code is invalid");
 
         var response = new EnableAuthenticatorResponse();
 
@@ -48,14 +44,14 @@ internal partial class UserService
 
         if (await _userManager.CountRecoveryCodesAsync(user) != 0)
         {
-            return new Result<EnableAuthenticatorResponse>(response);
+            return response;
         }
 
         var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
 
         response.RecoveryCodes = recoveryCodes.ToList();
 
-        return new Result<EnableAuthenticatorResponse>(response);
+        return response;
     }
 
     private async Task LoadSharedKeyAndQrCodeUriAsync(ApplicationUser user, GetEnableAuthenticatorResponse response)
@@ -94,13 +90,11 @@ internal partial class UserService
             : throw new InternalServerException(_t["An Error has occurred!", result.GetErrors(_t)]);
     }
 
-    public async Task<Result<TwoFactorAuthenticationResponse>> GetTwoFactorAuthenticationAsync(ClaimsPrincipal claimsPrincipal)
+    public async Task<TwoFactorAuthenticationResponse> GetTwoFactorAuthenticationAsync(ClaimsPrincipal claimsPrincipal)
     {
         var user = await _userManager.GetUserAsync(claimsPrincipal);
-        if (user == null)
-        {
-            return new Result<TwoFactorAuthenticationResponse>(new NotFoundException("User not found"));
-        }
+
+        _ = user ?? throw new NotFoundException(_t["User Not Found."]);
 
         var validTwoFactorProviders = await _userManager.GetValidTwoFactorProvidersAsync(user);
 

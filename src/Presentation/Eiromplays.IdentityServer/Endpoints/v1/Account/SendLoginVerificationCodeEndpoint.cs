@@ -27,8 +27,6 @@ public class SendLoginVerificationCodeEndpoint : Endpoint<SendSmsLoginCodeReques
 
     public override async Task HandleAsync(SendSmsLoginCodeRequest req, CancellationToken ct)
     {
-        await this.ResultToResponseAsync(
-            await _authService.SendLoginVerificationCodeAsync(req),
-            cancellationToken: ct);
+        await SendOkAsync(await _authService.SendLoginVerificationCodeAsync(req), ct);
     }
 }

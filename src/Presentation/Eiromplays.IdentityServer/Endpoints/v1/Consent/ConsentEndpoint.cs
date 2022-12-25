@@ -25,8 +25,6 @@ public class ConsentEndpoint : Endpoint<ConsentResponse, ProcessConsentResponse>
 
     public override async Task HandleAsync(ConsentResponse req, CancellationToken ct)
     {
-        await this.ResultToResponseAsync(
-            await _consentService.ConsentAsync(req, User),
-            cancellationToken: ct);
+        await SendOkAsync(await _consentService.ConsentAsync(req, User), ct);
     }
 }

@@ -9,7 +9,6 @@ using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Consent;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Consent;
 using Eiromplays.IdentityServer.Domain.Constants;
-using LanguageExt.Common;
 using ConsentRequest = Eiromplays.IdentityServer.Application.Identity.Auth.Requests.Consent.ConsentRequest;
 using ConsentResponse = Eiromplays.IdentityServer.Application.Identity.Auth.Responses.Consent.ConsentResponse;
 using IConsentService = Eiromplays.IdentityServer.Application.Identity.Auth.IConsentService;
@@ -23,27 +22,28 @@ public class ConsentService : IConsentService
 
     #region Methods
 
-    public async Task<Result<ConsentResponse>> GetConsentAsync(GetConsentRequest request)
+    public async Task<ConsentResponse> GetConsentAsync(GetConsentRequest request)
     {
         var consentResponse = await BuildResponseAsync(request.ReturnUrl);
 
-        return consentResponse != null ? new Result<ConsentResponse>(consentResponse) : new Result<ConsentResponse>(new InternalServerException("Failed to build consent view model"));
+        return consentResponse ?? throw new InternalServerException("Failed to build consent view model");
     }
 
-    public async Task<Result<ProcessConsentResponse>> ConsentAsync(ConsentRequest request, IPrincipal user)
+    public async Task<ProcessConsentResponse> ConsentAsync(ConsentRequest request, IPrincipal user)
     {
         var response = await ProcessConsent(request, user);
+
         if (response.IsRedirect)
         {
-            return new Result<ProcessConsentResponse>(response);
+            return response;
         }
 
         if (response.HasValidationError)
-            return new Result<ProcessConsentResponse>(new BadRequestException(response.ValidationError));
+            throw new BadRequestException(response.ValidationError);
 
         return response.ShowResponse
-            ? new Result<ProcessConsentResponse>(response)
-            : new Result<ProcessConsentResponse>(new InternalServerException("Failed to get consent response"));
+            ? response
+            : throw new InternalServerException("Failed to get consent response");
     }
 
     #endregion

@@ -83,10 +83,10 @@ public interface IUserService : ITransientService
 
     #region TwoFactorAuthentication
 
-    Task<Result<GetEnableAuthenticatorResponse>> GetEnableTwoFactorAsync(string? userId);
-    Task<Result<EnableAuthenticatorResponse>> EnableTwoFactorAsync(EnableAuthenticatorRequest req, ClaimsPrincipal claimsPrincipal);
+    Task<GetEnableAuthenticatorResponse> GetEnableTwoFactorAsync(string? userId);
+    Task<EnableAuthenticatorResponse> EnableTwoFactorAsync(EnableAuthenticatorRequest req, ClaimsPrincipal claimsPrincipal);
     Task<string> DisableTwoFactorAsync(string? userId);
-    Task<Result<TwoFactorAuthenticationResponse>> GetTwoFactorAuthenticationAsync(ClaimsPrincipal claimsPrincipal);
+    Task<TwoFactorAuthenticationResponse> GetTwoFactorAuthenticationAsync(ClaimsPrincipal claimsPrincipal);
     Task<IList<string>> GetValidTwoFactorProvidersAsync(string? userId);
 
     #endregion

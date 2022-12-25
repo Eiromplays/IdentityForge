@@ -26,17 +26,16 @@ public class GetLogoutEndpoint : Endpoint<GetLogoutRequest, GetLogoutResponse>
 
     public override async Task HandleAsync(GetLogoutRequest req, CancellationToken ct)
     {
-        await this.ResultToResponseAsync(
-            await _authService.BuildLogoutResponseAsync(req.LogoutId, AccountOptions.ShowLogoutPrompt),
-            customFunc: async response =>
-            {
-                if (!response.ShowLogoutPrompt) return false;
+        var logoutResponse = await _authService.BuildLogoutResponseAsync(req.LogoutId, AccountOptions.ShowLogoutPrompt);
 
-                await this.ResultToResponseAsync(
-                    await _authService.LogoutAsync<GetLogoutEndpoint>(new LogoutRequest { LogoutId = response.LogoutId }, HttpContext),
-                    cancellationToken: ct);
-                return true;
-            },
-            ct);
+        if (!logoutResponse.ShowLogoutPrompt)
+        {
+            await _authService.LogoutAsync<GetLogoutEndpoint>(
+                new LogoutRequest { LogoutId = logoutResponse.LogoutId },
+                HttpContext);
+            return;
+        }
+
+        await SendOkAsync(logoutResponse, ct);
     }
 }

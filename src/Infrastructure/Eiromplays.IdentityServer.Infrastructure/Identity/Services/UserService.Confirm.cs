@@ -8,7 +8,6 @@ using Eiromplays.IdentityServer.Application.Identity.Users;
 using Eiromplays.IdentityServer.Infrastructure.Common;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Models;
-using LanguageExt.Common;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 

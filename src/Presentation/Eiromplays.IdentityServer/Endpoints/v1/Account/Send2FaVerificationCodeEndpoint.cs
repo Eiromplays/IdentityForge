@@ -27,8 +27,6 @@ public class Send2FaVerificationCodeEndpoint : Endpoint<Send2FaVerificationCodeR
 
     public override async Task HandleAsync(Send2FaVerificationCodeRequest req, CancellationToken ct)
     {
-        await this.ResultToResponseAsync(
-            await _authService.Send2FaVerificationCodeAsync(req),
-            cancellationToken: ct);
+        await SendOkAsync(await _authService.Send2FaVerificationCodeAsync(req), ct);
     }
 }

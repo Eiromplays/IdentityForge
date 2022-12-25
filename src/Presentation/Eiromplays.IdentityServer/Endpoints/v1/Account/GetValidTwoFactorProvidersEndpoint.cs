@@ -1,9 +1,8 @@
-using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Identity.Auth;
 
 namespace Eiromplays.IdentityServer.Endpoints.v1.Account;
 
-public class GetValidTwoFactorProvidersEndpoint : EndpointWithoutRequest<List<string>>
+public class GetValidTwoFactorProvidersEndpoint : EndpointWithoutRequest<IList<string>>
 {
     private readonly IAuthService _authService;
 
@@ -25,8 +24,8 @@ public class GetValidTwoFactorProvidersEndpoint : EndpointWithoutRequest<List<st
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        await this.ResultToResponseAsync(
+        await SendOkAsync(
             await _authService.GetValidTwoFactorProvidersAsync(),
-            cancellationToken: ct);
+            ct);
     }
 }

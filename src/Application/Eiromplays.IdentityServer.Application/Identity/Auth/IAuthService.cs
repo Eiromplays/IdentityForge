@@ -6,30 +6,30 @@ namespace Eiromplays.IdentityServer.Application.Identity.Auth;
 
 public interface IAuthService : ITransientService
 {
-    Task<Result<GetLogoutResponse>> BuildLogoutResponseAsync(string logoutId, bool showLogoutPrompt = true);
+    Task<GetLogoutResponse> BuildLogoutResponseAsync(string logoutId, bool showLogoutPrompt = true);
 
-    Task<Result<LogoutResponse>> LogoutAsync<TEndpoint>(LogoutRequest request, HttpContext httpContext)
+    Task<LogoutResponse> LogoutAsync<TEndpoint>(LogoutRequest request, HttpContext httpContext)
         where TEndpoint : IEndpoint;
 
-    Task<Result<LoginResponse>> LoginAsync(LoginRequest request, string origin);
+    Task<LoginResponse> LoginAsync(LoginRequest request, string origin);
 
-    Task<Result<LoginResponse>> Login2FaAsync(Login2FaRequest request);
+    Task<LoginResponse> Login2FaAsync(Login2FaRequest request);
 
-    Task<Result<Send2FaVerificationCodeResponse>> Send2FaVerificationCodeAsync(
+    Task<Send2FaVerificationCodeResponse> Send2FaVerificationCodeAsync(
         Send2FaVerificationCodeRequest request);
-    Task<Result<IList<string>>> GetValidTwoFactorProvidersAsync();
+    Task<IList<string>> GetValidTwoFactorProvidersAsync();
 
-    Task<Result<AuthenticationProperties>> ExternalLoginAsync<TEndpoint>(ExternalLoginRequest request, HttpResponse rsp)
+    Task<AuthenticationProperties> ExternalLoginAsync<TEndpoint>(ExternalLoginRequest request, HttpResponse rsp)
         where TEndpoint : IEndpoint;
 
-    Task<Result<LoginResponse>> ExternalLoginCallbackAsync(
+    Task<LoginResponse> ExternalLoginCallbackAsync(
         ExternalLoginCallbackRequest request, string origin);
 
     Task LinkExternalLoginAsync<TEndpoint>(
         LinkExternalLoginRequest request, string userId, HttpResponse rsp)
         where TEndpoint : IEndpoint;
 
-    Task<Result<LoginResponse>> LinkExternalLoginCallbackAsync(string userId, HttpContext httpContext);
+    Task<LoginResponse> LinkExternalLoginCallbackAsync(string userId, HttpContext httpContext);
 
-    Task<Result<SendSmsLoginCodeResponse>> SendLoginVerificationCodeAsync(SendSmsLoginCodeRequest request);
+    Task<SendSmsLoginCodeResponse> SendLoginVerificationCodeAsync(SendSmsLoginCodeRequest request);
 }

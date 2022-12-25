@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using System.Text.Json;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Services;
 using Eiromplays.IdentityServer.Application.Common.Configurations;
@@ -16,7 +15,6 @@ using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure.Common.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using FastEndpoints;
-using LanguageExt.Common;
 using Mapster;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -82,20 +80,18 @@ public class AuthService : IAuthService
 
     #region Login
 
-    public async Task<Result<SendSmsLoginCodeResponse>> SendLoginVerificationCodeAsync(SendSmsLoginCodeRequest request)
+    public async Task<SendSmsLoginCodeResponse> SendLoginVerificationCodeAsync(SendSmsLoginCodeRequest request)
     {
         var user = await _userResolver.GetUserAsync(request.PhoneNumber);
 
         if (user is null)
         {
-            var badRequest = new BadRequestException("Invalid phone number");
-            return new Result<SendSmsLoginCodeResponse>(badRequest);
+            throw new BadRequestException("Invalid phone number");
         }
 
         if (!await _userManager.IsPhoneNumberConfirmedAsync(user))
         {
-            var badRequest = new BadRequestException("Phone number is not confirmed");
-            return new Result<SendSmsLoginCodeResponse>(badRequest);
+            throw new BadRequestException("Phone number is not confirmed");
         }
 
         string? code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, user.PhoneNumber);
@@ -106,13 +102,13 @@ public class AuthService : IAuthService
 
         _jobService.Enqueue(() => _smsService.SendAsync(smsRequest, CancellationToken.None));
 
-        return new Result<SendSmsLoginCodeResponse>(new SendSmsLoginCodeResponse
+        return new SendSmsLoginCodeResponse
         {
             Message = _t["Verification code has been sent to your phone!"]
-        });
+        };
     }
 
-    public async Task<Result<LoginResponse>> LoginAsync(LoginRequest request, string origin)
+    public async Task<LoginResponse> LoginAsync(LoginRequest request, string origin)
     {
         var response = new LoginResponse();
 
@@ -121,8 +117,7 @@ public class AuthService : IAuthService
         var user = await _userResolver.GetUserAsync(request.Login);
         if (user is null)
         {
-            var badRequest = new BadRequestException(provider is AccountProviders.Phone ? "Invalid phone number or code" : "Invalid username or password");
-            return new Result<LoginResponse>(badRequest);
+            throw new BadRequestException(provider is AccountProviders.Phone ? "Invalid phone number or code" : "Invalid username or password");
         }
 
         var loginResult = provider is AccountProviders.Email
@@ -140,13 +135,13 @@ public class AuthService : IAuthService
             {
                 response.TwoFactorReturnUrl =
                     $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/login2fa?rememberMe={request.RememberMe}&returnUrl={returnUrl}";
-                return new Result<LoginResponse>(response);
+                return response;
             }
 
             if (loginResult.IsLockedOut)
             {
                 // TODO: Option to send email to user to notify them of their account being locked
-                return new Result<LoginResponse>(response);
+                return response;
             }
 
             if (loginResult.IsNotAllowed)
@@ -154,7 +149,7 @@ public class AuthService : IAuthService
                 response.ValidReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/not-allowed";
                 response = await CheckUserVerifiedAsync(user, response, request.ReturnUrl, origin);
 
-                return new Result<LoginResponse>(response);
+                return response;
             }
 
             response.Error = provider is AccountProviders.Phone ? "Invalid phone number or code" : "Invalid username or password";
@@ -165,7 +160,7 @@ public class AuthService : IAuthService
         return response;
     }
 
-    public async Task<Result<LoginResponse>> Login2FaAsync(Login2FaRequest request)
+    public async Task<LoginResponse> Login2FaAsync(Login2FaRequest request)
     {
         var response = new LoginResponse();
 
@@ -178,7 +173,7 @@ public class AuthService : IAuthService
         var result =
             await _signInManager.TwoFactorSignInAsync(request.Provider, authenticatorCode, request.RememberMe, request.RememberMachine);
 
-        if (!result.Succeeded) return new Result<LoginResponse>(new BadRequestException("Invalid authentication code"));
+        if (!result.Succeeded) throw new BadRequestException("Invalid authentication code");
 
         response.SignInResult = result;
 
@@ -187,19 +182,19 @@ public class AuthService : IAuthService
         if (_interaction.IsValidReturnUrl(url))
             response.ValidReturnUrl = url ?? _serverUrls.BaseUrl;
 
-        return new Result<LoginResponse>(response);
+        return response;
     }
 
-    public async Task<Result<Send2FaVerificationCodeResponse>> Send2FaVerificationCodeAsync(
+    public async Task<Send2FaVerificationCodeResponse> Send2FaVerificationCodeAsync(
         Send2FaVerificationCodeRequest request)
     {
         var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
         if (user is null)
-            return new Result<Send2FaVerificationCodeResponse>(new BadRequestException("Unable to get user"));
+            throw new BadRequestException("Unable to get user");
 
         string? code = await _userManager.GenerateTwoFactorTokenAsync(user, request.Provider);
         if (string.IsNullOrWhiteSpace(code))
-            return new Result<Send2FaVerificationCodeResponse>(new InternalServerException("Unable to generate two factor code"));
+            throw new InternalServerException("Unable to generate two factor code");
 
         var message = _t[$"Your verification code is {code}"];
 
@@ -229,28 +224,28 @@ public class AuthService : IAuthService
                 break;
         }
 
-        return new Result<Send2FaVerificationCodeResponse>(new Send2FaVerificationCodeResponse
+        return new Send2FaVerificationCodeResponse
         {
             Message = string.Join(Environment.NewLine, messages)
-        });
+        };
     }
 
-    public async Task<Result<IList<string>>> GetValidTwoFactorProvidersAsync()
+    public async Task<IList<string>> GetValidTwoFactorProvidersAsync()
     {
         var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
         if (user is null)
-            return new Result<IList<string>>(new BadRequestException("Unable to get user"));
+            throw new BadRequestException("Unable to get user");
 
         var validProviders = await _userManager.GetValidTwoFactorProvidersAsync(user);
 
-        return new Result<IList<string>>(validProviders);
+        return new List<string>(validProviders);
     }
 
     #endregion
 
     #region Logout
 
-    public async Task<Result<GetLogoutResponse>> BuildLogoutResponseAsync(string logoutId, bool showLogoutPrompt = true)
+    public async Task<GetLogoutResponse> BuildLogoutResponseAsync(string logoutId, bool showLogoutPrompt = true)
         {
             var response = new GetLogoutResponse { LogoutId = logoutId, ShowLogoutPrompt = showLogoutPrompt };
 
@@ -258,7 +253,7 @@ public class AuthService : IAuthService
             {
                 // if the user is not authenticated, then just show logged out page
                 response.ShowLogoutPrompt = false;
-                return new Result<GetLogoutResponse>(response);
+                return response;
             }
 
             var context = await _interaction.GetLogoutContextAsync(logoutId);
@@ -266,14 +261,14 @@ public class AuthService : IAuthService
             // show the logout prompt. this prevents attacks where the user
             // is automatically signed out by another malicious web page.
             if (context?.ShowSignoutPrompt != false)
-                return new Result<GetLogoutResponse>(response);
+                return response;
 
             // it's safe to automatically sign-out
             response.ShowLogoutPrompt = false;
-            return new Result<GetLogoutResponse>(response);
+            return response;
         }
 
-    public async Task<Result<LogoutResponse>> LogoutAsync<TEndpoint>(LogoutRequest request, HttpContext httpContext)
+    public async Task<LogoutResponse> LogoutAsync<TEndpoint>(LogoutRequest request, HttpContext httpContext)
         where TEndpoint : IEndpoint
     {
         // build a response so the logged out page knows what to display
@@ -291,7 +286,7 @@ public class AuthService : IAuthService
         // check if we need to trigger sign-out at an upstream identity provider
         if (!response.TriggerExternalSignout)
         {
-            return new Result<LogoutResponse>(response);
+            return response;
         }
 
         // build a return URL so the upstream provider will redirect back
@@ -303,7 +298,7 @@ public class AuthService : IAuthService
         await httpContext.SignOutAsync(response.ExternalAuthenticationScheme, new AuthenticationProperties { RedirectUri = url });
 
         await httpContext.Response.CompleteAsync();
-        return new Result<LogoutResponse>(response);
+        return response;
     }
 
     private async Task<LogoutResponse> BuildLoggedOutResponseAsync(string logoutId, HttpContext httpContext, bool automaticRedirectAfterSignOut = true)
@@ -343,11 +338,11 @@ public class AuthService : IAuthService
 
     #region External Login
 
-    public async Task<Result<AuthenticationProperties>> ExternalLoginAsync<TEndpoint>(ExternalLoginRequest request, HttpResponse rsp)
+    public async Task<AuthenticationProperties> ExternalLoginAsync<TEndpoint>(ExternalLoginRequest request, HttpResponse rsp)
         where TEndpoint : IEndpoint
     {
         if (string.IsNullOrWhiteSpace(request.Provider))
-            return new Result<AuthenticationProperties>(new BadRequestException("Provider is required"));
+            throw new BadRequestException("Provider is required");
 
         var context = await _interaction.GetAuthorizationContextAsync(request.ReturnUrl);
         string? redirectUrl = _linkGenerator.GetUriByName(
@@ -361,14 +356,14 @@ public class AuthService : IAuthService
         await rsp.HttpContext.ChallengeAsync(request.Provider, properties);
         await rsp.CompleteAsync();
 
-        return new Result<AuthenticationProperties>(properties);
+        return properties;
     }
 
-    public async Task<Result<LoginResponse>> ExternalLoginCallbackAsync(
+    public async Task<LoginResponse> ExternalLoginCallbackAsync(
         ExternalLoginCallbackRequest request, string origin)
     {
         if (!string.IsNullOrWhiteSpace(request.RemoteError))
-            return new Result<LoginResponse>(new BadRequestException("Error from external provider", new List<string> { request.RemoteError }));
+            throw new BadRequestException("Error from external provider", new List<string> { request.RemoteError });
 
         var response = new LoginResponse();
 
@@ -376,7 +371,7 @@ public class AuthService : IAuthService
         if (info is null)
         {
             response.ExternalLoginReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/login";
-            return new Result<LoginResponse>(response);
+            return response;
         }
 
         // Sign in the user with this external login provider if the user already has a login.
@@ -387,28 +382,25 @@ public class AuthService : IAuthService
 
         string returnUrl = context is not null ? request.ReturnUrl : _spaConfiguration.IdentityServerUiBaseUrl;
 
-        Console.WriteLine($"Result: {JsonSerializer.Serialize(result)}");
-
         if (result.Succeeded)
         {
             response.ExternalLoginReturnUrl = returnUrl;
-            return new Result<LoginResponse>(response);
+            return response;
         }
 
         response.SignInResult = result;
         if (result.RequiresTwoFactor)
         {
             response.ExternalLoginReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/login2fa?rememberMe=true&returnUrl={request.ReturnUrl}";
-            return new Result<LoginResponse>(response);
+            return response;
         }
 
         if (result.IsLockedOut)
         {
-            // TODO: We should probably send an email to the user
-
+            // TODO: We should probably send an email to the user to notify them that their account is locked out and how to unlock it.
             response.ExternalLoginReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/lockout";
 
-            return new Result<LoginResponse>(response);
+            return response;
         }
 
         if (result.IsNotAllowed)
@@ -422,7 +414,7 @@ public class AuthService : IAuthService
                 response = await CheckUserVerifiedAsync(user, response, request.ReturnUrl, origin);
             }
 
-            return new Result<LoginResponse>(response);
+            return response;
         }
 
         // If the user does not have an account, then ask the user to create an account.
@@ -431,7 +423,7 @@ public class AuthService : IAuthService
 
         response.ExternalLoginReturnUrl =
             $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/external-login-confirmation?email={email}&username={userName}&loginProvider={info.LoginProvider}&returnUrl={returnUrl}";
-        return new Result<LoginResponse>(response);
+        return response;
     }
 
     public async Task LinkExternalLoginAsync<TEndpoint>(
@@ -451,7 +443,7 @@ public class AuthService : IAuthService
         await rsp.CompleteAsync();
     }
 
-    public async Task<Result<LoginResponse>> LinkExternalLoginCallbackAsync(string userId, HttpContext httpContext)
+    public async Task<LoginResponse> LinkExternalLoginCallbackAsync(string userId, HttpContext httpContext)
     {
         var response = new LoginResponse();
         var info = await _signInManager.GetExternalLoginInfoAsync(userId);
@@ -459,7 +451,7 @@ public class AuthService : IAuthService
         if (info is null)
         {
             response.ExternalLoginReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/login";
-            return new Result<LoginResponse>(response);
+            return response;
         }
 
         string responseMessage = await _userService.AddLoginAsync(userId, info.Adapt<UserLoginInfoDto>());
@@ -470,7 +462,7 @@ public class AuthService : IAuthService
         response.ExternalLoginReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/app/user-logins";
         response.Message = responseMessage;
 
-        return new Result<LoginResponse>(response);
+        return response;
     }
 
     #endregion
