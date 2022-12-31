@@ -246,27 +246,27 @@ public class AuthService : IAuthService
     #region Logout
 
     public async Task<GetLogoutResponse> BuildLogoutResponseAsync(string logoutId, bool showLogoutPrompt = true)
+    {
+        var response = new GetLogoutResponse { LogoutId = logoutId, ShowLogoutPrompt = showLogoutPrompt };
+
+        if (!_currentUser.IsAuthenticated())
         {
-            var response = new GetLogoutResponse { LogoutId = logoutId, ShowLogoutPrompt = showLogoutPrompt };
-
-            if (!_currentUser.IsAuthenticated())
-            {
-                // if the user is not authenticated, then just show logged out page
-                response.ShowLogoutPrompt = false;
-                return response;
-            }
-
-            var context = await _interaction.GetLogoutContextAsync(logoutId);
-
-            // show the logout prompt. this prevents attacks where the user
-            // is automatically signed out by another malicious web page.
-            if (context?.ShowSignoutPrompt != false)
-                return response;
-
-            // it's safe to automatically sign-out
+            // if the user is not authenticated, then just show logged out page
             response.ShowLogoutPrompt = false;
             return response;
         }
+
+        var context = await _interaction.GetLogoutContextAsync(logoutId);
+
+        // show the logout prompt. this prevents attacks where the user
+        // is automatically signed out by another malicious web page.
+        if (context?.ShowSignoutPrompt != false)
+            return response;
+
+        // it's safe to automatically sign-out
+        response.ShowLogoutPrompt = false;
+        return response;
+    }
 
     public async Task<LogoutResponse> LogoutAsync<TEndpoint>(LogoutRequest request, HttpContext httpContext)
         where TEndpoint : IEndpoint
@@ -302,37 +302,37 @@ public class AuthService : IAuthService
     }
 
     private async Task<LogoutResponse> BuildLoggedOutResponseAsync(string logoutId, HttpContext httpContext, bool automaticRedirectAfterSignOut = true)
+    {
+        // get context information (client name, post logout redirect URI and iframe for federated signout)
+        var logout = await _interaction.GetLogoutContextAsync(logoutId);
+
+        var vm = new LogoutResponse
         {
-            // get context information (client name, post logout redirect URI and iframe for federated signout)
-            var logout = await _interaction.GetLogoutContextAsync(logoutId);
+            AutomaticRedirectAfterSignOut = automaticRedirectAfterSignOut,
+            PostLogoutRedirectUri = logout?.PostLogoutRedirectUri,
+            ClientName = string.IsNullOrEmpty(logout?.ClientName) ? logout?.ClientId : logout.ClientName,
+            SignOutIframeUrl = logout?.SignOutIFrameUrl,
+            LogoutId = logoutId
+        };
 
-            var vm = new LogoutResponse
-            {
-                AutomaticRedirectAfterSignOut = automaticRedirectAfterSignOut,
-                PostLogoutRedirectUri = logout?.PostLogoutRedirectUri,
-                ClientName = string.IsNullOrEmpty(logout?.ClientName) ? logout?.ClientId : logout.ClientName,
-                SignOutIframeUrl = logout?.SignOutIFrameUrl,
-                LogoutId = logoutId
-            };
+        if (!_currentUser.IsAuthenticated()) return vm;
 
-            if (!_currentUser.IsAuthenticated()) return vm;
+        string? idp = _currentUser.GetIdentityProvider();
 
-            string? idp = _currentUser.GetIdentityProvider();
+        if (idp is null or Duende.IdentityServer.IdentityServerConstants.LocalIdentityProvider) return vm;
+        var authenticationHandler = await _authenticationHandlerProvider.GetHandlerAsync(httpContext, idp);
 
-            if (idp is null or Duende.IdentityServer.IdentityServerConstants.LocalIdentityProvider) return vm;
-            var authenticationHandler = await _authenticationHandlerProvider.GetHandlerAsync(httpContext, idp);
+        bool providerSupportsSignout = authenticationHandler is IAuthenticationSignOutHandler;
 
-            bool providerSupportsSignout = authenticationHandler is IAuthenticationSignOutHandler;
-
-            if (!providerSupportsSignout)
-                return vm;
-
-            vm.LogoutId ??= await _interaction.CreateLogoutContextAsync();
-
-            vm.ExternalAuthenticationScheme = idp;
-
+        if (!providerSupportsSignout)
             return vm;
-        }
+
+        vm.LogoutId ??= await _interaction.CreateLogoutContextAsync();
+
+        vm.ExternalAuthenticationScheme = idp;
+
+        return vm;
+    }
 
     #endregion
 
@@ -486,21 +486,21 @@ public class AuthService : IAuthService
             return response;
         }
 
-        if (_signInManager.Options.SignIn.RequireConfirmedPhoneNumber &&
-            !string.IsNullOrWhiteSpace(user.PhoneNumber) && !user.PhoneNumberConfirmed)
+        if (!_signInManager.Options.SignIn.RequireConfirmedPhoneNumber &&
+            (string.IsNullOrWhiteSpace(user.PhoneNumber) || user.PhoneNumberConfirmed))
         {
-            await _userService.ResendPhoneNumberVerificationAsync(
-                new ResendPhoneNumberVerificationRequest
+            return response;
+        }
+
+        await _userService.ResendPhoneNumberVerificationAsync(
+            new ResendPhoneNumberVerificationRequest
             {
                 PhoneNumber = user.PhoneNumber
             });
 
-            response.ValidReturnUrl =
-                $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/verify-phone-number?userId={user.Id}&returnUrl={returnUrl}";
-            response.ExternalLoginReturnUrl = response.ValidReturnUrl;
-
-            return response;
-        }
+        response.ValidReturnUrl =
+            $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/verify-phone-number?userId={user.Id}&returnUrl={returnUrl}";
+        response.ExternalLoginReturnUrl = response.ValidReturnUrl;
 
         return response;
     }

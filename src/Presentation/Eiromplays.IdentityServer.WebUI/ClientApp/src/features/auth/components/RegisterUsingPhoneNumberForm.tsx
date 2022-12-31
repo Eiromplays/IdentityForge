@@ -10,6 +10,7 @@ const schema = z.object({
   firstName: z.string().min(1, 'Required'),
   lastName: z.string().min(1, 'Required'),
   phoneNumber: z.string().min(1, 'Required').refine(isPossiblePhoneNumber, 'Invalid phone number'),
+  agreement: z.boolean().refine((v) => v, 'You must agree to the terms and conditions'),
 });
 
 type RegisterValues = {
@@ -19,6 +20,7 @@ type RegisterValues = {
   userName: string;
   email: string;
   phoneNumber: string;
+  agreement: boolean;
 };
 
 type RegisterUsingPhoneNumberFormProps = {
@@ -81,6 +83,12 @@ export const RegisterUsingPhoneNumberForm = ({ onSuccess }: RegisterUsingPhoneNu
                   register={register('phoneNumber')}
                 />
               }
+            />
+            <InputField
+              type="checkbox"
+              label="Agree to terms and conditions"
+              error={formState.errors['agreement']}
+              registration={register('agreement')}
             />
             <div>
               <Button isLoading={isRegistering} type="submit" className="w-full">

@@ -19,6 +19,7 @@ const schema = z
       .string()
       .nullable()
       .refine((v) => (v ? isPossiblePhoneNumber(v) : true), 'Invalid phone number'),
+    agreement: z.boolean().refine((v) => v, 'You must agree to the terms and conditions'),
   })
   .refine((data) => data.confirmPassword === data.password, {
     message: "Passwords don't match",
@@ -108,6 +109,12 @@ export const ExternalLoginConfirmationForm = ({
               label="Confirm Password"
               error={formState.errors['confirmPassword']}
               registration={register('confirmPassword')}
+            />
+            <InputField
+              type="checkbox"
+              label="Agree to terms and conditions"
+              error={formState.errors['agreement']}
+              registration={register('agreement')}
             />
             <div>
               <Button

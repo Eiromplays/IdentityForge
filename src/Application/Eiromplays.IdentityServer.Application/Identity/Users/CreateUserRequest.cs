@@ -15,5 +15,7 @@ public class CreateUserRequest
     public string ConfirmPassword { get; set; } = default!;
     public string? PhoneNumber { get; set; }
 
+    public bool Agreement { get; set; }
+
     public string ReturnUrl { get; set; } = default!;
 }

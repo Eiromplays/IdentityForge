@@ -56,5 +56,9 @@ public class CreateUserRequestValidator : Validator<CreateUserRequest>
             .NotEmpty()
             .Equal(p => p.Password)
             .When(u => u.Provider == nameof(AccountProviders.Email) || !string.IsNullOrWhiteSpace(u.ConfirmPassword));
+
+        RuleFor(p => p.Agreement)
+            .Equal(true)
+            .WithMessage(T["You must agree to the terms and conditions."]);
     }
 }
