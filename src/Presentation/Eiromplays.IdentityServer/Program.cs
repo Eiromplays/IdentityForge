@@ -17,7 +17,7 @@ try
             .ReadFrom.Configuration(builder.Configuration);
     });
 
-    builder.Services.AddInfrastructure(builder.Configuration, builder.Environment,  ProjectType.IdentityServer);
+    builder.Services.AddInfrastructure(builder.Configuration, ProjectType.IdentityServer);
 
     builder.Services.AddApplication();
 

@@ -5,7 +5,6 @@ using Eiromplays.IdentityServer.Infrastructure;
 using FluentValidation.AspNetCore;
 using Serilog;
 using Eiromplays.IdentityServer.Infrastructure.Common;
-using FluentEmail.Core;
 
 try
 {
@@ -19,7 +18,7 @@ try
 
     builder.Services.AddControllers();
 
-    builder.Services.AddInfrastructure(builder.Configuration, builder.Environment, ProjectType.Api);
+    builder.Services.AddInfrastructure(builder.Configuration, ProjectType.Api);
 
     builder.Services.AddApplication();
     builder.Services.AddAuthentication(options =>

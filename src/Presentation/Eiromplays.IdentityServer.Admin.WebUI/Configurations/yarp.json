@@ -1,0 +1,123 @@
+{
+  "ReverseProxy": {
+    "Routes": {
+      "users": {
+        "ClusterId": "api",
+        "Match": {
+          "Path": "/users/{**catch-all}"
+        },
+        "Metadata": {
+          "Duende.Bff.Yarp.TokenType": "User"
+        }
+      },
+      "roles": {
+        "ClusterId": "api",
+        "Match": {
+          "Path": "/roles/{**catch-all}"
+        },
+        "Metadata": {
+          "Duende.Bff.Yarp.TokenType": "User"
+        }
+      },
+      "personal": {
+        "ClusterId": "api",
+        "Match": {
+          "Path": "/personal/{**catch-all}"
+        },
+        "Metadata": {
+          "Duende.Bff.Yarp.TokenType": "User"
+        }
+      },
+      "user-sessions": {
+        "ClusterId": "api",
+        "Match": {
+          "Path": "/user-sessions/{**catch-all}"
+        },
+        "Metadata": {
+          "Duende.Bff.Yarp.TokenType": "User"
+        }
+      },
+      "server-side-sessions": {
+        "ClusterId": "api",
+        "Match": {
+          "Path": "/server-side-sessions/{**catch-all}"
+        },
+        "Metadata": {
+          "Duende.Bff.Yarp.TokenType": "User"
+        }
+      },
+      "logs": {
+        "ClusterId": "api",
+        "Match": {
+          "Path": "/logs/{**catch-all}"
+        },
+        "Metadata": {
+          "Duende.Bff.Yarp.TokenType": "User"
+        }
+      },
+      "persisted-grants": {
+        "ClusterId": "api",
+        "Match": {
+          "Path": "/persisted-grants/{**catch-all}"
+        },
+        "Metadata": {
+          "Duende.Bff.Yarp.TokenType": "User"
+        }
+      },
+      "dashboard": {
+        "ClusterId": "api",
+        "Match": {
+          "Path": "/dashboard/{**catch-all}"
+        },
+        "Metadata": {
+          "Duende.Bff.Yarp.TokenType": "User"
+        }
+      },
+      "clients": {
+        "ClusterId": "api",
+        "Match": {
+          "Path": "/clients/{**catch-all}"
+        },
+        "Metadata": {
+          "Duende.Bff.Yarp.TokenType": "User"
+        }
+      },
+      "identity-resources": {
+        "ClusterId": "api",
+        "Match": {
+          "Path": "/identity-resources/{**catch-all}"
+        },
+        "Metadata": {
+          "Duende.Bff.Yarp.TokenType": "User"
+        }
+      },
+      "api-scopes": {
+        "ClusterId": "api",
+        "Match": {
+          "Path": "/api-scopes/{**catch-all}"
+        },
+        "Metadata": {
+          "Duende.Bff.Yarp.TokenType": "User"
+        }
+      },
+      "api-resources": {
+        "ClusterId": "api",
+        "Match": {
+          "Path": "/api-resources/{**catch-all}"
+        },
+        "Metadata": {
+          "Duende.Bff.Yarp.TokenType": "User"
+        }
+      }
+    },
+    "Clusters": {
+      "api": {
+        "Destinations": {
+          "api": {
+            "Address": "https://localhost:7003/v1/"
+          }
+        }
+      }
+    }
+  }
+}

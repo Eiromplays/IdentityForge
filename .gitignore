@@ -338,4 +338,6 @@ ASALocalRun/
 # Ignore Logs
 src/Presentation/Eiromplays.IdentityServer/Logs/
 src/Presentation/Eiromplays.IdentityServer.API/Logs/
+src/Presentation/Eiromplays.IdentityServer.WebUI/Logs/
+src/Presentation/Eiromplays.IdentityServer.Admin.WebUI/Logs/
 **/**.[Dd]evelopment.json

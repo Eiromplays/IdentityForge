@@ -17,8 +17,8 @@
 
   <ItemGroup>
     <PackageReference Include="Ardalis.Specification" Version="6.1.0" />
-    <PackageReference Include="Duende.IdentityServer" Version="6.1.5" />
-    <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.1.5" />
+    <PackageReference Include="Duende.IdentityServer" Version="6.2.0" />
+    <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.2.0" />
     <PackageReference Include="FastEndpoints" Version="5.1.0-beta9" />
     <PackageReference Include="FluentEmail.Graph" Version="1.5.1" />
     <PackageReference Include="FluentEmail.Mailgun" Version="3.0.2" />

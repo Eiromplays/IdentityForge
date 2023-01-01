@@ -40,6 +40,9 @@
         <None Remove="$(SpaRoot)**" />
         <None Remove="Controllers\**" />
         <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+        <Content Update="Configurations\logger.json">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>

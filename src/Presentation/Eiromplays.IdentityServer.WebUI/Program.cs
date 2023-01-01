@@ -1,112 +1,102 @@
-using System.Security.Claims;
+using Duende.Bff.Yarp;
+using Eiromplays.IdentityServer.Application.Common.Configurations;
 using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure;
+using Eiromplays.IdentityServer.Infrastructure.Common;
 using Eiromplays.IdentityServer.WebUI.Configurations;
-using Hellang.Middleware.SpaFallback;
-using IdentityModel;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.IdentityModel.Logging;
+using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddSpaFallback();
-builder.Services.AddAuthorization();
-builder.Services.AddInfrastructure(builder.Configuration, builder.Environment, ProjectType.Spa);
-
-IdentityModelEventSource.ShowPII = true;
-
-var urlsConfiguration = builder.Configuration.GetSection(nameof(UrlsConfiguration)).Get<UrlsConfiguration>();
-
-builder.Services.AddAuthentication(options =>
+try
 {
-    options.DefaultScheme = "cookie";
-    options.DefaultChallengeScheme = "oidc";
-    options.DefaultSignOutScheme = "oidc";
-}).AddCookie("cookie", options =>
-{
-    options.Cookie.Name = "__Host-bff";
+    var builder = WebApplication.CreateBuilder(args);
 
-    // add an instance of the patched manager to the options:
-    options.CookieManager = new ChunkingCookieManager();
+    builder.Host.AddConfigurations();
+    builder.Host.UseSerilog((_, config) =>
+    {
+        config.WriteTo.Console()
+            .ReadFrom.Configuration(builder.Configuration);
+    });
 
-    options.Cookie.HttpOnly = true;
-    options.Cookie.SameSite = SameSiteMode.None;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-}).AddOpenIdConnect("oidc", options =>
-{
-    options.Authority = urlsConfiguration.IdentityServerBaseUrl;
-    options.ClientId = "eiromplays_identity_spa";
-    options.ClientSecret = "secret";
-    options.ResponseType = "code";
-    options.ResponseMode = "query";
+    builder.Services.AddAuthorization();
+    builder.Services.AddInfrastructure(builder.Configuration, ProjectType.Spa);
 
-    options.GetClaimsFromUserInfoEndpoint = true;
-    options.MapInboundClaims = false;
-    options.SaveTokens = true;
+    IdentityModelEventSource.ShowPII = true;
 
-    options.Scope.Clear();
-    options.Scope.Add("openid");
-    options.Scope.Add("profile");
-    options.Scope.Add("api");
-    options.Scope.Add("offline_access");
-    options.Scope.Add("roles");
-    options.Scope.Add("email");
-    options.Scope.Add("phone_number");
+    builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultScheme = "cookie";
+        options.DefaultChallengeScheme = "oidc";
+        options.DefaultSignOutScheme = "oidc";
+    }).AddCookie("cookie", options =>
+    {
+        options.Cookie.Name = "__Host-bff";
 
-    options.ClaimActions.MapJsonKey("role", "role", "role");
-    options.ClaimActions.MapJsonKey("picture", "picture", "picture");
-    options.ClaimActions.MapJsonKey("gravatar_email", "gravatar_email", "gravatar_email");
-    options.ClaimActions.MapJsonKey("updated_at", "updated_at", "updated_at");
-    options.ClaimActions.MapJsonKey("created_at", "created_at", "created_at");
-    options.ClaimActions.MapUniqueJsonKey("given_name", "given_name", "given_name");
-    options.ClaimActions.MapUniqueJsonKey("family_name", "family_name", "family_name");
-    options.ClaimActions.MapJsonKey(JwtClaimTypes.PhoneNumber, JwtClaimTypes.PhoneNumber);
-    options.ClaimActions.MapUniqueJsonKey(JwtClaimTypes.PhoneNumberVerified, JwtClaimTypes.PhoneNumberVerified, ClaimValueTypes.Boolean);
-});
+        // add an instance of the patched manager to the options:
+        options.CookieManager = new ChunkingCookieManager();
 
-var app = builder.Build();
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SameSite = SameSiteMode.None;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    }).AddOpenIdConnect("oidc", options =>
+    {
+        var spaOpenIdConnectOptionsSection = builder.Configuration.GetSection(nameof(SpaOpenIdConnectOptions));
 
-app.UseSpaFallback();
+        spaOpenIdConnectOptionsSection.Bind(options);
 
-await app.Services.InitializeDatabasesAsync();
+        var spaOpenIdConnectOptions = spaOpenIdConnectOptionsSection.Get<SpaOpenIdConnectOptions>();
+        foreach (var spaClaimAction in spaOpenIdConnectOptions.ClaimActions)
+        {
+            options.ClaimActions.Add(spaClaimAction.MapToClaimAction());
+        }
+    });
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
+    var app = builder.Build();
+
+    await app.Services.InitializeDatabasesAsync();
+
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+    }
+    else
+    {
+        app.UseExceptionHandler("/Error");
+
+        // The default HSTS0+ value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+        app.UseHsts();
+    }
+
+    app.UseDefaultFiles();
+    app.UseStaticFiles();
+
+    app.UseRouting();
+    app.UseAuthentication();
+
+    app.UseBff();
+
+    app.UseAuthorization();
+
+    app.MapBffManagementEndpoints();
+
+    app.MapBffReverseProxy(options =>
+    {
+        options.UseAntiforgeryCheck();
+    });
+
+    app.MapFallbackToFile("index.html");
+
+    app.Run();
 }
-else
+catch (Exception ex) when (!ex.GetType().Name.Equals("StopTheHostException", StringComparison.Ordinal))
 {
-    app.UseExceptionHandler("/Error");
-
-    // The default HSTS0+ value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    StaticLogger.EnsureInitialized();
+    Log.Fatal(ex, "Unhandled exception");
 }
-
-app.UseDefaultFiles();
-app.UseStaticFiles();
-
-app.UseRouting();
-app.UseAuthentication();
-
-app.UseBff();
-
-app.UseAuthorization();
-
-app.MapBffManagementEndpoints();
-
-app.MapRemoteBffApiEndpoint("/roles", $"{urlsConfiguration.ApiBaseUrl}/v1/roles")
-    .RequireAccessToken();
-
-app.MapRemoteBffApiEndpoint("/personal", $"{urlsConfiguration.ApiBaseUrl}/v1/personal")
-    .RequireAccessToken();
-
-app.MapRemoteBffApiEndpoint("/user-sessions", $"{urlsConfiguration.ApiBaseUrl}/v1/user-sessions")
-    .RequireAccessToken();
-
-app.MapRemoteBffApiEndpoint("/logs", $"{urlsConfiguration.ApiBaseUrl}/v1/logs")
-    .RequireAccessToken();
-
-app.MapFallbackToFile("index.html");
-
-app.Run();
+finally
+{
+    StaticLogger.EnsureInitialized();
+    Log.Information("Server Shutting down...");
+    Log.CloseAndFlush();
+}

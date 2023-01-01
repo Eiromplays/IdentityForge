@@ -1,0 +1,51 @@
+{
+  "ReverseProxy": {
+    "Routes": {
+      "roles": {
+        "ClusterId": "api",
+        "Match": {
+          "Path": "/roles/{**catch-all}"
+        },
+        "Metadata": {
+          "Duende.Bff.Yarp.TokenType": "User"
+        }
+      },
+      "personal": {
+        "ClusterId": "api",
+        "Match": {
+          "Path": "/personal/{**catch-all}"
+        },
+        "Metadata": {
+          "Duende.Bff.Yarp.TokenType": "User"
+        }
+      },
+      "user-sessions": {
+        "ClusterId": "api",
+        "Match": {
+          "Path": "/user-sessions/{**catch-all}"
+        },
+        "Metadata": {
+          "Duende.Bff.Yarp.TokenType": "User"
+        }
+      },
+      "logs": {
+        "ClusterId": "api",
+        "Match": {
+          "Path": "/logs/{**catch-all}"
+        },
+        "Metadata": {
+          "Duende.Bff.Yarp.TokenType": "User"
+        }
+      }
+    },
+    "Clusters": {
+      "api": {
+        "Destinations": {
+          "api": {
+            "Address": "https://localhost:7003/v1/"
+          }
+        }
+      }
+    }
+  }
+}

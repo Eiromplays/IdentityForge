@@ -26,7 +26,6 @@ using Eiromplays.IdentityServer.Infrastructure.Sms;
 using FastEndpoints;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,7 +38,7 @@ namespace Eiromplays.IdentityServer.Infrastructure;
 
 public static class Startup
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, ConfigurationManager config, IWebHostEnvironment webHostEnvironment, ProjectType projectType)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, ConfigurationManager config, ProjectType projectType)
     {
         if (projectType is ProjectType.Spa) return services.AddInfrastructureSpa(config, projectType);
 
@@ -73,14 +72,15 @@ public static class Startup
         config.AddExternalSecretProviders();
 
         var bffBuilder = services.AddBff(options => config.GetSection(nameof(BffOptions)).Bind(options));
-
         bffBuilder.AddRemoteApis();
         bffBuilder.AddBffPersistence(config, projectType);
 
+        services.AddReverseProxy()
+            .AddBffExtensions()
+            .LoadFromConfig(config.GetSection("ReverseProxy"));
+
         return services;
     }
-
-
 
     private static IServiceCollection AddHealthCheck(this IServiceCollection services) =>
         services.AddHealthChecks().Services;

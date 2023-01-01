@@ -1,0 +1,56 @@
+{
+  "SpaOpenIdConnectOptions": {
+    "Authority": "https://localhost:7001",
+    "ClientId": "eiromplays_identity_admin_spa",
+    "ClientSecret": "secret",
+    "ResponseType": "code",
+    "ResponseMode": "query",
+    "GetClaimsFromUserInfoEndpoint": true,
+    "MapInboundClaims": false,
+    "SaveTokens": true,
+    "Scope": [
+      "openid",
+      "profile",
+      "api",
+      "offline_access",
+      "roles",
+      "email"
+    ],
+    "ClaimActions": [
+      {
+        "ClaimType": "role",
+        "JsonKey": "role"
+      },
+      {
+        "ClaimType": "picture",
+        "JsonKey": "picture"
+      },
+      {
+        "ClaimType": "gravatar_email",
+        "JsonKey": "gravatar_email"
+      },
+      {
+        "ClaimType": "email",
+        "JsonKey": "email"
+      },
+      {
+        "ClaimType": "updated_at",
+        "JsonKey": "updated_at"
+      },
+      {
+        "ClaimType": "created_at",
+        "JsonKey": "created_at"
+      },
+      {
+        "ClaimType": "given_name",
+        "JsonKey": "given_name",
+        "IsUnique": true
+      },
+      {
+        "ClaimType": "family_name",
+        "JsonKey": "family_name",
+        "IsUnique": true
+      }
+    ]
+  }
+}
