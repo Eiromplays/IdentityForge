@@ -20,9 +20,9 @@ import * as z from 'zod';
 
 import { LocationGenerics } from '@/App';
 import { ApiScope, SearchApiScopeDTO } from '@/features/api-scopes';
+import MultiStepForm from '@/lib/MultiStepForm';
 
 import { CreateClientDTO, useCreateClient } from '../api/createClient';
-import { MultiStepForm } from '../components/MultiStepForm';
 
 const schema = z.object({
   enabled: z.boolean(),
@@ -115,6 +115,7 @@ export const CreateClient = () => {
           { label: 'Test 2', subLabel: 'This is just a test', icon: HiOutlinePencil },
           { label: 'Test 3', subLabel: 'Yet another test' },
           { label: 'Test 4', subLabel: 'This is just test4', icon: HiOutlinePencil },
+          { label: 'Test 5', subLabel: 'Information about you' },
         ]}
       />
       <br />

@@ -54,6 +54,9 @@
         <TypeScriptCompile Include="ClientApp\src\features\brands\api\deleteBrand.ts" />
         <TypeScriptCompile Include="ClientApp\src\features\products\api\createProduct.ts" />
         <TypeScriptCompile Include="ClientApp\src\features\products\api\deleteProduct.ts" />
+        <TypeScriptCompile Remove="ClientApp\src\lib\StepperContext.tsx" />
+        <TypeScriptCompile Remove="ClientApp\src\features\clients\components\Step.tsx" />
+        <TypeScriptCompile Remove="ClientApp\src\features\clients\components\MultiStepForm.tsx" />
     </ItemGroup>
 
     <ItemGroup>
