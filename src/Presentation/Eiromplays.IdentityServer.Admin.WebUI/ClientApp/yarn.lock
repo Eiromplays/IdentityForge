@@ -2068,6 +2068,7 @@ __metadata:
     vite-plugin-proxy-middleware: ^1.0.2
     vite-tsconfig-paths: ^3.4.1
     zod: ^3.15.1
+    zustand: ^4.2.0
   languageName: unknown
   linkType: soft
 
@@ -5257,7 +5258,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-sync-external-store@npm:^1.2.0":
+"use-sync-external-store@npm:1.2.0, use-sync-external-store@npm:^1.2.0":
   version: 1.2.0
   resolution: "use-sync-external-store@npm:1.2.0"
   peerDependencies:
@@ -5443,5 +5444,22 @@ __metadata:
   version: 3.17.3
   resolution: "zod@npm:3.17.3"
   checksum: f74b5d8a307cbed734e7a4a7f57a0c6b0a2d5062adee25e86eceaa1bec606621d6861804130f53342dec2d6e77fe9365f3a5118d55c81688f69f3de5fd3e59af
+  languageName: node
+  linkType: hard
+
+"zustand@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "zustand@npm:4.2.0"
+  dependencies:
+    use-sync-external-store: 1.2.0
+  peerDependencies:
+    immer: ">=9.0"
+    react: ">=16.8"
+  peerDependenciesMeta:
+    immer:
+      optional: true
+    react:
+      optional: true
+  checksum: 70f9c9272c7ee6534d16e23e1f273822fdf4cb17a9865db588946ed250a51e169f8b0dcaf0a8d15e866239182263c015bca644756a69314ea1da4fe61ba1b67f
   languageName: node
   linkType: hard
