@@ -1,10 +1,6 @@
 import React from 'react';
 import create from 'zustand';
 
-import Stepper, { StepperStepType } from './Stepper/Stepper';
-import { UseContextProvider } from './Stepper/StepperContext';
-import { StepperControl } from './Stepper/StepperControl';
-
 export type StepType = {
   label: string;
   subLabel?: string;
@@ -21,6 +17,8 @@ export type MultiStepFormState = {
   nextStep: (steps: StepType[]) => void;
   prevStep: (steps: StepType[]) => void;
   step: StepType;
+  formValues: Record<string, any>;
+  setFormValues: (values: Record<string, any>) => void;
 };
 
 const useMultiStepForm = create<MultiStepFormState>((set) => ({
@@ -42,15 +40,22 @@ const useMultiStepForm = create<MultiStepFormState>((set) => ({
       return state;
     }),
   step: {} as StepType,
+  formValues: {},
+  setFormValues: (values) =>
+    set((state) => ({ ...state, formValues: { ...state.formValues, ...values } })),
 }));
 
 export const MultiStepForm = ({ steps }: MultiStepFormProps) => {
   const { currentStep, nextStep, prevStep, step } = useMultiStepForm((state) => state);
 
   return (
-    <div className="mx-auto rounded-2xl bg-white pb-2 shadow-xl md:w-1/2">
-      <div className="horizontal container mt-5 ">
-        <Stepper steps={steps} currentStep={currentStep} />
+    <div className="mx-auto rounded-2xl bg-white pb-2 shadow-xl md:w-1/2 dark:bg-gray-800">
+      <div className="horizontal container mt-5">
+        <div className="mx-4 p-4 flex justify-between items-center">
+          {steps.map((step, index) => {
+            return <MultiStepFormStep key={index} step={step} index={index} />;
+          })}
+        </div>
 
         <div className="my-10 p-10 ">
           {step.component ?? <p className="text-black text-center">{step.label}</p>}
@@ -61,8 +66,8 @@ export const MultiStepForm = ({ steps }: MultiStepFormProps) => {
         <div className="container mt-4 mb-8 flex justify-around">
           <button
             onClick={() => prevStep(steps)}
-            className={`cursor-pointer rounded-xl border-2 border-slate-300 bg-white py-2 px-4 font-semibold uppercase text-slate-400 transition duration-200 ease-in-out hover:bg-slate-700 hover:text-white  ${
-              currentStep === 1 ? ' cursor-not-allowed opacity-50 ' : ''
+            className={`cursor-pointer rounded-xl border-2 border-slate-300 bg-white dark:bg-gray-900 py-2 px-4 font-semibold uppercase text-slate-400 transition duration-200 ease-in-out hover:bg-slate-700 hover:text-white  ${
+              currentStep === 1 ? ' cursor-not-allowed opacity-50' : ''
             }`}
           >
             Back
@@ -82,20 +87,27 @@ export const MultiStepForm = ({ steps }: MultiStepFormProps) => {
 };
 
 type MultiStepFormStepProps = {
-  step: StepperStepType;
-  hasNextStep: boolean;
-  nextStepIndex: number;
+  step: StepType;
+  index: number;
 };
-export const MultiStepFormStep = ({ step, hasNextStep, nextStepIndex }: MultiStepFormStepProps) => {
+export const MultiStepFormStep = ({ step, index }: MultiStepFormStepProps) => {
+  const { currentStep } = useMultiStepForm((state) => state);
+
+  const nextStepIndex = index + 1;
+  const completed = index < currentStep;
+  const highlighted = index === currentStep;
+  const hasNextStep = index < nextStepIndex - 1;
+  const selected = index <= currentStep;
+
   return (
     <div className={hasNextStep ? 'w-full flex items-center' : 'flex items-center'}>
-      <div className="relative flex flex-col items-center text-teal-600">
+      <div className="relative flex flex-col items-center text-teal-600 dark:text-teal-400">
         <div
-          className={`rounded-full transition duration-500 ease-in-out border-2 border-gray-300 h-12 w-12 flex items-center justify-center py-3  ${
-            step.selected ? 'bg-green-600 text-white font-bold border border-green-600 ' : ''
+          className={`rounded-full transition duration-500 ease-in-out border-2 border-gray-300 h-12 w-12 flex items-center justify-center py-3 dark:border-gray-400  ${
+            selected ? 'bg-green-600 text-white font-bold border border-green-600' : ''
           }`}
         >
-          {step.completed ? (
+          {completed ? (
             <span className="text-white font-bold text-xl">&#10003;</span>
           ) : (
             nextStepIndex
@@ -103,13 +115,19 @@ export const MultiStepFormStep = ({ step, hasNextStep, nextStepIndex }: MultiSte
         </div>
         <div
           className={`absolute top-0  text-center mt-16 w-32 text-xs font-medium uppercase ${
-            step.highlighted ? 'text-gray-900' : 'text-gray-400'
+            highlighted ? 'text-gray-900 dark:text-gray-400' : 'text-gray-400 dark:text-gray-200'
           }`}
         >
           {/*step.icon && <step.icon className="flex-shrink-0 mr-2 w-7 h-7" aria-hidden="true" />*/}
           {step.label}
           {step.subLabel && (
-            <div className={step.highlighted ? 'text-gray-800' : 'text-gray-300'}>
+            <div
+              className={
+                highlighted
+                  ? 'text-gray-800 text-gray-300'
+                  : 'text-gray-300 dark:text-gray-100 break-words'
+              }
+            >
               {step.subLabel}
             </div>
           )}
@@ -117,7 +135,9 @@ export const MultiStepFormStep = ({ step, hasNextStep, nextStepIndex }: MultiSte
       </div>
       <div
         className={`flex-auto border-t-2 transition duration-500 ease-in-out  ${
-          step.completed ? 'border-green-600' : 'border-gray-300 '
+          completed
+            ? 'border-green-600 dark:border-green-800'
+            : 'border-gray-300 dark:border-gray-400'
         }`}
       ></div>
     </div>

@@ -57,6 +57,8 @@
         <TypeScriptCompile Remove="ClientApp\src\lib\StepperContext.tsx" />
         <TypeScriptCompile Remove="ClientApp\src\features\clients\components\Step.tsx" />
         <TypeScriptCompile Remove="ClientApp\src\features\clients\components\MultiStepForm.tsx" />
+        <TypeScriptCompile Remove="ClientApp\src\lib\Stepper\Stepper.tsx" />
+        <TypeScriptCompile Remove="ClientApp\src\lib\Stepper\StepperContext.tsx" />
     </ItemGroup>
 
     <ItemGroup>
