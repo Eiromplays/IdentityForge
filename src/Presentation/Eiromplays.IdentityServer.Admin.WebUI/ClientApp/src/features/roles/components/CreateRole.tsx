@@ -44,12 +44,16 @@ export const CreateRole = () => {
             <>
               <InputField
                 label="Name"
-                error={formState.errors['name']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('name')}
               />
               <InputField
                 label="Description"
-                error={formState.errors['description']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('description')}
               />
             </>

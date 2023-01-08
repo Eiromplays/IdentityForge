@@ -19,6 +19,8 @@ export type CreateUserClaimDTO = {
   addUserClaimRequest: {
     type: string;
     value: string;
+    valueType?: string;
+    issuer?: string;
   };
 };
 

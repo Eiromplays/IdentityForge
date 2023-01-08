@@ -84,14 +84,18 @@ export const UpdateUserRoles = ({ id, roles }: UpdateUserRolesProps) => {
                   label={role.roleName}
                   type="checkbox"
                   registration={register(`userRoles.${index}.enabled`)}
-                  error={formState.errors.userRoles && formState.errors.userRoles[index].roleId}
+                  error={{
+                    errors: formState.errors,
+                  }}
                 />
               ))}
               <div className="mt-7">
                 <InputField
                   label="Revoke User Session(s)"
                   type="checkbox"
-                  error={formState.errors['revokeUserSessions']}
+                  error={{
+                    errors: formState.errors,
+                  }}
                   registration={register('revokeUserSessions')}
                 />
               </div>

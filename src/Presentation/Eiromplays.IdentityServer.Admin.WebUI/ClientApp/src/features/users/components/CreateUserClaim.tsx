@@ -50,22 +50,30 @@ export const CreateUserClaim = ({ id }: CreateUserClaimProps) => {
             <>
               <InputField
                 label="Type"
-                error={formState.errors['type']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('type')}
               />
               <InputField
                 label="Value"
-                error={formState.errors['value']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('value')}
               />
               <InputField
                 label="ValueType"
-                error={formState.errors['valueType']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('valueType')}
               />
               <InputField
                 label="Issuer"
-                error={formState.errors['issuer']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('issuer')}
               />
             </>

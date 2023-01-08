@@ -97,46 +97,62 @@ export const UpdateApiResource = ({ apiResourceId }: UpdateIdentityResourceProps
             <>
               <InputField
                 label="Name"
-                error={formState.errors['name']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('name')}
               />
               <InputField
                 label="DisplayName"
-                error={formState.errors['displayName']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('displayName')}
               />
               <InputField
                 label="Description"
-                error={formState.errors['description']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('description')}
               />
               <InputField
                 label="Show In Discovery Document"
                 type="checkbox"
-                error={formState.errors['showInDiscoveryDocument']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('showInDiscoveryDocument')}
               />
               <InputField
                 label="allowedAccessTokenSigningAlgorithms"
-                error={formState.errors['allowedAccessTokenSigningAlgorithms']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('allowedAccessTokenSigningAlgorithms')}
               />
               <InputField
                 label="Enabled"
                 type="checkbox"
-                error={formState.errors['enabled']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('enabled')}
               />
               <InputField
                 label="RequireResourceIndicator"
                 type="checkbox"
-                error={formState.errors['requireResourceIndicator']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('requireResourceIndicator')}
               />
               <InputField
                 label="NonEditable"
                 type="checkbox"
-                error={formState.errors['nonEditable']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('nonEditable')}
               />
             </>

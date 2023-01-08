@@ -92,46 +92,62 @@ export const UpdateClient = ({ clientId }: UpdateClientProps) => {
           {({ register, formState }) => (
             <>
               <InputField
-                  label="ClientId"
-                  error={formState.errors['clientId']}
-                  registration={register('clientId')}
+                label="ClientId"
+                error={{
+                  errors: formState.errors,
+                }}
+                registration={register('clientId')}
               />
               <InputField
                 label="ClientName"
-                error={formState.errors['clientName']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('clientName')}
               />
               <InputField
                 label="Description"
-                error={formState.errors['description']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('description')}
               />
               <InputField
                 label="Client Uri"
-                error={formState.errors['clientUri']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('clientUri')}
               />
               <InputField
                 label="Logo Uri"
-                error={formState.errors['logoUri']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('logoUri')}
               />
               <InputField
                 label="Enabled"
                 type="checkbox"
-                error={formState.errors['enabled']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('enabled')}
               />
               <InputField
                 label="Allow remember Consent"
                 type="checkbox"
-                error={formState.errors['allowRememberConsent']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('allowRememberConsent')}
               />
               <InputField
                 label="Require Consent"
                 type="checkbox"
-                error={formState.errors['requireConsent']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('requireConsent')}
               />
             </>

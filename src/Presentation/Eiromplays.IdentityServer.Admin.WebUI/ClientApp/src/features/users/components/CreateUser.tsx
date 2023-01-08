@@ -59,40 +59,55 @@ export const CreateUser = () => {
             <>
               <InputField
                 label="Username"
-                error={formState.errors['username']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('username')}
               />
               <InputField
                 label="First Name"
-                error={formState.errors['firstName']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('firstName')}
               />
               <InputField
                 label="Last Name"
-                error={formState.errors['lastName']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('lastName')}
               />
               <InputField
                 label="Email"
                 type="email"
-                error={formState.errors['email']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('email')}
               />
               <InputField
                 label="Password"
                 type="password"
-                error={formState.errors['password']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('password')}
               />
               <InputField
                 label="Confirm Password"
                 type="password"
-                error={formState.errors['confirmPassword']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('confirmPassword')}
               />
               <CustomInputField
                 label="Phone Number"
-                error={formState.errors['phoneNumber']}
+                error={{
+                  name: 'phoneNumber',
+                  errors: formState.errors,
+                }}
                 customInputField={
                   <PhoneInputWithCountry
                     className="bg-white dark:bg-gray-900 block px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm',

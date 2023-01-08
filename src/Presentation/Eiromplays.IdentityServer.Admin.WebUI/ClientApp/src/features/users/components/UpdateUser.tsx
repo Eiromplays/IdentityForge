@@ -123,27 +123,38 @@ export const UpdateUser = ({ id }: UpdateUserProps) => {
             <>
               <InputField
                 label="Username"
-                error={formState.errors['username']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('username')}
               />
               <InputField
                 label="Display Name"
-                error={formState.errors['displayName']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('displayName')}
               />
               <InputField
                 label="First Name"
-                error={formState.errors['firstName']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('firstName')}
               />
               <InputField
                 label="Last Name"
-                error={formState.errors['lastName']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('lastName')}
               />
               <CustomInputField
                 label="Phone Number"
-                error={formState.errors['phoneNumber']}
+                error={{
+                  name: 'phoneNumber',
+                  errors: formState.errors,
+                }}
                 customInputField={
                   <PhoneInputWithCountry
                     className="bg-white dark:bg-gray-900 block px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm',
@@ -158,27 +169,35 @@ export const UpdateUser = ({ id }: UpdateUserProps) => {
               <InputField
                 label="Email Address"
                 type="email"
-                error={formState.errors['email']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('email')}
               />
               <InputField
                 label="Gravatar Email Address"
                 type="email"
-                error={formState.errors['gravatarEmail']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('gravatarEmail')}
               />
               <InputField
                 label="Profile Picture"
                 type="file"
                 accept={'image/*'}
-                error={formState.errors['image']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('image')}
               />
               {userQuery.data?.profilePicture && (
                 <InputField
                   label="Delete profile picture"
                   type="checkbox"
-                  error={formState.errors['deleteCurrentImage']}
+                  error={{
+                    errors: formState.errors,
+                  }}
                   registration={register('deleteCurrentImage')}
                 />
               )}
@@ -207,37 +226,49 @@ export const UpdateUser = ({ id }: UpdateUserProps) => {
               <InputField
                 label="Revoke User Session(s)"
                 type="checkbox"
-                error={formState.errors['revokeUserSessions']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('revokeUserSessions')}
               />
               <InputField
                 label="Email Confirmed"
                 type="checkbox"
-                error={formState.errors['emailConfirmed']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('emailConfirmed')}
               />
               <InputField
                 label="Phone Number Confirmed"
                 type="checkbox"
-                error={formState.errors['phoneNumberConfirmed']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('phoneNumberConfirmed')}
               />
               <InputField
                 label="Two Factor Enabled"
                 type="checkbox"
-                error={formState.errors['twoFactorEnabled']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('twoFactorEnabled')}
               />
               <InputField
                 label="Lockout Enabled"
                 type="checkbox"
-                error={formState.errors['lockoutEnabled']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('lockoutEnabled')}
               />
               <InputField
                 label="Is Active"
                 type="checkbox"
-                error={formState.errors['isActive']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('isActive')}
               />
             </>

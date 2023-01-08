@@ -75,12 +75,16 @@ export const UpdateRoleClaim = ({ roleId, roleClaim }: UpdateRoleClaimProps) => 
             <>
               <InputField
                 label="Type"
-                error={formState.errors['type']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('type')}
               />
               <InputField
                 label="Value"
-                error={formState.errors['value']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('value')}
               />
             </>

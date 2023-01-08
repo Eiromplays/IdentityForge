@@ -10,14 +10,9 @@ import {
 } from 'eiromplays-ui';
 import { Suspense } from 'react';
 import * as React from 'react';
+import { AiOutlineTags, BiTargetLock, MdOutlineHistory, MdOutlineVerified } from 'react-icons/all';
 import {
-  AiOutlineTags,
-  BiTargetLock,
   HiOutlineHome,
-  MdOutlineHistory,
-  MdOutlineVerified,
-} from 'react-icons/all';
-import {
   HiLockClosed,
   HiOutlineDocumentText,
   HiOutlineShieldCheck,
