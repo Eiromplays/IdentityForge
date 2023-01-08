@@ -94,29 +94,40 @@ export const UpdateProfile = () => {
             <>
               <InputField
                 label="First Name"
-                error={formState.errors['firstName']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('firstName')}
               />
               <InputField
                 label="Last Name"
-                error={formState.errors['lastName']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('lastName')}
               />
               <InputField
                 label="Email Address"
                 type="email"
-                error={formState.errors['email']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('email')}
               />
               <InputField
                 label="Gravatar Email Address"
                 type="email"
-                error={formState.errors['gravatarEmail']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('gravatarEmail')}
               />
               <CustomInputField
                 label="Phone Number"
-                error={formState.errors['phoneNumber']}
+                error={{
+                  name: 'phoneNumber',
+                  errors: formState.errors,
+                }}
                 customInputField={
                   <PhoneInputWithCountry
                     className="bg-white dark:bg-gray-900 block px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm',
@@ -132,14 +143,18 @@ export const UpdateProfile = () => {
                 label="Profile Picture"
                 type="file"
                 accept={'image/*'}
-                error={formState.errors['image']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('image')}
               />
               {user?.profilePicture && (
                 <InputField
                   label="Delete profile picture"
                   type="checkbox"
-                  error={formState.errors['deleteCurrentImage']}
+                  error={{
+                    errors: formState.errors,
+                  }}
                   registration={register('deleteCurrentImage')}
                 />
               )}

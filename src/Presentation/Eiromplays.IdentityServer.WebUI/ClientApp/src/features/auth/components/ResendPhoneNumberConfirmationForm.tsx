@@ -36,7 +36,10 @@ export const ResendPhoneNumberConfirmationForm = ({
           <>
             <CustomInputField
               label="Phone Number"
-              error={formState.errors['phoneNumber']}
+              error={{
+                name: 'phoneNumber',
+                errors: formState.errors,
+              }}
               customInputField={
                 <PhoneInputWithCountry
                   className="bg-white dark:bg-gray-900 block px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm',

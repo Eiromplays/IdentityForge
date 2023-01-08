@@ -52,19 +52,25 @@ export const ChangePasswordForm = ({ onSuccess }: ChangePasswordFormProps) => {
                 <InputField
                   label="Current Password"
                   type="password"
-                  error={formState.errors['password']}
+                  error={{
+                    errors: formState.errors,
+                  }}
                   registration={register('password')}
                 />
                 <InputField
                   label="New Password"
                   type="password"
-                  error={formState.errors['newPassword']}
+                  error={{
+                    errors: formState.errors,
+                  }}
                   registration={register('newPassword')}
                 />
                 <InputField
                   label="Confirm New Password"
                   type="password"
-                  error={formState.errors['confirmNewPassword']}
+                  error={{
+                    errors: formState.errors,
+                  }}
                   registration={register('confirmNewPassword')}
                 />
                 <div className="mt-4">

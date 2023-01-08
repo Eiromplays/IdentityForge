@@ -52,14 +52,18 @@ export const ConsentForm = ({ data }: ConsentFormProps) => {
               <InputField
                 label="Description"
                 placeholder="Description or name of device"
-                error={formState.errors['description']}
+                error={{
+                  errors: formState.errors,
+                }}
                 registration={register('description')}
               />
               {data.allowRememberConsent && (
                 <InputField
                   type="checkbox"
                   label="Remember My Decision"
-                  error={formState.errors['rememberConsent']}
+                  error={{
+                    errors: formState.errors,
+                  }}
                   registration={register('rememberConsent')}
                 />
               )}

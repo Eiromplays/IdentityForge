@@ -32,7 +32,9 @@ export const ConfirmPhoneNumberForm = () => {
             <InputField
               type="number"
               label="Code"
-              error={formState.errors['code']}
+              error={{
+                errors: formState.errors,
+              }}
               registration={register('code')}
             />
             <div>

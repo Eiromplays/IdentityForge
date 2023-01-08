@@ -44,13 +44,17 @@ export const SetPasswordForm = ({ onSuccess }: ChangePasswordFormProps) => {
                 <InputField
                   label="Password"
                   type="password"
-                  error={formState.errors['password']}
+                  error={{
+                    errors: formState.errors,
+                  }}
                   registration={register('password')}
                 />
                 <InputField
                   label="Confirm Password"
                   type="password"
-                  error={formState.errors['confirmPassword']}
+                  error={{
+                    errors: formState.errors,
+                  }}
                   registration={register('confirmPassword')}
                 />
                 <div>

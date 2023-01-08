@@ -35,20 +35,26 @@ export const LoginForm = () => {
             <InputField
               label="Login / Email, Username, Phone Number or User ID"
               autoComplete="username"
-              error={formState.errors['login']}
+              error={{
+                errors: formState.errors,
+              }}
               registration={register('login')}
             />
             <InputField
               type="password"
               label="Password"
               autoComplete="current-password"
-              error={formState.errors['password']}
+              error={{
+                errors: formState.errors,
+              }}
               registration={register('password')}
             />
             <InputField
               type="checkbox"
               label="Remember me"
-              error={formState.errors['rememberMe']}
+              error={{
+                errors: formState.errors,
+              }}
               registration={register('rememberMe')}
             />
             <div>

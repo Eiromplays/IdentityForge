@@ -47,7 +47,10 @@ export const LoginWithPhoneNumberForm = () => {
           <>
             <CustomInputField
               label="Phone Number"
-              error={formState.errors['login']}
+              error={{
+                name: 'login',
+                errors: formState.errors,
+              }}
               customInputField={
                 <PhoneInputWithCountry
                   className="bg-white dark:bg-gray-900 block px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm',
@@ -64,13 +67,17 @@ export const LoginWithPhoneNumberForm = () => {
                 <InputField
                   type="number"
                   label="Code"
-                  error={formState.errors['code']}
+                  error={{
+                    errors: formState.errors,
+                  }}
                   registration={register('code')}
                 />
                 <InputField
                   type="checkbox"
                   label="Remember me"
-                  error={formState.errors['rememberMe']}
+                  error={{
+                    errors: formState.errors,
+                  }}
                   registration={register('rememberMe')}
                 />
               </>

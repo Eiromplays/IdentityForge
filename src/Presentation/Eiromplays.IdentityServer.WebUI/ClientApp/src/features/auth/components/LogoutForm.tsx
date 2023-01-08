@@ -1,8 +1,5 @@
-import { useSearch } from '@tanstack/react-location';
 import { Button, Spinner, Form, useAuth } from 'eiromplays-ui';
 import React from 'react';
-
-import { LocationGenerics } from '@/App';
 
 import { logoutUser, useLogout } from '../api/logout';
 import { LoggedOutViewModel } from '../types';

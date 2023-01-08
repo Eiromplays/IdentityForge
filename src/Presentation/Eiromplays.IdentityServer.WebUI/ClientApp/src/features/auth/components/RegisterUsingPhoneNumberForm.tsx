@@ -49,30 +49,41 @@ export const RegisterUsingPhoneNumberForm = ({ onSuccess }: RegisterUsingPhoneNu
             <InputField
               type="text"
               label="First Name"
-              error={formState.errors['firstName']}
+              error={{
+                errors: formState.errors,
+              }}
               registration={register('firstName')}
             />
             <InputField
               type="text"
               label="Last Name"
-              error={formState.errors['lastName']}
+              error={{
+                errors: formState.errors,
+              }}
               registration={register('lastName')}
             />
             <InputField
               type="text"
               label="Username"
-              error={formState.errors['userName']}
+              error={{
+                errors: formState.errors,
+              }}
               registration={register('userName')}
             />
             <InputField
               type="email"
               label="Email Address"
-              error={formState.errors['email']}
+              error={{
+                errors: formState.errors,
+              }}
               registration={register('email')}
             />
             <CustomInputField
               label="Phone Number"
-              error={formState.errors['phoneNumber']}
+              error={{
+                name: 'phoneNumber',
+                errors: formState.errors,
+              }}
               customInputField={
                 <PhoneInputWithCountry
                   className="bg-white dark:bg-gray-900 block px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm',
@@ -87,7 +98,9 @@ export const RegisterUsingPhoneNumberForm = ({ onSuccess }: RegisterUsingPhoneNu
             <InputField
               type="checkbox"
               label="Agree to terms and conditions"
-              error={formState.errors['agreement']}
+              error={{
+                errors: formState.errors,
+              }}
               registration={register('agreement')}
             />
             <div>

@@ -32,7 +32,9 @@ export const ResendEmailConfirmationForm = ({ onSuccess }: ResendEmailConfirmati
             <InputField
               type="email"
               label="Email"
-              error={formState.errors['email']}
+              error={{
+                errors: formState.errors,
+              }}
               registration={register('email')}
             />
             <div>

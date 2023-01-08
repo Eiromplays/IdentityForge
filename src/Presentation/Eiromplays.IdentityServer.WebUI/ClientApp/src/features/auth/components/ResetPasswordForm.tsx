@@ -35,13 +35,17 @@ export const ResetPasswordForm = ({ onSuccess }: ResetPasswordFormProps) => {
             <InputField
               type="email"
               label="Email"
-              error={formState.errors['email']}
+              error={{
+                errors: formState.errors,
+              }}
               registration={register('email')}
             />
             <InputField
               type="password"
               label="Password"
-              error={formState.errors['password']}
+              error={{
+                errors: formState.errors,
+              }}
               registration={register('password')}
             />
             <div>

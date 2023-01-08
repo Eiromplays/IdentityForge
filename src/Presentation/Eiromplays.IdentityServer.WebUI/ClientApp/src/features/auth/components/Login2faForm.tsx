@@ -99,13 +99,17 @@ export const Login2faForm = ({ rememberMe, returnUrl, onSuccess }: LoginFormProp
               <>
                 <InputField
                   label="Two-factor code"
-                  error={formState.errors['twoFactorCode']}
+                  error={{
+                    errors: formState.errors,
+                  }}
                   registration={register('twoFactorCode')}
                 />
                 <InputField
                   type="checkbox"
                   label="Remember"
-                  error={formState.errors['rememberMachine']}
+                  error={{
+                    errors: formState.errors,
+                  }}
                   registration={register('rememberMachine')}
                 />
                 <div>
