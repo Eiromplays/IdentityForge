@@ -7,8 +7,8 @@ export const Sessions = () => {
   return (
     <ContentLayout title="Sessions" subTitle="Below is a list of all your current sessions.">
       <div className="mt-4">
-        <BffUserSessions />
         <ServerSideSessions />
+        <BffUserSessions />
       </div>
     </ContentLayout>
   );
