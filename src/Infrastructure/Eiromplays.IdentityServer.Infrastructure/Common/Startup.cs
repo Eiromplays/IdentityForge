@@ -9,7 +9,8 @@ internal static class Startup
     internal static IServiceCollection AddServices(this IServiceCollection services, ProjectType projectType) =>
         services
             .AddServices(typeof(ITransientService), ServiceLifetime.Transient, projectType)
-            .AddServices(typeof(IScopedService), ServiceLifetime.Scoped, projectType);
+            .AddServices(typeof(IScopedService), ServiceLifetime.Scoped, projectType)
+            .AddServices(typeof(ISingletonService), ServiceLifetime.Singleton, projectType);
 
     internal static IServiceCollection AddServices(this IServiceCollection services, Type interfaceType, ServiceLifetime lifetime, ProjectType projectType)
     {
@@ -17,7 +18,7 @@ internal static class Startup
             AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(s => s.GetTypes())
                 .Where(t => interfaceType.IsAssignableFrom(t)
-                            && t.IsClass && !t.IsAbstract)
+                            && t is { IsClass: true, IsAbstract: false })
                 .Select(t => new
                 {
                     Service = t.GetInterfaces().FirstOrDefault(),
@@ -30,7 +31,7 @@ internal static class Startup
         {
             if (projectType is not ProjectType.IdentityServer)
             {
-                if (type.Service?.Name is "IAuthService" or "IConsentService") continue;
+                if (type.Service?.Name is "IAuthService" or "IConsentService" or "IApiClient") continue;
             }
 
             if (type.Implementation.Name is "CloudflareImagesStorageService") continue;

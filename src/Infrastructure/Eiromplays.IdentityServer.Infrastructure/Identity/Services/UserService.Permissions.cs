@@ -18,20 +18,24 @@ internal partial class UserService
         var permissions = new List<string>();
 
         foreach (var role in await _roleManager.Roles
-            .Where(r => userRoles.Contains(r.Name))
+            .Where(r => !string.IsNullOrWhiteSpace(r.Name) && userRoles.Contains(r.Name))
             .ToListAsync(cancellationToken))
         {
             permissions.AddRange(await _db.RoleClaims
-                .Where(rc => rc.RoleId == role.Id && rc.ClaimType == EiaClaims.Permission)
-                .Select(rc => rc.ClaimValue)
+                .Where(rc =>
+                    rc.RoleId == role.Id && rc.ClaimType == EiaClaims.Permission &&
+                    !string.IsNullOrWhiteSpace(rc.ClaimValue))
+                .Select(rc => rc.ClaimValue ?? string.Empty)
                 .ToListAsync(cancellationToken));
         }
 
         if (includeUserClaims)
         {
             permissions.AddRange(await _db.UserClaims
-                .Where(rc => rc.UserId == user.Id && rc.ClaimType == EiaClaims.Permission)
-                .Select(rc => rc.ClaimValue)
+                .Where(rc =>
+                    rc.UserId == user.Id && rc.ClaimType == EiaClaims.Permission &&
+                    !string.IsNullOrWhiteSpace(rc.ClaimValue))
+                .Select(rc => rc.ClaimValue ?? string.Empty)
                 .ToListAsync(cancellationToken));
         }
 

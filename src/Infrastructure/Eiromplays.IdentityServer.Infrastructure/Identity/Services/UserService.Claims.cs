@@ -62,7 +62,7 @@ internal partial class UserService
 
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
         var userClaim = await _db.UserClaims.FirstOrDefaultAsync(uc => uc.Id == claimId);
-        var result = await _userManager.RemoveClaimAsync(user, userClaim?.ToClaim());
+        var result = await _userManager.RemoveClaimAsync(user, userClaim?.ToClaim() ?? throw new NotFoundException(_t["Claim Not Found."]));
 
         if (!result.Succeeded)
             throw new InternalServerException(_t["Removing user claim failed"], result.GetErrors(_t));
@@ -77,7 +77,9 @@ internal partial class UserService
 
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
         var userClaim = await _db.UserClaims.FirstOrDefaultAsync(uc => uc.Id == claimId);
-        var result = await _userManager.ReplaceClaimAsync(user, userClaim?.ToClaim(), new Claim(request.Type, request.Value));
+        var result = await _userManager.ReplaceClaimAsync(user,
+            userClaim?.ToClaim() ?? throw new NotFoundException(_t["Claim Not Found."]),
+            new Claim(request.Type, request.Value));
 
         if (!result.Succeeded)
             throw new InternalServerException(_t["Updating user claim failed"], result.GetErrors(_t));

@@ -5,11 +5,15 @@ namespace Eiromplays.IdentityServer.Application.Identity.Clients;
 
 public class CreateClientRequestValidator : Validator<CreateClientRequest>
 {
-    public CreateClientRequestValidator(IClientService clientService, IStringLocalizer<CreateClientRequestValidator> T)
+    public CreateClientRequestValidator(IStringLocalizer<CreateClientRequestValidator> T)
     {
         RuleFor(p => p.ClientId)
             .NotEmpty()
-            .MustAsync(async (clientId, _) => !await clientService.ExistsWithClientIdAsync(clientId))
+            .MustAsync(async (clientId, _) =>
+            {
+                var clientService = Resolve<IClientService>();
+                return !await clientService.ExistsWithClientIdAsync(clientId);
+            })
             .WithMessage((_, clientId) => string.Format(T["Client {0} is already registered."], clientId));
 
         RuleFor(p => p.ClientName)

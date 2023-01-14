@@ -1,4 +1,3 @@
-using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Requests;
 using Eiromplays.IdentityServer.Application.Identity.Auth.Responses.TwoFactorAuthentication;
 using Eiromplays.IdentityServer.Application.Identity.Users;
@@ -22,7 +21,6 @@ public class EnableAuthenticatorEndpoint : Endpoint<EnableAuthenticatorRequest, 
             s.Summary = "Enable two factor authentication";
         });
         Version(1);
-        ScopedValidator();
     }
 
     public override async Task HandleAsync(EnableAuthenticatorRequest req, CancellationToken ct)

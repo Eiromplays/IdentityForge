@@ -62,7 +62,7 @@ internal partial class RoleService
 
         _ = role ?? throw new NotFoundException(_t["Role Not Found."]);
         var roleClaim = await _db.RoleClaims.FirstOrDefaultAsync(uc => uc.Id == claimId);
-        var result = await _roleManager.RemoveClaimAsync(role, roleClaim?.ToClaim());
+        var result = await _roleManager.RemoveClaimAsync(role, roleClaim?.ToClaim() ?? throw new NotFoundException(_t["Claim Not Found."]));
 
         if (!result.Succeeded)
             throw new InternalServerException(_t["Removing role claim failed"], result.GetErrors(_t));
@@ -77,7 +77,7 @@ internal partial class RoleService
 
         _ = role ?? throw new NotFoundException(_t["Role Not Found."]);
         var roleClaim = await _db.RoleClaims.FirstOrDefaultAsync(uc => uc.Id == claimId);
-        await _roleManager.RemoveClaimAsync(role, roleClaim?.ToClaim());
+        await _roleManager.RemoveClaimAsync(role, roleClaim?.ToClaim() ?? throw new NotFoundException(_t["Claim Not Found."]));
 
         var result = await _roleManager.AddClaimAsync(role, new Claim(request.Type, request.Value));
 

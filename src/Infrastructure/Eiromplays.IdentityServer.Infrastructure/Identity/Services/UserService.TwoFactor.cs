@@ -10,7 +10,7 @@ internal partial class UserService
 {
     public async Task<GetEnableAuthenticatorResponse> GetEnableTwoFactorAsync(string? userId)
     {
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId ?? string.Empty);
 
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
 
@@ -49,7 +49,7 @@ internal partial class UserService
 
         var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
 
-        response.RecoveryCodes = recoveryCodes.ToList();
+        response.RecoveryCodes = recoveryCodes?.ToList() ?? new List<string>();
 
         return response;
     }
@@ -62,6 +62,9 @@ internal partial class UserService
             await _userManager.ResetAuthenticatorKeyAsync(user);
             sharedKey = await _userManager.GetAuthenticatorKeyAsync(user);
         }
+
+        if (string.IsNullOrEmpty(sharedKey))
+            throw new BadRequestException(_t["Unable to load two-factor authentication information."]);
 
         response.SharedKey = sharedKey;
         if (!string.IsNullOrWhiteSpace(user.Email))
@@ -79,7 +82,7 @@ internal partial class UserService
 
     public async Task<string> DisableTwoFactorAsync(string? userId)
     {
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId ?? string.Empty);
 
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
 
@@ -112,9 +115,9 @@ internal partial class UserService
 
     public async Task<IList<string>> GetValidTwoFactorProvidersAsync(string? userId)
     {
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId ?? string.Empty);
 
-        if (user == null)
+        if (user is null)
             return new List<string>();
 
         return await _userManager.GetValidTwoFactorProvidersAsync(user);

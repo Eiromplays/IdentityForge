@@ -19,7 +19,6 @@ public class UpdateProfileEndpoint : Endpoint<UpdateProfileRequest, UpdateProfil
             s.Summary = "Update profile details of currently logged in user.";
         });
         Version(1);
-        ScopedValidator();
     }
 
     public override async Task HandleAsync(UpdateProfileRequest req, CancellationToken ct)
@@ -30,7 +29,7 @@ public class UpdateProfileEndpoint : Endpoint<UpdateProfileRequest, UpdateProfil
             return;
         }
 
-        Response = await _userService.UpdateAsync(req, userId, BaseURL, ct);
+        Response = await _userService.UpdateProfileAsync(req, userId, BaseURL, ct);
 
         await SendOkAsync(Response, cancellation: ct);
     }

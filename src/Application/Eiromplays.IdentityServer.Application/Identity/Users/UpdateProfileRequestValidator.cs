@@ -5,8 +5,11 @@ namespace Eiromplays.IdentityServer.Application.Identity.Users;
 
 public class UpdateProfileRequestValidator : Validator<UpdateProfileRequest>
 {
-    public UpdateProfileRequestValidator(IUserService userService, IOptions<IdentityOptions> identityOptions, IStringLocalizer<UpdateProfileRequestValidator> T, IValidator<FileUploadRequest?> fileUploadRequestValidator)
+    public UpdateProfileRequestValidator(IOptions<IdentityOptions> identityOptions)
     {
+        var t = Resolve<IStringLocalizer<UpdateProfileRequestValidator>>();
+        var fileUploadRequestValidator = Resolve<IValidator<FileUploadRequest?>>();
+
         RuleFor(p => p.Id)
             .NotEmpty();
 
@@ -21,10 +24,14 @@ public class UpdateProfileRequestValidator : Validator<UpdateProfileRequest>
         RuleFor(p => p.Email)
             .NotEmpty()
             .EmailAddress()
-            .WithMessage(T["Invalid Email Address."])
+            .WithMessage(t["Invalid Email Address."])
             .MustAsync(async (updateUserRequest, email, _) =>
-                !await userService.ExistsWithEmailAsync(email, updateUserRequest.Id))
-            .WithMessage((_, email) => T["Email {0} is already registered.", email])
+            {
+                var userService = Resolve<IUserService>();
+
+                return !await userService.ExistsWithEmailAsync(email, updateUserRequest.Id);
+            })
+            .WithMessage((_, email) => t["Email {0} is already registered.", email])
             .When((req, _) =>
                 !string.IsNullOrWhiteSpace(req.Email) || identityOptions.Value.SignIn.RequireConfirmedEmail);
 
@@ -33,10 +40,14 @@ public class UpdateProfileRequestValidator : Validator<UpdateProfileRequest>
 
         var phoneNumberUtil = PhoneNumbers.PhoneNumberUtil.GetInstance();
         RuleFor(u => u.PhoneNumber).Cascade(CascadeMode.Stop)
-            .MustAsync(async (updateUserRequest, phone, _) => !await userService.ExistsWithPhoneNumberAsync(phone!, updateUserRequest.Id))
-            .WithMessage((_, phone) => T["Phone number {0} is already registered.", phone!])
+            .MustAsync(async (updateUserRequest, phone, _) =>
+            {
+                var userService = Resolve<IUserService>();
+                return !await userService.ExistsWithPhoneNumberAsync(phone!, updateUserRequest.Id);
+            })
+            .WithMessage((_, phone) => t["Phone number {0} is already registered.", phone!])
             .Must(phoneNumber => phoneNumberUtil.IsValidNumber(phoneNumberUtil.Parse(phoneNumber, null)))
-            .WithMessage(T["Invalid Phone Number."])
+            .WithMessage(t["Invalid Phone Number."])
             .Unless(u =>
                 string.IsNullOrWhiteSpace(u.PhoneNumber) && !identityOptions.Value.SignIn.RequireConfirmedPhoneNumber)
             .NotEmpty()

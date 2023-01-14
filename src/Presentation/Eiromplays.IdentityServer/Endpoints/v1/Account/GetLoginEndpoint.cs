@@ -14,12 +14,18 @@ public class GetLoginEndpoint : Endpoint<GetLoginRequest, GetLoginResponse>
     private readonly IIdentityServerInteractionService _interaction;
     private readonly IAuthenticationSchemeProvider _schemeProvider;
     private readonly IClientStore _clientStore;
+    private readonly IIdentityProviderStore _identityProvider;
 
-    public GetLoginEndpoint(IIdentityServerInteractionService interaction, IAuthenticationSchemeProvider schemeProvider, IClientStore clientStore)
+    public GetLoginEndpoint(
+        IIdentityServerInteractionService interaction,
+        IAuthenticationSchemeProvider schemeProvider,
+        IClientStore clientStore,
+        IIdentityProviderStore identityProvider)
     {
         _interaction = interaction;
         _schemeProvider = schemeProvider;
         _clientStore = clientStore;
+        _identityProvider = identityProvider;
     }
 
     public override void Configure()
@@ -44,7 +50,7 @@ public class GetLoginEndpoint : Endpoint<GetLoginRequest, GetLoginResponse>
     {
         var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
 
-        if (context?.IdP != null && await _schemeProvider.GetSchemeAsync(context.IdP) != null)
+        if (context?.IdP is not null && await _schemeProvider.GetSchemeAsync(context.IdP) is not null)
         {
             bool local = context.IdP == IdentityServerConstants.LocalIdentityProvider;
 
@@ -74,6 +80,16 @@ public class GetLoginEndpoint : Endpoint<GetLoginRequest, GetLoginResponse>
                 AuthenticationScheme = x.Name
             }).ToList();
 
+        var dynamicSchemes = (await _identityProvider.GetAllSchemeNamesAsync())
+            .Where(x => x.Enabled)
+            .Select(x => new ExternalProvider
+            {
+                DisplayName = x.DisplayName,
+                AuthenticationScheme = x.Scheme
+            });
+
+        providers.AddRange(dynamicSchemes);
+
         bool allowLocal = true;
         if (context?.Client.ClientId is null)
         {
@@ -88,23 +104,16 @@ public class GetLoginEndpoint : Endpoint<GetLoginRequest, GetLoginResponse>
         }
 
         var client = await _clientStore.FindEnabledClientByIdAsync(context.Client.ClientId);
-        if (client is null)
+
+        if (client is not null)
         {
-            return new GetLoginResponse
+            allowLocal = client.EnableLocalLogin;
+
+            if (client.IdentityProviderRestrictions?.Any() == true)
             {
-                AllowRememberLogin = AccountOptions.AllowRememberLogin,
-                EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
-                ReturnUrl = returnUrl,
-                Login = context.LoginHint,
-                ExternalProviders = providers.ToArray()
-            };
-        }
-
-        allowLocal = client.EnableLocalLogin;
-
-        if (client.IdentityProviderRestrictions is not null && client.IdentityProviderRestrictions.Any())
-        {
-            providers = providers.Where(provider => client.IdentityProviderRestrictions.Contains(provider.AuthenticationScheme)).ToList();
+                providers = providers.Where(provider =>
+                    client.IdentityProviderRestrictions.Contains(provider.AuthenticationScheme)).ToList();
+            }
         }
 
         return new GetLoginResponse

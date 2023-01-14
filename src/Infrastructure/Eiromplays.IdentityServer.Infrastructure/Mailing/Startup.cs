@@ -13,6 +13,11 @@ internal static class Startup
     internal static IServiceCollection AddMailing(this IServiceCollection services, IConfiguration configuration)
     {
         var emailConfiguration = configuration.GetSection(nameof(EmailConfiguration)).Get<EmailConfiguration>();
+        if (emailConfiguration is null)
+        {
+            return services;
+        }
+
         var fluentEmailServicesBuilder = services
             .AddFluentEmail(emailConfiguration.From, emailConfiguration.DefaultFromName)
             .AddRazorRenderer();
@@ -47,9 +52,9 @@ internal static class Startup
                 return emailConfiguration.MailgunConfiguration is null
                     ? services
                     : fluentEmailServicesBuilder.AddMailGunSender(
-                        emailConfiguration.MailgunConfiguration.DomainName,
-                        emailConfiguration.MailgunConfiguration.ApiKey,
-                        emailConfiguration.MailgunConfiguration.Region)
+                            emailConfiguration.MailgunConfiguration.DomainName,
+                            emailConfiguration.MailgunConfiguration.ApiKey,
+                            emailConfiguration.MailgunConfiguration.Region)
                         .Services;
             case EmailProvider.Mailtrap:
                 return emailConfiguration.MailtrapConfiguration is null

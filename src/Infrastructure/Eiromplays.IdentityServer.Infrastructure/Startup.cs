@@ -31,6 +31,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Azure.Identity;
 using Eiromplays.IdentityServer.Application.Common;
+using Eiromplays.IdentityServer.Infrastructure.HttpClients;
+using Eiromplays.IdentityServer.Infrastructure.Persistence.Context;
+using Microsoft.AspNetCore.DataProtection;
 
 [assembly: InternalsVisibleTo("Infrastructure.Test")]
 
@@ -57,11 +60,14 @@ public static class Startup
             .AddNotifications(config)
             .AddOpenApiDocumentation(config)
             .AddPersistence(config, projectType)
-            .AddDataProtection().Services
+            .AddDataProtection()
+            .PersistKeysToDbContext<ApplicationDbContext>()
+            .Services
             .AddAuth(config, projectType)
             .AddRequestLogging(config)
             .AddRouting(options => options.LowercaseUrls = true)
             .AddServices(projectType)
+            .AddHttpClients(projectType)
             .AddCloudflareImagesStorageService(config);
     }
 

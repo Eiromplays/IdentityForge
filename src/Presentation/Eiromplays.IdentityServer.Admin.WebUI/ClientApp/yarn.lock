@@ -741,6 +741,13 @@
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.5.tgz#5f19d2b85a98e9558036f6a3cacc8819420f05cf"
   integrity sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==
 
+"@types/react-avatar-editor@^13.0.0":
+  version "13.0.0"
+  resolved "https://registry.yarnpkg.com/@types/react-avatar-editor/-/react-avatar-editor-13.0.0.tgz#5963e16c931746c47e478d669dd72d388b427393"
+  integrity sha512-5ymOayy6mfT35xTqzni7UjXvCNEg8/pH4pI5RenITp9PBc02KGTYjSV1WboXiQDYSh5KomLT0ngBLEAIhV1QoQ==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-dom@^18.0.3":
   version "18.0.10"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.0.10.tgz#3b66dec56aa0f16a6cc26da9e9ca96c35c0b4352"
@@ -1387,10 +1394,10 @@ dompurify@^2.3.6:
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.4.3.tgz#f4133af0e6a50297fc8874e2eaedc13a3c308c03"
   integrity sha512-q6QaLcakcRjebxjg8/+NP+h0rPfatOgOzc46Fst9VAA3jF2ApfKBNKMzdP4DYTqtUMXSCd5pRS/8Po/OmoCHZQ==
 
-eiromplays-ui@^1.6.9-3:
-  version "1.6.9-3"
-  resolved "https://registry.yarnpkg.com/eiromplays-ui/-/eiromplays-ui-1.6.9-3.tgz#39dd072d311910c4e75fd6350d5468397c8ac4e6"
-  integrity sha512-LIL+rEH5+jkYJm1UKZ9EcC91tYT3TIp7TLnBEjdg56tWLid4nwODJFSolhj9SSfxdwriQCNSPNBFqd8ooIsyXw==
+eiromplays-ui@^1.6.9-6:
+  version "1.6.9-6"
+  resolved "https://registry.yarnpkg.com/eiromplays-ui/-/eiromplays-ui-1.6.9-6.tgz#385fe29c5112cd3aaa9d2e9071a6469b0dbd913c"
+  integrity sha512-IfLvhAoagVfrf9Ad+mHmdd7jk1diVsG3nB9Z03iBpE4Zbr/TQMP4UlopdmbfNLGb57YCF8nrrK27nV7ZRXl9/g==
   dependencies:
     "@hookform/error-message" "^2.0.1"
     "@tanstack/react-location" "^3.7.4"

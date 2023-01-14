@@ -10,6 +10,11 @@ internal static class Startup
     {
         var settings = config.GetSection(nameof(CacheSettings)).Get<CacheSettings>();
 
+        if (settings is null)
+        {
+            throw new ArgumentNullException(nameof(settings));
+        }
+
         if (settings.UseDistributedCache)
         {
             if (settings.PreferRedis)

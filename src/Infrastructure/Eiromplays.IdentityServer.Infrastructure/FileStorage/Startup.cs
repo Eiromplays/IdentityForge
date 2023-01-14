@@ -14,7 +14,7 @@ internal static class Startup
     {
         var cloudflareConfiguration = configuration.GetSection(nameof(CloudflareConfiguration)).Get<CloudflareConfiguration>();
 
-        if (!cloudflareConfiguration.Enabled)
+        if (cloudflareConfiguration?.Enabled == false)
             return services;
 
         var descriptorToRemove = services.FirstOrDefault(s => s.ServiceType == typeof(IFileStorageService));

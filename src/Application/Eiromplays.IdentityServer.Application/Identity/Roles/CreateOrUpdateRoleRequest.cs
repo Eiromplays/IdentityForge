@@ -9,9 +9,15 @@ public class CreateOrUpdateRoleRequest
 
 public class CreateOrUpdateRoleRequestValidator : Validator<CreateOrUpdateRoleRequest>
 {
-    public CreateOrUpdateRoleRequestValidator(IRoleService roleService, IStringLocalizer<CreateOrUpdateRoleRequestValidator> T) =>
+    public CreateOrUpdateRoleRequestValidator(IStringLocalizer<CreateOrUpdateRoleRequestValidator> T)
+    {
         RuleFor(r => r.Name)
             .NotEmpty()
-            .MustAsync(async (role, name, _) => !await roleService.ExistsAsync(name, role.Id))
-                .WithMessage(T["Similar Role already exists."]);
+            .MustAsync(async (role, name, _) =>
+            {
+                var roleService = Resolve<IRoleService>();
+                return !await roleService.ExistsAsync(name, role.Id);
+            })
+            .WithMessage(T["Similar Role already exists."]);
+    }
 }

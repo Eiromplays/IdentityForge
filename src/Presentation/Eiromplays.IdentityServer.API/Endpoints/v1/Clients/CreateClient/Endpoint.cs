@@ -20,7 +20,6 @@ public class Endpoint : Endpoint<CreateClientRequest, Models.Response>
         });
         Version(1);
         Policies(EiaPermission.NameFor(EiaAction.Create, EiaResource.Clients));
-        ScopedValidator();
     }
 
     public override async Task HandleAsync(CreateClientRequest req, CancellationToken ct)

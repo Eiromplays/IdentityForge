@@ -24,7 +24,7 @@ internal partial class UserService
                 RoleId = role.Id,
                 RoleName = role.Name,
                 Description = role.Description,
-                Enabled = await _userManager.IsInRoleAsync(user, role.Name)
+                Enabled = await _userManager.IsInRoleAsync(user, role.Name ?? string.Empty)
             });
         }
 
@@ -55,21 +55,21 @@ internal partial class UserService
             }
         }
 
-        foreach (var userRole in request.UserRoles)
+        foreach (var userRole in request.UserRoles.Where(userRole => !string.IsNullOrWhiteSpace(userRole.RoleName)))
         {
             // Check if Role Exists
-            if (await _roleManager.FindByNameAsync(userRole.RoleName) is null) continue;
+            if (await _roleManager.FindByNameAsync(userRole.RoleName!) is null) continue;
 
             if (userRole.Enabled)
             {
-                if (!await _userManager.IsInRoleAsync(user, userRole.RoleName))
+                if (!await _userManager.IsInRoleAsync(user, userRole.RoleName!))
                 {
-                    await _userManager.AddToRoleAsync(user, userRole.RoleName);
+                    await _userManager.AddToRoleAsync(user, userRole.RoleName!);
                 }
             }
             else
             {
-                await _userManager.RemoveFromRoleAsync(user, userRole.RoleName);
+                await _userManager.RemoveFromRoleAsync(user, userRole.RoleName!);
             }
         }
 

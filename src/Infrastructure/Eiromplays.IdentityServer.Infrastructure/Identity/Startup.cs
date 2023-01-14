@@ -145,6 +145,11 @@ internal static class Startup
         var externalProviderConfiguration = configuration.GetSection(nameof(ExternalProvidersConfiguration))
             .Get<ExternalProvidersConfiguration>();
 
+        if (externalProviderConfiguration is null)
+        {
+            return authenticationBuilder.Services;
+        }
+
         if (externalProviderConfiguration.UseGoogleProvider &&
             !string.IsNullOrWhiteSpace(externalProviderConfiguration.GoogleClientId) &&
             !string.IsNullOrWhiteSpace(externalProviderConfiguration.GoogleClientSecret))

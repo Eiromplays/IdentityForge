@@ -17,10 +17,17 @@ internal static class Startup
     internal static IServiceCollection AddOpenApiDocumentation(this IServiceCollection services, IConfiguration config)
     {
         var settings = config.GetSection(nameof(SwaggerSettings)).Get<SwaggerSettings>();
+
+        if (settings is null)
+        {
+            throw new ArgumentNullException(nameof(settings));
+        }
+
         if (!settings.Enable) return services;
 
         services
-            .AddSwaggerDoc(maxEndpointVersion: 1, settings: s =>
+            .AddSwaggerDoc(
+                settings: s =>
             {
                 s.PostProcess = doc =>
                     {
@@ -58,7 +65,8 @@ internal static class Startup
                 /*var fluentValidationSchemaProcessor = services.BuildServiceProvider().CreateScope().ServiceProvider.GetService<FluentValidationSchemaProcessor>();
                 Console.WriteLine(fluentValidationSchemaProcessor != null);
                 s.SchemaProcessors.Add(fluentValidationSchemaProcessor);*/
-            });
+            },
+                maxEndpointVersion: 1);
 
         // services.AddScoped<FluentValidationSchemaProcessor>();
 
@@ -82,7 +90,7 @@ internal static class Startup
                     TokenUrl = config["SecuritySettings:Swagger:TokenUrl"],
                     Scopes = new Dictionary<string, string>
                     {
-                        { config["SecuritySettings:Swagger:ApiScope"], "access the api" }
+                        { config["SecuritySettings:Swagger:ApiScope"] ?? string.Empty, "access the api" }
                     }
                 }
             }
@@ -93,6 +101,11 @@ internal static class Startup
     internal static IApplicationBuilder UseOpenApiDocumentation(this IApplicationBuilder app, IConfiguration config)
     {
         var settings = config.GetSection(nameof(SwaggerSettings)).Get<SwaggerSettings>();
+
+        if (settings is null)
+        {
+            throw new ArgumentNullException(nameof(settings));
+        }
 
         if (!settings.Enable) return app;
 

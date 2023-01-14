@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Models.Request, IdentityResourceDto>
             s.Summary = "Get IdentityResource details.";
         });
         Version(1);
-        Policies(EiaPermission.NameFor(EiaAction.View, EiaResource.ApiScopes));
+        Policies(EiaPermission.NameFor(EiaAction.View, EiaResource.IdentityResources));
     }
 
     public override async Task HandleAsync(Models.Request request, CancellationToken ct)

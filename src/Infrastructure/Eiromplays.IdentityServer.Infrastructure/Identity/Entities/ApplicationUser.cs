@@ -16,7 +16,7 @@ public class ApplicationUser : IdentityUser, IAuditableEntity
     public string? DisplayName { get; set; }
 
     [ProtectedPersonalData]
-    public override string Email { get; set; } = default!;
+    public override string? Email { get; set; }
 
     [PersonalData]
     public string? ProfilePicture { get; set; }
@@ -29,8 +29,6 @@ public class ApplicationUser : IdentityUser, IAuditableEntity
 
     public string? LastModifiedBy { get; set; }
     public DateTime? LastModifiedOn { get; set; }
-
-    public string? ObjectId { get; set; }
 
     public ApplicationUser()
     {

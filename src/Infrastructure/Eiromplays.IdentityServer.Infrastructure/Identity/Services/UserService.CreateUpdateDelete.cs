@@ -1,109 +1,18 @@
-﻿using System.Security.Claims;
-using Duende.IdentityServer.Extensions;
-using Eiromplays.IdentityServer.Application.Common.Exceptions;
+﻿using Eiromplays.IdentityServer.Application.Common.Exceptions;
+using Eiromplays.IdentityServer.Application.Common.Interfaces;
 using Eiromplays.IdentityServer.Application.Identity.Users;
+using Eiromplays.IdentityServer.Application.Identity.Users.ProfilePicture;
 using Eiromplays.IdentityServer.Domain.Common;
 using Eiromplays.IdentityServer.Domain.Identity;
 using Eiromplays.IdentityServer.Infrastructure.Common.Extensions;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Shared.Authorization;
-using ClaimsPrincipalExtensions = Microsoft.Identity.Web.ClaimsPrincipalExtensions;
 
 namespace Eiromplays.IdentityServer.Infrastructure.Identity.Services;
 
 internal partial class UserService
 {
-    /// <summary>
-    /// This is used when authenticating with AzureAd.
-    /// The local user is retrieved using the objectidentifier claim present in the ClaimsPrincipal.
-    /// If no such claim is found, an InternalServerException is thrown.
-    /// If no user is found with that ObjectId, a new one is created and populated with the values from the ClaimsPrincipal.
-    /// If a role claim is present in the principal, and the user is not yet in that role, then the user is added to that role.
-    /// </summary>
-    public async Task<string> GetOrCreateFromPrincipalAsync(ClaimsPrincipal principal)
-    {
-        string? objectId = ClaimsPrincipalExtensions.GetObjectId(principal);
-        if (string.IsNullOrWhiteSpace(objectId))
-        {
-            throw new InternalServerException(_t["Invalid objectId"]);
-        }
-
-        var user = await _userManager.Users.Where(u => u.ObjectId == objectId).FirstOrDefaultAsync()
-            ?? await CreateOrUpdateFromPrincipalAsync(principal);
-
-        if (principal.FindFirstValue(ClaimTypes.Role) is { } role &&
-            await _roleManager.RoleExistsAsync(role) &&
-            !await _userManager.IsInRoleAsync(user, role))
-        {
-            await _userManager.AddToRoleAsync(user, role);
-        }
-
-        return user.Id;
-    }
-
-    private async Task<ApplicationUser> CreateOrUpdateFromPrincipalAsync(ClaimsPrincipal principal)
-    {
-        string? email = principal.FindFirstValue(ClaimTypes.Upn);
-        string? username = principal.GetDisplayName();
-
-        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(username))
-        {
-            throw new InternalServerException(string.Format(_t["Username or Email not valid."]));
-        }
-
-        var user = await _userManager.FindByNameAsync(username);
-        if (user is not null && !string.IsNullOrWhiteSpace(user.ObjectId))
-        {
-            throw new InternalServerException(string.Format(_t["Username {0} is already taken."], username));
-        }
-
-        if (user is null)
-        {
-            user = await _userManager.FindByEmailAsync(email);
-            if (user is not null && !string.IsNullOrWhiteSpace(user.ObjectId))
-            {
-                throw new InternalServerException(string.Format(_t["Email {0} is already taken."], email));
-            }
-        }
-
-        IdentityResult? result;
-        if (user is not null)
-        {
-            user.ObjectId = ClaimsPrincipalExtensions.GetObjectId(principal);
-            result = await _userManager.UpdateAsync(user);
-
-            await _events.PublishAsync(new ApplicationUserUpdatedEvent(user.Id));
-        }
-        else
-        {
-            user = new ApplicationUser
-            {
-                ObjectId = ClaimsPrincipalExtensions.GetObjectId(principal),
-                FirstName = principal.FindFirstValue(ClaimTypes.GivenName),
-                LastName = principal.FindFirstValue(ClaimTypes.Surname),
-                Email = email,
-                NormalizedEmail = email.ToUpperInvariant(),
-                UserName = username,
-                NormalizedUserName = username.ToUpperInvariant(),
-                EmailConfirmed = true,
-                PhoneNumberConfirmed = true,
-                IsActive = true
-            };
-            result = await _userManager.CreateAsync(user);
-
-            await _events.PublishAsync(new ApplicationUserCreatedEvent(user.Id));
-        }
-
-        if (!result.Succeeded)
-        {
-            throw new InternalServerException(_t["Validation Errors Occurred."], result.GetErrors(_t));
-        }
-
-        return user;
-    }
-
     public async Task<CreateUserResponse> CreateAsync(CreateUserRequest request, string origin)
     {
         if (_accountConfiguration.RegisterConfiguration is { Enabled: false }) throw new InternalServerException(_t["Registration is disabled."]);
@@ -163,24 +72,8 @@ internal partial class UserService
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
 
         string currentImage = user.ProfilePicture ?? string.Empty;
-        if (request.Image is not null || request.DeleteCurrentImage)
-        {
-            user.ProfilePicture =
-                await _fileStorage.UploadAsync<ApplicationUser>(request.Image, FileType.ProfilePicture, cancellationToken);
-
-            if (request.DeleteCurrentImage && !string.IsNullOrEmpty(currentImage))
-            {
-                if (currentImage.IsValidUri())
-                {
-                    await _fileStorage.RemoveAsync(currentImage, cancellationToken);
-                }
-                else
-                {
-                    string root = Directory.GetCurrentDirectory();
-                    await _fileStorage.RemoveAsync(Path.Combine(root, currentImage), cancellationToken);
-                }
-            }
-        }
+        var updateProfilePictureResponse = await UpdateProfilePictureAsync(new UpdateProfilePictureRequest(currentImage, request.Image), user.Id, cancellationToken);
+        user.ProfilePicture = updateProfilePictureResponse.ProfilePictureUrl;
 
         user.DisplayName = request.DisplayName;
         user.FirstName = request.FirstName;
@@ -210,7 +103,7 @@ internal partial class UserService
             }
         }
 
-        if (!user.Email.Equals(request.Email, StringComparison.OrdinalIgnoreCase))
+        if (user.Email?.Equals(request.Email, StringComparison.OrdinalIgnoreCase) == false)
         {
             if (user.EmailConfirmed)
             {
@@ -239,31 +132,22 @@ internal partial class UserService
         return new UpdateUserResponse { Message = string.Join(Environment.NewLine, messages) };
     }
 
-    public async Task<UpdateProfileResponse> UpdateAsync(UpdateProfileRequest request, string userId, string origin, CancellationToken cancellationToken)
+    public async Task<UpdateProfileResponse> UpdateProfileAsync(UpdateProfileRequest request, string userId, string origin, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
 
-        string currentImage = user.ProfilePicture ?? string.Empty;
-        if (request.Image is not null)
-        {
-            request.Image.Name = $"{user.Id}_{request.Image.Name}";
-            user.ProfilePicture =
-                await _fileStorage.UploadAsync<ApplicationUser>(request.Image, FileType.Image, cancellationToken);
-        }
+        var apiClient = _serviceProvider.GetService<IApiClient>();
 
-        if ((request.Image is not null || request.DeleteCurrentImage) && !string.IsNullOrWhiteSpace(currentImage))
+        string currentImage = user.ProfilePicture ?? string.Empty;
+        if (apiClient is not null)
         {
-            if (!currentImage.IsValidUri())
-            {
-                string root = Directory.GetCurrentDirectory();
-                await _fileStorage.RemoveAsync(Path.Combine(root, currentImage), cancellationToken);
-            }
-            else
-            {
-                await _fileStorage.RemoveAsync(currentImage, cancellationToken);
-            }
+            var updateProfilePictureResponse = await apiClient.UpdateProfilePictureAsync(
+                new UpdateProfilePictureRequest(currentImage, request.Image));
+
+            if (updateProfilePictureResponse is not null)
+                user.ProfilePicture = updateProfilePictureResponse.ProfilePictureUrl;
         }
 
         user.DisplayName = request.DisplayName;
@@ -294,7 +178,7 @@ internal partial class UserService
             }
         }
 
-        if (!user.Email.Equals(request.Email, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(request.Email))
+        if (user.Email?.Equals(request.Email, StringComparison.OrdinalIgnoreCase) == false && !string.IsNullOrWhiteSpace(request.Email))
         {
             user.EmailConfirmed = false;
             response.LogoutRequired = true;
@@ -349,4 +233,45 @@ internal partial class UserService
 
         await _events.PublishAsync(new ApplicationUserDeletedEvent(user.Id));
     }
+
+    #region Profile Pictures
+
+    /// <summary>
+    /// TODO: Should probably update the user's profile picture in the database as well.
+    /// As we do not want to rely on the APIs doing this for us.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="userId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<UpdateProfilePictureResponse> UpdateProfilePictureAsync(UpdateProfilePictureRequest request, string userId, CancellationToken cancellationToken)
+    {
+        if (request.Image is not null)
+        {
+            request.Image.Name = $"{userId}_{request.Image.Name}";
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.OldProfilePicturePath))
+        {
+            if (!request.OldProfilePicturePath.IsValidUri())
+            {
+                string root = Directory.GetCurrentDirectory();
+                await _fileStorage.RemoveAsync(Path.Combine(root, request.OldProfilePicturePath), cancellationToken);
+            }
+            else
+            {
+                await _fileStorage.RemoveAsync(request.OldProfilePicturePath, cancellationToken);
+            }
+        }
+
+        var response = new UpdateProfilePictureResponse
+        {
+            ProfilePictureUrl =
+                await _fileStorage.UploadAsync<ApplicationUser>(request.Image, FileType.ProfilePicture, cancellationToken)
+        };
+
+        return response;
+    }
+
+    #endregion
 }

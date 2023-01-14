@@ -87,7 +87,7 @@ internal partial class RoleService : IRoleService
                 throw new InternalServerException(_t["Register role failed"], result.GetErrors(_t));
             }
 
-            await _events.PublishAsync(new ApplicationRoleCreatedEvent(role.Id, role.Name));
+            await _events.PublishAsync(new ApplicationRoleCreatedEvent(role.Id, role.Name!));
 
             return string.Format(_t["Role {0} Created."], request.Name);
         }
@@ -123,7 +123,7 @@ internal partial class RoleService : IRoleService
     {
         var role = await _roleManager.FindByIdAsync(id);
 
-        _ = role ?? throw new NotFoundException(_t["Role Not Found"]);
+        _ = string.IsNullOrWhiteSpace(role?.Name) ? throw new NotFoundException(_t["Role Not Found"]) : role;
 
         if (EIARoles.IsDefault(role.Name))
         {

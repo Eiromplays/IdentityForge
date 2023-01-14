@@ -10,12 +10,15 @@ public class ChangePasswordRequest
 
 public class ChangePasswordRequestValidator : Validator<ChangePasswordRequest>
 {
-    public ChangePasswordRequestValidator(IUserService userService, IStringLocalizer<ChangePasswordRequestValidator> T)
+    public ChangePasswordRequestValidator(IStringLocalizer<ChangePasswordRequestValidator> T)
     {
         RuleFor(p => p.Password)
             .NotEmpty()
             .UnlessAsync(async (changePasswordRequest, _, _) =>
-                !await userService.HasPasswordAsync(changePasswordRequest.UserId));
+            {
+                var userService = Resolve<IUserService>();
+                return !await userService.HasPasswordAsync(changePasswordRequest.UserId);
+            });
 
         RuleFor(p => p.NewPassword)
             .NotEmpty();

@@ -4,10 +4,12 @@ using System.Text.Json;
 using Duende.IdentityServer.AspNetIdentity;
 using Duende.IdentityServer.Models;
 using Eiromplays.IdentityServer.Application.Common.Configurations.Account;
+using Eiromplays.IdentityServer.Application.Common.Exceptions;
 using Eiromplays.IdentityServer.Infrastructure.Common.Helpers;
 using Eiromplays.IdentityServer.Infrastructure.Identity.Entities;
 using IdentityModel;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -17,14 +19,17 @@ public class CustomProfileService : ProfileService<ApplicationUser>
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly AccountConfiguration _accountConfiguration;
+    private readonly IStringLocalizer _t;
 
     public CustomProfileService(
         UserManager<ApplicationUser> userManager,
         IUserClaimsPrincipalFactory<ApplicationUser> claimsFactory,
-        IOptions<AccountConfiguration> accountConfigurationOptions)
+        IOptions<AccountConfiguration> accountConfigurationOptions,
+        IStringLocalizer<CustomProfileService> t)
         : base(userManager, claimsFactory)
     {
         _userManager = userManager;
+        _t = t;
         _accountConfiguration = accountConfigurationOptions.Value;
     }
 
@@ -32,10 +37,12 @@ public class CustomProfileService : ProfileService<ApplicationUser>
         UserManager<ApplicationUser> userManager,
         IUserClaimsPrincipalFactory<ApplicationUser> claimsFactory,
         ILogger<CustomProfileService> logger,
-        IOptions<AccountConfiguration> accountConfigurationOptions)
+        IOptions<AccountConfiguration> accountConfigurationOptions,
+        IStringLocalizer<CustomProfileService> t)
         : base(userManager, claimsFactory, logger)
     {
         _userManager = userManager;
+        _t = t;
         _accountConfiguration = accountConfigurationOptions.Value;
     }
 
@@ -44,6 +51,11 @@ public class CustomProfileService : ProfileService<ApplicationUser>
         await base.GetProfileDataAsync(context);
 
         var user = await _userManager.GetUserAsync(context.Subject);
+
+        if (user is null)
+        {
+            throw new InternalServerException(_t["No valid user provided to profile service"]);
+        }
 
         var claims = new List<Claim>();
 

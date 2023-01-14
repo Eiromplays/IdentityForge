@@ -5,6 +5,7 @@ using Eiromplays.IdentityServer.Application.Identity.Sessions;
 using Eiromplays.IdentityServer.Application.Identity.Users.Claims;
 using Eiromplays.IdentityServer.Application.Identity.Users.Logins;
 using Eiromplays.IdentityServer.Application.Identity.Users.Password;
+using Eiromplays.IdentityServer.Application.Identity.Users.ProfilePicture;
 
 namespace Eiromplays.IdentityServer.Application.Identity.Users;
 
@@ -31,11 +32,10 @@ public interface IUserService : ITransientService
 
     Task ToggleStatusAsync(ToggleUserStatusRequest request, CancellationToken cancellationToken);
 
-    Task<string> GetOrCreateFromPrincipalAsync(ClaimsPrincipal principal);
     Task<CreateUserResponse> CreateAsync(CreateUserRequest request, string origin);
     Task<UpdateUserResponse> UpdateAsync(UpdateUserRequest request, string userId, string origin, CancellationToken cancellationToken = default);
 
-    Task<UpdateProfileResponse> UpdateAsync(UpdateProfileRequest request, string userId, string origin, CancellationToken cancellationToken = default);
+    Task<UpdateProfileResponse> UpdateProfileAsync(UpdateProfileRequest request, string userId, string origin, CancellationToken cancellationToken = default);
 
     Task<ConfirmEmailResponse> ConfirmEmailAsync(ConfirmEmailRequest request, string origin, CancellationToken cancellationToken = default);
     Task<ConfirmPhoneNumberResponse> ConfirmPhoneNumberAsync(string userId, string code);
@@ -108,6 +108,12 @@ public interface IUserService : ITransientService
     #region User Logins
 
     Task<PaginationResponse<UserLoginInfoDto>> SearchUserProvidersAsync(UserProviderListFilter filter, CancellationToken cancellationToken = default);
+
+    #endregion
+
+    #region Profile Pictures
+
+    Task<UpdateProfilePictureResponse> UpdateProfilePictureAsync(UpdateProfilePictureRequest request, string userId, CancellationToken cancellationToken = default);
 
     #endregion
 }

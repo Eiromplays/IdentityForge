@@ -2,7 +2,6 @@ using Eiromplays.IdentityServer.API.Configurations;
 using Eiromplays.IdentityServer.Application;
 using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure;
-using FluentValidation.AspNetCore;
 using Serilog;
 using Eiromplays.IdentityServer.Infrastructure.Common;
 
@@ -52,8 +51,7 @@ try
         });
     });
 
-    builder.Services.AddFastEndpoints()
-        .AddFluentValidationAutoValidation();
+    builder.Services.AddFastEndpoints();
 
     var app = builder.Build();
 

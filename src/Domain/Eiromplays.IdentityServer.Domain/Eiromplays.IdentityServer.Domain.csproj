@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <LangVersion>10.0</LangVersion>
+    <TargetFramework>net7.0</TargetFramework>
+    <LangVersion>11.0</LangVersion>
     <Authors>Eirik Sjøløkken</Authors>
     <Nullable>enable</Nullable>
     <Features>strict</Features>
@@ -20,7 +20,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NewId" Version="4.0.0-develop.44" />
+    <PackageReference Include="NewId" Version="3.0.3" />
+    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.4.33" />
+    <PackageReference Update="Roslynator.Analyzers" Version="4.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Update="Roslynator.Formatting.Analyzers" Version="4.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text.Json;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Services;
 using Eiromplays.IdentityServer.Application.Common.Configurations;
@@ -86,15 +87,23 @@ public class AuthService : IAuthService
 
         if (user is null)
         {
-            throw new BadRequestException("Invalid phone number");
+            throw new BadRequestException(_t["Invalid phone number"]);
         }
 
         if (!await _userManager.IsPhoneNumberConfirmedAsync(user))
         {
-            throw new BadRequestException("Phone number is not confirmed");
+            throw new BadRequestException(_t["Phone number is not confirmed"]);
         }
 
-        string? code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, user.PhoneNumber);
+        if (string.IsNullOrWhiteSpace(user.PhoneNumber))
+        {
+            return new SendSmsLoginCodeResponse
+            {
+                Message = _t["Verification code has been sent to your phone!"]
+            };
+        }
+
+        string code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, user.PhoneNumber);
 
         var smsRequest = new SmsRequest(
             new List<string> { user.PhoneNumber },
@@ -117,7 +126,7 @@ public class AuthService : IAuthService
         var user = await _userResolver.GetUserAsync(request.Login);
         if (user is null)
         {
-            throw new BadRequestException(provider is AccountProviders.Phone ? "Invalid phone number or code" : "Invalid username or password");
+            throw new BadRequestException(provider is AccountProviders.Phone ? _t["Invalid phone number or code"] : _t["Invalid username or password"]);
         }
 
         var loginResult = provider is AccountProviders.Email
@@ -147,12 +156,12 @@ public class AuthService : IAuthService
             if (loginResult.IsNotAllowed)
             {
                 response.ValidReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/not-allowed";
-                response = await CheckUserVerifiedAsync(user, response, request.ReturnUrl, origin);
-
-                return response;
+                return await CheckUserVerifiedAsync(user, response, request.ReturnUrl, origin);
             }
 
-            response.Error = provider is AccountProviders.Phone ? "Invalid phone number or code" : "Invalid username or password";
+            response.Error = provider is AccountProviders.Phone
+                ? _t["Invalid phone number or code"]
+                : _t["Invalid username or password"];
             return response;
         }
 
@@ -166,14 +175,14 @@ public class AuthService : IAuthService
 
         var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
         if (user is null)
-            throw new InvalidOperationException("Unable to get user");
+            throw new InvalidOperationException(_t["Unable to get user"]);
 
         string authenticatorCode = request.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
 
         var result =
             await _signInManager.TwoFactorSignInAsync(request.Provider, authenticatorCode, request.RememberMe, request.RememberMachine);
 
-        if (!result.Succeeded) throw new BadRequestException("Invalid authentication code");
+        if (!result.Succeeded) throw new BadRequestException(_t["Invalid authentication code"]);
 
         response.SignInResult = result;
 
@@ -190,11 +199,9 @@ public class AuthService : IAuthService
     {
         var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
         if (user is null)
-            throw new BadRequestException("Unable to get user");
+            throw new InvalidOperationException(_t["Unable to get user"]);
 
-        string? code = await _userManager.GenerateTwoFactorTokenAsync(user, request.Provider);
-        if (string.IsNullOrWhiteSpace(code))
-            throw new InternalServerException("Unable to generate two factor code");
+        string code = await _userManager.GenerateTwoFactorTokenAsync(user, request.Provider);
 
         var message = _t[$"Your verification code is {code}"];
 
@@ -203,6 +210,9 @@ public class AuthService : IAuthService
         switch (request.Provider)
         {
             case nameof(TwoFactorAuthenticationProviders.Phone):
+                if (string.IsNullOrWhiteSpace(user.PhoneNumber))
+                    throw new BadRequestException(_t["Phone number is not set"]);
+
                 var smsRequest = new SmsRequest(
                         new List<string> { user.PhoneNumber },
                         message);
@@ -213,6 +223,9 @@ public class AuthService : IAuthService
                 break;
 
             case nameof(TwoFactorAuthenticationProviders.Email):
+                if (string.IsNullOrWhiteSpace(user.Email))
+                    throw new BadRequestException(_t["Email is not set"]);
+
                 var emailRequest = new MailRequest(
                         new List<string> { user.Email },
                         _t["Verification code"],
@@ -234,7 +247,7 @@ public class AuthService : IAuthService
     {
         var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
         if (user is null)
-            throw new BadRequestException("Unable to get user");
+            throw new InvalidOperationException(_t["Unable to get user"]);
 
         var validProviders = await _userManager.GetValidTwoFactorProvidersAsync(user);
 
@@ -345,6 +358,7 @@ public class AuthService : IAuthService
             throw new BadRequestException("Provider is required");
 
         var context = await _interaction.GetAuthorizationContextAsync(request.ReturnUrl);
+
         string? redirectUrl = _linkGenerator.GetUriByName(
             rsp.HttpContext,
             typeof(TEndpoint).EndpointName(),
@@ -368,6 +382,7 @@ public class AuthService : IAuthService
         var response = new LoginResponse();
 
         var info = await _signInManager.GetExternalLoginInfoAsync();
+        Console.WriteLine($"Info: {info is null} LoginProvider {info?.LoginProvider} ProviderKey {info?.ProviderKey} ProviderDisplayName {info?.ProviderDisplayName}");
         if (info is null)
         {
             response.ExternalLoginReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/login";
@@ -490,6 +505,11 @@ public class AuthService : IAuthService
             (string.IsNullOrWhiteSpace(user.PhoneNumber) || user.PhoneNumberConfirmed))
         {
             return response;
+        }
+
+        if (string.IsNullOrWhiteSpace(user.PhoneNumber))
+        {
+            throw new BadRequestException(_t["Phone number is required."]);
         }
 
         await _userService.ResendPhoneNumberVerificationAsync(

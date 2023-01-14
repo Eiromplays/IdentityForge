@@ -5,9 +5,9 @@ namespace Eiromplays.IdentityServer.Infrastructure.Common.Helpers;
 
 public class ProfilePictureHelper
 {
-    public static string GetProfilePicture(ApplicationUser user, AccountConfiguration? accountConfiguration = null, string? baseProfilePictureUrl = null)
+    public static string GetProfilePicture(ApplicationUser? user, AccountConfiguration? accountConfiguration = null, string? baseProfilePictureUrl = null)
     {
-        if (!string.IsNullOrWhiteSpace(user.ProfilePicture))
+        if (!string.IsNullOrWhiteSpace(user?.ProfilePicture))
         {
             if (Uri.TryCreate(user.ProfilePicture, UriKind.Absolute, out var profilePictureUri) &&
                 (profilePictureUri.Scheme == Uri.UriSchemeHttp || profilePictureUri.Scheme == Uri.UriSchemeHttps))
@@ -15,11 +15,18 @@ public class ProfilePictureHelper
                 return profilePictureUri.ToString();
             }
 
-            return
-                $"{accountConfiguration?.ProfilePictureConfiguration.BaseUrl ?? baseProfilePictureUrl}{user.ProfilePicture}";
+            if (Uri.TryCreate(
+                    new Uri(accountConfiguration?.ProfilePictureConfiguration.BaseUrl ?? baseProfilePictureUrl ?? string.Empty),
+                    user.ProfilePicture,
+                    out var fullProfilePictureUri) &&
+                (fullProfilePictureUri.Scheme == Uri.UriSchemeHttp ||
+                 fullProfilePictureUri.Scheme == Uri.UriSchemeHttps))
+            {
+                return fullProfilePictureUri.ToString();
+            }
         }
 
-        string email = user.GravatarEmail ?? user.Email;
+        string? email = user?.GravatarEmail ?? user?.Email;
 
         return GetGravatarUrl(email);
     }

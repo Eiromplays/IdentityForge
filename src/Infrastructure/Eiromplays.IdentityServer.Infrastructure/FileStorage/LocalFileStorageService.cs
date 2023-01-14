@@ -9,8 +9,14 @@ using Microsoft.Extensions.Options;
 
 namespace Eiromplays.IdentityServer.Infrastructure.FileStorage;
 
+/// <summary>
+/// It might be more desired to use multipart/form-data for file uploads.
+/// The current implementation just reads the file data itself from a base64 encoded string.
+/// </summary>
 public class LocalFileStorageService : IFileStorageService
 {
+    private const string NumberPattern = "-{0}";
+
     private readonly AccountConfiguration _accountConfiguration;
 
     public LocalFileStorageService(IOptions<AccountConfiguration> accountConfiguration)
@@ -48,7 +54,7 @@ public class LocalFileStorageService : IFileStorageService
 
         string base64Data = Regex.Match(request.Data, "data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
 
-        var streamData = new MemoryStream(Convert.FromBase64String(base64Data));
+        using var streamData = new MemoryStream(Convert.FromBase64String(base64Data));
 
         if (streamData.Length <= 0) return string.Empty;
 
@@ -108,8 +114,6 @@ public class LocalFileStorageService : IFileStorageService
         Remove(path, cancellationToken);
         return Task.CompletedTask;
     }
-
-    private const string NumberPattern = "-{0}";
 
     private static string NextAvailableFilename(string path)
     {

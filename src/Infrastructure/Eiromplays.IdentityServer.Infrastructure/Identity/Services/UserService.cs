@@ -47,6 +47,7 @@ internal partial class UserService : IUserService
     private readonly SpaConfiguration _spaConfiguration;
     private readonly ISmsService _smsService;
     private readonly UrlEncoder _urlEncoder;
+    private readonly IServiceProvider _serviceProvider;
 
     public const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
 
@@ -68,7 +69,8 @@ internal partial class UserService : IUserService
         IEmailTemplateService templateService,
         IOptions<SpaConfiguration> spaConfiguration,
         ISmsService smsService,
-        UrlEncoder urlEncoder)
+        UrlEncoder urlEncoder,
+        IServiceProvider serviceProvider)
     {
         _signInManager = signInManager;
         _userManager = userManager;
@@ -86,6 +88,7 @@ internal partial class UserService : IUserService
         _templateService = templateService;
         _smsService = smsService;
         _urlEncoder = urlEncoder;
+        _serviceProvider = serviceProvider;
         _spaConfiguration = spaConfiguration.Value;
         _accountConfiguration = accountConfiguration.Value;
     }

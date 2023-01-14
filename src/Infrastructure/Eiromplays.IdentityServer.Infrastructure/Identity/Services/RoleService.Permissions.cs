@@ -13,10 +13,11 @@ internal partial class RoleService
     {
         var role = await GetByIdAsync(roleId);
 
-        role.Permissions = await _db.RoleClaims
-            .Where(c => c.RoleId == roleId && c.ClaimType == EiaClaims.Permission)
+        role.Permissions = (await _db.RoleClaims
+            .Where(c => c.RoleId == roleId && c.ClaimType == EiaClaims.Permission &&
+                        !string.IsNullOrWhiteSpace(c.ClaimValue))
             .Select(c => c.ClaimValue)
-            .ToListAsync(cancellationToken);
+            .ToListAsync(cancellationToken))!;
 
         return role;
     }
@@ -25,7 +26,7 @@ internal partial class RoleService
     {
         var role = await _roleManager.FindByIdAsync(request.RoleId);
 
-        _ = role ?? throw new NotFoundException(_t["Role Not Found"]);
+        _ = string.IsNullOrWhiteSpace(role?.Name) ? throw new NotFoundException(_t["Role Not Found"]) : role;
 
         if (role.Name.Equals(EIARoles.Administrator, StringComparison.OrdinalIgnoreCase))
         {

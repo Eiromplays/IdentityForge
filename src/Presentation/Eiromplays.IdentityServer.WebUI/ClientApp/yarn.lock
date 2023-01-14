@@ -659,16 +659,16 @@
     postcss-selector-parser "^6.0.2"
 
 "@tanstack/match-sorter-utils@^8.0.0-alpha.82":
-  version "8.7.2"
-  resolved "https://registry.yarnpkg.com/@tanstack/match-sorter-utils/-/match-sorter-utils-8.7.2.tgz#6308c250308e103ab476928cc4ee26cf328716f5"
-  integrity sha512-bptNeoexeDB947fWoCPwUchPSx5FA9gwzU0bkXz0du5pT8Ud2+1ob+xOgHj6EF3VN0kdXtLhwjPyhY7/dJglkg==
+  version "8.7.6"
+  resolved "https://registry.yarnpkg.com/@tanstack/match-sorter-utils/-/match-sorter-utils-8.7.6.tgz#ccf54a37447770e0cf0fe49a579c595fd2655b16"
+  integrity sha512-2AMpRiA6QivHOUiBpQAVxjiHAA68Ei23ZUMNaRJrN6omWiSFLoYrxGcT6BXtuzp0Jw4h6HZCmGGIM/gbwebO2A==
   dependencies:
     remove-accents "0.4.2"
 
-"@tanstack/query-core@4.21.0":
-  version "4.21.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-4.21.0.tgz#c5bab5f5f9d7f2441101ab415a4fbfd6ee0f046d"
-  integrity sha512-4+yOhyNafzjCagOErF2u7AiBuOV8uDBgR+3AWBe/ZArm0X5scBtF8Dgj+YAXazdolsDcNGyDGT7Zvbs0hhTyJA==
+"@tanstack/query-core@4.22.0":
+  version "4.22.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-4.22.0.tgz#7a786fcea64e229ed5d4308093dd644cdfaa895e"
+  integrity sha512-OeLyBKBQoT265f5G9biReijeP8mBxNFwY7ZUu1dKL+YzqpG5q5z7J/N1eT8aWyKuhyDTiUHuKm5l+oIVzbtrjw==
 
 "@tanstack/react-location-devtools@^3.4.4":
   version "3.4.4"
@@ -695,11 +695,11 @@
     use-sync-external-store "^1.2.0"
 
 "@tanstack/react-query@^4.0.5":
-  version "4.21.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-4.21.0.tgz#a30cf6053eeefd2214e211e0a24f3ba53b7a8e61"
-  integrity sha512-LF7jBfv98U429Wd8UEUR7VdeBAmft89FK8/Ovh1cMNpF5DM2y0TfYwuonaArdKgCpTtrkjXIwbX5mDoylTGvFQ==
+  version "4.22.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-4.22.0.tgz#aaa4b41a6d306be6958018c74a8a3bb3e9f1924c"
+  integrity sha512-P9o+HjG42uB/xHR6dMsJaPhtZydSe4v0xdG5G/cEj1oHZAXelMlm67/rYJNQGKgBamKElKogj+HYGF+NY2yHYg==
   dependencies:
-    "@tanstack/query-core" "4.21.0"
+    "@tanstack/query-core" "4.22.0"
     use-sync-external-store "^1.2.0"
 
 "@types/d3-color@^2":
@@ -774,13 +774,6 @@
   version "15.7.5"
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.5.tgz#5f19d2b85a98e9558036f6a3cacc8819420f05cf"
   integrity sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==
-
-"@types/react-avatar-editor@^13.0.0":
-  version "13.0.0"
-  resolved "https://registry.yarnpkg.com/@types/react-avatar-editor/-/react-avatar-editor-13.0.0.tgz#5963e16c931746c47e478d669dd72d388b427393"
-  integrity sha512-5ymOayy6mfT35xTqzni7UjXvCNEg8/pH4pI5RenITp9PBc02KGTYjSV1WboXiQDYSh5KomLT0ngBLEAIhV1QoQ==
-  dependencies:
-    "@types/react" "*"
 
 "@types/react-dom@^18.0.3":
   version "18.0.10"
@@ -1513,10 +1506,10 @@ dompurify@^2.3.6:
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.4.3.tgz#f4133af0e6a50297fc8874e2eaedc13a3c308c03"
   integrity sha512-q6QaLcakcRjebxjg8/+NP+h0rPfatOgOzc46Fst9VAA3jF2ApfKBNKMzdP4DYTqtUMXSCd5pRS/8Po/OmoCHZQ==
 
-eiromplays-ui@^1.6.9-3:
-  version "1.6.9-3"
-  resolved "https://registry.yarnpkg.com/eiromplays-ui/-/eiromplays-ui-1.6.9-3.tgz#39dd072d311910c4e75fd6350d5468397c8ac4e6"
-  integrity sha512-LIL+rEH5+jkYJm1UKZ9EcC91tYT3TIp7TLnBEjdg56tWLid4nwODJFSolhj9SSfxdwriQCNSPNBFqd8ooIsyXw==
+eiromplays-ui@^1.6.9-6:
+  version "1.6.9-6"
+  resolved "https://registry.yarnpkg.com/eiromplays-ui/-/eiromplays-ui-1.6.9-6.tgz#385fe29c5112cd3aaa9d2e9071a6469b0dbd913c"
+  integrity sha512-IfLvhAoagVfrf9Ad+mHmdd7jk1diVsG3nB9Z03iBpE4Zbr/TQMP4UlopdmbfNLGb57YCF8nrrK27nV7ZRXl9/g==
   dependencies:
     "@hookform/error-message" "^2.0.1"
     "@tanstack/react-location" "^3.7.4"
@@ -3798,8 +3791,8 @@ zod@^3.15.1:
   integrity sha512-1MzNQdAvO+54H+EaK5YpyEy0T+Ejo/7YLHS93G3RnYWh5gaotGHwGeN/ZO687qEDU2y4CdStQYXVHIgrUl5UVQ==
 
 zustand@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/zustand/-/zustand-4.2.0.tgz#f6ef9e63794eda9b296979578538a6df6be3e1b0"
-  integrity sha512-eNwaDoD2FYVnMgtNxiMUhTJO780wonZUzJrPQTLYI0erSIMZF8cniWFW22kGQUECd8rdHRJ/ZJL2XO54c9Ttuw==
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/zustand/-/zustand-4.3.2.tgz#bb121fcad84c5a569e94bd1a2695e1a93ba85d39"
+  integrity sha512-rd4haDmlwMTVWVqwvgy00ny8rtti/klRoZjFbL/MAcDnmD5qSw/RZc+Vddstdv90M5Lv6RPgWvm1Hivyn0QgJw==
   dependencies:
     use-sync-external-store "1.2.0"

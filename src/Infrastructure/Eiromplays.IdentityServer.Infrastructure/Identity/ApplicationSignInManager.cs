@@ -21,7 +21,7 @@ public class ApplicationSignInManager : SignInManager<ApplicationUser>
     {
     }
 
-    private async Task<bool> IsTfaEnabled(ApplicationUser user)
+    private async Task<bool> IsTfaEnabledAsync(ApplicationUser user)
         => UserManager.SupportsUserTwoFactor &&
            await UserManager.GetTwoFactorEnabledAsync(user) &&
            (await UserManager.GetValidTwoFactorProvidersAsync(user)).Count > 0;
@@ -69,12 +69,12 @@ public class ApplicationSignInManager : SignInManager<ApplicationUser>
             return error;
         }
 
-        if (await UserManager.VerifyChangePhoneNumberTokenAsync(user, token, user.PhoneNumber))
+        if (await UserManager.VerifyChangePhoneNumberTokenAsync(user, token, user.PhoneNumber ?? string.Empty))
         {
             bool alwaysLockout = AppContext.TryGetSwitch("Microsoft.AspNetCore.Identity.CheckPasswordSignInAlwaysResetLockoutOnSuccess", out bool enabled) && enabled;
 
             // Only reset the lockout when not in quirks mode if either TFA is not enabled or the client is remembered for TFA.
-            if (alwaysLockout || !await IsTfaEnabled(user) || await IsTwoFactorClientRememberedAsync(user))
+            if (alwaysLockout || !await IsTfaEnabledAsync(user) || await IsTwoFactorClientRememberedAsync(user))
             {
                 await ResetLockout(user);
             }

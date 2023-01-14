@@ -6,7 +6,7 @@ namespace Eiromplays.IdentityServer.Application.Identity.Users;
 
 public class CreateUserRequestValidator : Validator<CreateUserRequest>
 {
-    public CreateUserRequestValidator(IUserService userService, IOptions<IdentityOptions> identityOptions, IStringLocalizer<CreateUserRequestValidator> T)
+    public CreateUserRequestValidator(IOptions<IdentityOptions> identityOptions, IStringLocalizer<CreateUserRequestValidator> T)
     {
         RuleFor(u => u.Provider).Cascade(CascadeMode.Stop)
             .NotEmpty()
@@ -19,7 +19,10 @@ public class CreateUserRequestValidator : Validator<CreateUserRequest>
             .EmailAddress()
                 .WithMessage(T["Invalid Email Address."])
             .MustAsync(async (email, _) =>
-                !await userService.ExistsWithEmailAsync(email))
+            {
+                var userService = Resolve<IUserService>();
+                return !await userService.ExistsWithEmailAsync(email);
+            })
                 .WithMessage((_, email) => T["Email {0} is already registered.", email])
             .When((req, _) => (req.Provider is nameof(AccountProviders.Email) or nameof(AccountProviders.External) &&
                               !string.IsNullOrWhiteSpace(req.Email)) || identityOptions.Value.SignIn.RequireConfirmedEmail);
@@ -27,12 +30,20 @@ public class CreateUserRequestValidator : Validator<CreateUserRequest>
         RuleFor(u => u.UserName).Cascade(CascadeMode.Stop)
             .NotEmpty()
             .MinimumLength(6)
-            .MustAsync(async (name, _) => !await userService.ExistsWithNameAsync(name))
+            .MustAsync(async (name, _) =>
+            {
+                var userService = Resolve<IUserService>();
+                return !await userService.ExistsWithNameAsync(name);
+            })
                 .WithMessage((_, name) => T["Username {0} is already taken.", name]);
 
         var phoneNumberUtil = PhoneNumbers.PhoneNumberUtil.GetInstance();
         RuleFor(u => u.PhoneNumber).Cascade(CascadeMode.Stop)
-            .MustAsync(async (phone, _) => !await userService.ExistsWithPhoneNumberAsync(phone!))
+            .MustAsync(async (phone, _) =>
+            {
+                var userService = Resolve<IUserService>();
+                return !await userService.ExistsWithPhoneNumberAsync(phone!);
+            })
                 .WithMessage((_, phone) => T["Phone number {0} is already registered.", phone!])
                 .Unless(u =>
                 string.IsNullOrWhiteSpace(u.PhoneNumber) && u.Provider != nameof(AccountProviders.Phone) &&

@@ -26,6 +26,11 @@ internal static class Startup
         services.AddHangfireConsoleExtensions();
 
         var storageSettings = config.GetSection("HangfireSettings:Storage").Get<HangfireStorageSettings>();
+        if (storageSettings is null)
+        {
+            Logger.Fatal("Hangfire storage settings are not configured");
+            throw new InvalidOperationException("Hangfire storage settings are not configured");
+        }
 
         if (string.IsNullOrEmpty(storageSettings.ConnectionString)) throw new Exception("Hangfire Storage Provider ConnectionString is not configured.");
 
@@ -60,6 +65,12 @@ internal static class Startup
     internal static IApplicationBuilder UseHangfireDashboard(this IApplicationBuilder app, IConfiguration config)
     {
         var dashboardOptions = config.GetSection("HangfireSettings:Dashboard").Get<DashboardOptions>();
+
+        if (dashboardOptions is null)
+        {
+            Logger.Fatal("Hangfire dashboard settings are not configured");
+            throw new InvalidOperationException("Hangfire dashboard settings are not configured");
+        }
 
         dashboardOptions.Authorization = new[]
         {

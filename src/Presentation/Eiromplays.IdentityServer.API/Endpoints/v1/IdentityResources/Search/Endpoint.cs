@@ -17,10 +17,10 @@ public class Endpoint : Endpoint<IdentityResourceListFilter, PaginationResponse<
         Post("/identity-resources/search");
         Summary(s =>
         {
-            s.Summary = "Search ApiScopes using available filters.";
+            s.Summary = "Search IdentityResources using available filters.";
         });
         Version(1);
-        Policies(EiaPermission.NameFor(EiaAction.Search, EiaResource.ApiScopes));
+        Policies(EiaPermission.NameFor(EiaAction.Search, EiaResource.IdentityResources));
     }
 
     public override async Task HandleAsync(IdentityResourceListFilter request, CancellationToken ct)

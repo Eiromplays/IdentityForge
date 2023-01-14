@@ -17,6 +17,7 @@ import {
   HiOutlineDocumentText,
   HiOutlineShieldCheck,
   HiOutlineUsers,
+  HiOutlineExternalLink,
 } from 'react-icons/hi';
 import { MdOutlineDevicesOther } from 'react-icons/md';
 
@@ -25,6 +26,7 @@ import logo from '@/assets/logo.svg';
 import { ApiResourcesRoutes } from '@/features/api-resources';
 import { ApiScopesRoutes } from '@/features/api-scopes';
 import { ClientsRoutes } from '@/features/clients';
+import { IdentityProvidersRoutes } from '@/features/identity-providers';
 import { IdentityResourcesRoutes } from '@/features/identity-resources';
 import { LogsRoutes } from '@/features/logs';
 import { PersistedGrantsRoutes } from '@/features/persisted-grants';
@@ -59,6 +61,7 @@ const App = () => {
           { name: 'Api Resources', to: './api-resources', icon: HiOutlineShieldCheck },
           { name: 'Persisted Grants', to: './persisted-grants', icon: MdOutlineVerified },
           { name: 'Sessions', to: './sessions', icon: MdOutlineDevicesOther },
+          { name: 'Identity Providers', to: './identity-providers', icon: HiOutlineExternalLink },
           { name: 'Logs', to: './logs', icon: MdOutlineHistory },
           {
             name: 'Discovery Document',
@@ -99,6 +102,7 @@ export const protectedRoutes = [
       IdentityResourcesRoutes,
       ApiScopesRoutes,
       ApiResourcesRoutes,
+      IdentityProvidersRoutes,
       { path: '*', element: <Dashboard /> },
     ],
   },

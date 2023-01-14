@@ -1,5 +1,4 @@
 using Eiromplays.IdentityServer.Domain.Identity;
-using Shared.Events;
 
 namespace Eiromplays.IdentityServer.Application.Dashboard;
 

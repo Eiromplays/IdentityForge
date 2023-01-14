@@ -31,6 +31,11 @@ internal partial class UserService
 
     private async Task<string> SendEmailVerificationAsync(ApplicationUser user, string origin)
     {
+        if (string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.UserName))
+        {
+            throw new InternalServerException(_t["Email and username are required to send an email verification."]);
+        }
+
         // send verification email
         string emailVerificationUri = await GetEmailVerificationUriAsync(user, origin);
 
@@ -62,10 +67,16 @@ internal partial class UserService
 
     private async Task<string> SendPhoneNumberVerificationAsync(ApplicationUser user, string? newPhoneNumber = null)
     {
-        string? phoneVerificationCode = await _userManager.GenerateChangePhoneNumberTokenAsync(user, newPhoneNumber ?? user.PhoneNumber);
+        string? phoneNumber = newPhoneNumber ?? user.PhoneNumber;
+        if (string.IsNullOrWhiteSpace(phoneNumber))
+        {
+            throw new InternalServerException(_t["Phone number is required to send a phone number verification."]);
+        }
+
+        string phoneVerificationCode = await _userManager.GenerateChangePhoneNumberTokenAsync(user, phoneNumber);
 
         var smsRequest = new SmsRequest(
-            new List<string> { newPhoneNumber ?? user.PhoneNumber },
+            new List<string> { phoneNumber },
             _t[$"Please confirm your account by entering this code: {phoneVerificationCode}"]);
 
         _jobService.Enqueue(() => _smsService.SendAsync(smsRequest, CancellationToken.None));
@@ -76,7 +87,8 @@ internal partial class UserService
     public async Task<ResendPhoneNumberVerificationResponse> ResendPhoneNumberVerificationAsync(ResendPhoneNumberVerificationRequest request, CancellationToken cancellationToken)
     {
         var user = await _userManager.Users.FirstOrDefaultAsync(
-            x => x.PhoneNumber.Equals(request.PhoneNumber), cancellationToken);
+            x => !string.IsNullOrWhiteSpace(x.PhoneNumber) && x.PhoneNumber.Equals(request.PhoneNumber),
+            cancellationToken);
 
         return user is null
             ? throw new InternalServerException(_t["An error occurred while trying to resend phone number verification."])
@@ -128,7 +140,7 @@ internal partial class UserService
     {
         var user = await _userManager.FindByIdAsync(userId);
 
-        _ = user ?? throw new InternalServerException(_t["An error occurred while confirming Mobile Phone."]);
+        _ = string.IsNullOrWhiteSpace(user?.PhoneNumber) ? throw new InternalServerException(_t["An error occurred while confirming Mobile Phone."]) : user;
 
         var response = new ConfirmPhoneNumberResponse();
         var messages = new List<string>();

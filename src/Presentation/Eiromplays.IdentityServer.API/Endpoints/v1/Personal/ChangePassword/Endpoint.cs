@@ -20,7 +20,6 @@ public class Endpoint : Endpoint<ChangePasswordRequest, Models.Response>
             s.Summary = "Change password of currently logged in user.";
         });
         Version(1);
-        ScopedValidator();
     }
 
     public override async Task HandleAsync(ChangePasswordRequest req, CancellationToken ct)

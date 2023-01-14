@@ -25,7 +25,8 @@ public class GetStatsRequestHandler : IRequestHandler<GetStatsRequest, StatsDto>
         IRoleService roleService,
         IClientService clientService,
         IApiResourceService apiResourceService,
-        IApiScopeService apiScopeService, IIdentityResourceService identityResourceService)
+        IApiScopeService apiScopeService,
+        IIdentityResourceService identityResourceService)
     {
         _userService = userService;
         _roleService = roleService;

@@ -28,6 +28,12 @@ internal static class Startup
 
         var databaseConfiguration = config.GetSection(nameof(DatabaseConfiguration)).Get<DatabaseConfiguration>();
 
+        if (databaseConfiguration is null)
+        {
+            Logger.Error("Database configuration is null");
+            throw new ArgumentNullException(nameof(databaseConfiguration));
+        }
+
         Logger.Information("Current DB Provider : {DatabaseProvider}", databaseConfiguration.DatabaseProvider);
 
         return services
@@ -62,6 +68,12 @@ internal static class Startup
             return bffBuilder;
 
         var databaseConfiguration = configuration.GetSection(nameof(DatabaseConfiguration)).Get<DatabaseConfiguration>();
+
+        if (databaseConfiguration is null)
+        {
+            Logger.Error("Database configuration is null");
+            throw new ArgumentNullException(nameof(databaseConfiguration));
+        }
 
         Logger.Information("Current DB Provider : {DatabaseProvider}", databaseConfiguration.DatabaseProvider);
 

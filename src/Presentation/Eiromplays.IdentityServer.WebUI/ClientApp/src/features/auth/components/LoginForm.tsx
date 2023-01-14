@@ -21,11 +21,21 @@ export const LoginForm = () => {
   const { login, isLoggingIn } = useAuth();
   const { returnUrl, ReturnUrl } = useSearch<LocationGenerics>();
 
+  // Hacky way to redirect to the app if the user is already logged in
+  // Or if there is no returnUrl in the url
+  const redirectUrl = returnUrl || ReturnUrl;
+
+  if (!redirectUrl) {
+    window.location.href = '/bff/login?returnUrl=/app';
+
+    return null;
+  }
+
   return (
     <div>
       <Form<LoginValues, typeof schema>
         onSubmit={async (values) => {
-          values.returnUrl = returnUrl || ReturnUrl;
+          values.returnUrl = redirectUrl;
           await login(values);
         }}
         schema={schema}

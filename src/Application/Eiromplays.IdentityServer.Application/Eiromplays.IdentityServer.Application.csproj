@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <LangVersion>10.0</LangVersion>
+    <TargetFramework>net7.0</TargetFramework>
+    <LangVersion>11.0</LangVersion>
     <Authors>Eirik Sjøløkken</Authors>
     <Nullable>enable</Nullable>
     <Features>strict</Features>
@@ -17,23 +17,32 @@
 
   <ItemGroup>
     <PackageReference Include="Ardalis.Specification" Version="6.1.0" />
-    <PackageReference Include="Duende.IdentityServer" Version="6.2.0" />
-    <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.2.0" />
-    <PackageReference Include="FastEndpoints" Version="5.1.0-beta9" />
-    <PackageReference Include="FluentEmail.Graph" Version="1.5.1" />
+    <PackageReference Include="Duende.IdentityServer" Version="6.2.1" />
+    <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.2.1" />
+    <PackageReference Include="FastEndpoints" Version="5.6.0" />
+    <PackageReference Include="FluentEmail.Graph" Version="2.1.0" />
     <PackageReference Include="FluentEmail.Mailgun" Version="3.0.2" />
     <PackageReference Include="FluentEmail.MailKit" Version="3.0.2" />
     <PackageReference Include="FluentSms.Core" Version="1.0.3" />
     <PackageReference Include="FluentSms.Infobip" Version="1.0.3" />
     <PackageReference Include="FluentSms.Twilio" Version="1.0.3" />
-    <PackageReference Include="FluentValidation" Version="11.2.1" />
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.2.1" />
-    <PackageReference Include="libphonenumber-csharp" Version="8.12.54" />
+    <PackageReference Include="FluentValidation" Version="11.4.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.4.0" />
+    <PackageReference Include="libphonenumber-csharp" Version="8.13.4" />
     <PackageReference Include="Mapster" Version="7.3.0" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.8" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.2" />
+    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.4.33" />
+    <PackageReference Update="Roslynator.Analyzers" Version="4.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Update="Roslynator.Formatting.Analyzers" Version="4.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

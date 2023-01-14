@@ -1,5 +1,3 @@
-using Shared.Events;
-
 namespace Eiromplays.IdentityServer.Application.Common.Events;
 
 public class EventNotification<TEvent> : INotification

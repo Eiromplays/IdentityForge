@@ -16,3 +16,4 @@ global using Shared.Notifications;
 global using MediatR;
 global using Microsoft.Extensions.Localization;
 global using Microsoft.Extensions.Logging;
+global using IEvent = Shared.Events.IEvent;

@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Eiromplays.IdentityServer.Application.Common.Configurations;
 using Eiromplays.IdentityServer.Domain.Enums;
 using FluentSms.Core;
@@ -14,6 +13,11 @@ internal static class Startup
     internal static IServiceCollection AddSms(this IServiceCollection services, IConfiguration configuration)
     {
         var smsConfiguration = configuration.GetSection(nameof(SmsConfiguration)).Get<SmsConfiguration>();
+
+        if (smsConfiguration is null)
+        {
+            throw new ArgumentNullException(nameof(smsConfiguration));
+        }
 
         var fluentSmsServicesBuilder = services
             .AddFluentSms(smsConfiguration.From);

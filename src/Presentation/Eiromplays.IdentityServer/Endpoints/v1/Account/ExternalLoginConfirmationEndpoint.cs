@@ -31,7 +31,6 @@ public class ExternalLoginConfirmationEndpoint : Endpoint<CreateUserRequest, Ext
             s.Summary = "Confirm external login";
         });
         AllowAnonymous();
-        ScopedValidator();
     }
 
     public override async Task HandleAsync(CreateUserRequest req, CancellationToken ct)

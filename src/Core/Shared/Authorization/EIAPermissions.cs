@@ -32,6 +32,7 @@ public static class EiaResource
     public const string ApiScopes = nameof(ApiScopes);
     public const string UserSessions = nameof(UserSessions);
     public const string ServerSideSessions = nameof(ServerSideSessions);
+    public const string IdentityProviders = nameof(IdentityProviders);
 }
 
 public static class EiaPermissions
@@ -100,7 +101,12 @@ public static class EiaPermissions
         new("View server-side sessions", EiaAction.View, EiaResource.ServerSideSessions),
         new("Create server-side sessions", EiaAction.Create, EiaResource.ServerSideSessions),
         new("Update server-side sessions", EiaAction.Update, EiaResource.ServerSideSessions),
-        new("Delete server-side sessions", EiaAction.Delete, EiaResource.ServerSideSessions)
+        new("Delete server-side sessions", EiaAction.Delete, EiaResource.ServerSideSessions),
+        new("Search identity providers", EiaAction.Search, EiaResource.IdentityProviders),
+        new("View identity providers", EiaAction.View, EiaResource.IdentityProviders),
+        new("Create identity provider", EiaAction.Create, EiaResource.IdentityProviders),
+        new("Update identity provider", EiaAction.Update, EiaResource.IdentityProviders),
+        new("Delete identity provider", EiaAction.Delete, EiaResource.IdentityProviders)
     };
 
     public static IReadOnlyList<EiaPermission> All { get; } = new ReadOnlyCollection<EiaPermission>(AllPermissions);

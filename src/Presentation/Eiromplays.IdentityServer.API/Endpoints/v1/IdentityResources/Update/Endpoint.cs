@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Models.Request>
             s.Summary = "Update a IdentityResource.";
         });
         Version(1);
-        Policies(EiaPermission.NameFor(EiaAction.Update, EiaResource.ApiScopes));
+        Policies(EiaPermission.NameFor(EiaAction.Update, EiaResource.IdentityResources));
     }
 
     public override async Task HandleAsync(Models.Request req, CancellationToken ct)

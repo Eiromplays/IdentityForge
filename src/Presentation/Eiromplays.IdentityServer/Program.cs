@@ -3,7 +3,6 @@ using Eiromplays.IdentityServer.Configurations;
 using Eiromplays.IdentityServer.Domain.Enums;
 using Eiromplays.IdentityServer.Infrastructure;
 using Eiromplays.IdentityServer.Infrastructure.Common;
-using FluentValidation.AspNetCore;
 using Serilog;
 
 try
@@ -23,12 +22,11 @@ try
 
     builder.Services.AddControllersWithViews();
 
-    builder.Services.AddFastEndpoints()
-        .AddFluentValidationAutoValidation();
+    builder.Services.AddFastEndpoints();
 
     var app = builder.Build();
 
-    await app.Services.InitializeDatabasesAsync().ConfigureAwait(false);
+    await app.Services.InitializeDatabasesAsync();
 
     app.UseInfrastructure(builder.Configuration, ProjectType.IdentityServer, config =>
     {
@@ -38,10 +36,7 @@ try
         config.Versioning.PrependToRoute = true;
     });
 
-    app.UseEndpoints(endpoints =>
-    {
-        endpoints.MapDefaultControllerRoute();
-    });
+    app.MapDefaultControllerRoute();
 
     app.MapEndpoints();
 

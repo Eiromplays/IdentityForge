@@ -10,22 +10,20 @@ using Microsoft.Extensions.Options;
 
 namespace Eiromplays.IdentityServer.Infrastructure.FileStorage;
 
-public class CloudflareImagesStorageService : IFileStorageService
+public sealed class CloudflareImagesStorageService : IFileStorageService, IDisposable
 {
     private readonly AccountConfiguration _accountConfiguration;
-    private readonly HttpClient _httpClient;
+    private readonly HttpClient _httpClient = new();
+    private bool _disposed;
 
     public CloudflareImagesStorageService(IOptions<CloudflareConfiguration> cloudflareConfiguration, IOptions<AccountConfiguration> accountConfiguration)
     {
         _accountConfiguration = accountConfiguration.Value;
-        _httpClient = new HttpClient
-        {
-            BaseAddress = new Uri(string.Concat(
-                cloudflareConfiguration.Value.ApiBaseUrl,
-                cloudflareConfiguration.Value.AccountId,
-                cloudflareConfiguration.Value.ImagesBaseUrl)),
-            DefaultRequestHeaders = { { "Authorization", $"Bearer {cloudflareConfiguration.Value.ApiToken}" } }
-        };
+        _httpClient.BaseAddress = new Uri(string.Concat(
+            cloudflareConfiguration.Value.ApiBaseUrl,
+            cloudflareConfiguration.Value.AccountId,
+            cloudflareConfiguration.Value.ImagesBaseUrl));
+        _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {cloudflareConfiguration.Value.ApiToken}");
     }
 
     public async Task<string> UploadAsync<T>(FileUploadRequest? request, FileType supportedFileType, CancellationToken cancellationToken = default)
@@ -53,20 +51,22 @@ public class CloudflareImagesStorageService : IFileStorageService
 
         string base64Data = Regex.Match(request.Data, "data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
 
-        var response = await _httpClient.PostAsync(
-            _httpClient.BaseAddress,
-            new MultipartFormDataContent
+        using var multipartFormDataContent = new MultipartFormDataContent
+        {
             {
-                { new ByteArrayContent(Convert.FromBase64String(base64Data)), "\"file\"", $"\"{request.Name}{request.Extension}\""}
-            },
+                new ByteArrayContent(Convert.FromBase64String(base64Data)), "\"file\"",
+                $"\"{request.Name}{request.Extension}\""
+            }
+        };
+
+        using var response = await _httpClient.PostAsync(
+            _httpClient.BaseAddress,
+            multipartFormDataContent,
             cancellationToken);
 
         string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
 
-        Console.WriteLine($"Response {responseContent}");
         var responseObject = JsonSerializer.Deserialize<CloudflareImagesUploadResponse>(responseContent);
-
-        Console.WriteLine($"Response Object {JsonSerializer.Serialize(responseObject)}");
 
         return responseObject?.Result.Variants[0] ?? string.Empty;
     }
@@ -86,5 +86,24 @@ public class CloudflareImagesStorageService : IFileStorageService
         string imageId = pathSplit[^2];
 
         await _httpClient.DeleteAsync(new Uri(string.Concat(_httpClient.BaseAddress, $"/{imageId}")), cancellationToken);
+    }
+
+    public void Dispose()
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        _disposed = true;
+        _httpClient.Dispose();
+    }
+
+    private void ThrowIfDisposed()
+    {
+        if (_disposed)
+        {
+            throw new ObjectDisposedException(GetType().FullName);
+        }
     }
 }

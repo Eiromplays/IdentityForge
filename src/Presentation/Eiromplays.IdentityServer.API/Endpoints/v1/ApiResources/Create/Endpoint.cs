@@ -20,7 +20,6 @@ public class Endpoint : Endpoint<CreateApiResourceRequest, Models.Response>
         });
         Version(1);
         Policies(EiaPermission.NameFor(EiaAction.Create, EiaResource.ApiResources));
-        ScopedValidator();
     }
 
     public override async Task HandleAsync(CreateApiResourceRequest req, CancellationToken ct)

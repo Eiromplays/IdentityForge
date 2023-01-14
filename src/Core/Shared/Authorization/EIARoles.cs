@@ -8,11 +8,11 @@ public static class EIARoles
     public const string Administrator = nameof(Administrator);
     public const string Basic = nameof(Basic);
 
-    public static IReadOnlyList<string> DefaultRoles { get; } = new ReadOnlyCollection<string>(new[]
+    public static IEnumerable<string> DefaultRoles { get; } = new ReadOnlyCollection<string>(new[]
     {
         Administrator,
         Basic
     });
 
-    public static bool IsDefault(string roleName) => DefaultRoles.Any(r => r == roleName);
+    public static bool IsDefault(string? roleName) => DefaultRoles.Any(r => r.Equals(roleName));
 }

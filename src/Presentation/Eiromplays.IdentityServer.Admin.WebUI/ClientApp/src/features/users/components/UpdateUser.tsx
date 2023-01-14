@@ -5,9 +5,10 @@ import {
   Form,
   FormDrawer,
   InputField,
-  ImageCropper,
   CustomInputField,
+  ImageCropper,
 } from 'eiromplays-ui';
+import React from 'react';
 import { HiOutlinePencil } from 'react-icons/hi';
 import { isPossiblePhoneNumber } from 'react-phone-number-input';
 import PhoneInputWithCountry from 'react-phone-number-input/react-hook-form';
@@ -205,20 +206,12 @@ export const UpdateUser = ({ id }: UpdateUserProps) => {
                 <>
                   <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                     <ImageCropper
-                      image={files[0][0]}
                       cropLabel="Crop:"
                       previewLabel="Preview:"
+                      image={URL.createObjectURL(files[0][0])}
                       onFileCreated={(file: File) => {
                         profilePicture = file;
                       }}
-                      onLoadSuccess={(imgInfo: any) => console.log('imgInfo', imgInfo)}
-                      onImageReady={(event: any) => console.log('event', event)}
-                      width={250}
-                      height={250}
-                      border={50}
-                      color={[255, 255, 255, 0.6]} // RGBA
-                      scale={1.2}
-                      rotate={0}
                     />
                   </div>
                 </>

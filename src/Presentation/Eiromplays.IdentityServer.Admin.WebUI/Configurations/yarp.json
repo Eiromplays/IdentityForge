@@ -108,6 +108,15 @@
         "Metadata": {
           "Duende.Bff.Yarp.TokenType": "User"
         }
+      },
+      "identity-providers": {
+        "ClusterId": "api",
+        "Match": {
+          "Path": "/identity-providers/{**catch-all}"
+        },
+        "Metadata": {
+          "Duende.Bff.Yarp.TokenType": "User"
+        }
       }
     },
     "Clusters": {

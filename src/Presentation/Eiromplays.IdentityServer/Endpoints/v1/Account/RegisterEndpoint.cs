@@ -20,7 +20,6 @@ public class RegisterEndpoint : Endpoint<CreateUserRequest, CreateUserResponse>
         });
         Version(1);
         AllowAnonymous();
-        ScopedValidator();
     }
 
     public override async Task HandleAsync(CreateUserRequest req, CancellationToken ct)

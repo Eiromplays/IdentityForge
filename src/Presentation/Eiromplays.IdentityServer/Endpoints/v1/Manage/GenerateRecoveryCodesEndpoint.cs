@@ -26,7 +26,7 @@ public class GenerateRecoveryCodesEndpoint : EndpointWithoutRequest<List<string>
     public override async Task HandleAsync(CancellationToken ct)
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user == null)
+        if (user is null)
         {
             AddError("User not found");
             await SendErrorsAsync((int)HttpStatusCode.NotFound, ct);
@@ -41,6 +41,6 @@ public class GenerateRecoveryCodesEndpoint : EndpointWithoutRequest<List<string>
 
         var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
 
-        await SendOkAsync(recoveryCodes.ToList(), ct);
+        await SendOkAsync(recoveryCodes?.ToList() ?? new List<string>(), ct);
     }
 }

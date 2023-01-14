@@ -20,7 +20,6 @@ public class Endpoint : Endpoint<CreateOrUpdateRoleRequest, Models.Response>
         });
         Version(1);
         Policies(EiaPermission.NameFor(EiaAction.Create, EiaResource.Roles));
-        ScopedValidator();
     }
 
     public override async Task HandleAsync(CreateOrUpdateRoleRequest req, CancellationToken ct)
