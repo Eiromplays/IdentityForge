@@ -174,7 +174,7 @@ internal partial class UserService
                     messages.Add(phoneNumberVerificationMessage);
 
                 response.ReturnUrl =
-                    $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/verify-phone-number?userId={user.Id}";
+                    $"{_urlConfiguration.IdentityServerUiBaseUrl}auth/verify-phone-number?userId={user.Id}";
             }
         }
 

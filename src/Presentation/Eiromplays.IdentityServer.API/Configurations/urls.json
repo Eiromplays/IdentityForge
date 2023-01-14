@@ -1,5 +1,5 @@
 {
-  "SpaConfiguration": {
+  "UrlConfiguration": {
     "IdentityServerUiBaseUrl": "https://localhost:3000/",
     "AdminUiBaseUrl": "https://localhost:3001/"
   }

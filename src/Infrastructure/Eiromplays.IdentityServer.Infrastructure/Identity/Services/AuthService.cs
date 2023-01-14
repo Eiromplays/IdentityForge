@@ -38,7 +38,7 @@ public class AuthService : IAuthService
     private readonly LinkGenerator _linkGenerator;
     private readonly IUserResolver<ApplicationUser> _userResolver;
     private readonly IServerUrls _serverUrls;
-    private readonly SpaConfiguration _spaConfiguration;
+    private readonly UrlConfiguration _urlConfiguration;
     private readonly IUserService _userService;
     private readonly IJobService _jobService;
     private readonly ISmsService _smsService;
@@ -54,7 +54,7 @@ public class AuthService : IAuthService
         LinkGenerator linkGenerator,
         IUserResolver<ApplicationUser> userResolver,
         IServerUrls serverUrls,
-        IOptions<SpaConfiguration> spaConfiguration,
+        IOptions<UrlConfiguration> urlConfiguration,
         IUserService userService,
         UserManager<ApplicationUser> userManager,
         IJobService jobService,
@@ -76,7 +76,7 @@ public class AuthService : IAuthService
         _smsService = smsService;
         _mailService = mailService;
         _t = t;
-        _spaConfiguration = spaConfiguration.Value;
+        _urlConfiguration = urlConfiguration.Value;
     }
 
     #region Login
@@ -143,7 +143,7 @@ public class AuthService : IAuthService
             if (loginResult.RequiresTwoFactor)
             {
                 response.TwoFactorReturnUrl =
-                    $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/login2fa?rememberMe={request.RememberMe}&returnUrl={returnUrl}";
+                    $"{_urlConfiguration.IdentityServerUiBaseUrl}auth/login2fa?rememberMe={request.RememberMe}&returnUrl={returnUrl}";
                 return response;
             }
 
@@ -155,7 +155,7 @@ public class AuthService : IAuthService
 
             if (loginResult.IsNotAllowed)
             {
-                response.ValidReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/not-allowed";
+                response.ValidReturnUrl = $"{_urlConfiguration.IdentityServerUiBaseUrl}/auth/not-allowed";
                 return await CheckUserVerifiedAsync(user, response, request.ReturnUrl, origin);
             }
 
@@ -382,10 +382,10 @@ public class AuthService : IAuthService
         var response = new LoginResponse();
 
         var info = await _signInManager.GetExternalLoginInfoAsync();
-        Console.WriteLine($"Info: {info is null} LoginProvider {info?.LoginProvider} ProviderKey {info?.ProviderKey} ProviderDisplayName {info?.ProviderDisplayName}");
+
         if (info is null)
         {
-            response.ExternalLoginReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/login";
+            response.ExternalLoginReturnUrl = $"{_urlConfiguration.IdentityServerUiBaseUrl}/auth/login";
             return response;
         }
 
@@ -395,7 +395,7 @@ public class AuthService : IAuthService
 
         var context = await _interaction.GetAuthorizationContextAsync(request.ReturnUrl);
 
-        string returnUrl = context is not null ? request.ReturnUrl : _spaConfiguration.IdentityServerUiBaseUrl;
+        string returnUrl = context is not null ? request.ReturnUrl : _urlConfiguration.IdentityServerUiBaseUrl;
 
         if (result.Succeeded)
         {
@@ -406,14 +406,14 @@ public class AuthService : IAuthService
         response.SignInResult = result;
         if (result.RequiresTwoFactor)
         {
-            response.ExternalLoginReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/login2fa?rememberMe=true&returnUrl={request.ReturnUrl}";
+            response.ExternalLoginReturnUrl = $"{_urlConfiguration.IdentityServerUiBaseUrl}auth/login2fa?rememberMe=true&returnUrl={request.ReturnUrl}";
             return response;
         }
 
         if (result.IsLockedOut)
         {
             // TODO: We should probably send an email to the user to notify them that their account is locked out and how to unlock it.
-            response.ExternalLoginReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/lockout";
+            response.ExternalLoginReturnUrl = $"{_urlConfiguration.IdentityServerUiBaseUrl}/auth/lockout";
 
             return response;
         }
@@ -422,7 +422,7 @@ public class AuthService : IAuthService
         {
             var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
 
-            response.ExternalLoginReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/not-allowed";
+            response.ExternalLoginReturnUrl = $"{_urlConfiguration.IdentityServerUiBaseUrl}/auth/not-allowed";
 
             if (user is not null)
             {
@@ -437,7 +437,7 @@ public class AuthService : IAuthService
         string? userName = info.Principal.Identity?.Name;
 
         response.ExternalLoginReturnUrl =
-            $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/external-login-confirmation?email={email}&username={userName}&loginProvider={info.LoginProvider}&returnUrl={returnUrl}";
+            $"{_urlConfiguration.IdentityServerUiBaseUrl}/auth/external-login-confirmation?email={email}&username={userName}&loginProvider={info.LoginProvider}&returnUrl={returnUrl}";
         return response;
     }
 
@@ -465,7 +465,7 @@ public class AuthService : IAuthService
 
         if (info is null)
         {
-            response.ExternalLoginReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/login";
+            response.ExternalLoginReturnUrl = $"{_urlConfiguration.IdentityServerUiBaseUrl}/auth/login";
             return response;
         }
 
@@ -474,7 +474,7 @@ public class AuthService : IAuthService
         // Clear the existing external cookie to ensure a clean login process
         await httpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-        response.ExternalLoginReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/app/user-logins";
+        response.ExternalLoginReturnUrl = $"{_urlConfiguration.IdentityServerUiBaseUrl}/app/user-logins";
         response.Message = responseMessage;
 
         return response;
@@ -495,7 +495,7 @@ public class AuthService : IAuthService
                 Email = user.Email
             }, origin);
 
-            response.ValidReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}/auth/confirm-email";
+            response.ValidReturnUrl = $"{_urlConfiguration.IdentityServerUiBaseUrl}/auth/confirm-email";
             response.ExternalLoginReturnUrl = response.ValidReturnUrl;
 
             return response;
@@ -519,7 +519,7 @@ public class AuthService : IAuthService
             });
 
         response.ValidReturnUrl =
-            $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/verify-phone-number?userId={user.Id}&returnUrl={returnUrl}";
+            $"{_urlConfiguration.IdentityServerUiBaseUrl}auth/verify-phone-number?userId={user.Id}&returnUrl={returnUrl}";
         response.ExternalLoginReturnUrl = response.ValidReturnUrl;
 
         return response;

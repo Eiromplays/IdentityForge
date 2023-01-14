@@ -44,7 +44,7 @@ internal partial class UserService : IUserService
     private readonly IExcelWriter _excelWriter;
     private readonly AccountConfiguration _accountConfiguration;
     private readonly IEmailTemplateService _templateService;
-    private readonly SpaConfiguration _spaConfiguration;
+    private readonly UrlConfiguration _urlConfiguration;
     private readonly ISmsService _smsService;
     private readonly UrlEncoder _urlEncoder;
     private readonly IServiceProvider _serviceProvider;
@@ -67,7 +67,7 @@ internal partial class UserService : IUserService
         IExcelWriter excelWriter,
         IOptions<AccountConfiguration> accountConfiguration,
         IEmailTemplateService templateService,
-        IOptions<SpaConfiguration> spaConfiguration,
+        IOptions<UrlConfiguration> urlConfiguration,
         ISmsService smsService,
         UrlEncoder urlEncoder,
         IServiceProvider serviceProvider)
@@ -89,7 +89,7 @@ internal partial class UserService : IUserService
         _smsService = smsService;
         _urlEncoder = urlEncoder;
         _serviceProvider = serviceProvider;
-        _spaConfiguration = spaConfiguration.Value;
+        _urlConfiguration = urlConfiguration.Value;
         _accountConfiguration = accountConfiguration.Value;
     }
 

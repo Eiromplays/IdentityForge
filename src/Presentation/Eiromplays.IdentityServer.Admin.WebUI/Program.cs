@@ -46,7 +46,7 @@ try
         spaOpenIdConnectOptionsSection.Bind(options);
 
         var spaOpenIdConnectOptions = spaOpenIdConnectOptionsSection.Get<SpaOpenIdConnectOptions>();
-        foreach (var spaClaimAction in spaOpenIdConnectOptions.ClaimActions)
+        foreach (var spaClaimAction in spaOpenIdConnectOptions?.ClaimActions ?? new List<SpaClaimAction>())
         {
             options.ClaimActions.Add(spaClaimAction.MapToClaimAction());
         }

@@ -17,14 +17,14 @@ internal partial class UserService
 {
     private async Task<string> GetEmailVerificationUriAsync(ApplicationUser user, string origin)
     {
-        string? code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
         var endpointUri = new Uri(string.Concat(origin, "api/v1/account/confirm-email"));
         string verificationUri = QueryHelpers.AddQueryString(endpointUri.ToString(), QueryStringKeys.UserId, user.Id);
         verificationUri = QueryHelpers.AddQueryString(verificationUri, QueryStringKeys.Code, code);
-        verificationUri = QueryHelpers.AddQueryString(verificationUri, QueryStringKeys.ReturnUrl, new Uri(string.Concat(_spaConfiguration.IdentityServerUiBaseUrl, "auth/confirmed-email")).ToString());
+        verificationUri = QueryHelpers.AddQueryString(verificationUri, QueryStringKeys.ReturnUrl, new Uri(string.Concat(_urlConfiguration.IdentityServerUiBaseUrl, "auth/confirmed-email")).ToString());
 
         return verificationUri;
     }
@@ -95,7 +95,7 @@ internal partial class UserService
             : new ResendPhoneNumberVerificationResponse
             {
                 Message = await SendPhoneNumberVerificationAsync(user), ReturnUrl =
-                $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/verify-phone-number?userId={user.Id}"
+                $"{_urlConfiguration.IdentityServerUiBaseUrl}auth/verify-phone-number?userId={user.Id}"
             };
     }
 
@@ -123,7 +123,7 @@ internal partial class UserService
                 messages.Add(phoneNumberVerificationMessage);
 
             response.ReturnUrl =
-                $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/verify-phone-number?userId={user.Id}&returnUrl={request.ReturnUrl}";
+                $"{_urlConfiguration.IdentityServerUiBaseUrl}auth/verify-phone-number?userId={user.Id}&returnUrl={request.ReturnUrl}";
         }
 
         if (result.Succeeded)
@@ -148,7 +148,7 @@ internal partial class UserService
         var result = await _userManager.ChangePhoneNumberAsync(user, user.PhoneNumber, code);
 
         if (result.Succeeded)
-            response.ReturnUrl = $"{_spaConfiguration.IdentityServerUiBaseUrl}auth/confirmed-phone-number";
+            response.ReturnUrl = $"{_urlConfiguration.IdentityServerUiBaseUrl}auth/confirmed-phone-number";
 
         messages.Add(!user.EmailConfirmed && _signInManager.Options.SignIn.RequireConfirmedEmail
             ? string.Format(

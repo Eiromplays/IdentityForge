@@ -38,8 +38,8 @@ internal static class Startup
                 .AddJsonFile($"{configurationsDirectory}/localization.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"{configurationsDirectory}/identityserverdata.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"{configurationsDirectory}/identityserverdata.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"{configurationsDirectory}/spa.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"{configurationsDirectory}/spa.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"{configurationsDirectory}/urls.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"{configurationsDirectory}/urls.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"{configurationsDirectory}/cloudflare.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"{configurationsDirectory}/cloudflare.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();

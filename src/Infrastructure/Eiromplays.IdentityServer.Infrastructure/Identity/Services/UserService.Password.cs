@@ -19,7 +19,7 @@ internal partial class UserService
         // For more information on how to enable account confirmation and password reset please
         // visit https://go.microsoft.com/fwlink/?LinkID=532713
         string code = await _userManager.GeneratePasswordResetTokenAsync(user);
-        var endpointUri = new Uri(string.Concat(_spaConfiguration.IdentityServerUiBaseUrl, "auth/reset-password"));
+        var endpointUri = new Uri(string.Concat(_urlConfiguration.IdentityServerUiBaseUrl, "auth/reset-password"));
 
         string passwordResetUrl = QueryHelpers.AddQueryString(endpointUri.ToString(), "token", code);
 

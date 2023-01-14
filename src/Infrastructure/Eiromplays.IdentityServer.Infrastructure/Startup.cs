@@ -67,7 +67,7 @@ public static class Startup
             .AddRequestLogging(config)
             .AddRouting(options => options.LowercaseUrls = true)
             .AddServices(projectType)
-            .AddHttpClients(projectType)
+            .AddHttpClients(config, projectType)
             .AddCloudflareImagesStorageService(config);
     }
 
