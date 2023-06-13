@@ -1,1 +1,0 @@
-﻿global using Eiromplays.IdentityServer.Domain.Common.Contracts;

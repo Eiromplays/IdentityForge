@@ -334,6 +334,15 @@ ASALocalRun/
 .localhistory/
 
 # Ignore Logs
-src/Presentation/Eiromplays.IdentityServer/Logs/
-src/Presentation/Eiromplays.IdentityServer.API/Logs/
+src/IdentityForge.IdentityServer/Logs/
 **/**.[Dd]evelopment.json
+
+# Generated Cert files
+*.crt
+*.csr
+*.key
+*.pem
+*.cer
+*.srl
+/certs/password.txt
+src/*.env

@@ -1,0 +1,31 @@
+version: '3.7'
+
+services:
+  postgres:
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - identityforge-postgres:/var/lib/postgresql/data
+
+  identityserver:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/../../certs/identityserver.pfx
+    ports:
+      - "5200:80"
+      - "5201:443"
+    volumes:
+      - identityforge-identityserver:/app/data
+      - ${APPDATA}/aspnet/https:/root/.aspnet/https:ro
+
+
+volumes:
+  identityforge-postgres:
+    external: false
+  identityforge-identityserver:
+    external: false

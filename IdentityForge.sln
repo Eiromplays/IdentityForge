@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{F7495536-79D9-4524-A5A8-F387060A38D1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DE770120-EEC3-4FD2-ABD3-13A726C66D28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityForge.IdentityServer", "src\IdentityForge.IdentityServer\IdentityForge.IdentityServer.csproj", "{EBF9AB7A-BA07-4C93-9791-04B9A995B12C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{932C8BDA-A018-42EC-B135-CF2682B507FA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EBF9AB7A-BA07-4C93-9791-04B9A995B12C} = {DE770120-EEC3-4FD2-ABD3-13A726C66D28}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EBF9AB7A-BA07-4C93-9791-04B9A995B12C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBF9AB7A-BA07-4C93-9791-04B9A995B12C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBF9AB7A-BA07-4C93-9791-04B9A995B12C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBF9AB7A-BA07-4C93-9791-04B9A995B12C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

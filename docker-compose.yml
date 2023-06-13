@@ -1,0 +1,13 @@
+﻿version: '3.7'
+name: identityforge
+
+services:
+  postgres:
+    image: postgres:14.4-alpine
+
+  identityserver:
+    build:
+      context: .
+      dockerfile: src/IdentityForge.IdentityServer/Dockerfile
+    depends_on:
+      - postgres
