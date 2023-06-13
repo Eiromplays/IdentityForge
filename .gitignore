@@ -345,4 +345,4 @@ src/IdentityForge.IdentityServer/Logs/
 *.cer
 *.srl
 /certs/password.txt
-src/*.env
+*.env
