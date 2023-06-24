@@ -18,7 +18,4 @@
         <None Include="docker-compose.yml" />
         <None Include=".dockerignore" />
     </ItemGroup>
-    <ItemGroup>
-      <Content Include="ContainerCerts.props" />
-    </ItemGroup>
 </Project>

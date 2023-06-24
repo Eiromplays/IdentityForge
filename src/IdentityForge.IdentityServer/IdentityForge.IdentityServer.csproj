@@ -17,8 +17,4 @@
         <Link>.dockerignore</Link>
       </Content>
     </ItemGroup>
-
-    <Target Name="CreateCerts" Inputs="$(MSBuildProjectDirectory)\..\..\certs\Create-Certs.ps1" Outputs="$(MSBuildProjectDirectory)\ContainerCerts.env" Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">
-        <Exec Command="powershell -ExecutionPolicy ByPass ..\..\certs\Create-Certs.ps1" WorkingDirectory="$(MSBuildProjectDirectory)" />
-    </Target>
 </Project>

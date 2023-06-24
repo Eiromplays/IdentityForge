@@ -1,8 +1,25 @@
-# IdentityServer.Admin
+# IdentityForge
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
- Eiromplays.IdentityServer.Admin
+
+#### If you run on linux you need to make sure you have a proper dev cert installed if running through docker:
+https://github.com/BorisWilhelms/create-dotnet-devcert/tree/main
+### if you run on windows or mac you can just run the following command:
+```bash
+dotnet dev-certs https --trust
+```
+### And then change the volume mount in the docker-compose file to the following:
+```yaml
+volumes:
+  - ~/.aspnet/https:/https:ro
+```
+### And the ASPNETCORE_Kestrel__Certificates__Default__Path to the following:
+```yaml
+ASPNETCORE_Kestrel__Certificates__Default__Path: /https/yourCertNameHere.pfx
+```
+
+#
 
 ## Contributors ✨
 
