@@ -25,7 +25,7 @@
     "marked": "4.0.17",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-hook-form": "7.32.2",
+    "react-hook-form": "7.50.0",
     "react-icons": "4.4.0",
     "react-image-crop": "10.0.4",
     "react-select": "5.3.2",
