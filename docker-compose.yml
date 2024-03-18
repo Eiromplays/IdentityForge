@@ -4,10 +4,33 @@ name: identityforge
 services:
   postgres:
     image: postgres:14.4-alpine
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "36327:5432"
+    volumes:
+      - identityforge-postgres:/var/lib/postgresql/data
 
   identityserver:
-    build:
-      context: .
-      dockerfile: src/IdentityForge.IdentityServer/Dockerfile
+    image: mcr.microsoft.com/dotnet/sdk:7.0
+    working_dir: /identityforge
+    command: dotnet watch run --no-launch-profile --project ./IdentityForge.IdentityServer/IdentityForge.IdentityServer.csproj
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/dotnet-devcert.pfx
+      - ConnectionStrings__IdentityForge__ConnectionString=Host=postgres;Port=5432;Database=dev_identityforge;Username=postgres;Password=postgres
+    ports:
+      - "5100:80"
+      - "5101:443"
+    volumes:
+      - ${HOME}/.aspnet/https:/https/:ro
+      - ./src:/identityforge
     depends_on:
       - postgres
+
+volumes:
+  identityforge-postgres:
+    external: false

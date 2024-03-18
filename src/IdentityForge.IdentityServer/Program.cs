@@ -1,6 +1,72 @@
+using FastEndpoints.Swagger;
+using Hellang.Middleware.ProblemDetails;
+using IdentityForge.IdentityServer.Extensions.Host;
+using IdentityForge.IdentityServer.Extensions.Services;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.AddLoggingConfiguration(builder.Environment);
+
+builder.ConfigureServices();
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+using var scope = app.Services.CreateScope();
+if (builder.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandler("/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+app.UseProblemDetails();
 
-app.Run();
+// For elevated security, it is recommended to remove this middleware and set your server to only listen on https.
+// A slightly less secure option would be to redirect http to 400, 505, etc.
+app.UseHttpsRedirection();
+
+app.UseCors("IdentityForgeCorsPolicy");
+
+app.UseSerilogRequestLogging();
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseFastEndpoints(c =>
+{
+    c.Endpoints.RoutePrefix = "api";
+    c.Endpoints.Configurator = ep =>
+    {
+        //ep.AuthSchemes(JwtBearerDefaults.AuthenticationScheme);
+    };
+    c.Versioning.Prefix = "v";
+    c.Versioning.PrependToRoute = true;
+    c.Versioning.DefaultVersion = 1;
+});
+
+app.MapHealthChecks("api/health");
+app.MapDefaultControllerRoute();
+
+app.UseSwaggerGen();
+
+try
+{
+    Log.Information("Starting application");
+    await app.RunAsync();
+}
+catch (Exception e)
+{
+    Log.Error(e, "The application failed to start correctly");
+    throw;
+}
+finally
+{
+    Log.Information("Shutting down application");
+    Log.CloseAndFlush();
+}
+
+// Make the implicit Program class public so the functional test project can access it
+public partial class Program { }

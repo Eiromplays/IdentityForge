@@ -7,6 +7,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityForge.IdentityServer", "src\IdentityForge.IdentityServer\IdentityForge.IdentityServer.csproj", "{EBF9AB7A-BA07-4C93-9791-04B9A995B12C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{932C8BDA-A018-42EC-B135-CF2682B507FA}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityForge.Shared", "src\IdentityForge.Shared\IdentityForge.Shared.csproj", "{EB8EC42F-D2C9-4DE3-909A-9E46272A4990}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,11 +21,16 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EBF9AB7A-BA07-4C93-9791-04B9A995B12C} = {DE770120-EEC3-4FD2-ABD3-13A726C66D28}
+		{EB8EC42F-D2C9-4DE3-909A-9E46272A4990} = {DE770120-EEC3-4FD2-ABD3-13A726C66D28}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{EBF9AB7A-BA07-4C93-9791-04B9A995B12C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EBF9AB7A-BA07-4C93-9791-04B9A995B12C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBF9AB7A-BA07-4C93-9791-04B9A995B12C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBF9AB7A-BA07-4C93-9791-04B9A995B12C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB8EC42F-D2C9-4DE3-909A-9E46272A4990}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB8EC42F-D2C9-4DE3-909A-9E46272A4990}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB8EC42F-D2C9-4DE3-909A-9E46272A4990}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB8EC42F-D2C9-4DE3-909A-9E46272A4990}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
