@@ -19,7 +19,7 @@
   "dependencies": {
     "@headlessui/react": "1.6.5",
     "@types/react-phone-number-input": "3.0.14",
-    "dompurify": "2.3.8",
+    "dompurify": "2.5.4",
     "eiromplays-ui": "1.5.0-19",
     "intersection-observer": "0.12.2",
     "marked": "4.0.17",
