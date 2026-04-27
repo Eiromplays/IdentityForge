@@ -34,7 +34,7 @@
     "sass": "1.53.0",
     "vite-plugin-env-compatible": "1.1.1",
     "vite-plugin-proxy-middleware": "1.0.2",
-    "zod": "3.17.3"
+    "zod": "3.22.3"
   },
   "devDependencies": {
     "@tailwindcss/typography": "0.5.2",
