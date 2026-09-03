@@ -12,13 +12,13 @@
 
   <ItemGroup>
     <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="6.1.0" />
-    <PackageReference Include="AspNet.Security.OAuth.Amazon" Version="6.0.6" />
-    <PackageReference Include="AspNet.Security.OAuth.Discord" Version="6.0.6" />
-    <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="6.0.6" />
-    <PackageReference Include="AspNet.Security.OAuth.Patreon" Version="6.0.6" />
-    <PackageReference Include="AspNet.Security.OAuth.Reddit" Version="6.0.6" />
-    <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="6.0.6" />
-    <PackageReference Include="AspNet.Security.OAuth.WordPress" Version="6.0.6" />
+    <PackageReference Include="AspNet.Security.OAuth.Amazon" Version="6.0.15" />
+    <PackageReference Include="AspNet.Security.OAuth.Discord" Version="6.0.15" />
+    <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="6.0.15" />
+    <PackageReference Include="AspNet.Security.OAuth.Patreon" Version="6.0.15" />
+    <PackageReference Include="AspNet.Security.OAuth.Reddit" Version="6.0.15" />
+    <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="6.0.15" />
+    <PackageReference Include="AspNet.Security.OAuth.WordPress" Version="6.0.15" />
     <PackageReference Include="ClosedXML" Version="0.96.0" />
     <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="Duende.BFF" Version="1.2.3" />
