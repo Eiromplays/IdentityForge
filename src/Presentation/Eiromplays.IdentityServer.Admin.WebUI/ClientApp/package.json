@@ -17,7 +17,7 @@
     "validate": "npm-run-all --parallel check-types && lint-staged"
   },
   "dependencies": {
-    "@headlessui/react": "1.6.5",
+    "@headlessui/react": "1.7.19",
     "@loadable/component": "5.15.2",
     "dompurify": "2.3.8",
     "eiromplays-ui": "1.5.0-18",
